@@ -9,7 +9,7 @@ Created on Fri May 26 10:45:02 2017
 from preprocess import BLACK, BLUE, GREEN, YELLOW, WHITE, GRAY
 import numpy as np
 import unittest
-from preprocess import simplify_name, extract_timestamp, simplify_colors, update_black_mask, color_counts, separate_stamps, remove_white_sun, black_mask_to_image
+from preprocess import simplify_name, extract_timestamp, separate_stamps, remove_white_sun, count_colors
 
 
 class TestPreprocess(unittest.TestCase):
@@ -31,43 +31,6 @@ class TestPreprocess(unittest.TestCase):
     def test_extract_timestamp(self):
         f = 'sgptsicldmaskC1.a1.20160414.235930.png.20160414235930.png'
         self.assertEqual(extract_timestamp(f), '20160414235930')
-
-    def test_update_black_mask(self):
-        black_mask = np.ones((7, 7), dtype=bool)
-        img = np.array([[BLACK, BLUE, BLACK, BLACK, BLACK, BLACK, BLACK],
-                       [BLACK, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK],
-                       [BLACK, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK],
-                       [BLACK, BLUE, BLACK, WHITE, WHITE, BLACK, BLACK],
-                       [BLACK, BLACK, BLACK, WHITE, WHITE, WHITE, BLACK],
-                       [BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK],
-                       [BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK]])
-        correct = np.array([[True, False, True, True, True, True, True],
-                       [True, False, False, True, True, True, True],
-                       [True, False, True, True, True, True, True],
-                       [True, False, True, False, False, True, True],
-                       [True, True, True, False, False, False, True],
-                       [True, True, True, True, True, True, True],
-                       [True, True, True, True, True, True, True]])
-        out = update_black_mask(img, black_mask)
-        self.assertTrue((out == correct).all())
-
-    def test_black_mask_to_image(self):
-        black_mask = np.array([[True, False, True, True, True, True, True],
-                       [True, False, False, True, True, True, True],
-                       [True, False, True, True, True, True, True],
-                       [True, False, True, False, False, True, True],
-                       [True, True, True, False, False, False, True],
-                       [True, True, True, True, True, True, True],
-                       [True, True, True, True, True, True, True]])
-        correct = np.array([[BLACK, BLUE, BLACK, BLACK, BLACK, BLACK, BLACK],
-                       [BLACK, BLUE, BLUE, BLACK, BLACK, BLACK, BLACK],
-                       [BLACK, BLUE, BLACK, BLACK, BLACK, BLACK, BLACK],
-                       [BLACK, BLUE, BLACK, BLUE, BLUE, BLACK, BLACK],
-                       [BLACK, BLACK, BLACK, BLUE, BLUE, BLUE, BLACK],
-                       [BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK],
-                       [BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK]])
-        out = black_mask_to_image(black_mask)
-        self.assertTrue((out == correct).all())
         
     def test_remove_white_sun(self):
         img = np.array([[BLACK, BLUE, BLACK, BLACK, BLACK, BLACK, BLACK],
@@ -77,7 +40,6 @@ class TestPreprocess(unittest.TestCase):
                        [BLACK, BLACK, BLACK, WHITE, WHITE, WHITE, BLACK],
                        [BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK],
                        [BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK]])
-
         correct = np.array([[BLACK, BLUE,  BLACK, BLACK, BLACK, BLACK, BLACK],
                             [BLACK, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK],
                             [BLACK, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK],
@@ -86,22 +48,14 @@ class TestPreprocess(unittest.TestCase):
                             [BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK],
                             [BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK]])
         # correct = (2,2)
-        out = remove_white_sun(img)
+        out = remove_white_sun(img, stride=1)
         self.assertTrue((out == correct).all())
-
-    def test_simplify_colors(self):
-        img = np.array([[BLACK, BLUE, GREEN],
-                        [GRAY, YELLOW, WHITE]])
-        colors = simplify_colors(img)
-        correct = np.array([[BLACK, BLUE, BLACK],
-                           [WHITE, BLACK, WHITE]])
-        self.assertTrue((colors == correct).all())
 
     def test_color_counts(self):
         img = np.array([[BLACK, BLUE, BLACK],
                         [WHITE, BLACK, WHITE]])
-        probs = color_counts(img)
-        correct = np.array([1, 2, 3])
+        probs = count_colors(img)
+        correct = np.array([2, 1, 0, 3, 0])
         self.assertTrue((probs == correct).all())
 
     def test_separate_stamps(self):

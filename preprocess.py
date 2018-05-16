@@ -64,7 +64,7 @@ def count_colors(img):
     return np.array(counts)
 
 def create_constant_mask(color, filename):
-    """Creates a mask where any pixels not of color are BLUE. Saves it in
+    """Creates a mask where any pixels not always of color are BLUE. Saves it in
     filename."""
     b_mask = np.full((480,480,3), color)
     for file in os.listdir('simplemask/'):
@@ -120,21 +120,22 @@ def extract_timestamp(filename):
     something like 20160415235930.jpg or 20160415235930.png."""
     return filename[-18:-4]
 
-def remove_white_sun(img):
+def remove_white_sun(img, stride=10):
     """Removes the sun disk from img if it is white. (A yellow sun is easier
-    to remove; that is handled directly in simpllify_masks.)"""
+    to remove; that is handled directly in simplify_masks.) Stride indicates distance
+    between pixels from which sun searches are started"""
     start = time.clock()
     ever_visited = np.full(img.shape[:2], False, dtype=bool)
     visited = np.full(img.shape[:2], False, dtype=bool)
-    for r in range(0, img.shape[0], 10):
-        for c in range(0, img.shape[1], 10):
+    for r in range(0, img.shape[0], stride):
+        for c in range(0, img.shape[1], stride):
             if ((img[r][c] == WHITE).all()):
                 stack = []
                 stack.append((r, c))
                 visited.fill(False)
                 if depth_first_search(r, c, img, visited, ever_visited, stack):
                     img[visited] = BLACK
-                    print('Removed the sun in ' + str(time.clock()-start) + ' seconds')
+                    print('Removed the sun in ' + str(time.clock() - start) + ' seconds')
                     return img
     print('No sun found!')
     return img
