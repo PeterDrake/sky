@@ -87,14 +87,15 @@ def crop_image(img):
 def delete_images_without_matching_masks():
     """Deletes image files that do not have matching mask files."""
     for f in os.listdir('skyimage/'):
-        g = 'cldmask/cldmask' + extract_timestamp(f) + '.png'
-        if not os.path.isfile(g):
-            print('removing ' + f + ', which has no target mask')
-            os.remove('skyimage/' + f)
-        elif os.path.getsize(g) == 0:
-            print('removing ' + f + ', which has a target mask of size 0')
-            os.remove('skyimage/' + f)
-            os.remove(g)           
+        if f.endswith('.jpg'):
+            g = 'cldmask/cldmask' + extract_timestamp(f) + '.png'
+            if not os.path.isfile(g):
+                print('removing ' + f + ', which has no target mask')
+                os.remove('skyimage/' + f)
+            elif os.path.getsize(g) == 0:
+                print('removing ' + f + ', which has a target mask of size 0')
+                os.remove('skyimage/' + f)
+                os.remove(g)
 
 def depth_first_search(r, c, img, visited, ever_visited, stack):
     """Returns True if there is a connected region including img[r][c] that is all
@@ -188,8 +189,11 @@ def simplify_all_masks():
     GREEN."""
     counts = np.zeros(5, dtype=np.int)
     for file in os.listdir('cldmask/'):
+        print('Found {} in cldmask/'.format(file))
         if file.endswith('.png'):
+            print('About to read {}'.format('cldmask/' + file))
             img = misc.imread('cldmask/' + file)
+            print('Succeeded')
             img = crop_image(img)
             print('About to remove sun from ' + file)
             if (img == YELLOW).all(axis=2).any():
