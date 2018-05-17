@@ -189,11 +189,8 @@ def simplify_all_masks():
     GREEN."""
     counts = np.zeros(5, dtype=np.int)
     for file in os.listdir('cldmask/'):
-        print('Found {} in cldmask/'.format(file))
         if file.endswith('.png'):
-            print('About to read {}'.format('cldmask/' + file))
             img = misc.imread('cldmask/' + file)
-            print('Succeeded')
             img = crop_image(img)
             print('About to remove sun from ' + file)
             if (img == YELLOW).all(axis=2).any():
