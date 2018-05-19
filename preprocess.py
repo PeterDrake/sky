@@ -57,11 +57,13 @@ GREEN = np.array([0, 255, 0])
 YELLOW = np.array([255, 255, 0])
 COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 
+
 def count_colors(img):
     """Returns an array of the number of WHITE, BLUE, GRAY, BLACK, and
     GREEN pixels in img."""
     counts = [(img == color).all(axis=2).sum() for color in COLORS]
     return np.array(counts)
+
 
 def create_constant_mask(color, filename):
     """Creates a mask where any pixels not always of color are BLUE. Saves it in
@@ -72,11 +74,13 @@ def create_constant_mask(color, filename):
         b_mask[(img != color).any(axis=2)] = BLUE
     Image.fromarray(b_mask.astype('uint8')).save(filename)
 
+
 def create_dirs():
     """Creates the necessary directories (if they don't already exist)."""
     for d in ('skyimage', 'cldmask', 'simpleimage', 'simplemask'):
         if not os.path.isdir(d):
             os.mkdir(d)
+
 
 def crop_image(img):
     """Returns a version of img cropped down to 480 x 480."""
@@ -84,8 +88,9 @@ def crop_image(img):
                      np.concatenate((np.arange(80), np.arange(80)+560)),
                      axis=0)
 
-def delete_images_without_matching_masks():
-    """Deletes image files that do not have matching mask files."""
+
+def delete_unpaired_images():
+    """Deletes files for timestamps that do not have both images and masks."""
     for f in os.listdir('skyimage/'):
         if f.endswith('.jpg'):
             g = 'cldmask/cldmask' + extract_timestamp(f) + '.png'
@@ -96,6 +101,17 @@ def delete_images_without_matching_masks():
                 print('removing ' + f + ', which has a target mask of size 0')
                 os.remove('skyimage/' + f)
                 os.remove(g)
+    for f in os.listdir('cldmask/'):
+        if f.endswith('.png'):
+            g = 'skyimage/skyimage' + extract_timestamp(f) + '.jpg'
+            if not os.path.isfile(g):
+                print('removing ' + f + ', which has no image')
+                os.remove('cldmask/' + f)
+            elif os.path.getsize(g) == 0:
+                print('removing ' + f + ', which has an image of size 0')
+                os.remove('cldmask/' + f)
+                os.remove(g)
+
 
 def depth_first_search(r, c, img, visited, ever_visited, stack):
     """Returns True if there is a connected region including img[r][c] that is all
@@ -116,10 +132,12 @@ def depth_first_search(r, c, img, visited, ever_visited, stack):
         stack.extend(((r+1, c), (r-1, c), (r, c+1), (r, c-1)))
     return True
 
+
 def extract_timestamp(filename):
     """Returns the timestamp within filename. Assumes filename ends in
     something like 20160415235930.jpg or 20160415235930.png."""
     return filename[-18:-4]
+
 
 def remove_white_sun(img, stride=10):
     """Removes the sun disk from img if it is white. (A yellow sun is easier
@@ -141,6 +159,7 @@ def remove_white_sun(img, stride=10):
     print('No sun found!')
     return img
 
+
 def separate_data():
     """Saves pickled lists of timestamps to test.stamps, valid.stamps, and
     train.stamps."""
@@ -154,6 +173,7 @@ def separate_data():
         pickle.dump(train, f)
     return test, valid, train
 
+
 def separate_stamps(stamps):
     """Shuffles stamps and returns three lists: 20% of the stamps for
     testing, 16% for validation, and the rest for training."""
@@ -163,12 +183,14 @@ def separate_stamps(stamps):
     train = stamps[int(len(stamps)*0.36):]
     return test, valid, train
 
+
 def simplify_all_names():
     """Simplifies all of the filenames in skyimage/ and cldmask/."""
     for dir in ('skyimage/', 'cldmask/'):
         for f in os.listdir(dir):
             if not f.endswith('.tar'):
                 os.rename(dir + f, dir + simplify_name(f))
+
 
 def simplify_all_images():
     """Crops the images in skyimage/ down to 480x480, writes those to
@@ -182,6 +204,7 @@ def simplify_all_images():
             Image.fromarray(cropped).save('simpleimage/simpleimage' +
                            extract_timestamp(file) + '.jpg')
     return counts
+
 
 def simplify_all_masks():
     """Writes similified versions of all images in cldmask to simplemask.
@@ -203,9 +226,11 @@ def simplify_all_masks():
             Image.fromarray(img).save('simplemask/simplemask' + extract_timestamp(file) + '.png')
     return (counts / counts.sum())
 
+
 def simplify_name(filename):
     """Accepts an arm.gov filename and returns a shorter, simpler version."""
     return filename[6:filename.index('C1')] + filename[-18:]
+
 
 def test_remove_white_sun():
     """For manually (visually) verifying that remove_white_sun works."""
@@ -215,6 +240,7 @@ def test_remove_white_sun():
     img.show()
     return img
 
+
 def unpack_all_tars():
     """Unpacks all available .tar files into the appropriate directories."""
     for f in os.listdir('./'):
@@ -223,6 +249,7 @@ def unpack_all_tars():
                 unpack_tar(f, 'skyimage/')
             elif 'cldmask' in f:
                 unpack_tar(f, 'cldmask/')
+
 
 def unpack_tar(file, dir):
     """Given a .tar file, moves it to dir and unpacks it."""
@@ -242,8 +269,8 @@ if __name__ == '__main__':
     unpack_all_tars()
     print('Simplifying names')
     simplify_all_names()
-    print('Deleting images without masks')
-    delete_images_without_matching_masks()
+    print('Deleting unpaired images')
+    delete_unpaired_images()
     print('Simplifying images')
     print(str(simplify_all_images()) + ' images processed')
     print('Simplifying masks')
