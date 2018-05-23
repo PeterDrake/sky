@@ -38,7 +38,7 @@ import subprocess
 from preprocess import BLUE, BLACK, GREEN, COLORS
 
 # Training parameters
-BATCH_SIZE = 50
+BATCH_SIZE = 1000
 LEARNING_RATE = 0.0001
 TRAINING_STEPS = 100
 
