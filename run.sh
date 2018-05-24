@@ -2,4 +2,4 @@
 
 echo $options
 # The %% * is a perverse trick to get first word of options, which is the job name
-SGE_Batch -r "${options%% *}" -c "python3 -u preprocess.py $options" -P 1
+SGE_Batch -r "${options%% *}" -c "python3 -u train.py $options" -P 1
