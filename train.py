@@ -75,7 +75,7 @@ def build_net(layer_info):
                                table[last_name]["outs"],
                                table[last_name]["kernel"],
                                h[table[last_name]["prev"]],
-                               table[last_name]["tf_name"], False)
+                               table[last_name]["tf_name"], True) # TRUE -> RELU, FALSE -> ELU
     m = mask_layer(h[last_name], b_mask, g_mask)
     y = tf.reshape(m, [-1, 5])
     y_ = tf.placeholder(tf.int64, [None])
