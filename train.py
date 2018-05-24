@@ -38,9 +38,9 @@ import subprocess
 from preprocess import BLUE, BLACK, GREEN, COLORS
 
 # Training parameters
-BATCH_SIZE = 500
+BATCH_SIZE = 50
 LEARNING_RATE = 0.0001
-TRAINING_STEPS = 50
+TRAINING_STEPS = 2000
 
 def build_net(layer_info):
     """Builds a network given command-line layer info."""
@@ -286,7 +286,6 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy,
                 if (j*BATCH_SIZE >= len(train_stamps)):
                     j = 1
                 batch = train_stamps[(j-1) * BATCH_SIZE : j * BATCH_SIZE]
-                print("The length of batch is: ", len(batch))
                 inputs = load_inputs(batch)
                 correct = load_masks(batch)
                 train_step.run(feed_dict={x: inputs, y_: correct})
