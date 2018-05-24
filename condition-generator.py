@@ -17,5 +17,5 @@ for v in variants:
     for kernel_width in (3,):
         for channels in (32,):
             for j in range(5):
-                print('{}-{:0>2} '.format(exp, i) + v.format(kernel_width, channels))
+                print('e{}-{:0>2} '.format(exp, i) + v.format(kernel_width, channels))
                 i += 1
