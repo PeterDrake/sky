@@ -45,10 +45,10 @@ def find_worst_results(num_worst, time_stamps, directory, step_version, layer_in
             mask = read_target(s)
             rates[i] = disagreement_rate(result, mask)
         # Display a graph of accuracies
-        plt.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-        plt.ylabel('Percent of Pixels Incorrect')
-        plt.xlabel('Image (sorted by accuracy)')
-        plt.show()
+#        plt.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+#        plt.ylabel('Percent of Pixels Incorrect')
+#        plt.xlabel('Image (sorted by accuracy)')
+#        plt.show()
         # Report the worst disagreement rates
         indices = rates.argsort()[num_worst*-1:][::-1]
         print('Worst results percentages:\t' + str(np.take(rates, indices)))
