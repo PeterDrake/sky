@@ -51,7 +51,7 @@ def find_worst_results(num_worst, time_stamps, directory, step_version, layer_in
         ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
         ax.set_ylabel('Percent of Pixels Incorrect')
         ax.set_xlabel('Image (sorted by accuracy)')
-        fig.savefig(directory + 'accuracy_plot.png', bbox_inches='tight')
+        fig.savefig(directory + '/accuracy_plot.png', bbox_inches='tight')
         # Report the worst disagreement rates
         indices = rates.argsort()[num_worst*-1:][::-1]
         print('Worst results percentages:\t' + str(np.take(rates, indices)))
