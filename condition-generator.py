@@ -9,7 +9,7 @@ Created on Wed Jul 19 10:04:42 2017
 @author: drake
 """
 
-exp = 60
+exp = 62
 i = 0
 variants = ('a:conv-{0}-{1}-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-{0}-{1}-e g:conv-{0}-{1}-f h:concat-g-in i:conv-{0}-5-h',)
 
