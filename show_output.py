@@ -77,7 +77,7 @@ def read_parameters(directory):
         args[key] = value
     return args
 
-def show_comparison_images(outputs, targets):
+def show_comparison_images(outputs, targets, directory=None):
     """Shows images of where outputs differ from targets, color-coded by how
     they agree or disagree. Destructively modifies targets."""
     targets[np.logical_and((outputs == BLUE).all(axis=3),
@@ -94,7 +94,10 @@ def show_comparison_images(outputs, targets):
                            (targets == GRAY).all(axis=3))] = WHITE_FOR_GRAY
     for i in range(targets.shape[0]):
         disp = Image.fromarray(targets[i].astype('uint8'))
-        disp.show()
+        if directory:
+            disp.save(directory + "/compare" + str(targets[i]) + ".png")
+        else:
+            disp.show()
 
 def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations, time,
              show_all):

@@ -51,13 +51,8 @@ def find_worst_results(num_worst, time_stamps, directory, step_version, layer_in
         ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
         ax.set_ylabel('Percent of Pixels Incorrect')
         ax.set_xlabel('Image (sorted by accuracy)')
-        fig.savefig('results/plots/foo.png', bbox_inches='tight')
-#        plt.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-#        plt.ylabel('Percent of Pixels Incorrect')
-#        plt.xlabel('Image (sorted by accuracy)')
-#        plt.show()
+        fig.savefig(directory + 'accuracy_plot.png', bbox_inches='tight')
         # Report the worst disagreement rates
-
         indices = rates.argsort()[num_worst*-1:][::-1]
         print('Worst results percentages:\t' + str(np.take(rates, indices)))
     return np.take(time_stamps, indices)
@@ -102,4 +97,4 @@ if __name__ == '__main__':
     _, _, saver, _, x, y, _, _ = build_net(layer_info)
     outputs = run_stamps(saver, x, y, dir_name, step_version, worst_timestamps)
     targets = read_targets(worst_timestamps)
-    show_comparison_images(outputs, targets)
+    show_comparison_images(outputs, targets, dir_name)
