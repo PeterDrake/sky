@@ -75,7 +75,7 @@ def build_net(layer_info):
                                table[last_name]["outs"],
                                table[last_name]["kernel"],
                                h[table[last_name]["prev"]],
-                               table[last_name]["tf_name"], True) # TRUE -> RELU, FALSE -> ELU
+                               table[last_name]["tf_name"], False)
     m = mask_layer(h[last_name], b_mask, g_mask)
     y = tf.reshape(m, [-1, 5])
     y_ = tf.placeholder(tf.int64, [None])
@@ -126,7 +126,7 @@ def convo_layer(num_in, num_out, width, prev, name, relu=True):
         initial = tf.constant(0.1, shape=[num_out])
         b = tf.Variable(initial, name='biases')
         if relu:
-            h = tf.nn.relu(conv2d(prev, W, name) + b)
+            h = tf.nn.elu(conv2d(prev, W, name) + b)
         else:
             h = conv2d(prev, W, name) + b   
     return h
