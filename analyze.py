@@ -23,6 +23,8 @@ import sys
 import tensorflow as tf
 from PIL import Image
 from scipy import misc
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from show_output import show_comparison_images
 
@@ -45,11 +47,17 @@ def find_worst_results(num_worst, time_stamps, directory, step_version, layer_in
             mask = read_target(s)
             rates[i] = disagreement_rate(result, mask)
         # Display a graph of accuracies
+        fig, ax = plt.subplots(nrows=1, ncols=1)
+        ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+        ax.ylabel('Percent of Pixels Incorrect')
+        ax.xlabel('Image (sorted by accuracy)')
+        fig.savefig('results/plots/foo.png', bbox_inches='tight')
 #        plt.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
 #        plt.ylabel('Percent of Pixels Incorrect')
 #        plt.xlabel('Image (sorted by accuracy)')
 #        plt.show()
         # Report the worst disagreement rates
+
         indices = rates.argsort()[num_worst*-1:][::-1]
         print('Worst results percentages:\t' + str(np.take(rates, indices)))
     return np.take(time_stamps, indices)
