@@ -95,7 +95,7 @@ def show_comparison_images(outputs, targets, directory=None):
     for i in range(targets.shape[0]):
         disp = Image.fromarray(targets[i].astype('uint8'))
         if directory:
-            disp.save(directory + "/compare" + str(targets[i]) + ".png")
+            disp.save(directory + "compare" + str(i) + ".png")
         else:
             disp.show()
 
