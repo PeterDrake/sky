@@ -49,8 +49,8 @@ def find_worst_results(num_worst, time_stamps, directory, step_version, layer_in
         # Display a graph of accuracies
         fig, ax = plt.subplots(nrows=1, ncols=1)
         ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-        ax.ylabel('Percent of Pixels Incorrect')
-        ax.xlabel('Image (sorted by accuracy)')
+        ax.set_ylabel('Percent of Pixels Incorrect')
+        ax.set_xlabel('Image (sorted by accuracy)')
         fig.savefig('results/plots/foo.png', bbox_inches='tight')
 #        plt.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
 #        plt.ylabel('Percent of Pixels Incorrect')
