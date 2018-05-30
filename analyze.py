@@ -26,7 +26,6 @@ from scipy import misc
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from show_output import show_comparison_images
 
 def disagreement_rate(output, target):
     """Returns the proportion of pixels in output that disagree with target."""
