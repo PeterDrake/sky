@@ -91,18 +91,18 @@ def save_images(times, directory):
 def compare(output, target):
     """Returns image of where output differs from target, color-coded by how
     they agree or disagree. Destructively modifies target."""
-    target[np.logical_and((output == BLUE).all(axis=3),
-                           (target == GRAY).all(axis=3))] = BLUE_FOR_GRAY
-    target[np.logical_and((output == BLUE).all(axis=3),
-                           (target == WHITE).all(axis=3))] = BLUE_FOR_WHITE
-    target[np.logical_and((output == GRAY).all(axis=3),
-                           (target == BLUE).all(axis=3))] = GRAY_FOR_BLUE
-    target[np.logical_and((output == GRAY).all(axis=3),
-                           (target == WHITE).all(axis=3))] = GRAY_FOR_WHITE
-    target[np.logical_and((output == WHITE).all(axis=3),
-                           (target == BLUE).all(axis=3))] = WHITE_FOR_BLUE
-    target[np.logical_and((output == WHITE).all(axis=3),
-                           (target == GRAY).all(axis=3))] = WHITE_FOR_GRAY
+    target[np.logical_and((output == BLUE).all(axis=2),
+                           (target == GRAY).all(axis=2))] = BLUE_FOR_GRAY
+    target[np.logical_and((output == BLUE).all(axis=2),
+                           (target == WHITE).all(axis=2))] = BLUE_FOR_WHITE
+    target[np.logical_and((output == GRAY).all(axis=2),
+                           (target == BLUE).all(axis=2))] = GRAY_FOR_BLUE
+    target[np.logical_and((output == GRAY).all(axis=2),
+                           (target == WHITE).all(axis=2))] = GRAY_FOR_WHITE
+    target[np.logical_and((output == WHITE).all(axis=2),
+                           (target == BLUE).all(axis=2))] = WHITE_FOR_BLUE
+    target[np.logical_and((output == WHITE).all(axis=2),
+                           (target == GRAY).all(axis=2))] = WHITE_FOR_GRAY
     # for i in range(target.shape[0]):
     #     disp = Image.fromarray(targets[i].astype('uint8'))
     #     if directory:
