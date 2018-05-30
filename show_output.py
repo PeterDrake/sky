@@ -43,11 +43,6 @@ def gather_images(times):
     """"""
     return [load_input(t) for t in times]
 
-def load_input(time):
-    """Loads and returns an image for a particular time."""
-    inputs = load_inputs([time])
-    return Image.fromarray(inputs[0].astype('uint8'))
-
 def one_hot_to_mask(max_indices, output):
     """Modifies (and returns) img to have sensible colors in place of
     one-hot vectors."""
@@ -93,56 +88,58 @@ def save_images(times, directory):
 
 
 
-def show_comparison_images(outputs, targets, directory=None):
-    """Shows images of where outputs differ from targets, color-coded by how
-    they agree or disagree. Destructively modifies targets."""
-    targets[np.logical_and((outputs == BLUE).all(axis=3),
-                           (targets == GRAY).all(axis=3))] = BLUE_FOR_GRAY
-    targets[np.logical_and((outputs == BLUE).all(axis=3),
-                           (targets == WHITE).all(axis=3))] = BLUE_FOR_WHITE
-    targets[np.logical_and((outputs == GRAY).all(axis=3),
-                           (targets == BLUE).all(axis=3))] = GRAY_FOR_BLUE
-    targets[np.logical_and((outputs == GRAY).all(axis=3),
-                           (targets == WHITE).all(axis=3))] = GRAY_FOR_WHITE
-    targets[np.logical_and((outputs == WHITE).all(axis=3),
-                           (targets == BLUE).all(axis=3))] = WHITE_FOR_BLUE
-    targets[np.logical_and((outputs == WHITE).all(axis=3),
-                           (targets == GRAY).all(axis=3))] = WHITE_FOR_GRAY
-    for i in range(targets.shape[0]):
-        disp = Image.fromarray(targets[i].astype('uint8'))
-        if directory:
-            disp.save(directory + "compare" + str(i) + ".png")
-        else:
-            disp.show()
+def compare(output, target, directory=None):
+    """Returns image of where output differs from target, color-coded by how
+    they agree or disagree. Destructively modifies target."""
+    target[np.logical_and((output == BLUE).all(axis=3),
+                           (target == GRAY).all(axis=3))] = BLUE_FOR_GRAY
+    target[np.logical_and((output == BLUE).all(axis=3),
+                           (target == WHITE).all(axis=3))] = BLUE_FOR_WHITE
+    target[np.logical_and((output == GRAY).all(axis=3),
+                           (target == BLUE).all(axis=3))] = GRAY_FOR_BLUE
+    target[np.logical_and((output == GRAY).all(axis=3),
+                           (target == WHITE).all(axis=3))] = GRAY_FOR_WHITE
+    target[np.logical_and((output == WHITE).all(axis=3),
+                           (target == BLUE).all(axis=3))] = WHITE_FOR_BLUE
+    target[np.logical_and((output == WHITE).all(axis=3),
+                           (target == GRAY).all(axis=3))] = WHITE_FOR_GRAY
+    # for i in range(target.shape[0]):
+    #     disp = Image.fromarray(targets[i].astype('uint8'))
+    #     if directory:
+    #         disp.save(directory + "compare" + str(i) + ".png")
+    #     else:
+    #         disp.show()
+    return Image.fromarray(targets[i].astype('uint8'))
 
-def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations, time,
-             show_all, directory=None):
-    """Loads the network and displays the output for the specified time. Returns
-    the network output."""
+def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
+             show_all, times, directory=None):
+    """Loads the network and displays the output for the specified time."""
     with tf.Session() as sess:
         saver.restore(sess, result_dir + 'weights-' + str(num_iterations))
-        inputs = load_inputs([TIME_STAMP])
-        result = y.eval(feed_dict={x: inputs})
-        img = out_to_image(result)[0]
-        if show_all:
-            mask = np.array(misc.imread('data/simplemask/simplemask' + str(time) + '.png'))
-            input_image = Image.fromarray(inputs[0].astype('uint8'))
-            mask_image = Image.fromarray(mask.astype('uint8'))
-            show_comparison_images(img, mask, directory)
-        output_image = Image.fromarray(img.astype('uint8'))
-        if directory:
-            output_image.save(result_dir + 'net-output.png')
+        for i, t in enumerate(times):
+            input = load_inputs([t])
+            result = y.eval(feed_dict={x: input})
+            img = out_to_image(result)[0]
             if show_all:
-                input_image.save(result_dir + 'input.jpg')
-                mask_image.save(result_dir + 'mask.png')
-        else:
-            output_image.show()
-            if show_all:
-                    input_image.show()
-                    mask_image.show()
-        accuracy = accuracy.eval(feed_dict={x: inputs, y_: load_masks([time])})
-        print('Accuracy = ' + str(accuracy))
-        return result
+                mask = np.array(misc.imread('data/simplemask/simplemask' + str(time) + '.png'))
+                input_image = Image.fromarray(input[0].astype('uint8'))
+                mask_image = Image.fromarray(mask.astype('uint8'))
+                comparison_image = compare(img, mask, directory)
+            output_image = Image.fromarray(img.astype('uint8'))
+            if directory:
+                output_image.save(result_dir + 'net-output' + str(i) + '.png')
+                if show_all:
+                    input_image.save(result_dir + 'input' + str(i) + '.jpg')
+                    mask_image.save(result_dir + 'mask' + str(i) + '.png')
+                    comparison_image.save(result_dir + 'compare' + str(i) + '.png')
+            else:
+                output_image.show()
+                if show_all:
+                        input_image.show()
+                        mask_image.show()
+                        comparison_image.show()
+            accuracy = accuracy.eval(feed_dict={x: inputs, y_: load_masks([time])})
+            print('Accuracy = ' + str(accuracy))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
