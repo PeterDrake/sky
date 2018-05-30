@@ -121,7 +121,7 @@ def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
             result = y.eval(feed_dict={x: input})
             img = out_to_image(result)[0]
             if show_all:
-                mask = np.array(misc.imread('data/simplemask/simplemask' + str(time) + '.png'))
+                mask = np.array(misc.imread('data/simplemask/simplemask' + str(t) + '.png'))
                 input_image = Image.fromarray(input[0].astype('uint8'))
                 mask_image = Image.fromarray(mask.astype('uint8'))
                 comparison_image = compare(img, mask)
