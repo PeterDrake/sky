@@ -88,7 +88,7 @@ def save_images(times, directory):
 
 
 
-def compare(output, target, directory=None):
+def compare(output, target):
     """Returns image of where output differs from target, color-coded by how
     they agree or disagree. Destructively modifies target."""
     target[np.logical_and((output == BLUE).all(axis=3),
@@ -109,10 +109,10 @@ def compare(output, target, directory=None):
     #         disp.save(directory + "compare" + str(i) + ".png")
     #     else:
     #         disp.show()
-    return Image.fromarray(targets[i].astype('uint8'))
+    return Image.fromarray(target.astype('uint8'))
 
 def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
-             show_all, times, directory=None):
+             show_all, times, save=False):
     """Loads the network and displays the output for the specified time."""
     with tf.Session() as sess:
         saver.restore(sess, result_dir + 'weights-' + str(num_iterations))
@@ -124,9 +124,9 @@ def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
                 mask = np.array(misc.imread('data/simplemask/simplemask' + str(time) + '.png'))
                 input_image = Image.fromarray(input[0].astype('uint8'))
                 mask_image = Image.fromarray(mask.astype('uint8'))
-                comparison_image = compare(img, mask, directory)
+                comparison_image = compare(img, mask)
             output_image = Image.fromarray(img.astype('uint8'))
-            if directory:
+            if save:
                 output_image.save(result_dir + 'net-output' + str(i) + '.png')
                 if show_all:
                     input_image.save(result_dir + 'input' + str(i) + '.jpg')
@@ -138,7 +138,7 @@ def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
                         input_image.show()
                         mask_image.show()
                         comparison_image.show()
-            accuracy = accuracy.eval(feed_dict={x: inputs, y_: load_masks([time])})
+            accuracy = accuracy.eval(feed_dict={x: input, y_: load_masks([time])})
             print('Accuracy = ' + str(accuracy))
 
 if __name__ == '__main__':
