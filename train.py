@@ -126,7 +126,7 @@ def convo_layer(num_in, num_out, width, prev, name, relu=True):
         initial = tf.constant(0.1, shape=[num_out])
         b = tf.Variable(initial, name='biases')
         if relu:
-            h = tf.nn.elu(conv2d(prev, W, name) + b)
+            h = tf.nn.relu(conv2d(prev, W, name) + b)
         else:
             h = conv2d(prev, W, name) + b   
     return h
