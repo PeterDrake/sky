@@ -138,7 +138,7 @@ def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
                         input_image.show()
                         mask_image.show()
                         comparison_image.show()
-            accuracy = accuracy.eval(feed_dict={x: input, y_: load_masks([time])})
+            accuracy = accuracy.eval(feed_dict={x: input, y_: load_masks([t])})
             print('Accuracy = ' + str(accuracy))
 
 if __name__ == '__main__':
