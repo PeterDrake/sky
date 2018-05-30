@@ -17,7 +17,7 @@ Created on Thu Jun 15 15:32:13 2017
 
 from train import build_net, load_inputs, BATCH_SIZE, load_validation_stamps
 from show_output import out_to_image, read_parameters, \
-    read_last_iteration_number
+    read_last_iteration_number, save_images
 import numpy as np
 import sys
 import tensorflow as tf
@@ -80,11 +80,14 @@ def run_stamps(saver, x, y, result_dir, iteration, stamps):
         outputs = out_to_image(y.eval(feed_dict={x: inputs}))
         return outputs.reshape(-1, 480, 480, 3)
 
+def show_worst_images(outputs, targets, timestamps):
+    for i in range(targets.shape[0]):
+
+
 def show_sky_images(timestamps):
     """Shows the input images for timestamps."""
     for s in timestamps:
         Image.fromarray(np.array(misc.imread('data/simpleimage/simpleimage' + str(s) + '.jpg'))).show()
-
 
 if __name__ == '__main__':
     timestamps = load_validation_stamps(BATCH_SIZE)
@@ -94,7 +97,9 @@ if __name__ == '__main__':
     layer_info = args['Layer info'].split()
     worst_timestamps = find_worst_results(5, timestamps, dir_name, step_version, layer_info)
     print("Worst timestamps:\t" + str(worst_timestamps))
-    _, _, saver, _, x, y, _, _ = build_net(layer_info)
-    outputs = run_stamps(saver, x, y, dir_name, step_version, worst_timestamps)
-    targets = read_targets(worst_timestamps)
-    show_comparison_images(outputs, targets, dir_name)
+    save_images(worst_timestamps, dir_name)
+    
+    # _, _, saver, _, x, y, _, _ = build_net(layer_info)
+    # outputs = run_stamps(saver, x, y, dir_name, step_version, worst_timestamps)
+    # targets = read_targets(worst_timestamps)
+    # show_comparison_images(outputs, targets, dir_name)

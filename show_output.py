@@ -39,6 +39,15 @@ GRAY_FOR_BLUE = [0, 85, 0]  # Dark green
 WHITE_FOR_BLUE = [0, 170, 0]  # Medium green
 WHITE_FOR_GRAY = [0, 255, 0]  # Bright green
 
+def gather_images(times):
+    """"""
+    return [load_input(t) for t in times]
+
+def load_input(time):
+    """Loads and returns an image for a particular time."""
+    inputs = load_inputs([time])
+    return Image.fromarray(inputs[0].astype('uint8'))
+
 def one_hot_to_mask(max_indices, output):
     """Modifies (and returns) img to have sensible colors in place of
     one-hot vectors."""
@@ -77,6 +86,13 @@ def read_parameters(directory):
         args[key] = value
     return args
 
+def save_images(times, directory):
+    inputs = gather_images(times)
+    for i, input in enumerate(inputs):
+        input.save(directory + "input" + str(i) + ".jpg")
+
+
+
 def show_comparison_images(outputs, targets, directory=None):
     """Shows images of where outputs differ from targets, color-coded by how
     they agree or disagree. Destructively modifies targets."""
@@ -100,7 +116,7 @@ def show_comparison_images(outputs, targets, directory=None):
             disp.show()
 
 def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations, time,
-             show_all):
+             show_all, directory=None):
     """Loads the network and displays the output for the specified time. Returns
     the network output."""
     with tf.Session() as sess:
@@ -108,14 +124,22 @@ def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations, time,
         inputs = load_inputs([TIME_STAMP])
         result = y.eval(feed_dict={x: inputs})
         img = out_to_image(result)[0]
-        if (show_all):
+        if show_all:
             mask = np.array(misc.imread('data/simplemask/simplemask' + str(time) + '.png'))
-            Image.fromarray(inputs[0].astype('uint8')).show()
-            Image.fromarray(mask.astype('uint8')).show()
-            show_comparison_images(img, mask)
-        img = Image.fromarray(img.astype('uint8'))
-        img.show()
-        img.save(result_dir + 'net-output.png')
+            input_image = Image.fromarray(inputs[0].astype('uint8'))
+            mask_image = Image.fromarray(mask.astype('uint8'))
+            show_comparison_images(img, mask, directory)
+        output_image = Image.fromarray(img.astype('uint8'))
+        if directory:
+            output_image.save(result_dir + 'net-output.png')
+            if show_all:
+                input_image.save(result_dir + 'input.jpg')
+                mask_image.save(result_dir + 'mask.png')
+        else:
+            output_image.show()
+            if show_all:
+                    input_image.show()
+                    mask_image.show()
         accuracy = accuracy.eval(feed_dict={x: inputs, y_: load_masks([time])})
         print('Accuracy = ' + str(accuracy))
         return result
