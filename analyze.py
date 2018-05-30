@@ -80,10 +80,6 @@ def run_stamps(saver, x, y, result_dir, iteration, stamps):
         outputs = out_to_image(y.eval(feed_dict={x: inputs}))
         return outputs.reshape(-1, 480, 480, 3)
 
-def show_worst_images(outputs, targets, timestamps):
-    for i in range(targets.shape[0]):
-
-
 def show_sky_images(timestamps):
     """Shows the input images for timestamps."""
     for s in timestamps:
@@ -98,7 +94,7 @@ if __name__ == '__main__':
     worst_timestamps = find_worst_results(5, timestamps, dir_name, step_version, layer_info)
     print("Worst timestamps:\t" + str(worst_timestamps))
     save_images(worst_timestamps, dir_name)
-    
+
     # _, _, saver, _, x, y, _, _ = build_net(layer_info)
     # outputs = run_stamps(saver, x, y, dir_name, step_version, worst_timestamps)
     # targets = read_targets(worst_timestamps)
