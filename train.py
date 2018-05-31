@@ -48,8 +48,8 @@ def build_net(layer_info):
     tf.reset_default_graph()
     b_mask = color_mask(misc.imread('data/always_black_mask.png'),
                         index_of(BLACK, COLORS))
-    g_mask = color_mask(misc.imread('data/always_green_mask.png'),
-                        index_of(GREEN, COLORS))
+    # g_mask = color_mask(misc.imread('data/always_green_mask.png'),
+    #                     index_of(GREEN, COLORS))
     x = tf.placeholder(tf.float32, [None, 480, 480, 3])
     num_layers = len(layer_info)
     table, last_name = parse_layer_info(layer_info)
