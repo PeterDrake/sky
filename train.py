@@ -201,7 +201,7 @@ def mask_layer(last_layer, b_mask):
     answer is always black, the output of this layer
     has those pixels colored correctly."""
     black = tf.constant(b_mask)
-    return tf.add(tf.add(black, last_layer))
+    return tf.add(black, last_layer)
 
 def mask_to_index(img):
     """Returns a new version of img with an index (in COLORS)
