@@ -81,6 +81,7 @@ def build_net(layer_info):
     all_y = tf.reshape(m, [-1, 4])
     all_y_ = tf.placeholder(tf.int64, [None])
     non_green = all_y_ != 4
+    print(non_green, "This is non_green")
     y = tf.boolean_mask(all_y, non_green)
     y_ = tf.boolean_mask(all_y_, non_green)
     cross_entropy = tf.reduce_mean(
