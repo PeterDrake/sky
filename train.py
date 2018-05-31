@@ -78,8 +78,11 @@ def build_net(layer_info):
                                table[last_name]["tf_name"], False)
     #m = mask_layer(h[last_name], b_mask, g_mask)
     m = mask_layer(h[last_name], b_mask)
-    y = tf.reshape(m, [-1, 5])
-    y_ = tf.placeholder(tf.int64, [None])
+    all_y = tf.reshape(m, [-1, 4])
+    all_y_ = tf.placeholder(tf.int64, [None])
+    non_green = all_y_ != 4
+    y = tf.boolean_mask(all_y, non_green)
+    y_ = tf.boolean_mask(all_y_, non_green)
     cross_entropy = tf.reduce_mean(
         tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y_, logits=y))
     train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
@@ -87,7 +90,7 @@ def build_net(layer_info):
     saver = tf.train.Saver()
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     init = tf.global_variables_initializer()    
-    return train_step, accuracy, saver, init, x, y, y_, cross_entropy
+    return train_step, accuracy, saver, init, x, all_y, all_y_, cross_entropy
 
 def check_for_commit():
     """Raises an exception if the git state is not clean. This ensures that
