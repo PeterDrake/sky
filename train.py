@@ -101,7 +101,7 @@ def check_for_commit():
         raise Exception('Not in clean git state\n')
 
 def color_mask(img, i):
-    """Takes a boolean mask and returns an image of one-hot vectors.
+    """Takes a color mask and returns an image of one-hot vectors.
     Each vector is all zeroes, except that the ith element of pixels that
     are not BLUE in img is 1e7. This results in a "mask" that can be
     added to the output of a network layer, overwhelming that layer's
@@ -109,7 +109,7 @@ def color_mask(img, i):
     r, c = img.shape[:-1]
     bool_mask = np.zeros((r, c), dtype=bool)
     bool_mask[(img != BLUE).any(axis=2)] = True
-    result = np.zeros((r, c, 5), dtype=np.float32)
+    result = np.zeros((r, c, 4), dtype=np.float32)
     result[bool_mask, i] = 1e7
     return result
 
