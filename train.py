@@ -76,7 +76,8 @@ def build_net(layer_info):
                                table[last_name]["kernel"],
                                h[table[last_name]["prev"]],
                                table[last_name]["tf_name"], False)
-    m = mask_layer(h[last_name], b_mask, g_mask)
+    #m = mask_layer(h[last_name], b_mask, g_mask)
+    m = mask_layer(h[last_name], b_mask)
     y = tf.reshape(m, [-1, 5])
     y_ = tf.placeholder(tf.int64, [None])
     cross_entropy = tf.reduce_mean(
@@ -182,14 +183,22 @@ def load_validation_stamps(n):
     with open('data/valid.stamps', 'rb') as f:
         return pickle.load(f)[:n]
     
-def mask_layer(last_layer, b_mask, g_mask):
-    """Returns a TensorFlow layer that adds last_layer, b_mask, and g_mask.
+# def mask_layer(last_layer, b_mask, g_mask):
+#     """Returns a TensorFlow layer that adds last_layer, b_mask, and g_mask.
+#     Since these masks contain large values at pixels where the correct
+#     answer is always black or green (respectively), the output of this layer
+#     has those pixels colored correctly."""
+#     black = tf.constant(b_mask)
+#     green = tf.constant(g_mask)
+#     return tf.add(green, tf.add(black, last_layer))
+
+def mask_layer(last_layer, b_mask):
+    """Returns a TensorFlow layer that adds last_layer and b_mask.
     Since these masks contain large values at pixels where the correct
-    answer is always black or green (respectively), the output of this layer
-    has those pixels colored correcly."""
+    answer is always black, the output of this layer
+    has those pixels colored correctly."""
     black = tf.constant(b_mask)
-    green = tf.constant(g_mask)
-    return tf.add(green, tf.add(black, last_layer))
+    return tf.add(tf.add(black, last_layer))
 
 def mask_to_index(img):
     """Returns a new version of img with an index (in COLORS)

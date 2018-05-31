@@ -207,7 +207,7 @@ def simplify_all_images():
 
 
 def simplify_all_masks():
-    """Writes similified versions of all images in cldmask to simplemask.
+    """Writes simplified versions of all images in cldmask to simplemask.
     Returns an array of relative frequencies of WHITE, BLUE, GRAY, BLACK, and
     GREEN."""
     counts = np.zeros(5, dtype=np.int)
