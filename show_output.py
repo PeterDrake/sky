@@ -57,7 +57,7 @@ def one_hot_to_mask(max_indices, output):
 def out_to_image(output):
     """Modifies (and returns) the output of the network as a human-readable RGB
     image."""
-    output = output.reshape([-1, 480, 480, 5])
+    output = output.reshape([-1, 480, 480, 4])
     # We use argmax instead of softmax so that we really will get one-hots
     max_indexes = np.argmax(output, axis=3)
     return one_hot_to_mask(max_indexes, output)
