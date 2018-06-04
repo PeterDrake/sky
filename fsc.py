@@ -51,7 +51,7 @@ def get_pixels_in_center(timestamp, mask=None):
     for i in range(mask.shape[0]):
         for j in range(mask.shape[1]):
             if (i-center[0])**2 + (j-center[1])**2 > new_r**2:
-                new_mask[i, j] == [0, 0, 0]
+                new_mask[i, j] = [0, 0, 0]
     return np.array(new_mask)
 
 def get_fsc(mask):
