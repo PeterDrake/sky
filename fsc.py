@@ -15,7 +15,7 @@ def get_mask(timestamp):
 		'data/simplemask/simplemask' + str(timestamp) + '.png'))  # TODO: Look into reading this as a uint8 image
 
 
-def show_skymask(timestamp=None, mask=None):
+def show_skymask(timestamp, mask=None):
 	""" Shows the mask for a given timestamp, alternatively can show a given mask."""
 	if mask is None:
 		mask = get_mask(timestamp)
@@ -81,47 +81,80 @@ def find_center(timestamp, mask=None):
 	return ((t + b) / 2, (l + r) / 2), (r_vertical + r_horizontal) / 2
 
 
-# TODO: Make this more efficient by not looping through all pixels & not duplicating mask
-def get_pixels_in_center(timestamp, mask=None, threshold=0.645):
-	""" Returns a new image mask containing pixels that are within a threshold of the center of the mask."""
-	center, r = find_center(timestamp, mask)
-	new_r = threshold * r
-	new_mask = mask.copy()
-	for i in range(mask.shape[0]):
-		for j in range(mask.shape[1]):
-			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > new_r ** 2:
-				new_mask[i, j] = [0, 0, 0]
-	return new_mask
+# def get_pixels_in_center(timestamp, mask=None, threshold=0.645):
+# 	""" Returns a new image mask containing pixels that are within a threshold of the center of the mask."""
+# 	center, r = find_center(timestamp, mask)
+# 	new_r = threshold * r
+# 	new_mask = mask.copy()
+# 	for i in range(mask.shape[0]):
+# 		for j in range(mask.shape[1]):
+# 			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > new_r ** 2:
+# 				new_mask[i, j] = [0, 0, 0]
+# 	return new_mask
 
 
-def get_fsc(mask):
+def get_fsc(timestamp, mask=None, threshold=0.645):
 	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
+	if mask is None:
+		mask = get_mask(timestamp)
+
 	sky_pixels = 0
 	cloud_pixels = 0
 	thin_pixels = 0
-	for i in range(mask.shape[0]):
-		for j in range(mask.shape[1]):
+
+	t, b, l, r = find_circle_boundary(timestamp, mask)
+	center, rad = find_center(timestamp, mask)
+	new_r = threshold * rad
+
+	for i in range(t, b + 1):
+		for j in range(l, r + 1):
+			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > new_r ** 2:
+				# mask[i, j] = [0, 0, 0] # Uncomment this to show the portion used to calculate fsc
+				continue
 			color = tuple(mask[i, j])
-			if color == (0, 0, 0):
+			if color == (0, 0, 0) or color == (0, 255, 0):
 				continue
 			elif color == (0, 0, 255):
 				sky_pixels += 1
-			elif color == (0, 255, 0):
-				continue
 			elif color == (255, 255, 255):
 				cloud_pixels += 1
 			else:
 				thin_pixels += 1
 	total = sky_pixels + cloud_pixels + thin_pixels
-	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
+	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total, mask
+
+
+# def get_fsc2(mask):
+# 	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
+# 	sky_pixels = 0
+# 	cloud_pixels = 0
+# 	thin_pixels = 0
+# 	for i in range(mask.shape[0]):
+# 		for j in range(mask.shape[1]):
+# 			color = tuple(mask[i, j])
+# 			if color == (0, 0, 0):
+# 				continue
+# 			elif color == (0, 0, 255):
+# 				sky_pixels += 1
+# 			elif color == (0, 255, 0):
+# 				continue
+# 			elif color == (255, 255, 255):
+# 				cloud_pixels += 1
+# 			else:
+# 				thin_pixels += 1
+# 	total = sky_pixels + cloud_pixels + thin_pixels
+# 	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
 
 if __name__ == '__main__':
 	stamp = 20160414162830
 	mask = get_mask(stamp)
+
+	# new_mask = get_pixels_in_center(stamp, mask)
+	# fsc = get_fsc2(new_mask)
+	# print(fsc)
+	# show_skymask(stamp, new_mask)
+
+	fsc1, fsc2, mask = get_fsc(stamp, mask)
+	print(fsc1, fsc2)
 	show_skymask(stamp, mask)
-	new_mask = get_pixels_in_center(stamp, mask)
-	show_skymask(stamp, new_mask)
-	fsc = get_fsc(new_mask)
-	print(find_center(stamp, mask))
-	print(fsc)
