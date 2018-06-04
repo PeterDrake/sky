@@ -48,8 +48,6 @@ def build_net(layer_info):
     tf.reset_default_graph()
     b_mask = color_mask(misc.imread('data/always_black_mask.png'),
                         index_of(BLACK, COLORS))
-    # g_mask = color_mask(misc.imread('data/always_green_mask.png'),
-    #                     index_of(GREEN, COLORS))
     x = tf.placeholder(tf.float32, [None, 480, 480, 3])
     num_layers = len(layer_info)
     table, last_name = parse_layer_info(layer_info)
@@ -76,7 +74,6 @@ def build_net(layer_info):
                                table[last_name]["kernel"],
                                h[table[last_name]["prev"]],
                                table[last_name]["tf_name"], False)
-    #m = mask_layer(h[last_name], b_mask, g_mask)
     m = mask_layer(h[last_name], b_mask)
     all_y = tf.reshape(m, [-1, 4])
     all_y_ = tf.placeholder(tf.int64, [None])
@@ -185,15 +182,6 @@ def load_validation_stamps(n):
     n stamps."""
     with open('data/valid.stamps', 'rb') as f:
         return pickle.load(f)[:n]
-    
-# def mask_layer(last_layer, b_mask, g_mask):
-#     """Returns a TensorFlow layer that adds last_layer, b_mask, and g_mask.
-#     Since these masks contain large values at pixels where the correct
-#     answer is always black or green (respectively), the output of this layer
-#     has those pixels colored correctly."""
-#     black = tf.constant(b_mask)
-#     green = tf.constant(g_mask)
-#     return tf.add(green, tf.add(black, last_layer))
 
 def mask_layer(last_layer, b_mask):
     """Returns a TensorFlow layer that adds last_layer and b_mask.
