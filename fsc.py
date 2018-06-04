@@ -22,7 +22,6 @@ def show_skymask(timestamp=None, mask=None):
 	mask_image.show()
 
 
-# numpy array (480, 480, 3) go through find first non black pixel
 def find_first_non_black_pixel(timestamp, mask=None):
 	""" Finds the location of the first non-black pixel in the mask, vertically."""
 	if mask is not None:
