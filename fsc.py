@@ -39,8 +39,6 @@ def find_last_non_black_pixel(timestamp, mask=None):
 	for i in range(mask.shape[0]):
 		for j in range(mask.shape[1] - 1, -1, -1):
 			if tuple(mask[i, j]) != (0, 0, 0):
-				print(mask.shape[0] - 4 - i, j)
-				mask[mask.shape[0] - 4 - i, j] = [255, 0, 255]
 				return mask.shape[0] - 4 - i, j
 
 
