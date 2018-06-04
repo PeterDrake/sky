@@ -58,10 +58,12 @@ def get_pixels_in_center(timestamp, mask=None, threshold=0.6):
 	for i in range(mask.shape[0]):
 		for j in range(mask.shape[1]):
 			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > new_r ** 2:
+				new_mask[i, j] += [50, 0, 0]
 				new_mask[i, j] = [0, 0, 0]
 	return np.array(new_mask)
 
 
+# TODO: Make this more efficient by not looping through all pixels & not duplicating mask
 def get_fsc(mask):
 	""" Computes the fractional sky cover from a given mask."""
 	sky_pixels = 0
