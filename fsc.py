@@ -147,7 +147,8 @@ def get_fsc(timestamp, mask=None, threshold=0.645):
 
 
 if __name__ == '__main__':
-	stamp = 20160414162830
+	# stamp = 20160414162830
+	stamp = 20160530192700
 	mask = get_mask(stamp)
 
 	# new_mask = get_pixels_in_center(stamp, mask)
@@ -157,4 +158,4 @@ if __name__ == '__main__':
 
 	fsc1, fsc2, mask = get_fsc(stamp, mask)
 	print(fsc1, fsc2)
-	show_skymask(stamp, mask)
+#show_skymask(stamp, mask)
