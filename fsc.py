@@ -121,7 +121,7 @@ def get_fsc(timestamp, mask=None, threshold=0.645):
 			else:
 				thin_pixels += 1
 	total = sky_pixels + cloud_pixels + thin_pixels
-	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total, mask
+	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
 
 # def get_fsc2(mask):
@@ -156,6 +156,6 @@ if __name__ == '__main__':
 	# print(fsc)
 	# show_skymask(stamp, new_mask)
 
-	fsc1, fsc2, mask = get_fsc(stamp, mask)
+	fsc1, fsc2 = get_fsc(stamp, mask)
 	print(fsc1, fsc2)
-	show_skymask(stamp, mask)
+	show_skymask(stamp)

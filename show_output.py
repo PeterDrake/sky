@@ -23,6 +23,7 @@ import tensorflow as tf
 from PIL import Image
 from scipy import misc
 
+from fsc import get_fsc
 from preprocess import BLUE, WHITE, GRAY, BLACK, GREEN
 from train import build_net, load_inputs, load_masks
 
@@ -155,6 +156,8 @@ def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
                         comparison_image.show()
             acc = accuracy.eval(feed_dict={x: input, y_: load_masks([t])})
             print('Accuracy = ' + str(acc))
+            print("Network mask: ", get_fsc(times[0], img))
+            print("TSI mask: ", get_fsc(times[0], mask))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
