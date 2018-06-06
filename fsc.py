@@ -97,15 +97,12 @@ def get_fsc(timestamp, mask=None, threshold=0.645):
 	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
 	if mask is None:
 		mask = get_mask(timestamp)
-
 	sky_pixels = 0
 	cloud_pixels = 0
 	thin_pixels = 0
-
 	t, b, l, r = find_circle_boundary(timestamp, mask)
 	center, rad = find_center(timestamp, mask)
 	new_r = threshold * rad
-
 	for i in range(t, b + 1):
 		for j in range(l, r + 1):
 			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > new_r ** 2:
@@ -123,6 +120,32 @@ def get_fsc(timestamp, mask=None, threshold=0.645):
 	total = sky_pixels + cloud_pixels + thin_pixels
 	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
+
+def get_whole_fsc(timestamp, mask=None):
+	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
+	if mask is None:
+		mask = get_mask(timestamp)
+	sky_pixels = 0
+	cloud_pixels = 0
+	thin_pixels = 0
+	t, b, l, r = find_circle_boundary(timestamp, mask)
+	center, rad = find_center(timestamp, mask)
+	for i in range(t, b + 1):
+		for j in range(l, r + 1):
+			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > rad ** 2:
+				# mask[i, j] = [0, 0, 0] # Uncomment this to show the portion used to calculate fsc
+				continue
+			color = tuple(mask[i, j])
+			if color == (0, 0, 0) or color == (0, 255, 0):
+				continue
+			elif color == (0, 0, 255):
+				sky_pixels += 1
+			elif color == (255, 255, 255):
+				cloud_pixels += 1
+			else:
+				thin_pixels += 1
+	total = sky_pixels + cloud_pixels + thin_pixels
+	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
 # def get_fsc2(mask):
 # 	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
@@ -150,6 +173,7 @@ if __name__ == '__main__':
 	stamp = 20160414162830
 	# stamp = 20160530192700
 	mask = get_mask(stamp)
+	show_skymask(stamp)
 
 	# new_mask = get_pixels_in_center(stamp, mask)
 	# fsc = get_fsc2(new_mask)
@@ -158,4 +182,6 @@ if __name__ == '__main__':
 
 	fsc1, fsc2 = get_fsc(stamp, mask)
 	print(fsc1, fsc2)
-	show_skymask(stamp)
+
+	fsc1, fsc2 = get_whole_fsc(stamp, mask)
+	print(fsc1, fsc2)
