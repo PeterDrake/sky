@@ -16,13 +16,15 @@ Created on Fri Jun  2 14:58:47 2017
 @author: drake
 """
 
-from train import build_net, load_inputs, load_masks
-from preprocess import BLUE, WHITE, GRAY, BLACK, GREEN
+import argparse
+
 import numpy as np
 import tensorflow as tf
 from PIL import Image
 from scipy import misc
-import argparse
+
+from preprocess import BLUE, WHITE, GRAY, BLACK, GREEN
+from train import build_net, load_inputs, load_masks
 
 # Time stamp of default image
 TIME_STAMP = 20160414162830
@@ -38,6 +40,7 @@ GRAY_FOR_WHITE = [255, 0, 0]  # Bright red
 GRAY_FOR_BLUE = [0, 85, 0]  # Dark green
 WHITE_FOR_BLUE = [0, 170, 0]  # Medium green
 WHITE_FOR_GRAY = [0, 255, 0]  # Bright green
+RED = [255, 0, 0]
 
 def gather_images(times):
     """"""
@@ -92,17 +95,29 @@ def compare(output, target):
     """Returns image of where output differs from target, color-coded by how
     they agree or disagree. Destructively modifies target."""
     target[np.logical_and((output == BLUE).all(axis=2),
-                           (target == GRAY).all(axis=2))] = BLUE_FOR_GRAY
+                          (target == GRAY).all(axis=2))] = RED
     target[np.logical_and((output == BLUE).all(axis=2),
-                           (target == WHITE).all(axis=2))] = BLUE_FOR_WHITE
+                          (target == WHITE).all(axis=2))] = RED
     target[np.logical_and((output == GRAY).all(axis=2),
-                           (target == BLUE).all(axis=2))] = GRAY_FOR_BLUE
+                          (target == BLUE).all(axis=2))] = RED
     target[np.logical_and((output == GRAY).all(axis=2),
-                           (target == WHITE).all(axis=2))] = GRAY_FOR_WHITE
+                          (target == WHITE).all(axis=2))] = RED
     target[np.logical_and((output == WHITE).all(axis=2),
-                           (target == BLUE).all(axis=2))] = WHITE_FOR_BLUE
+                          (target == BLUE).all(axis=2))] = RED
     target[np.logical_and((output == WHITE).all(axis=2),
-                           (target == GRAY).all(axis=2))] = WHITE_FOR_GRAY
+                          (target == GRAY).all(axis=2))] = RED
+    target[np.logical_and((output == WHITE).all(axis=2),
+                          (target == BLACK).all(axis=2))] = RED
+    target[np.logical_and((output == BLACK).all(axis=2),
+                          (target == WHITE).all(axis=2))] = RED
+    target[np.logical_and((output == GRAY).all(axis=2),
+                          (target == BLACK).all(axis=2))] = RED
+    target[np.logical_and((output == BLACK).all(axis=2),
+                          (target == GRAY).all(axis=2))] = RED
+    target[np.logical_and((output == BLUE).all(axis=2),
+                          (target == BLACK).all(axis=2))] = RED
+    target[np.logical_and((output == BLACK).all(axis=2),
+                          (target == BLUE).all(axis=2))] = RED
     # for i in range(target.shape[0]):
     #     disp = Image.fromarray(targets[i].astype('uint8'))
     #     if directory:
@@ -157,6 +172,5 @@ if __name__ == '__main__':
     args = read_parameters(dir_name)
     step_version = read_last_iteration_number(dir_name)
     layer_info = args['Layer info'].split()
-    _, accuracy, saver, _, x, y, y_, _ = build_net(layer_info) 
-    show_output(accuracy, saver, x, y, y_, dir_name, step_version, time, show_all)
-
+    _, accuracy, saver, _, x, y, y_, _ = build_net(layer_info)
+    show_output(accuracy, saver, x, y, y_, dir_name, step_version, show_all, [time])
