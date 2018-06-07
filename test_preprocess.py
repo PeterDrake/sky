@@ -1,5 +1,6 @@
 import unittest
 import os
+from shutil import rmtree
 from preprocess import *
 
 
@@ -13,7 +14,7 @@ class TestPreprocess(unittest.TestCase):
 		pass
 
 	def tearDown(self):
-		os.rmdir(self.OUTPUT_DIR)
+		rmtree(self.OUTPUT_DIR)
 
 	def test_creates_directories(self):
 		create_dirs(self.OUTPUT_DIR, self.TIMES)
@@ -21,3 +22,4 @@ class TestPreprocess(unittest.TestCase):
 		self.assertTrue(os.path.isdir(self.OUTPUT_DIR + '/simpleimage/2017/1113'))
 		self.assertTrue(os.path.isdir(self.OUTPUT_DIR + '/simplemask/2015/0208'))
 		self.assertTrue(os.path.isdir(self.OUTPUT_DIR + '/simplemask/2017/1113'))
+
