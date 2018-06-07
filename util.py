@@ -27,11 +27,8 @@ def extract_timestamp(filename):
 	return filename[-18:-4]
 
 
-def get_times_from_directory(dir):
-	"""Returns a list of timestamps within a directory. Assumes filenames ends in something like 20160415235930.jpg or
+def extract_times_from_directory(dir):
+	"""Returns an iterable of timestamps within a directory. Assumes filenames ends in something like 20160415235930.jpg or
 	20160415235930.png."""
-	filenames = os.listdir(dir)
-	return [extract_timestamp(name) for name in filenames]
+	return (extract_timestamp(name) for name in os.listdir(dir))
 
-
-print((set(get_times_from_directory('testdata'))))
