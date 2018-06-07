@@ -1,6 +1,6 @@
 import os
 import shutil
-from preprocess import create_dirs
+from preprocess_old import create_dirs
 
 def simplify_all_names():
     """Simplifies all of the filenames in skyimage/ and cldmask/."""

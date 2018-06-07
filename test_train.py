@@ -8,7 +8,7 @@ Created on Wed May 24 10:51:32 2017
 
 
 import unittest
-from preprocess import WHITE, BLUE, GRAY, BLACK, GREEN
+from preprocess_old import WHITE, BLUE, GRAY, BLACK, GREEN
 import train
 import numpy as np
 

@@ -24,7 +24,7 @@ from PIL import Image
 from scipy import misc
 
 from fsc import get_fsc
-from preprocess import BLUE, WHITE, GRAY, BLACK, GREEN
+from preprocess_old import BLUE, WHITE, GRAY, BLACK, GREEN
 from train import build_net, load_inputs, load_masks
 
 # Time stamp of default image

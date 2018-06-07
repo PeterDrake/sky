@@ -35,7 +35,7 @@ import math
 import time
 import pickle
 import subprocess
-from preprocess import BLUE, BLACK, GREEN, COLORS
+from preprocess_old import BLUE, BLACK, GREEN, COLORS
 
 # Training parameters
 BATCH_SIZE = 50
