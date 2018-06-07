@@ -32,12 +32,15 @@ def simplify_name(filename):
 		return "simpleimage" + filename[-18:]
 	return
 
-# def find_unpaired_images(input_dir, timestamps):
-# 	"""Blacklists files for timestamps that do not have both images and masks."""
-# 	for f in listdir_d(input_dir)
-# 	return
 
-
+def find_unpaired_images(input_dir, timestamps):
+	"""Blacklists files for timestamps that do not have both images and masks."""
+	for time in extract_timestamp_recur(input_dir):
+		mask = 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+				time) + '.png.' + time + '.png'
+		image = 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+				time) + '.jpg.' + time + '.jpg'
+	return
 
 # def count_colors(img):
 # 	"""Returns an array of the number of WHITE, BLUE, GRAY, BLACK, and

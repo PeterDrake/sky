@@ -21,6 +21,13 @@ def time_to_month_and_day(time):
 	return str(time)[4:8]
 
 
+def time_to_year_month_day(time):
+	return str(time)[0:8]
+
+
+def time_to_hour_minute_second(time):
+	return str(time)[8:14]
+
 def extract_timestamp(filename):
 	"""Returns the timestamp within filename. Assumes filename ends in something like 20160415235930.jpg or
 	20160415235930.png."""
