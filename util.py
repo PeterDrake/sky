@@ -28,7 +28,28 @@ def extract_timestamp(filename):
 
 
 def extract_times_from_directory(dir):
-	"""Returns an iterable of timestamps within a directory. Assumes filenames ends in something like 20160415235930.jpg or
+	"""Returns an iterable of timestamps within a directory. Assumes filenames ends in something like
+	20160415235930.jpg or
 	20160415235930.png."""
-	return (extract_timestamp(name) for name in os.listdir(dir))
+	return (extract_timestamp(name) for name in listdir_d(dir))
 
+
+def extract_times_from_files(files):
+	"""Returns an iterable of timestamps extracted from an iterable collection of files."""
+	return (extract_timestamp(file) for file in files)
+
+
+def extract_timestamp_recur(dir):
+	"""Returns timestamps from all sub-directories"""
+	dirpath, subdirs, files = os.walk(dir)
+	return extract_times_from_files(files)
+
+
+def listdir_d(dir=None):
+	"""Returns an iterable of directories in the current or a given directory."""
+	return (name for name in os.listdir(dir) if os.path.isdir(os.path.join(dir, name)))
+
+
+def listdir_f(dir=None):
+	"""Returns an iterable of files in the current of a given directory."""
+	return (name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)))

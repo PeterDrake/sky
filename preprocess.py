@@ -24,6 +24,21 @@ def create_dirs(times, output_dir):
 	return
 
 
+def simplify_name(filename):
+	"""Accepts an arm.gov filename and returns a shorter, simpler version."""
+	if "mask" in filename:
+		return "simplemask" + filename[-18:]
+	if "image" in filename:
+		return "simpleimage" + filename[-18:]
+	return
+
+# def find_unpaired_images(input_dir, timestamps):
+# 	"""Blacklists files for timestamps that do not have both images and masks."""
+# 	for f in listdir_d(input_dir)
+# 	return
+
+
+
 # def count_colors(img):
 # 	"""Returns an array of the number of WHITE, BLUE, GRAY, BLACK, and
 # 	GREEN pixels in img."""
@@ -39,3 +54,5 @@ def create_dirs(times, output_dir):
 # 		img = misc.imread('simplemask/' + file)
 # 		b_mask[(img != color).any(axis=2)] = BLUE
 # 	Image.fromarray(b_mask.astype('uint8')).save(filename)
+
+# print(os.listdir())
