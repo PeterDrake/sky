@@ -57,6 +57,3 @@ def listdir_d(dir=None):
 def listdir_f(dir=None):
 	"""Returns an iterable of files in the current of a given directory."""
 	return (name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)))
-
-# INPUT_DIR = "test_input"
-# print(extract_times_from_directory(INPUT_DIR))

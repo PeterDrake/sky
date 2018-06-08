@@ -1,4 +1,5 @@
 import os
+import glob
 from scipy import misc
 from PIL import Image
 from util import *
@@ -40,30 +41,12 @@ def find_unpaired_images(input_dir, timestamps):
 		mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
 				time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
 				time) + '.png.' + time + '.png'
-		image = input_dir + '/SkyImage/' + 'sgptsiskyimage.C1.a1.' + time_to_year_month_day(
-				time) + '.*/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
-			time) + '.' + time_to_hour_minute_second(
+		image = glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
+				time) + '*')[0] + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
+				time) + '.' + time_to_hour_minute_second(
 				time) + '.jpg.' + time + '.jpg'
 		if not os.path.isfile(mask) or not os.path.isfile(image):
 			blacklist.add(time)
 		elif os.path.getsize(mask) == 0 or os.path.getsize(image) == 0:
 			blacklist.add(time)
 	return blacklist
-
-# def count_colors(img):
-# 	"""Returns an array of the number of WHITE, BLUE, GRAY, BLACK, and
-# 	GREEN pixels in img."""
-# 	counts = [(img == color).all(axis=2).sum() for color in COLORS]
-# 	return np.array(counts)
-#
-#
-# def create_constant_mask(color, filename):
-# 	"""Creates a mask where any pixels not always of color are BLUE. Saves it in
-# 	filename."""
-# 	b_mask = np.full((480, 480, 3), color)
-# 	for file in os.listdir('simplemask/'):
-# 		img = misc.imread('simplemask/' + file)
-# 		b_mask[(img != color).any(axis=2)] = BLUE
-# 	Image.fromarray(b_mask.astype('uint8')).save(filename)
-
-# print(os.listdir())

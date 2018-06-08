@@ -1,6 +1,7 @@
 import unittest
 from util import *
 
+
 class TestUtil(unittest.TestCase):
 	INPUT_DIR = 'test_input'
 

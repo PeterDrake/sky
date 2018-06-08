@@ -1,5 +1,6 @@
 import unittest
 import os
+import glob
 from shutil import rmtree
 from preprocess import *
 
@@ -21,5 +22,7 @@ class TestPreprocess(unittest.TestCase):
 		self.assertTrue(os.path.isdir(self.OUTPUT_DIR + '/simplemask/2015/0208'))
 		self.assertTrue(os.path.isdir(self.OUTPUT_DIR + '/simplemask/2017/1113'))
 
-# def test_find_unpaired_images(self):
-# 	self.assertEqual()
+	def test_find_unpaired_images(self):
+		actual = {'20131118133000', '20131118133030', '20131118133100', '20131118133130', '20131118133200',
+		          '20131118133930'}
+		self.assertEqual(actual, find_unpaired_images(self.INPUT_DIR, extract_times_from_directory(self.INPUT_DIR)))
