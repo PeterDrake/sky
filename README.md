@@ -1,6 +1,8 @@
 # sky
 Applying machine learning to sky images to classify (meteorological) clouds.
-                                                    
+
+This branch seeks to address the issue of preprocessing TSI masks and images given their locations on BLT. 
+
 Programs to run:
 
 preprocess.py preprocesses the data
@@ -10,7 +12,7 @@ condition-generator.py generates conditions.txt, which describes experimental
 
 train.py trains the network
 
-On Coeus, launch.sh calls run.sh to run a set of experiments
+On BLT, launch.sh calls run.sh to run a set of experiments
 
 show_output.py shows the network's output for a particular image
 
