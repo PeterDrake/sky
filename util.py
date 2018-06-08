@@ -28,6 +28,7 @@ def time_to_year_month_day(time):
 def time_to_hour_minute_second(time):
 	return str(time)[8:14]
 
+
 def extract_timestamp(filename):
 	"""Returns the timestamp within filename. Assumes filename ends in something like 20160415235930.jpg or
 	20160415235930.png."""
@@ -35,21 +36,17 @@ def extract_timestamp(filename):
 
 
 def extract_times_from_directory(dir):
-	"""Returns an iterable of timestamps within a directory. Assumes filenames ends in something like
-	20160415235930.jpg or
-	20160415235930.png."""
-	return (extract_timestamp(name) for name in listdir_d(dir))
+	"""Returns timestamps from all sub-directories."""
+	times = set()
+	for dirpath, subdirs, files in os.walk(dir):
+		for file in files:  # We happen to know files is a list
+			times.add(extract_timestamp(file))
+	return times
 
 
 def extract_times_from_files(files):
 	"""Returns an iterable of timestamps extracted from an iterable collection of files."""
 	return (extract_timestamp(file) for file in files)
-
-
-def extract_timestamp_recur(dir):
-	"""Returns timestamps from all sub-directories"""
-	dirpath, subdirs, files = os.walk(dir)
-	return extract_times_from_files(files)
 
 
 def listdir_d(dir=None):
@@ -60,3 +57,6 @@ def listdir_d(dir=None):
 def listdir_f(dir=None):
 	"""Returns an iterable of files in the current of a given directory."""
 	return (name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)))
+
+# INPUT_DIR = "test_input"
+# print(extract_times_from_directory(INPUT_DIR))

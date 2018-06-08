@@ -21,3 +21,5 @@ class TestPreprocess(unittest.TestCase):
 		self.assertTrue(os.path.isdir(self.OUTPUT_DIR + '/simplemask/2015/0208'))
 		self.assertTrue(os.path.isdir(self.OUTPUT_DIR + '/simplemask/2017/1113'))
 
+# def test_find_unpaired_images(self):
+# 	self.assertEqual()

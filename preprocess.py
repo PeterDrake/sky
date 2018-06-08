@@ -35,12 +35,20 @@ def simplify_name(filename):
 
 def find_unpaired_images(input_dir, timestamps):
 	"""Blacklists files for timestamps that do not have both images and masks."""
-	for time in extract_timestamp_recur(input_dir):
-		mask = 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+	blacklist = set()
+	for time in timestamps:
+		mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
+				time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
 				time) + '.png.' + time + '.png'
-		image = 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+		image = input_dir + '/SkyImage/' + 'sgptsiskyimage.C1.a1.' + time_to_year_month_day(
+				time) + '.*/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
+			time) + '.' + time_to_hour_minute_second(
 				time) + '.jpg.' + time + '.jpg'
-	return
+		if not os.path.isfile(mask) or not os.path.isfile(image):
+			blacklist.add(time)
+		elif os.path.getsize(mask) == 0 or os.path.getsize(image) == 0:
+			blacklist.add(time)
+	return blacklist
 
 # def count_colors(img):
 # 	"""Returns an array of the number of WHITE, BLUE, GRAY, BLACK, and
