@@ -47,7 +47,6 @@ def extract_all_times(dir):
 			times.add(extract_timestamp(file))
 	return times
 
-
 def extract_times_from_files(files):
 	"""Returns an iterable of timestamps extracted from an iterable collection of files."""
 	return (extract_timestamp(file) for file in files)
