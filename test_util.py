@@ -17,5 +17,5 @@ class TestUtil(unittest.TestCase):
 	def test_month_and_day_are_extracted(self):
 		self.assertEqual('0208', time_to_month_and_day(20150208093000))
 
-	def test_extract_all_timestamps_from_directory(self):
-		self.assertEqual(20, len([i for i in extract_times_from_directory(self.INPUT_DIR)]))
+	def test_all_timestamps_are_extracted(self):
+		self.assertEqual(20, len([i for i in extract_all_times(self.INPUT_DIR)]))

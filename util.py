@@ -22,10 +22,12 @@ def time_to_month_and_day(time):
 
 
 def time_to_year_month_day(time):
+	"""Time must be in the format yyyymmddhhmmss. Returns the 'yyyymmdd'."""
 	return str(time)[0:8]
 
 
 def time_to_hour_minute_second(time):
+	"""Time must be in the format yyyymmddhhmmss. Returns the 'hhmmss'."""
 	return str(time)[8:14]
 
 
@@ -35,8 +37,10 @@ def extract_timestamp(filename):
 	return filename[-18:-4]
 
 
-def extract_times_from_directory(dir):
-	"""Returns timestamps from all sub-directories."""
+def extract_all_times(dir):
+	"""Returns timestamps from all directories that are exactly two layers down.
+	Ex: dir/masks/mask20160411000000.jpg would be extracted, and
+		dir/masks/folder/mask20160411000000.jpg would not be extracted."""
 	times = set()
 	for dirpath, subdirs, files in os.walk(dir):
 		for file in files:  # We happen to know files is a list
