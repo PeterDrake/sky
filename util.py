@@ -49,7 +49,7 @@ def extract_all_times(dir):
 
 def extract_times_from_files(files):
 	"""Returns an iterable of timestamps extracted from an iterable collection of files."""
-	return (extract_timestamp(file) for file in files)
+	return {extract_timestamp(file) for file in files}
 
 
 def listdir_d(dir=None):
