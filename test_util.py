@@ -42,5 +42,4 @@ class TestUtil(unittest.TestCase):
 		          'sgptsiskyimageC1.a1.20131118.133230.jpg.20131118133230.jpg']
 		files = [mask_path + m for m in masks] + [image_path + i for i in images]
 		actual = {'20131118133200', '20131118133230', '20131118133300'}
-
 		self.assertEqual(actual, extract_times_from_files(files))
