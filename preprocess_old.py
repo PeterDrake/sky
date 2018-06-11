@@ -200,8 +200,7 @@ def simplify_all_images():
 			img = misc.imread('skyimage/' + file)
 			cropped = crop_image(img)
 			counts = counts + 1
-			Image.fromarray(cropped).save('simpleimage/simpleimage' +
-			                              extract_timestamp(file) + '.jpg')
+			Image.fromarray(cropped).save('simpleimage/simpleimage' + extract_timestamp(file) + '.jpg')
 	return counts
 
 
