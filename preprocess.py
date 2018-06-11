@@ -1,9 +1,10 @@
+import datetime
 import glob
 
 import numpy as np
 from PIL import Image
 from scipy import misc
-from pathlib import Path
+from multiprocessing import Pool
 from util import *
 
 # These constants are colors that appear in cloud masks
@@ -14,6 +15,10 @@ BLACK = np.array([0, 0, 0])
 GREEN = np.array([0, 255, 0])
 YELLOW = np.array([255, 255, 0])
 COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
+
+# Constants for input and output locations
+INPUT_DIR = 'test_input'
+OUTPUT_DIR = 'test_output'
 
 
 def create_dirs(times, output_dir):
@@ -28,11 +33,11 @@ def create_dirs(times, output_dir):
 			seen[year] = set()
 		seen[year].add(mmdd)
 	for year in seen.keys():
-		os.makedirs(output_dir + "/simpleimage/" + year)
-		os.makedirs(output_dir + "/simplemask/" + year)
+		os.makedirs(output_dir + "/simpleimage/" + year, exist_ok=True)
+		os.makedirs(output_dir + "/simplemask/" + year, exist_ok=True)
 		for mmdd in seen[year]:
-			os.makedirs(output_dir + "/simpleimage/" + year + "/" + mmdd)
-			os.makedirs(output_dir + "/simplemask/" + year + "/" + mmdd)
+			os.makedirs(output_dir + "/simpleimage/" + year + "/" + mmdd, exist_ok=True)
+			os.makedirs(output_dir + "/simplemask/" + year + "/" + mmdd, exist_ok=True)
 	return
 
 
@@ -121,7 +126,7 @@ def mask_save_path(time, dir):
 	return dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def simplify_image(timestamp, input_dir, output_dir):
+def simplify_image(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 	"""Writes simplified versions of mask to simplemask."""
 	img_path = extract_img_path_from_time(timestamp, input_dir)
 	img = misc.imread(img_path)
@@ -130,7 +135,7 @@ def simplify_image(timestamp, input_dir, output_dir):
 	return
 
 
-def simplify_mask(timestamp, input_dir, output_dir):
+def simplify_mask(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 	"""Writes simplified versions of mask to simplemask."""
 	mask_path = extract_mask_path_from_time(timestamp, input_dir)
 	mask = misc.imread(mask_path)
@@ -143,10 +148,15 @@ def simplify_mask(timestamp, input_dir, output_dir):
 	return
 
 
-def simplify_name(filename):
-	"""Accepts an arm.gov filename and returns a shorter, simpler version."""
-	if "mask" in filename:
-		return "simplemask" + filename[-18:]
-	if "image" in filename:
-		return "simpleimage" + filename[-18:]
-	return
+if __name__ == '__main__':
+	times = extract_all_times(INPUT_DIR)
+	blacklist = find_unpaired_images(INPUT_DIR, times)
+	for b in blacklist:
+		times.remove(b)
+	create_dirs(times, OUTPUT_DIR)
+	times = list(times)
+	start = datetime.datetime.today()
+	with Pool(1) as p:
+		p.map(simplify_image, times)
+		p.map(simplify_mask, times)
+	print("Done in {} microseconds".format((datetime.datetime.today() - start).microseconds))
