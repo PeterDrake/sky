@@ -67,3 +67,14 @@ class TestPreprocess(unittest.TestCase):
 
 	def test_find_mask_path(self):
 		self.assertEqual('test_input/simplemask/2013/1118/', mask_save_path(20131118133130, self.INPUT_DIR))
+
+	def test_batches_are_correct(self):
+		times = extract_all_times(INPUT_DIR)
+		blacklist = find_unpaired_images(INPUT_DIR, times)
+		for b in blacklist:
+			times.remove(b)
+		create_dirs(times, OUTPUT_DIR)
+		times = list(times)
+		print(len(times))
+		print(make_batches(times))
+		self.fail("Help!")

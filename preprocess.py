@@ -20,6 +20,9 @@ COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 INPUT_DIR = 'test_input'
 OUTPUT_DIR = 'test_output'
 
+# Number of batches, should be able to specify via command-line
+NUM_BATCHES = 6
+
 
 def create_dirs(times, output_dir):
 	"""Creates directories for simpleimage and simplemask in the output_dir as well as creating subdirectories by year
@@ -148,6 +151,16 @@ def simplify_mask(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 	return
 
 
+def make_batches(timestamps, num_batches=NUM_BATCHES):
+	length = len(timestamps)
+	batch_size = round(length / num_batches)
+	batches = []
+	for i in range(num_batches - 1):
+		batches += [timestamps[i * batch_size:(i + 1) * batch_size]]
+	batches += [list(timestamps[(num_batches - 1) * batch_size:])]
+	return batches
+
+
 if __name__ == '__main__':
 	times = extract_all_times(INPUT_DIR)
 	blacklist = find_unpaired_images(INPUT_DIR, times)
@@ -156,7 +169,7 @@ if __name__ == '__main__':
 	create_dirs(times, OUTPUT_DIR)
 	times = list(times)
 	start = datetime.datetime.today()
-	with Pool(1) as p:
+	with Pool(4) as p:
 		p.map(simplify_image, times)
 		p.map(simplify_mask, times)
 	print("Done in {} microseconds".format((datetime.datetime.today() - start).microseconds))
