@@ -40,13 +40,14 @@ Created on Fri May 26 10:45:02 2017
 """
 
 import os
+import pickle
+import random
 import tarfile
-from scipy import misc
+import time
+
 import numpy as np
 from PIL import Image
-import random
-import pickle
-import time
+from scipy import misc
 
 # These constants are colors that appear in cloud masks
 WHITE = np.array([255, 255, 255])
@@ -83,11 +84,9 @@ def create_dirs():
 
 
 def crop_image(img):
-	"""Returns a version of img cropped down to 480 x 480."""
-	return np.delete(img,
-	                 np.concatenate((np.arange(80), np.arange(80) + 560)),
-	                 axis=0)
-
+	"""Expect img to be a numpy array of size 640 x 480. Returns a version of img cropped down to 480 x 480.
+	Axis = 0 is the vertical axis (i.e. rows) from which the first and last 80 pixels are deleted."""
+	return np.delete(img, np.concatenate((np.arange(80), np.arange(80) + 560)), axis=0)
 
 def delete_unpaired_images():
 	"""Deletes files for timestamps that do not have both images and masks."""

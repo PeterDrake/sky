@@ -1,7 +1,7 @@
-import os
 import glob
-from scipy import misc
-from PIL import Image
+
+import numpy as np
+
 from util import *
 
 
@@ -50,3 +50,9 @@ def find_unpaired_images(input_dir, timestamps):
 		elif os.path.getsize(mask) == 0 or os.path.getsize(image) == 0:
 			blacklist.add(time)
 	return blacklist
+
+
+def crop_image(img):
+	"""Expect img to be a numpy array of size 640 x 480. Returns a version of img cropped down to 480 x 480.
+	Axis = 0 is the vertical axis (i.e. rows) from which the first and last 80 pixels are deleted."""
+	return np.delete(img, np.concatenate((np.arange(80), np.arange(80) + 560)), axis=0)
