@@ -108,18 +108,18 @@ def remove_white_sun(img, stride=10):
 	return img
 
 
-def save_img_path(time, dir):
+def img_save_path(time, dir):
+	"""Creates path for image."""
 	return dir + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def save_mask_path(time, dir):
+def mask_save_path(time, dir):
+	"""Creates path for mask."""
 	return dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
 def simplify_mask(filepath, output_dir):
-	"""Writes simplified versions of all masks in cldmask to simplemask.
-	Returns an array of relative frequencies of WHITE, BLUE, GRAY, BLACK, and
-	GREEN."""
+	"""Writes simplified versions of mask to simplemask."""
 	mask = misc.imread(filepath)
 	mask = crop_image(mask)
 	if (mask == YELLOW).all(axis=2).any():
@@ -128,9 +128,8 @@ def simplify_mask(filepath, output_dir):
 	else:
 		# print('Removing white sun')
 		mask = remove_white_sun(mask)
-	Image.fromarray(mask).save(output_dir + extract_timestamp(filepath) + '.png')
-	return count_colors(mask) / count_colors(mask).sum()
-
+	Image.fromarray(mask).save(output_dir + 'simplemask' + extract_timestamp(filepath) + '.png')
+	return
 
 def simplify_name(filename):
 	"""Accepts an arm.gov filename and returns a shorter, simpler version."""
