@@ -83,6 +83,7 @@ def find_unpaired_images(input_dir, timestamps):
 
 
 def extract_img_path_from_time(time, input_dir):
+	"""Extracts the path of an image from the timestamp and input directory."""
 	image = glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
 		time) + '*')[0] + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
 		time) + '.' + time_to_hour_minute_second(
@@ -91,6 +92,7 @@ def extract_img_path_from_time(time, input_dir):
 
 
 def extract_mask_path_from_time(time, input_dir):
+	"""Extracts the path of a mask from the timestamp and input directory."""
 	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
 		time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
 		time) + '.png.' + time + '.png'
@@ -149,11 +151,3 @@ def simplify_mask(timestamp, input_dir, output_dir):
 	Image.fromarray(mask).save(mask_save_path(timestamp, output_dir) + 'simplemask' + timestamp + '.png')
 	return
 
-
-def simplify_name(filename):
-	"""Accepts an arm.gov filename and returns a shorter, simpler version."""
-	if "mask" in filename:
-		return "simplemask" + filename[-18:]
-	if "image" in filename:
-		return "simpleimage" + filename[-18:]
-	return
