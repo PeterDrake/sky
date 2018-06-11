@@ -38,9 +38,9 @@ def extract_timestamp(filename):
 
 
 def extract_all_times(dir):
-	"""Returns timestamps from all directories that are exactly two layers down.
+	"""Returns timestamps from all directories that are within the input directory.
 	Ex: dir/masks/mask20160411000000.jpg would be extracted, and
-		dir/masks/folder/mask20160411000000.jpg would not be extracted."""
+		dir/masks/folder/mask20160411000000.jpg would also be extracted."""
 	times = set()
 	for dirpath, subdirs, files in os.walk(dir):
 		for file in files:  # We happen to know files is a list
