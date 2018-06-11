@@ -73,18 +73,28 @@ def find_unpaired_images(input_dir, timestamps):
 	"""Blacklists files for timestamps that do not have both images and masks."""
 	blacklist = set()
 	for time in timestamps:
-		mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
-				time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
-				time) + '.png.' + time + '.png'
-		image = glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
-				time) + '*')[0] + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
-				time) + '.' + time_to_hour_minute_second(
-				time) + '.jpg.' + time + '.jpg'
+		mask = extract_mask_path_from_time(time, input_dir)
+		image = extract_img_path_from_time(time, input_dir)
 		if not os.path.isfile(mask) or not os.path.isfile(image):
 			blacklist.add(time)
 		elif os.path.getsize(mask) == 0 or os.path.getsize(image) == 0:
 			blacklist.add(time)
 	return blacklist
+
+
+def extract_img_path_from_time(time, input_dir):
+	image = glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
+		time) + '*')[0] + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
+		time) + '.' + time_to_hour_minute_second(
+		time) + '.jpg.' + time + '.jpg'
+	return image
+
+
+def extract_mask_path_from_time(time, input_dir):
+	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
+		time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+		time) + '.png.' + time + '.png'
+	return mask
 
 
 def remove_white_sun(img, stride=10):
@@ -118,18 +128,27 @@ def mask_save_path(time, dir):
 	return dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def simplify_mask(filepath, output_dir):
+def simplify_image(timestamp, input_dir, output_dir):
 	"""Writes simplified versions of mask to simplemask."""
-	mask = misc.imread(filepath)
+	img_path = extract_img_path_from_time(timestamp, input_dir)
+	img = misc.imread(img_path)
+	img = crop_image(img)
+	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
+	return
+
+
+def simplify_mask(timestamp, input_dir, output_dir):
+	"""Writes simplified versions of mask to simplemask."""
+	mask_path = extract_mask_path_from_time(timestamp, input_dir)
+	mask = misc.imread(mask_path)
 	mask = crop_image(mask)
 	if (mask == YELLOW).all(axis=2).any():
-		# print('Removing yellow sun')
 		mask[(mask == YELLOW).all(axis=2)] = BLACK
 	else:
-		# print('Removing white sun')
 		mask = remove_white_sun(mask)
-	Image.fromarray(mask).save(output_dir + 'simplemask' + extract_timestamp(filepath) + '.png')
+	Image.fromarray(mask).save(mask_save_path(timestamp, output_dir) + 'simplemask' + timestamp + '.png')
 	return
+
 
 def simplify_name(filename):
 	"""Accepts an arm.gov filename and returns a shorter, simpler version."""
