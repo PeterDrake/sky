@@ -25,4 +25,4 @@ class TestPreprocess(unittest.TestCase):
 	def test_find_unpaired_images(self):
 		actual = {'20131118133000', '20131118133030', '20131118133100', '20131118133130', '20131118133200',
 		          '20131118133930'}
-		self.assertEqual(actual, find_unpaired_images(self.INPUT_DIR, extract_times_from_directory(self.INPUT_DIR)))
+		self.assertEqual(actual, find_unpaired_images(self.INPUT_DIR, extract_all_times(self.INPUT_DIR)))
