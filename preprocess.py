@@ -192,7 +192,7 @@ def extract_times_from_csv():
 if __name__ == '__main__':
 	good_times = extract_times_from_csv()
 	blacklist = find_unpaired_images(INPUT_DIR, good_times)
-	times = good_times.intersection(blacklist)
+	times = good_times - blacklist
 	create_dirs(times, OUTPUT_DIR)
 	map(simplify_image(), times)
 	map(simplify_mask(), times)
