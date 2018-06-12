@@ -1,11 +1,12 @@
-import datetime
 import glob
-
+import math
+import datetime
 import numpy as np
 import pandas as pd
 from PIL import Image
 from scipy import misc
 from multiprocessing import Pool
+from random import shuffle
 from util import *
 
 # These constants are colors that appear in cloud masks
@@ -21,8 +22,8 @@ COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 INPUT_DIR = 'test_input'
 OUTPUT_DIR = 'test_output'
 
-# Number of batches, should be able to specify via command-line
-NUM_BATCHES = 6
+# Size of each batch, should be able to specify via command-line
+BATCH_SIZE = 10000
 
 
 def create_dirs(times, output_dir):
@@ -152,35 +153,23 @@ def simplify_mask(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 	return
 
 
-def make_batches(timestamps, num_batches=NUM_BATCHES):
-	"""Separates timestamps into batches for processing on blt. Returns a list of lists of timestamps."""
-	length = len(timestamps)
-	batch_size = round(length / num_batches)
+def make_batches_by_size(timestamps, batch_size=BATCH_SIZE):
+	"""Returns a set of batches of timestamps. The number of batches is determined by the length of the timestamps
+	collection and the number of elements in a batch can be provided by the user. batch_size is set to 10000 by
+	default as a best guess at the trade-off between parallelization and practicality."""
+	timestamps = list(timestamps)
+	num_batches = math.ceil(len(timestamps) / batch_size)
+	shuffle(timestamps)
 	batches = []
 	for i in range(num_batches - 1):
 		batches += [timestamps[i * batch_size:(i + 1) * batch_size]]
-	batches += [list(timestamps[(num_batches - 1) * batch_size:])]  # TODO Perhaps the cast to list is unnecessary?
+	batches.append(timestamps[(num_batches - 1) * batch_size:])
 	return batches
 
 
 def read_csv_file(filename):
 	"""Reads a csv file using the pandas csv reader and returns a pandas data frame."""
 	return pd.read_csv(filename)
-
-
-def test_batch_process():
-	"""Tests the batch processing"""
-	times = extract_all_times(INPUT_DIR)
-	blacklist = find_unpaired_images(times, INPUT_DIR)
-	for b in blacklist:
-		times.remove(b)
-	create_dirs(times, OUTPUT_DIR)
-	times = list(times)
-	start = datetime.datetime.today()
-	with Pool(4) as p:
-		p.map(simplify_image, times)
-		p.map(simplify_mask, times)
-	print("Done in {} microseconds".format((datetime.datetime.today() - start).microseconds))
 
 
 def extract_times_from_csv():
@@ -194,10 +183,12 @@ if __name__ == '__main__':
 	# good_times = extract_times_from_csv()
 	# blacklist = find_unpaired_images(INPUT_DIR, good_times)
 	# times = good_times - blacklist
+	# create_dirs(times, OUTPUT_DIR)
+	# batches = make_batches_by_size(times)
+	# for batch in batches:
+	# 	launch_blt_simplify_task(batch)
 	times = extract_all_times(INPUT_DIR)
 	times = times - find_unpaired_images(times, INPUT_DIR)
-	create_dirs(times, OUTPUT_DIR)
 	for t in times:
 		simplify_mask(t)
 		simplify_image(t)
-# map(simplify_mask, times)
