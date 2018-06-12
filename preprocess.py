@@ -71,7 +71,7 @@ def depth_first_search(r, c, img, visited, ever_visited, stack):
 	return True
 
 
-def find_unpaired_images(input_dir, timestamps):
+def find_unpaired_images(timestamps, input_dir):
 	"""Blacklists files for timestamps that do not have both images and masks."""
 	blacklist = set()
 	for time in timestamps:
@@ -153,12 +153,13 @@ def simplify_mask(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 
 
 def make_batches(timestamps, num_batches=NUM_BATCHES):
+	"""Separates timestamps into batches for processing on blt. Returns a list of lists of timestamps."""
 	length = len(timestamps)
 	batch_size = round(length / num_batches)
 	batches = []
 	for i in range(num_batches - 1):
 		batches += [timestamps[i * batch_size:(i + 1) * batch_size]]
-	batches += [list(timestamps[(num_batches - 1) * batch_size:])]
+	batches += [list(timestamps[(num_batches - 1) * batch_size:])]  # TODO Perhaps the cast to list is unnecessary?
 	return batches
 
 
@@ -170,7 +171,7 @@ def read_csv_file(filename):
 def test_batch_process():
 	"""Tests the batch processing"""
 	times = extract_all_times(INPUT_DIR)
-	blacklist = find_unpaired_images(INPUT_DIR, times)
+	blacklist = find_unpaired_images(times, INPUT_DIR)
 	for b in blacklist:
 		times.remove(b)
 	create_dirs(times, OUTPUT_DIR)
@@ -190,9 +191,11 @@ def extract_times_from_csv():
 
 
 if __name__ == '__main__':
-	good_times = extract_times_from_csv()
-	blacklist = find_unpaired_images(INPUT_DIR, good_times)
-	times = good_times - blacklist
+	# good_times = extract_times_from_csv()
+	# blacklist = find_unpaired_images(INPUT_DIR, good_times)
+	# times = good_times - blacklist
+	times = extract_all_times(INPUT_DIR)
+	times = times - find_unpaired_images(times, INPUT_DIR)
 	create_dirs(times, OUTPUT_DIR)
 	map(simplify_image, times)
 	map(simplify_mask, times)

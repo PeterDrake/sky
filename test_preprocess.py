@@ -23,7 +23,7 @@ class TestPreprocess(unittest.TestCase):
 	def test_find_unpaired_images(self):
 		actual = {'20131118133000', '20131118133030', '20131118133100', '20131118133130', '20131118133200',
 			'20131118133930'}
-		self.assertEqual(actual, find_unpaired_images(self.INPUT_DIR, extract_all_times(self.INPUT_DIR)))
+		self.assertEqual(actual, find_unpaired_images(extract_all_times(self.INPUT_DIR), self.INPUT_DIR))
 
 	def test_image_is_croppped(self):
 		path = self.INPUT_DIR + '/SkyImage/sgptsiskyimageC1.a1.20131118.131600/' + \
