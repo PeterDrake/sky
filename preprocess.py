@@ -197,5 +197,7 @@ if __name__ == '__main__':
 	times = extract_all_times(INPUT_DIR)
 	times = times - find_unpaired_images(times, INPUT_DIR)
 	create_dirs(times, OUTPUT_DIR)
-	map(simplify_image, times)
-	map(simplify_mask, times)
+	for t in times:
+		simplify_mask(t)
+		simplify_image(t)
+# map(simplify_mask, times)
