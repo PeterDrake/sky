@@ -194,5 +194,5 @@ if __name__ == '__main__':
 	blacklist = find_unpaired_images(INPUT_DIR, good_times)
 	times = good_times - blacklist
 	create_dirs(times, OUTPUT_DIR)
-	map(simplify_image(), times)
-	map(simplify_mask(), times)
+	map(simplify_image, times)
+	map(simplify_mask, times)
