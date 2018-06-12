@@ -179,16 +179,28 @@ def extract_times_from_csv():
 	return {str(t) for t in times}
 
 
+def launch_blt_simplify_task(filename):
+	name = 'SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(filename[4:-4], filename)
+	print(name)
+
+
+
 if __name__ == '__main__':
 	# good_times = extract_times_from_csv()
 	# blacklist = find_unpaired_images(INPUT_DIR, good_times)
 	# times = good_times - blacklist
 	# create_dirs(times, OUTPUT_DIR)
 	# batches = make_batches_by_size(times)
-	# for batch in batches:
-	# 	launch_blt_simplify_task(batch)
-	times = extract_all_times(INPUT_DIR)
-	times = times - find_unpaired_images(times, INPUT_DIR)
-	for t in times:
-		simplify_mask(t)
-		simplify_image(t)
+	# for i in range(len(batches)):
+	# 	name = "res/batch" + str(i) + ".txt"
+	# 	f = open(name, 'w')
+	# 	for time in batches[i]:
+	# 		f.write(time + '\n')
+	# 	f.close()
+	# 	launch_blt_simplify_task(name)
+	launch_blt_simplify_task("res/batch" + str(1) + ".txt")
+# times = extract_all_times(INPUT_DIR)
+# times = times - find_unpaired_images(times, INPUT_DIR)
+# for t in times:
+# 	simplify_mask(t)
+# 	simplify_image(t)
