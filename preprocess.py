@@ -2,6 +2,7 @@ import datetime
 import glob
 
 import numpy as np
+import pandas as pd
 from PIL import Image
 from scipy import misc
 from multiprocessing import Pool
@@ -161,7 +162,13 @@ def make_batches(timestamps, num_batches=NUM_BATCHES):
 	return batches
 
 
-if __name__ == '__main__':
+def read_csv_file(filename):
+	"""Reads a csv file using the pandas csv reader and returns a pandas data frame."""
+	return pd.read_csv(filename)
+
+
+def test_batch_process():
+	"""Tests the batch processing"""
 	times = extract_all_times(INPUT_DIR)
 	blacklist = find_unpaired_images(INPUT_DIR, times)
 	for b in blacklist:
@@ -173,3 +180,19 @@ if __name__ == '__main__':
 		p.map(simplify_image, times)
 		p.map(simplify_mask, times)
 	print("Done in {} microseconds".format((datetime.datetime.today() - start).microseconds))
+
+
+def extract_times_from_csv():
+	"""Returns a sorted list of timestamps from a csv file. Assumes the csv has a header for "img_name" which contains
+	the name of the file."""
+	times = pd.read_csv("data/shcu_good_data.csv").get("timestamp_utc")
+	return {str(t) for t in times}
+
+
+if __name__ == '__main__':
+	good_times = extract_times_from_csv()
+	blacklist = find_unpaired_images(INPUT_DIR, good_times)
+	times = good_times.intersection(blacklist)
+	create_dirs(times, OUTPUT_DIR)
+	map(simplify_image(), times)
+	map(simplify_mask(), times)
