@@ -19,8 +19,8 @@ YELLOW = np.array([255, 255, 0])
 COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 
 # Constants for input and output locations
-INPUT_DIR = 'test_input'
-OUTPUT_DIR = 'test_output'
+INPUT_DIR = '/home/users/jkleiss/TSI_C1'
+OUTPUT_DIR = '/home/users/msl/new_data'
 
 # Size of each batch, should be able to specify via command-line
 BATCH_SIZE = 10000
@@ -50,6 +50,15 @@ def crop_image(img):
 	"""Expect img to be a numpy array of size 640 x 480. Returns a version of img cropped down to 480 x 480.
 	Axis = 0 is the vertical axis (i.e. rows) from which the first and last 80 pixels are deleted."""
 	return np.delete(img, np.concatenate((np.arange(80), np.arange(80) + 560)), axis=0)
+
+
+def create_constant_mask(color, filename):
+	"""Creates a mask where any pixels not always of color are BLUE. Saves it in filename."""
+	b_mask = np.full((480, 480, 3), color)
+	for file in os.listdir(OUTPUT_DIR + '/simplemask/'):
+		img = misc.imread(OUTPUT_DIR + '/simplemask/' + file)
+		b_mask[(img != color).any(axis=2)] = BLUE
+	Image.fromarray(b_mask.astype('uint8')).save(filename)
 
 
 def depth_first_search(r, c, img, visited, ever_visited, stack):
@@ -175,30 +184,33 @@ def read_csv_file(filename):
 def extract_times_from_csv():
 	"""Returns a sorted list of timestamps from a csv file. Assumes the csv has a header for "img_name" which contains
 	the name of the file."""
-	times = pd.read_csv("data/shcu_good_data.csv").get("timestamp_utc")
+	times = pd.read_csv("shcu_good_data.csv").get("timestamp_utc")
 	return {str(t) for t in times}
 
 
 def launch_blt_simplify_task(filename):
-	name = 'SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(filename[4:-4], filename)
-	print(name)
-
+	"""Launches run_batch.py to preprocess the data in parallel on blt."""
+	os.system('SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(filename[4:-4], filename))
 
 
 if __name__ == '__main__':
-	# good_times = extract_times_from_csv()
-	# blacklist = find_unpaired_images(INPUT_DIR, good_times)
-	# times = good_times - blacklist
-	# create_dirs(times, OUTPUT_DIR)
-	# batches = make_batches_by_size(times)
-	# for i in range(len(batches)):
-	# 	name = "res/batch" + str(i) + ".txt"
-	# 	f = open(name, 'w')
-	# 	for time in batches[i]:
-	# 		f.write(time + '\n')
-	# 	f.close()
-	# 	launch_blt_simplify_task(name)
-	launch_blt_simplify_task("res/batch" + str(1) + ".txt")
+	good_times = extract_times_from_csv()
+	blacklist = find_unpaired_images(INPUT_DIR, good_times)
+	times = good_times - blacklist
+	create_dirs(times, OUTPUT_DIR)
+	batches = make_batches_by_size(times)
+	for i in range(len(batches)):
+		name = "res/batch" + str(i) + ".txt"
+		f = open(name, 'w')
+		print("Writing batch {} data to {}".format(i, name))
+		for time in batches[i]:
+			f.write(time + '\n')
+		f.close()
+		print("Launching: {}".format(name[4:-4]))
+		launch_blt_simplify_task(name)
+
+# create_constant_mask(BLACK, 'always_black_mask.png')
+# create_constant_mask(GREEN, 'always_green_mask.png')
 # times = extract_all_times(INPUT_DIR)
 # times = times - find_unpaired_images(times, INPUT_DIR)
 # for t in times:

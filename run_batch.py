@@ -1,7 +1,8 @@
 import sys
-
 from preprocess import simplify_image, simplify_mask
 
 if __name__ == "__main__":
-	f = open(sys.argv[3])  # TODO: Figure out what this should be
-# TODO: iterate through timestamps and call simplify to get masks and images
+	f = open(sys.argv[1])  # This is the name of the file containing timestamps
+	for time in f:
+		simplify_mask(time)
+		simplify_image(time)

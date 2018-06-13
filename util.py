@@ -37,14 +37,21 @@ def extract_timestamp(filename):
 	return filename[-18:-4]
 
 
-def extract_all_times(dir):
-	"""Returns timestamps from all directories that are within the input directory.
+def extract_all_times(dir, subdirs=None):
+	"""Returns timestamps from all directories that are within the input directory. You can specify a list of
+	subdirectories if you only want to grab files within specific subdirectories.
 	Ex: dir/masks/mask20160411000000.jpg would be extracted, and
 		dir/masks/folder/mask20160411000000.jpg would also be extracted."""
 	times = set()
-	for dirpath, subdirs, files in os.walk(dir):
-		for file in files:  # We happen to know files is a list
-			times.add(extract_timestamp(file))
+	if not subdirs:
+		for dirpath, subdirs, files in os.walk(dir):
+			for file in files:
+				times.add(extract_timestamp(file))
+	else:
+		for subdir in subdirs:
+			for dirpath, subdirs, files in os.walk(dir + subdir):
+				for file in files:
+					times.add(extract_timestamp(file))
 	return times
 
 

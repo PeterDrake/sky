@@ -31,7 +31,7 @@ class TestUtil(unittest.TestCase):
 				extract_timestamp('sgptsiskyimageC1.a1.20150208.093000.jpg.20150208093000.jpg'))
 
 	def test_all_timestamps_are_extracted(self):
-		self.assertEqual(20, len([i for i in extract_all_times(self.INPUT_DIR)]))
+		self.assertEqual(20, len(extract_all_times(self.INPUT_DIR, ['/SkyImage', '/CloudMask'])))
 
 	def test_times_are_extracted_from_files(self):
 		mask_path = self.INPUT_DIR + "/CloudMask/sgptsicldmaskC1.a1.20131118/"
