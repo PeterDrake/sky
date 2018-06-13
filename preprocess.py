@@ -194,11 +194,16 @@ def launch_blt_simplify_task(filename):
 
 
 if __name__ == '__main__':
+	print("Reading times from good csv file.")
 	good_times = extract_times_from_csv()
+	print("Finished reading times. Eliminated unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
+	print("Finished deleting unpaired times. Creating directories for results.")
 	create_dirs(times, OUTPUT_DIR)
+	print("Directories created. Preparing batches.")
 	batches = make_batches_by_size(times)
+	print("Batches created. Launching simplification on batches.")
 	for i in range(len(batches)):
 		name = "res/batch" + str(i) + ".txt"
 		f = open(name, 'w')
@@ -208,6 +213,7 @@ if __name__ == '__main__':
 		f.close()
 		print("Launching: {}".format(name[4:-4]))
 		launch_blt_simplify_task(name)
+		print("Finished batch number {}".format(i))
 
 # create_constant_mask(BLACK, 'always_black_mask.png')
 # create_constant_mask(GREEN, 'always_green_mask.png')
