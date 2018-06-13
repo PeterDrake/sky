@@ -199,29 +199,38 @@ if __name__ == '__main__':
 	os.makedirs(print_name)
 	output = open('output.txt', 'w')
 	output.write("Reading times from good csv file.")
+	print("Reading times from good csv file.")
 	good_times = extract_times_from_csv()
 	output.write("Finished reading times. Eliminating unpaired times.")
+	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
 	output.write("Finished deleting unpaired times. Creating directories for results.")
+	print("Finished deleting unpaired times. Creating directories for results.")
 	create_dirs(times, OUTPUT_DIR)
 	output.write("Directories created. Preparing batches.")
+	print("Directories created. Preparing batches.")
 	batches = make_batches_by_size(times)
 	output.write("Batches created. Launching simplification on batches.")
+	print("Batches created. Launching simplification on batches.")
 	for i in range(len(batches)):
 		name = "res/batch" + str(i) + ".txt"
 		if not os.path.isfile(name):
 			f = open(name, 'w')
 			output.write("Writing batch {} data to {}".format(i, name))
-			f.writelines(batches[i])
-			# for time in batches[i]:
-			# 	f.write(time + '\n')
+			print("Writing batch {} data to {}".format(i, name))
+			# f.writelines(batches[i])
+			for time in batches[i]:
+				f.write(time + '\n')
 			f.close()
 		else:
 			output.write("{} already exists, continuing to launch.".format(name))
+			print("{} already exists, continuing to launch.".format(name))
 		output.write("Launching: {}".format(name[4:-4]))
 		launch_blt_simplify_task(name)
-		output.write("Finished batch number {}".format(i))
+		output.write("Finished launching batch number {}".format(i))
+		print("Finished launching batch number {}".format(i))
+	print("Finished launching all batches")
 	output.close()
 
 # create_constant_mask(BLACK, 'always_black_mask.png')
