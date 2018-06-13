@@ -227,11 +227,11 @@ if __name__ == '__main__':
 		else:
 			output.write("{} already exists, continuing to launch.".format(name))
 			print("{} already exists, continuing to launch.".format(name))
-		output.write("Launching: {}".format(name[4:-4]))
-		launch_blt_simplify_task(name)
-		output.write("Finished launching batch number {}".format(i))
-		print("Finished launching batch number {}".format(i))
-	print("Finished launching all batches")
+	# 	output.write("Launching: {}".format(name[4:-4]))
+	# 	launch_blt_simplify_task(name)
+	# 	output.write("Finished launching batch number {}".format(i))
+	# 	print("Finished launching batch number {}".format(i))
+	# print("Finished launching all batches")
 	output.close()
 
 # create_constant_mask(BLACK, 'always_black_mask.png')
