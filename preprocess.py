@@ -195,7 +195,7 @@ def launch_blt_simplify_task(filename):
 
 if __name__ == '__main__':
 	good_times = extract_times_from_csv()
-	blacklist = find_unpaired_images(INPUT_DIR, good_times)
+	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
 	create_dirs(times, OUTPUT_DIR)
 	batches = make_batches_by_size(times)
