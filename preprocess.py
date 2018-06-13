@@ -1,13 +1,13 @@
-import sys
 import glob
 import math
-import datetime
+import sys
+from random import shuffle
+
 import numpy as np
 import pandas as pd
 from PIL import Image
 from scipy import misc
-from multiprocessing import Pool
-from random import shuffle
+
 from util import *
 
 # These constants are colors that appear in cloud masks
@@ -205,6 +205,7 @@ if __name__ == '__main__':
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
+	print("This is the number of timestamps for which we should simplify: ", len(times))
 	output.write("Finished deleting unpaired times. Creating directories for results.")
 	print("Finished deleting unpaired times. Creating directories for results.")
 	create_dirs(times, OUTPUT_DIR)
