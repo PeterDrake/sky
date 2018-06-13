@@ -196,7 +196,7 @@ def launch_blt_simplify_task(filename):
 if __name__ == '__main__':
 	print("Reading times from good csv file.")
 	good_times = extract_times_from_csv()
-	print("Finished reading times. Eliminated unpaired times.")
+	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
 	print("Finished deleting unpaired times. Creating directories for results.")
@@ -206,11 +206,14 @@ if __name__ == '__main__':
 	print("Batches created. Launching simplification on batches.")
 	for i in range(len(batches)):
 		name = "res/batch" + str(i) + ".txt"
-		f = open(name, 'w')
-		print("Writing batch {} data to {}".format(i, name))
-		for time in batches[i]:
-			f.write(time + '\n')
-		f.close()
+		if not os.path.isfile(name):
+			f = open(name, 'w')
+			print("Writing batch {} data to {}".format(i, name))
+			for time in batches[i]:
+				f.write(time + '\n')
+			f.close()
+		else:
+			print("{} already exists, continuing to launch.".format(name))
 		print("Launching: {}".format(name[4:-4]))
 		launch_blt_simplify_task(name)
 		print("Finished batch number {}".format(i))
