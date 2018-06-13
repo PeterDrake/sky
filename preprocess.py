@@ -1,6 +1,5 @@
 import glob
 import math
-import sys
 from random import shuffle
 
 import numpy as np
@@ -195,8 +194,6 @@ def launch_blt_simplify_task(filename):
 
 
 if __name__ == '__main__':
-	print_name = sys.argv[1]
-	os.makedirs(print_name)
 	output = open('output.txt', 'w')
 	output.write("Reading times from good csv file.")
 	print("Reading times from good csv file.")
