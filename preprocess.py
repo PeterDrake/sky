@@ -1,3 +1,4 @@
+import sys
 import glob
 import math
 import datetime
@@ -194,29 +195,34 @@ def launch_blt_simplify_task(filename):
 
 
 if __name__ == '__main__':
-	print("Reading times from good csv file.")
+	print_name = sys.argv[1]
+	os.makedirs(print_name)
+	output = open('output.txt', 'w')
+	output.write("Reading times from good csv file.")
 	good_times = extract_times_from_csv()
-	print("Finished reading times. Eliminating unpaired times.")
+	output.write("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
-	print("Finished deleting unpaired times. Creating directories for results.")
+	output.write("Finished deleting unpaired times. Creating directories for results.")
 	create_dirs(times, OUTPUT_DIR)
-	print("Directories created. Preparing batches.")
+	output.write("Directories created. Preparing batches.")
 	batches = make_batches_by_size(times)
-	print("Batches created. Launching simplification on batches.")
+	output.write("Batches created. Launching simplification on batches.")
 	for i in range(len(batches)):
 		name = "res/batch" + str(i) + ".txt"
 		if not os.path.isfile(name):
 			f = open(name, 'w')
-			print("Writing batch {} data to {}".format(i, name))
-			for time in batches[i]:
-				f.write(time + '\n')
+			output.write("Writing batch {} data to {}".format(i, name))
+			f.writelines(batches[i])
+			# for time in batches[i]:
+			# 	f.write(time + '\n')
 			f.close()
 		else:
-			print("{} already exists, continuing to launch.".format(name))
-		print("Launching: {}".format(name[4:-4]))
+			output.write("{} already exists, continuing to launch.".format(name))
+		output.write("Launching: {}".format(name[4:-4]))
 		launch_blt_simplify_task(name)
-		print("Finished batch number {}".format(i))
+		output.write("Finished batch number {}".format(i))
+	output.close()
 
 # create_constant_mask(BLACK, 'always_black_mask.png')
 # create_constant_mask(GREEN, 'always_green_mask.png')
