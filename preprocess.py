@@ -63,6 +63,7 @@ def create_dirs(times, output_dir=OUTPUT_DIR):
 		for mmdd in seen[year]:
 			os.makedirs(output_dir + "/simpleimage/" + year + "/" + mmdd, exist_ok=True)
 			os.makedirs(output_dir + "/simplemask/" + year + "/" + mmdd, exist_ok=True)
+	os.makedirs("res", exist_ok=True)
 	return
 
 
