@@ -22,11 +22,14 @@ Written by Zoe Harrington & Maxwell Levin
 
 import glob
 import math
+import pickle
 from random import shuffle
+
 import numpy as np
 import pandas as pd
 from PIL import Image
 from scipy import misc
+
 from util import *
 
 # These constants are colors that appear in cloud masks
@@ -214,6 +217,29 @@ def extract_times_from_csv():
 def launch_blt_simplify_task(filename):
 	"""Launches run_batch.py to preprocess the data in parallel on blt."""
 	os.system('SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(filename[4:-4], filename))
+
+
+def separate_data(timestamps):
+	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
+	train.stamps."""
+	test, valid, train = separate_stamps(timestamps)
+	with open('test.stamps', 'wb') as f:
+		pickle.dump(test, f)
+	with open('valid.stamps', 'wb') as f:
+		pickle.dump(valid, f)
+	with open('train.stamps', 'wb') as f:
+		pickle.dump(train, f)
+	return test, valid, train
+
+
+def separate_stamps(timestamps):
+	"""Shuffles stamps and returns three lists: 20% of the stamps for
+	testing, 16% for validation, and the rest for training."""
+	timestamps = list(timestamps)
+	test = timestamps[0:int(len(timestamps) * 0.2)]
+	valid = timestamps[int(len(timestamps) * 0.2):int(len(timestamps) * 0.4)]
+	train = timestamps[int(len(timestamps) * 0.4):]
+	return test, valid, train
 
 
 if __name__ == '__main__':
