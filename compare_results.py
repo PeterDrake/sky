@@ -24,5 +24,5 @@ if __name__ == '__main__':
 	actual = count_actual()
 	if expected == actual:
 		print('numbers match! Actual: ' + actual + 'Expected: ' + expected)
-	else .
+	else:
 	print('numbers dont match. Actual: ' + actual + 'Expected: ' + expected)
