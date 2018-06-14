@@ -16,5 +16,6 @@ def batch_process():
 		simplify_mask(time)
 		simplify_image(time)
 
+
 if __name__ == "__main__":
 	batch_process()
