@@ -60,6 +60,14 @@ def extract_times_from_filenames(filenames):
 	return {extract_timestamp(filename) for filename in filenames}
 
 
+def extract_times_from_file(filename):
+	"""Returns a set of timestamps in a given file. Assumes timestamps are separated by newlines."""
+	times = set()
+	with open(filename, 'r') as file:
+		for time in file:
+			times.add(str(time))
+	return times
+
 def listdir_d(dir=None):
 	"""Returns an iterable of directories in the current or a given directory."""
 	return (name for name in os.listdir(dir) if os.path.isdir(os.path.join(dir, name)))
