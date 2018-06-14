@@ -5,7 +5,8 @@ Preprocess Total Sky Imager data from arm.gov. To use this:
 2) Specify the OUTPUT_DIR. This directory should already exist, but be empty.
 3) Specify BATCH_SIZE to help parallelize this process. This is the number of timestamps each batch needs to process.
 To run sequentially, set this absurdly high.
-4) Run this program and wait for it to finish before launching run_simplify.py
+4) Run this program, wait for it to finish.
+5) Run process.py to do the actual simplification of masks & cropping of images
 
 This will create (within data):
 
@@ -196,7 +197,7 @@ def make_batches_by_size(timestamps, batch_size=BATCH_SIZE):
 	num_batches = math.ceil(len(timestamps) / batch_size)
 	shuffle(timestamps)
 	batches = []
-	for i in range(num_batches - 1):
+	for i in range(int(num_batches) - 1):
 		batches += [timestamps[i * batch_size:(i + 1) * batch_size]]
 	batches.append(timestamps[(num_batches - 1) * batch_size:])
 	return batches
