@@ -16,9 +16,7 @@ def count_expected():
 def count_blt():
 	print("This is the number of files in Jessica's dir: ",
 	      len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask'])))
-
-
-# return len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask']))
+	return len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask']))
 
 
 def count_actual():
