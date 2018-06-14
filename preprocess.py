@@ -2,11 +2,13 @@
 Preprocess Total Sky Imager data from arm.gov. To use this:
 
 1) Get the SkyImage and CloudMask data from ARM and unpack tars into your INPUT_DIR
-2) Specify the OUTPUT_DIR. This directory should already exist, but be empty.
+2) Specify the OUTPUT_DIR (which need not already exist).
 3) Specify BATCH_SIZE to help parallelize this process. This is the number of timestamps each batch needs to process.
 To run sequentially, set this absurdly high.
 4) Run this program, wait for it to finish.
 5) Run process.py to do the actual simplification of masks & cropping of images
+
+# TODO All of the steps in preprocess, process, and postprocess should count as preprocessing.
 
 This will create (within data):
 
@@ -211,7 +213,7 @@ def read_csv_file(filename):
 def extract_times_from_csv():
 	"""Returns a sorted list of timestamps from a csv file. Assumes the csv has a header for "img_name" which contains
 	the name of the file."""
-	times = pd.read_csv("shcu_good_data.csv").get("timestamp_utc")
+	times = pd.read_csv("shcu_good_data.csv").get("timestamp_utc")  # TODO Make these arguments
 	return {str(t) for t in times}
 
 
@@ -243,21 +245,21 @@ def separate_stamps(timestamps):
 	return test, valid, train
 
 
-if __name__ == '__main__':
+def preprocess():
 	print("Reading times from good csv file.")
 	good_times = extract_times_from_csv()
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
-	print("This is the number of timestamps for which we should simplify: ", len(times))
-	print("Finished deleting unpaired times. Creating directories for results.")
+	print("{} paired images and masks found.".format(len(times)))
+	print("Creating directories for results.")
 	create_dirs(times, OUTPUT_DIR)
 	print("Directories created. Preparing batches.")
 	batches = make_batches_by_size(times)
 	print("Batches created. Launching simplification on batches.")
 	for i in range(len(batches)):
 		name = "res/batch" + str(i) + ".txt"
-		if not os.path.isfile(name):
+		if not os.path.isfile(name):  # TODO Do we need this?
 			f = open(name, 'w')
 			print("Writing batch {} data to {}".format(i, name))
 			for time in batches[i]:
@@ -265,4 +267,8 @@ if __name__ == '__main__':
 			f.close()
 		else:
 			print("{} already exists, continuing to launch.".format(name))
-	print("Timestamp files complete, you may now launch 'run_simplify.py'")
+	print("Timestamp files complete.")
+
+
+if __name__ == '__main__':
+	preprocess()
