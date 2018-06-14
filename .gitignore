@@ -10,3 +10,4 @@ results
 __pycache__
 test_output
 .pytest_cache
+good_data
