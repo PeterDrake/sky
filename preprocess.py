@@ -40,7 +40,7 @@ COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
-OUTPUT_DIR = '/home/users/msl/new_data'
+OUTPUT_DIR = 'good_data'
 
 # Size of each batch, should be able to specify via command-line
 BATCH_SIZE = 10000
@@ -51,6 +51,8 @@ def create_dirs(times, output_dir=OUTPUT_DIR):
 	and day for the given timestamps. Expects the input_dir and output_dir to be relative to the current working
 	directory. Pass in an iterable collection of timestamps in the yyyymmddhhmmss format."""
 	seen = {}  # yyyy, set(mmdd, ...)
+	os.makedirs("output_dir", exist_ok=True)
+	os.makedirs("res", exist_ok=True)
 	for t in times:
 		year = time_to_year(t)
 		mmdd = time_to_month_and_day(t)
@@ -63,7 +65,6 @@ def create_dirs(times, output_dir=OUTPUT_DIR):
 		for mmdd in seen[year]:
 			os.makedirs(output_dir + "/simpleimage/" + year + "/" + mmdd, exist_ok=True)
 			os.makedirs(output_dir + "/simplemask/" + year + "/" + mmdd, exist_ok=True)
-	os.makedirs("res", exist_ok=True)
 	return
 
 

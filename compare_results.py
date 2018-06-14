@@ -2,7 +2,7 @@ from preprocess import *
 
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
-OUTPUT_DIR = '/home/users/msl/new_data'
+OUTPUT_DIR = 'good_data'
 
 
 def why_bad_images(timestamps, input_dir=INPUT_DIR):
@@ -42,32 +42,17 @@ if __name__ == '__main__':
 	good_times = extract_times_from_csv()
 	blacklist, bad_images, bad_masks = why_bad_images(good_times)
 
-	print(
-			"Writing to bad_image_times.txt! There are {} timestamps corresponding to images that do not work "
-			"well.".format(
-					len(bad_images)))
+	print("Writing to bad_image_times.txt! There are {} timestamps corresponding to images that do not work "
+	      "well.".format(len(bad_images)))
 	with open("bad_image_times.txt", 'w') as img_file:
 		img_file.writelines("%s\n" % img for img in bad_images)
 
 	print("Writing to bad_mask_times.txt! There are {} timestamps corresponding to masks that do not work "
-	      "well.".format(
-			len(bad_masks)))
+	      "well.".format(len(bad_masks)))
 	with open("bad_mask_times.txt", 'w') as mask_file:
 		mask_file.writelines("%s\n" % mask for mask in bad_masks)
 
-	print(
-			"Writing to bad_times.txt! There are {} timestamps corresponding to masks or images that do not work "
-			"well.".format(
-					len(blacklist)))
+	print("Writing to bad_times.txt! There are {} timestamps corresponding to masks or images that do not work "
+	      "well.".format(len(blacklist)))
 	with open("bad_times.txt", 'w') as bad_file:
 		bad_file.writelines("%s\n" % time for time in blacklist)
-
-
-
-	# expected = count_expected()
-	# actual = count_actual()
-	# if expected == actual:
-	# 	print('numbers match! Actual: ' + actual + 'Expected: ' + expected)
-	# else:
-	# 	print('numbers dont match. Actual: ' + actual + 'Expected: ' + expected)
-# count_blt()
