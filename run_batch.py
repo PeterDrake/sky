@@ -1,5 +1,9 @@
-import sys
+"""
+Opens the file provided by the command line and iterates through it. Expects the file contains timestamps,
+one in each row.
+"""
 
+import sys
 from preprocess import simplify_image, simplify_mask
 
 if __name__ == "__main__":

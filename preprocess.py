@@ -1,12 +1,32 @@
+"""
+Preprocess Total Sky Imager data from arm.gov. To use this:
+
+1) Get the SkyImage and CloudMask data from ARM and unpack tars into your INPUT_DIR
+2) Specify the OUTPUT_DIR. This directory should already exist, but be empty.
+3) Specify BATCH_SIZE to help parallelize this process. This is the number of timestamps each batch needs to process.
+To run sequentially, set this absurdly high.
+4) Run this program and wait for it to finish before launching run_simplify.py
+
+This will create (within data):
+
+- A folder simpleimage containing folders by year. In this are folders by month and day (mmdd). In these folders are
+cropped 480x480 sky images
+- A folder simplemask with the same structure as simpleimage, but the (mmdd) folders contain cloudmasks which have
+been cropped and had the sunband removed.
+
+See the code at the end for a high-level description of the steps this
+program goes through.
+
+Written by Zoe Harrington & Maxwell Levin
+"""
+
 import glob
 import math
 from random import shuffle
-
 import numpy as np
 import pandas as pd
 from PIL import Image
 from scipy import misc
-
 from util import *
 
 # These constants are colors that appear in cloud masks
@@ -26,7 +46,7 @@ OUTPUT_DIR = '/home/users/msl/new_data'
 BATCH_SIZE = 10000
 
 
-def create_dirs(times, output_dir):
+def create_dirs(times, output_dir=OUTPUT_DIR):
 	"""Creates directories for simpleimage and simplemask in the output_dir as well as creating subdirectories by year
 	and day for the given timestamps. Expects the input_dir and output_dir to be relative to the current working
 	directory. Pass in an iterable collection of timestamps in the yyyymmddhhmmss format."""
@@ -81,7 +101,7 @@ def depth_first_search(r, c, img, visited, ever_visited, stack):
 	return True
 
 
-def find_unpaired_images(timestamps, input_dir):
+def find_unpaired_images(timestamps, input_dir=INPUT_DIR):
 	"""Blacklists files for timestamps that do not have both images and masks."""
 	blacklist = set()
 	for time in timestamps:
@@ -94,7 +114,7 @@ def find_unpaired_images(timestamps, input_dir):
 	return blacklist
 
 
-def extract_img_path_from_time(time, input_dir):
+def extract_img_path_from_time(time, input_dir=INPUT_DIR):
 	"""Extracts the path of an image from the timestamp and input directory."""
 	image = glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*')[
 		        0] + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
@@ -102,7 +122,8 @@ def extract_img_path_from_time(time, input_dir):
 	return image
 
 
-def extract_mask_path_from_time(time, input_dir):
+def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
+	"""Extracts the path of a mask from the timestamp and input directory."""
 	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
 			time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
 			time) + '.png.' + time + '.png'
@@ -150,7 +171,7 @@ def simplify_image(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 
 
 def simplify_mask(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
-	"""Writes simplified versions of mask to simplemask."""
+	"""Writes simplified versions of mask to simplemask. """
 	mask_path = extract_mask_path_from_time(timestamp, input_dir)
 	mask = misc.imread(mask_path)
 	mask = crop_image(mask)
@@ -194,47 +215,25 @@ def launch_blt_simplify_task(filename):
 
 
 if __name__ == '__main__':
-	output = open('output.txt', 'w')
-	output.write("Reading times from good csv file.")
 	print("Reading times from good csv file.")
 	good_times = extract_times_from_csv()
-	output.write("Finished reading times. Eliminating unpaired times.")
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
 	print("This is the number of timestamps for which we should simplify: ", len(times))
-	output.write("Finished deleting unpaired times. Creating directories for results.")
 	print("Finished deleting unpaired times. Creating directories for results.")
 	create_dirs(times, OUTPUT_DIR)
-	output.write("Directories created. Preparing batches.")
 	print("Directories created. Preparing batches.")
 	batches = make_batches_by_size(times)
-	output.write("Batches created. Launching simplification on batches.")
 	print("Batches created. Launching simplification on batches.")
 	for i in range(len(batches)):
 		name = "res/batch" + str(i) + ".txt"
 		if not os.path.isfile(name):
 			f = open(name, 'w')
-			output.write("Writing batch {} data to {}".format(i, name))
 			print("Writing batch {} data to {}".format(i, name))
-			# f.writelines(batches[i])
 			for time in batches[i]:
 				f.write(time + '\n')
 			f.close()
 		else:
-			output.write("{} already exists, continuing to launch.".format(name))
 			print("{} already exists, continuing to launch.".format(name))
-	# 	output.write("Launching: {}".format(name[4:-4]))
-	# 	launch_blt_simplify_task(name)
-	# 	output.write("Finished launching batch number {}".format(i))
-	# 	print("Finished launching batch number {}".format(i))
-	# print("Finished launching all batches")
-	output.close()
-
-# create_constant_mask(BLACK, 'always_black_mask.png')
-# create_constant_mask(GREEN, 'always_green_mask.png')
-# times = extract_all_times(INPUT_DIR)
-# times = times - find_unpaired_images(times, INPUT_DIR)
-# for t in times:
-# 	simplify_mask(t)
-# 	simplify_image(t)
+	print("Timestamp files complete, you may now launch 'run_simplify.py'")

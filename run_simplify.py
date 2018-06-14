@@ -1,6 +1,15 @@
+"""
+Preprocess Total Sky Imager data from arm.gov. To use this:
+
+1) First follow steps outlined in preprocess.py
+2) Run this program to launch all of the batches necessary on BLT.
+
+This program launches run_batch.py with each file in the 'res' folder.
+"""
+
 import os
 
-files = os.listdir('res')
-for file in files:
-	os.system('SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(file[:-4], "res/" + file))
-	print("Launched {} successfully".format(file))
+batches = os.listdir('res')
+for batch in batches:
+	os.system('SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(batch[:-4], "res/" + batch))
+	print("Launched {} successfully".format(batch))
