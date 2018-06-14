@@ -13,6 +13,13 @@ def count_expected():
 	return len(times)
 
 
+def count_blt():
+	print(len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask'])))
+
+
+# return len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask']))
+
+
 def count_actual():
 	print("This is the number of timestamps for which we simplify: ",
 	      len(extract_all_times(OUTPUT_DIR, ['/simpleimage', '/simplemask'])))
@@ -20,9 +27,10 @@ def count_actual():
 
 
 if __name__ == '__main__':
-	expected = count_expected()
-	actual = count_actual()
-	if expected == actual:
-		print('numbers match! Actual: ' + actual + 'Expected: ' + expected)
-	else:
-		print('numbers dont match. Actual: ' + actual + 'Expected: ' + expected)
+	# expected = count_expected()
+	# actual = count_actual()
+	# if expected == actual:
+	# 	print('numbers match! Actual: ' + actual + 'Expected: ' + expected)
+	# else:
+	# 	print('numbers dont match. Actual: ' + actual + 'Expected: ' + expected)
+	count_blt()
