@@ -57,23 +57,23 @@ if __name__ == '__main__':
 
 	# blacklist = missing_images.union(missing_masks).union(empty_masks).union(empty_images)
 	#
-	# print("Writing to missing_images.txt. There are {} missing images".format(len(missing_images)))
-	# with open('missing_images.txt', 'w') as file:
-	# 	for time in missing_images:
-	# 		file.write(time + '\n')
-	# 	file.close()
+	print("Writing to missing_images.txt. There are {} missing images".format(len(missing_images)))
+	with open('missing_images.txt', 'w') as file:
+		for time in missing_images:
+			file.write(time + '\n')
+		file.close()
 
-	# print("Writing to empty_images.txt. There are {} empty images".format(len(empty_images)))
-	# with open('empty_images.txt', 'w') as file:
-	# 	for time in empty_images:
-	# 		file.write(time + '\n')
-	# 	file.close()
+	print("Writing to empty_images.txt. There are {} empty images".format(len(empty_images)))
+	with open('empty_images.txt', 'w') as file:
+		for time in empty_images:
+			file.write(time + '\n')
+		file.close()
 
-	# print("Writing to 'missing_masks.txt'. There are {} missing masks.".format(len(missing_masks)))
-	# with open('missing_masks.txt', 'w') as file:
-	# 	for time in missing_masks:
-	# 		file.write(time + '\n')
-	# 	file.close()
+	print("Writing to 'missing_masks.txt'. There are {} missing masks.".format(len(missing_masks)))
+	with open('missing_masks.txt', 'w') as file:
+		for time in missing_masks:
+			file.write(time + '\n')
+		file.close()
 
 	print("Writing to 'empty_masks.txt'. There are {} empty masks.".format(len(empty_masks)))
 	with open('empty_masks.txt', 'w') as file:
