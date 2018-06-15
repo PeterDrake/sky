@@ -6,7 +6,7 @@ OUTPUT_DIR = 'good_data'
 
 
 def why_bad_images(timestamps, input_dir=INPUT_DIR):
-	"""Blacklists files for timestamps that do not have both images and masks."""
+	"""Returns four sets that self describe why a file in the given list is bad."""
 	missing_mask = set()
 	empty_mask = set()
 	missing_image = set()
@@ -51,26 +51,32 @@ if __name__ == '__main__':
 	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
 	missing_images, empty_images, missing_masks, empty_masks = why_bad_images(good_times)
 
-	for e in missing_masks:
+	for e in missing_images:
 		print(type(e))  # Just a sanity check. Expecting 'str'
 		break
 
-	print("Writing to missing_images.txt. There are {} missing images".format(missing_images))
+	blacklist = missing_images.union(missing_masks).union(empty_masks).union(empty_images)
+
+	print("Writing to missing_images.txt. There are {} missing images".format(len(missing_images)))
 	with open('missing_images.txt', 'w') as file:
 		for time in missing_images:
 			file.write(time + '\n')
+		file.close()
 
-	print("Writing to empty_images.txt. There are {} empty images".format(empty_images))
+	print("Writing to empty_images.txt. There are {} empty images".format(len(empty_images)))
 	with open('empty_images.txt', 'w') as file:
 		for time in empty_images:
 			file.write(time + '\n')
+		file.close()
 
 	print("Writing to 'missing_masks.txt'. There are {} missing masks.".format(len(missing_masks)))
 	with open('missing_masks.txt', 'w') as file:
 		for time in missing_masks:
 			file.write(time + '\n')
+		file.close()
 
 	print("Writing to 'empty_masks.txt'. There are {} empty masks.".format(len(empty_masks)))
 	with open('empty_masks.txt', 'w') as file:
 		for time in empty_masks:
 			file.write(time + '\n')
+		file.close()

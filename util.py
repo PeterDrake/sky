@@ -91,7 +91,3 @@ def listdir_d(dir=None):
 def listdir_f(dir=None):
 	"""Returns an iterable of files in the current of a given directory."""
 	return (name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)))
-
-
-def get_stats_about_time_file(filename):
-	"""Returns a python dictionary that tells us the number of times per day for each day, as well as """
