@@ -5,7 +5,7 @@ INPUT_DIR = '/home/users/jkleiss/TSI_C1'
 OUTPUT_DIR = 'good_data'
 
 
-def why_bad_images(timestamps, input_dir=INPUT_DIR):
+def why_bad_files(timestamps, input_dir=INPUT_DIR):
 	"""Returns four sets that self describe why a file in the given list is bad."""
 	missing_mask = set()
 	empty_mask = set()
@@ -26,28 +26,6 @@ def why_bad_images(timestamps, input_dir=INPUT_DIR):
 	return missing_image, empty_image, missing_mask, empty_mask
 
 
-def why_bad_files(timestamps, input_dir=INPUT_DIR):
-	"""Returns four sets that self describe why a file in the given list is bad."""
-	bad_image = set()
-	bad_mask = set()
-	for time in timestamps:
-		mask = extract_mask_path_from_time(time, input_dir)
-		image = extract_img_path_from_time(time, input_dir)
-		if not os.path.isfile(mask) or os.path.getsize(mask) == 0:
-			bad_mask.add(time)
-		if not os.path.isfile(image) or os.path.getsize(image) == 0:
-			bad_image.add(time)
-	return bad_image, bad_mask
-
-
-def count_expected():
-	"""Counts the number of unique timestamps we expect to simplify."""
-	good_times = extract_data_from_csv("shcu_good_data.csv", "timestamp_utc")
-	blacklist, bad_image, bad_mask = why_bad_images(good_times, INPUT_DIR)
-	times = good_times - blacklist
-	return len(times)
-
-
 def count_blt():
 	"""Counts the number of unique timestamps in the BLT input directory."""
 	num_times = len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask']))
@@ -65,7 +43,7 @@ def count_actual():
 if __name__ == '__main__':
 	good_times = extract_data_from_csv("shcu_good_data.csv", "timestamp_utc")
 	print("there are {} times from the csv file".format(len(good_times)))
-	missing_images, empty_images, missing_masks, empty_masks = why_bad_images(good_times)
+	missing_images, empty_images, missing_masks, empty_masks = why_bad_files(good_times)
 
 	print("Writing to missing_images.txt. There are {} missing images".format(len(missing_images)))
 	if missing_images:
