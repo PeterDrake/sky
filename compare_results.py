@@ -69,14 +69,14 @@ if __name__ == '__main__':
 	# 		file.write(time + '\n')
 	# 	file.close()
 
-	print("Writing to 'missing_masks.txt'. There are {} missing masks.".format(len(missing_masks)))
-	with open('missing_masks.txt', 'w') as file:
-		for time in missing_masks:
+	# print("Writing to 'missing_masks.txt'. There are {} missing masks.".format(len(missing_masks)))
+	# with open('missing_masks.txt', 'w') as file:
+	# 	for time in missing_masks:
+	# 		file.write(time + '\n')
+	# 	file.close()
+
+	print("Writing to 'empty_masks.txt'. There are {} empty masks.".format(len(empty_masks)))
+	with open('empty_masks.txt', 'w') as file:
+		for time in empty_masks:
 			file.write(time + '\n')
 		file.close()
-#
-# print("Writing to 'empty_masks.txt'. There are {} empty masks.".format(len(empty_masks)))
-# with open('empty_masks.txt', 'w') as file:
-# 	for time in empty_masks:
-# 		file.write(time + '\n')
-# 	file.close()
