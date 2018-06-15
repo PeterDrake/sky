@@ -206,18 +206,6 @@ def make_batches_by_size(timestamps, batch_size=BATCH_SIZE):
 	return batches
 
 
-def read_csv_file(filename):
-	"""Reads a csv file using the pandas csv reader and returns a pandas data frame."""
-	return pd.read_csv(filename)
-
-
-def extract_times_from_csv(filename, column_header):
-	"""Returns a sorted list of timestamps from a csv file. Assumes the csv has a header for "img_name" which contains
-	the name of the file."""
-	times = pd.read_csv(filename).get(column_header)
-	return {str(t) for t in times}
-
-
 def launch_blt_simplify_task(filename):
 	"""Launches run_batch.py to preprocess the data in parallel on blt."""
 	os.system('SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(filename[4:-4], filename))

@@ -1,5 +1,7 @@
 import os
 
+import pandas as pd
+
 
 def time_to_year(time):
 	"""Time must be in the format yyyymmddhhmmss. Returns the year as a string."""
@@ -68,6 +70,19 @@ def extract_times_from_file(filename):
 			times.add(str(time))
 	return times
 
+
+def extract_times_from_csv(filename, column_header):
+	"""Returns a sorted list of timestamps from a csv file. Assumes the csv has a header for "img_name" which contains
+	the name of the file."""
+	times = pd.read_csv(filename).get(column_header)
+	return {str(t) for t in times}
+
+
+def read_csv_file(filename):
+	"""Reads a csv file using the pandas csv reader and returns a pandas data frame."""
+	return pd.read_csv(filename)
+
+
 def listdir_d(dir=None):
 	"""Returns an iterable of directories in the current or a given directory."""
 	return (name for name in os.listdir(dir) if os.path.isdir(os.path.join(dir, name)))
@@ -76,3 +91,7 @@ def listdir_d(dir=None):
 def listdir_f(dir=None):
 	"""Returns an iterable of files in the current of a given directory."""
 	return (name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)))
+
+
+def get_stats_about_time_file(filename):
+	"""Returns a python dictionary that tells us the number of times per day for each day, as well as """
