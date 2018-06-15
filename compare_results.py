@@ -51,6 +51,16 @@ if __name__ == '__main__':
 	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
 	missing_images, empty_images, missing_masks, empty_masks = why_bad_images(good_times)
 
+	print("Writing to missing_images.txt. There are {} missing images".format(missing_images))
+	with open('missing_images.txt', 'wb') as file:
+		for time in missing_images:
+			file.write(time + '\n')
+
+	print("Writing to empty_images.txt. There are {} empty images".format(empty_images))
+	with open('empty_images.txt', 'wb') as file:
+		for time in empty_images:
+			file.write(time + '\n')
+
 	print("Writing to 'missing_masks.txt'. There are {} missing masks.".format(len(missing_masks)))
 	with open('missing_masks.txt', 'wb') as file:
 		for time in missing_masks:
