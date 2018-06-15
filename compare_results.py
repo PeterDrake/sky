@@ -16,11 +16,11 @@ def why_bad_images(timestamps, input_dir=INPUT_DIR):
 		image = extract_img_path_from_time(time, input_dir)
 		if not os.path.isfile(mask):
 			missing_mask.add(time)
-		if os.path.getsize(mask) == 0:
+		elif os.path.getsize(mask) == 0:
 			empty_mask.add(time)
 		if not os.path.isfile(image):
 			missing_image.add(time)
-		if os.path.getsize(image) == 0:
+		elif os.path.getsize(image) == 0:
 			empty_image.add(time)
 	return missing_image, empty_image, missing_mask, empty_mask
 
