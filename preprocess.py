@@ -83,10 +83,11 @@ def crop_image(img):
 def create_constant_mask(color, filename):
 	"""Creates a mask where any pixels not always of color are BLUE. Saves it in filename."""
 	b_mask = np.full((480, 480, 3), color)
-	for file in os.listdir(OUTPUT_DIR + '/simplemask/'):
-		img = misc.imread(OUTPUT_DIR + '/simplemask/' + file)
-		b_mask[(img != color).any(axis=2)] = BLUE
-	Image.fromarray(b_mask.astype('uint8')).save(filename)
+	for _, _, files in os.walk(OUTPUT_DIR + '/simplemask/'):
+		for file in files:
+			img = misc.imread(OUTPUT_DIR + '/simplemask/' + file)
+			b_mask[(img != color).any(axis=2)] = BLUE
+	Image.fromarray(b_mask.astype('uint8')).save(OUTPUT_DIR + '/' + filename)
 
 
 def depth_first_search(r, c, img, visited, ever_visited, stack):
@@ -130,6 +131,7 @@ def extract_img_path_from_time(time, input_dir=INPUT_DIR):
 		if os.path.isfile(image):
 			return image
 	return str()
+
 
 def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
 	"""Extracts the path of a mask from the timestamp and input directory."""
