@@ -71,12 +71,28 @@ def extract_times_from_file(filename):
 	return times
 
 
-def extract_times_from_csv(filename, column_header):
-	"""Returns a sorted list of timestamps from a csv file. Assumes the csv has a header for "img_name" which contains
-	the name of the file."""
-	times = pd.read_csv(filename).get(column_header)
-	return {str(t) for t in times}
+def extract_data_from_csv(filename, column_header):
+	"""Returns a list of data from a csv file. Assumes the csv has headers."""
+	data = pd.read_csv(filename).get(column_header)
+	return {str(d) for d in data}
 
+
+def extract_fsc_for_dates(timestamps):
+	nan_fsc = set()
+	csv = read_csv_file("shcu_good_data.csv")
+	df = csv.set_index("timestamp_utc", drop=False)
+	# drop=False to not delete timestamp_utc column if other index set later
+	for time in timestamps:
+		fsc_value = df.loc[time, "fsc_z"]
+		if fsc_value == 0:
+			nan_fsc.add(time)
+	return nan_fsc
+
+
+# for time in timestamps:
+# 	csv.loc[csv['timestamp_utc'] == time]
+# all_fsc = extract_data_from_csv("shcu_good_data.csv", "fsc_z")
+# 	for time in empty_masks:
 
 def read_csv_file(filename):
 	"""Reads a csv file using the pandas csv reader and returns a pandas data frame."""

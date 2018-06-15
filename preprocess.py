@@ -29,7 +29,6 @@ import pickle
 from random import shuffle
 
 import numpy as np
-import pandas as pd
 from PIL import Image
 from scipy import misc
 
@@ -238,7 +237,7 @@ def preprocess(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
 	"""Launches the preprocess task, which creates the appropriate directories and creates text files to store
 	timestamps."""
 	print("Reading times from good csv file.")
-	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
+	good_times = extract_data_from_csv("shcu_good_data.csv", "timestamp_utc")
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist

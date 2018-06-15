@@ -13,11 +13,15 @@ def why_bad_images(timestamps, input_dir=INPUT_DIR):
 	empty_image = set()
 	for time in timestamps:
 		mask = extract_mask_path_from_time(time, input_dir)
+		print("mask", mask)
 		image = extract_img_path_from_time(time, input_dir)
+		print("image", image)
+		break
 		if not os.path.isfile(mask):
 			missing_mask.add(time)
 		elif os.path.getsize(mask) == 0:
 			empty_mask.add(time)
+		print("I'm here")
 		if not os.path.isfile(image):
 			missing_image.add(time)
 		elif os.path.getsize(image) == 0:
@@ -27,7 +31,7 @@ def why_bad_images(timestamps, input_dir=INPUT_DIR):
 
 def count_expected():
 	"""Counts the number of unique timestamps we expect to simplify."""
-	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
+	good_times = extract_data_from_csv("shcu_good_data.csv", "timestamp_utc")
 	blacklist, bad_image, bad_mask = why_bad_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
 	return len(times)
@@ -74,3 +78,4 @@ if __name__ == '__main__':
 	with open('empty_masks.txt', 'w') as file:
 		for time in empty_masks:
 			file.write(time + '\n')
+
