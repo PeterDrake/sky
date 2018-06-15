@@ -83,9 +83,9 @@ def crop_image(img):
 def create_constant_mask(color, filename):
 	"""Creates a mask where any pixels not always of color are BLUE. Saves it in filename."""
 	b_mask = np.full((480, 480, 3), color)
-	for _, _, files in os.walk(OUTPUT_DIR + '/simplemask/'):
+	for dirpath, subdirs, files in os.walk(OUTPUT_DIR + '/simplemask/'):
 		for file in files:
-			img = misc.imread(OUTPUT_DIR + '/simplemask/' + file)
+			img = misc.imread(os.path.join(dirpath, file))
 			b_mask[(img != color).any(axis=2)] = BLUE
 	Image.fromarray(b_mask.astype('uint8')).save(OUTPUT_DIR + '/' + filename)
 
