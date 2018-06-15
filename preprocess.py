@@ -47,18 +47,19 @@ COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
 OUTPUT_DIR = 'good_data'
+RES_DIR = 'res'
 
 # Size of each batch, should be able to specify via command-line
 BATCH_SIZE = 10000
 
 
-def create_dirs(times, output_dir=OUTPUT_DIR):
+def create_dirs(times, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
 	"""Creates directories for simpleimage and simplemask in the output_dir as well as creating subdirectories by year
 	and day for the given timestamps. Expects the input_dir and output_dir to be relative to the current working
 	directory. Pass in an iterable collection of timestamps in the yyyymmddhhmmss format."""
 	seen = {}  # yyyy, set(mmdd, ...)
 	os.makedirs("output_dir", exist_ok=True)
-	os.makedirs("res", exist_ok=True)
+	os.makedirs(res_dir, exist_ok=True)
 	for t in times:
 		year = time_to_year(t)
 		mmdd = time_to_month_and_day(t)
@@ -210,10 +211,10 @@ def read_csv_file(filename):
 	return pd.read_csv(filename)
 
 
-def extract_times_from_csv():
+def extract_times_from_csv(filename, column_header):
 	"""Returns a sorted list of timestamps from a csv file. Assumes the csv has a header for "img_name" which contains
 	the name of the file."""
-	times = pd.read_csv("shcu_good_data.csv").get("timestamp_utc")  # TODO Make these arguments
+	times = pd.read_csv(filename).get(column_header)
 	return {str(t) for t in times}
 
 
@@ -245,9 +246,11 @@ def separate_stamps(timestamps):
 	return test, valid, train
 
 
-def preprocess():
+def preprocess(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
+	"""Launches the preprocess task, which creates the appropriate directories and creates text files to store
+	timestamps."""
 	print("Reading times from good csv file.")
-	good_times = extract_times_from_csv()
+	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
@@ -258,7 +261,7 @@ def preprocess():
 	batches = make_batches_by_size(times)
 	print("Batches created. Launching simplification on batches.")
 	for i in range(len(batches)):
-		name = "res/batch" + str(i) + ".txt"
+		name = res_dir + "/batch" + str(i) + ".txt"
 		if not os.path.isfile(name):  # TODO Do we need this?
 			f = open(name, 'w')
 			print("Writing batch {} data to {}".format(i, name))

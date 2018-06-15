@@ -11,5 +11,6 @@ import os
 
 batches = os.listdir('res')
 for batch in batches:
-	os.system('SGE_Batch -r "{}" -c "python3 -u process_batch.py {}" -P 1'.format(batch[:-4], "res/" + batch))
+	os.system('SGE_Batch -r "{}" -c "python3 -u process_batch.py {}" -P 1'.format(batch[:-4],
+			"res/" + batch))  # TODO Make this more flexible.
 	print("Launched {} successfully".format(batch))

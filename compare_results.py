@@ -23,26 +23,29 @@ def why_bad_images(timestamps, input_dir=INPUT_DIR):
 
 
 def count_expected():
-	good_times = extract_times_from_csv()
+	"""Counts the number of unique timestamps we expect to simplify."""
+	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
 	blacklist, bad_image, bad_mask = why_bad_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
-	return
+	return len(times)
 
 
 def count_blt():
-	print("This is the number of files in Jessica's dir: ",
-			len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask'])))
-	return len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask']))
+	"""Counts the number of unique timestamps in the BLT input directory."""
+	num_times = len(extract_all_times(INPUT_DIR, ['/SkyImage', '/CloudMask']))
+	print("This is the number of files in Jessica's dir: ", num_times)
+	return num_times
 
 
 def count_actual():
-	print("This is the number of timestamps for which we simplify: ",
-			len(extract_all_times(OUTPUT_DIR, ['/simpleimage', '/simplemask'])))
-	return len(extract_all_times(OUTPUT_DIR, ['/simpleimage', '/simplemask']))
+	"""Counts the number of unique timestamps in the BLT target directory."""
+	num_times = len(extract_all_times(OUTPUT_DIR, ['/simpleimage', '/simplemask']))
+	print("This is the number of timestamps for which we simplify: ", num_times)
+	return num_times
 
 
 if __name__ == '__main__':
-	good_times = extract_times_from_csv()
+	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
 	blacklist, bad_images, bad_masks = why_bad_images(good_times)
 
 	print("Writing to bad_image_times.txt! There are {} timestamps corresponding to images that do not work "
