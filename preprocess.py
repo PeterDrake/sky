@@ -124,10 +124,11 @@ def find_unpaired_images(timestamps, input_dir=INPUT_DIR):
 
 def extract_img_path_from_time(time, input_dir=INPUT_DIR):
 	"""Extracts the path of an image from the timestamp and input directory."""
-	image = glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*')[
-		        0] + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
-			time) + '.jpg.' + time + '.jpg'
-	return image
+	for dir in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
+		image = dir + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+				time) + '.jpg.' + time + '.jpg'
+		if os.path.isfile(image):
+			return image
 
 
 def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
