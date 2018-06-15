@@ -8,14 +8,17 @@ OUTPUT_DIR = 'good_data'
 def why_bad_images(timestamps, input_dir=INPUT_DIR):
 	"""Blacklists files for timestamps that do not have both images and masks."""
 	bad_mask = set()
-	bad_image = set()
+	missing_image = set()
+	empty_image = set()
 	for time in timestamps:
 		mask = extract_mask_path_from_time(time, input_dir)
 		image = extract_img_path_from_time(time, input_dir)
 		if not os.path.isfile(mask) or os.path.getsize(mask) == 0:
 			bad_mask.add(time)
-		if not os.path.isfile(image) or os.path.getsize(image) == 0:
-			bad_image.add(time)
+		if not os.path.isfile(image):
+			missing_image.add(time)
+		if os.path.getsize(image) == 0:
+			empty_image.add(time)
 	return bad_image.union(bad_mask), bad_image, bad_mask
 
 
