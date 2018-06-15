@@ -38,3 +38,4 @@ def extract_times_from_files_in_directory(dir=RES_DIR):
 if __name__ == "__main__":
 	times = extract_times_from_files_in_directory()
 	separate_data(times)
+	create_constant_mask(BLACK, 'always_black_mask.png')
