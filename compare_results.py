@@ -12,16 +12,14 @@ def why_bad_images(timestamps, input_dir=INPUT_DIR):
 	missing_image = set()
 	empty_image = set()
 	for time in timestamps:
-		mask = extract_mask_path_from_time(time, input_dir)
-		print("mask", mask)
-		image = extract_img_path_from_time(time, input_dir)
-		print("image", image)
 		break
+		mask = extract_mask_path_from_time(time, input_dir)
+		image = extract_img_path_from_time(time, input_dir)
 		if not os.path.isfile(mask):
 			missing_mask.add(time)
 		elif os.path.getsize(mask) == 0:
 			empty_mask.add(time)
-		print("I'm here")
+
 		if not os.path.isfile(image):
 			missing_image.add(time)
 		elif os.path.getsize(image) == 0:
@@ -53,11 +51,8 @@ def count_actual():
 
 if __name__ == '__main__':
 	good_times = extract_data_from_csv("shcu_good_data.csv", "timestamp_utc")
+	print("there are {} times from the csv file".format(len(good_times)))
 	missing_images, empty_images, missing_masks, empty_masks = why_bad_images(good_times)
-
-	# for e in missing_images:
-	# 	print(type(e))  # Just a sanity check. Expecting 'str'
-	# 	break
 
 	print("Writing to missing_images.txt. There are {} missing images".format(len(missing_images)))
 	with open('missing_images.txt', 'w') as file:
