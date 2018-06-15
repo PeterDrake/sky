@@ -7,19 +7,22 @@ OUTPUT_DIR = 'good_data'
 
 def why_bad_images(timestamps, input_dir=INPUT_DIR):
 	"""Blacklists files for timestamps that do not have both images and masks."""
-	bad_mask = set()
+	missing_mask = set()
+	empty_mask = set()
 	missing_image = set()
 	empty_image = set()
 	for time in timestamps:
 		mask = extract_mask_path_from_time(time, input_dir)
 		image = extract_img_path_from_time(time, input_dir)
-		if not os.path.isfile(mask) or os.path.getsize(mask) == 0:
-			bad_mask.add(time)
+		if not os.path.isfile(mask):
+			missing_mask.add(time)
+		if os.path.getsize(mask) == 0:
+			empty_mask.add(time)
 		if not os.path.isfile(image):
 			missing_image.add(time)
 		if os.path.getsize(image) == 0:
 			empty_image.add(time)
-	return bad_image.union(bad_mask), bad_image, bad_mask
+	return missing_image, empty_image, missing_mask, empty_mask
 
 
 def count_expected():
@@ -46,19 +49,4 @@ def count_actual():
 
 if __name__ == '__main__':
 	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
-	blacklist, bad_images, bad_masks = why_bad_images(good_times)
-
-	print("Writing to bad_image_times.txt! There are {} timestamps corresponding to images that do not work "
-	      "well.".format(len(bad_images)))
-	with open("bad_image_times.txt", 'w') as img_file:
-		img_file.writelines("%s\n" % img for img in bad_images)
-
-	print("Writing to bad_mask_times.txt! There are {} timestamps corresponding to masks that do not work "
-	      "well.".format(len(bad_masks)))
-	with open("bad_mask_times.txt", 'w') as mask_file:
-		mask_file.writelines("%s\n" % mask for mask in bad_masks)
-
-	print("Writing to bad_times.txt! There are {} timestamps corresponding to masks or images that do not work "
-	      "well.".format(len(blacklist)))
-	with open("bad_times.txt", 'w') as bad_file:
-		bad_file.writelines("%s\n" % time for time in blacklist)
+	missing_images, empty_images, missing_masks, empty_masks = why_bad_images(good_times)
