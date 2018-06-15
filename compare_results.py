@@ -50,3 +50,13 @@ def count_actual():
 if __name__ == '__main__':
 	good_times = extract_times_from_csv("shcu_good_data.csv", "timestamp_utc")
 	missing_images, empty_images, missing_masks, empty_masks = why_bad_images(good_times)
+
+	print("Writing to 'missing_masks.txt'. There are {} missing masks.".format(len(missing_masks)))
+	with open('missing_masks.txt', 'wb') as file:
+		for time in missing_masks:
+			file.write(time + '\n')
+
+	print("Writing to 'empty_masks.txt'. There are {} empty masks.".format(len(empty_masks)))
+	with open('empty_masks.txt', 'wb') as file:
+		for time in empty_masks:
+			file.write(time + '\n')
