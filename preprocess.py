@@ -129,7 +129,7 @@ def extract_img_path_from_time(time, input_dir=INPUT_DIR):
 				time) + '.jpg.' + time + '.jpg'
 		if os.path.isfile(image):
 			return image
-	return "-1"
+	return str()
 
 def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
 	"""Extracts the path of a mask from the timestamp and input directory."""
