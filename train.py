@@ -46,7 +46,7 @@ def build_net(layer_info):
     """Builds a network given command-line layer info."""
     print("Building network")
     tf.reset_default_graph()
-    b_mask = color_mask(misc.imread('data/always_black_mask.png'),
+    b_mask = color_mask(misc.imread('good_data/always_black_mask.png'),
                         index_of(BLACK, COLORS))
     x = tf.placeholder(tf.float32, [None, 480, 480, 3])
     num_layers = len(layer_info)
