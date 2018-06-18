@@ -12,11 +12,11 @@ def separate_data(timestamps):
 	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
 	train.stamps."""
 	test, valid, train = separate_stamps(timestamps)
-	with open('test.stamps', 'wb') as f:
+	with open(OUTPUT_DIR + '/test.stamps', 'wb') as f:
 		pickle.dump(test, f)
-	with open('valid.stamps', 'wb') as f:
+	with open(OUTPUT_DIR + '/valid.stamps', 'wb') as f:
 		pickle.dump(valid, f)
-	with open('train.stamps', 'wb') as f:
+	with open(OUTPUT_DIR + '/train.stamps', 'wb') as f:
 		pickle.dump(train, f)
 	return test, valid, train
 
@@ -36,10 +36,10 @@ def extract_times_from_files_in_directory(dir=RES_DIR):
 	times = set()
 	for file in os.listdir(dir):
 		times.update(extract_times_from_file(dir + '/' + file))
-	return times
+	return {t.strip('\n') for t in times}
 
 
 if __name__ == "__main__":
 	times = extract_times_from_files_in_directory()
 	separate_data(times)
-	create_constant_mask(BLACK, 'always_black_mask.png')
+	create_constant_mask(BLACK, OUTPUT_DIR + '/always_black_mask.png')
