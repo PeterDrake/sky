@@ -136,7 +136,7 @@ def extract_img_path_from_time_old(time, input_dir=INPUT_DIR):
 def extract_img_path_from_time(time, input_dir=INPUT_DIR):
 	"""Extracts the path of an image from the timestamp and input directory."""
 	return input_dir + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(
-			time) + '/' + time + '.jpg'
+			time) + '/simpleimage' + time + '.jpg'
 
 
 def extract_mask_path_from_time_old(time, input_dir=INPUT_DIR):
@@ -150,7 +150,7 @@ def extract_mask_path_from_time_old(time, input_dir=INPUT_DIR):
 def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
 	"""Extracts the path of an image from the timestamp and input directory."""
 	return input_dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(
-			time) + '/' + time + '.png'
+			time) + '/simplemask' + time + '.png'
 
 
 def remove_white_sun(img, stride=10):
