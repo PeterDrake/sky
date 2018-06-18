@@ -12,8 +12,8 @@ def why_bad_files(timestamps, input_dir=INPUT_DIR):
 	missing_image = set()
 	empty_image = set()
 	for time in timestamps:
-		mask = extract_mask_path_from_time(time, input_dir)
-		image = extract_img_path_from_time(time, input_dir)
+		mask = extract_mask_path_from_time_old(time, input_dir)
+		image = extract_img_path_from_time_old(time, input_dir)
 		if not os.path.isfile(mask):
 			missing_mask.add(time)
 		elif os.path.getsize(mask) == 0:

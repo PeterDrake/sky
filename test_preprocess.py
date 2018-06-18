@@ -1,5 +1,6 @@
 import unittest
 from shutil import rmtree
+
 from preprocess import *
 
 
@@ -36,13 +37,13 @@ class TestPreprocess(unittest.TestCase):
 		path = self.INPUT_DIR + '/CloudMask/sgptsicldmaskC1.a1.20131118/' + \
 		       'sgptsicldmaskC1.a1.20131118.133230.png.20131118133230.png'
 		time = '20131118133230'
-		self.assertEqual(path, extract_mask_path_from_time(time, self.INPUT_DIR))
+		self.assertEqual(path, extract_mask_path_from_time_old(time, self.INPUT_DIR))
 
 	def test_image_path_extracted_from_time(self):
 		path = self.INPUT_DIR + '/SkyImage/sgptsiskyimageC1.a1.20131118.131600/' + \
 		       'sgptsiskyimageC1.a1.20131118.133000.jpg.20131118133000.jpg'
 		time = '20131118133000'
-		self.assertEqual(path, extract_img_path_from_time(time, self.INPUT_DIR))
+		self.assertEqual(path, extract_img_path_from_time_old(time, self.INPUT_DIR))
 
 	def test_remove_white_sun(self):
 		img = np.array([[BLACK, BLUE, BLACK, BLACK, BLACK, BLACK, BLACK],

@@ -114,8 +114,8 @@ def find_unpaired_images(timestamps, input_dir=INPUT_DIR):
 	"""Blacklists files for timestamps that do not have both images and masks."""
 	blacklist = set()
 	for time in timestamps:
-		mask = extract_mask_path_from_time(time, input_dir)
-		image = extract_img_path_from_time(time, input_dir)
+		mask = extract_mask_path_from_time_old(time, input_dir)
+		image = extract_img_path_from_time_old(time, input_dir)
 		if not os.path.isfile(mask) or not os.path.isfile(image):
 			blacklist.add(time)
 		elif os.path.getsize(mask) == 0 or os.path.getsize(image) == 0:
@@ -123,7 +123,7 @@ def find_unpaired_images(timestamps, input_dir=INPUT_DIR):
 	return blacklist
 
 
-def extract_img_path_from_time(time, input_dir=INPUT_DIR):
+def extract_img_path_from_time_old(time, input_dir=INPUT_DIR):
 	"""Extracts the path of an image from the timestamp and input directory."""
 	for dir in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
 		image = dir + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
@@ -133,12 +133,24 @@ def extract_img_path_from_time(time, input_dir=INPUT_DIR):
 	return str()
 
 
-def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
+def extract_img_path_from_time(time, input_dir=INPUT_DIR):
+	"""Extracts the path of an image from the timestamp and input directory."""
+	return input_dir + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(
+		time) + '/' + time + '.jpg'
+
+
+def extract_mask_path_from_time_old(time, input_dir=INPUT_DIR):
 	"""Extracts the path of a mask from the timestamp and input directory."""
 	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
 			time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
 			time) + '.png.' + time + '.png'
 	return mask
+
+
+def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
+	"""Extracts the path of an image from the timestamp and input directory."""
+	return input_dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(
+		time) + '/' + time + '.png'
 
 
 def remove_white_sun(img, stride=10):
@@ -174,7 +186,7 @@ def mask_save_path(time, dir):
 
 def simplify_image(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 	"""Writes simplified versions of mask to simplemask."""
-	img_path = extract_img_path_from_time(timestamp, input_dir)
+	img_path = extract_img_path_from_time_old(timestamp, input_dir)
 	img = misc.imread(img_path)
 	img = crop_image(img)
 	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
@@ -183,7 +195,7 @@ def simplify_image(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 
 def simplify_mask(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
 	"""Writes simplified versions of mask to simplemask. """
-	mask_path = extract_mask_path_from_time(timestamp, input_dir)
+	mask_path = extract_mask_path_from_time_old(timestamp, input_dir)
 	mask = misc.imread(mask_path)
 	mask = crop_image(mask)
 	if (mask == YELLOW).all(axis=2).any():
