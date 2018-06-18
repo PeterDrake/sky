@@ -302,7 +302,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy,
 			j = 0
 			for i in range(1, TRAINING_STEPS + 1):
 				j += 1
-				if (j * BATCH_SIZE >= len(train_stamps)):
+				if j * BATCH_SIZE >= len(train_stamps):
 					j = 1
 				batch = train_stamps[(j - 1) * BATCH_SIZE: j * BATCH_SIZE]
 				inputs = load_inputs(batch)
@@ -332,6 +332,4 @@ if __name__ == '__main__':
 	out_dir = 'results/' + job_number + '/'
 	os.makedirs(out_dir, exist_ok=True)
 	save_params(job_number, layer_info, out_dir)
-	train_net(*build_net(layer_info),
-			*load_validation_batch(BATCH_SIZE),
-			out_dir)
+	train_net(*build_net(layer_info), *load_validation_batch(BATCH_SIZE), out_dir)
