@@ -35,6 +35,7 @@ import math
 import time
 import pickle
 import subprocess
+from preprocess import *
 from preprocess_old import BLUE, BLACK, GREEN, COLORS
 
 # Training parameters
@@ -42,11 +43,13 @@ BATCH_SIZE = 50
 LEARNING_RATE = 0.0001
 TRAINING_STEPS = 2000
 
+INPUT_DIR = "good_data"
+
 def build_net(layer_info):
     """Builds a network given command-line layer info."""
     print("Building network")
     tf.reset_default_graph()
-    b_mask = color_mask(misc.imread('good_data/always_black_mask.png'),
+    b_mask = color_mask(misc.imread(INPUT_DIR + '/always_black_mask.png'),
                         index_of(BLACK, COLORS))
     x = tf.placeholder(tf.float32, [None, 480, 480, 3])
     num_layers = len(layer_info)
@@ -153,8 +156,9 @@ def load_inputs(stamps):
     row, column, color."""
     inputs = np.empty((len(stamps), 480, 480, 3))
     for i, s in enumerate(stamps):
-        inputs[i] = np.array(misc.imread('data/simpleimage/simpleimage' +
-                             str(s) + '.jpg'))
+	    # inputs[i] = np.array(misc.imread(INPUT_DIR + '/simpleimage/simpleimage' +
+	    #                      str(s) + '.jpg'))
+	    inputs[i] = np.array(misc.imread(extract_img_path_from_time(s, INPUT_DIR)))
     return inputs
 
 def load_masks(stamps):
@@ -164,9 +168,7 @@ def load_masks(stamps):
     single vector."""
     masks = np.empty((len(stamps), 480, 480))
     for i, s in enumerate(stamps):
-        masks[i] = mask_to_index(np.array(
-                   misc.imread('data/simplemask/simplemask'
-                               + str(s) + '.png')))
+	    masks[i] = mask_to_index(np.array(misc.imread(extract_mask_path_from_time(s, INPUT_DIR))))
     return masks.reshape((-1))
 
 def load_validation_batch(n):
@@ -180,7 +182,7 @@ def load_validation_batch(n):
 def load_validation_stamps(n):
     """Reads the valid.stamps file in data and returns a list of the first
     n stamps."""
-    with open('data/valid.stamps', 'rb') as f:
+    with open(INPUT_DIR + '/valid.stamps', 'rb') as f:
         return pickle.load(f)[:n]
 
 def mask_layer(last_layer, b_mask):
@@ -274,7 +276,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy,
     print("Training network")
     start = time.time()
     # Get image and make the mask into a one-hotted mask
-    with open('data/train.stamps', 'rb') as f:
+    with open(INPUT_DIR + '/train.stamps', 'rb') as f:
         train_stamps = pickle.load(f)
     with open(result_dir + 'output.txt', 'w') as f:
         with tf.Session() as sess:
@@ -311,7 +313,7 @@ if __name__ == '__main__':
     job_number = sys.argv[1]
     layer_info = sys.argv[2::]
     out_dir = 'results/' + job_number + '/'
-    os.makedirs(out_dir)
+    os.makedirs(out_dir, exist_ok=True)
     save_params(job_number, layer_info, out_dir)
     train_net(*build_net(layer_info),
               *load_validation_batch(BATCH_SIZE),
