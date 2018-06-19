@@ -13,10 +13,12 @@ if __name__ == "__main__":
 	for ext in sub_folders:
 		files.append(base_folder + ext + "/output.txt")
 
+
 	while True:
 		for file in files:
 			with open(file, 'r') as f:
 				print(file)
-				print(f.readlines()[-1].strip('\n'))
+				line = f.readlines()[-1].strip('\n')
+				print(line[1])
 		print()
 		time.sleep(10)
