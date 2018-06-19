@@ -10,7 +10,7 @@ from scipy import misc
 from preprocess import *
 
 
-# TODO: Make sure fsc is easily computed from simplified masks
+# DONE: Make sure fsc is easily computed from simplified masks
 # TODO: Grab fsc info from shcu_good_data csv file (and possibly other files in the future)
 # TODO: Read in some new masks from our network in good_data
 
@@ -33,6 +33,15 @@ def show_skymask(timestamp, mask=None):
 		mask = get_simple_mask(timestamp)
 	mask_image = Image.fromarray(mask.astype('uint8'))
 	mask_image.show()
+
+
+def find_center(mask):
+	""" Returns the center of the locations of the first and last non-black pixels and the difference in
+	height between them."""
+	t, b, l, r = find_circle_boundary(mask)
+	r_vertical = (b - t) / 2
+	r_horizontal = (r - l) / 2
+	return ((t + b) / 2, (l + r) / 2), (r_vertical + r_horizontal) / 2
 
 
 def find_circle_boundary(mask):
@@ -81,15 +90,6 @@ def find_circle_boundary(mask):
 	return answer
 
 
-def find_center(mask):
-	""" Returns the center of the locations of the first and last non-black pixels and the difference in
-	height between them."""
-	t, b, l, r = find_circle_boundary(mask)
-	r_vertical = (b - t) / 2
-	r_horizontal = (r - l) / 2
-	return ((t + b) / 2, (l + r) / 2), (r_vertical + r_horizontal) / 2
-
-
 def get_fsc(mask, threshold=0.645):
 	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
 	sky_pixels = 0
@@ -123,8 +123,8 @@ def get_whole_fsc(timestamp, mask=None):
 	sky_pixels = 0
 	cloud_pixels = 0
 	thin_pixels = 0
-	t, b, l, r = find_circle_boundary(timestamp, mask)
-	center, rad = find_center(timestamp, mask)
+	t, b, l, r = find_circle_boundary(mask)
+	center, rad = find_center(mask)
 	for i in range(t, b + 1):
 		for j in range(l, r + 1):
 			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > rad ** 2:
