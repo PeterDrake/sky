@@ -15,17 +15,23 @@ Created on Thu Jun 15 15:32:13 2017
 @author: jeffmullins
 """
 
-from train import build_net, load_inputs, BATCH_SIZE, load_validation_stamps
-from show_output import out_to_image, read_parameters, \
-    read_last_iteration_number, show_output
-import numpy as np
 import sys
+
+import matplotlib
+import numpy as np
 import tensorflow as tf
 from PIL import Image
 from scipy import misc
-import matplotlib
+
+from preprocess import *
+from show_output import out_to_image, read_parameters, \
+	read_last_iteration_number, show_output
+from train import build_net, load_inputs, BATCH_SIZE, load_validation_stamps
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+INPUT_DIR = 'good_data'
 
 def disagreement_rate(output, target):
     """Returns the proportion of pixels in output that disagree with target."""
@@ -59,8 +65,7 @@ def find_worst_results(num_worst, time_stamps, directory, step_version, layer_in
 def read_target(timestamp):
     """Reads and returns the target mask corresponding to timestamps from
     the simplemask directory."""
-    return np.array(misc.imread('data/simplemask/simplemask' + str(timestamp)
-                                + '.png'))
+    return np.array(misc.imread(extract_mask_path_from_time(timestamp, INPUT_DIR)))
 
 def read_targets(timestamps):
     """Reads and returns the target masks corresponding to timestamps from
@@ -82,7 +87,7 @@ def run_stamps(saver, x, y, result_dir, iteration, stamps):
 def show_sky_images(timestamps):
     """Shows the input images for timestamps."""
     for s in timestamps:
-        Image.fromarray(np.array(misc.imread('data/simpleimage/simpleimage' + str(s) + '.jpg'))).show()
+	    Image.fromarray(np.array(misc.imread(extract_mask_path_from_time(s, INPUT_DIR)))).show()
 
 if __name__ == '__main__':
     timestamps = load_validation_stamps(BATCH_SIZE)
