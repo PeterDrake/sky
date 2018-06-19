@@ -7,13 +7,25 @@ Finds the zenith area of TSI skymasks
 import numpy as np
 from PIL import Image
 from scipy import misc
+from preprocess import *
 
 
-def get_mask(timestamp):
+# TODO: Make sure fsc is easily computed from simplified masks
+# TODO: Grab fsc info from shcu_good_data csv file (and possibly other files in the future)
+# TODO: Read in some new masks from our network in good_data
+
+# TODO: Loosely compare between the different methods. The csv info should agree with the simplified masks,
+# hopefully the network outputs as well.
+# TODO: Be able to display simple masks and network output for images with the most disagreement
+
+
+# TODO: Look into reading this as a uint8 image
+def get_mask(timestamp, input_dir='good_data'):
 	""" Returns the mask of a given timestamp in the simplemask data directory. Does not handle exceptions."""
-	return np.array(misc.imread(
-		'data/simplemask/simplemask' + str(timestamp) + '.png'))  # TODO: Look into reading this as a uint8 image
-
+	try:
+		return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))  # Good_data type of format
+	except OSError:
+		print("Error reading in file. Are you sure {} has an existing mask in the input directory?")
 
 def show_skymask(timestamp, mask=None):
 	""" Shows the mask for a given timestamp, alternatively can show a given mask."""
@@ -38,7 +50,6 @@ def find_circle_boundary(timestamp, mask=None):
 				answer += [i]
 				flag = True
 				break
-
 	# Bottom
 	flag = False
 	for i in range(mask.shape[0] - 1, -1, -1):
@@ -147,6 +158,7 @@ def get_whole_fsc(timestamp, mask=None):
 	total = sky_pixels + cloud_pixels + thin_pixels
 	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
+
 # def get_fsc2(mask):
 # 	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
 # 	sky_pixels = 0
@@ -170,18 +182,19 @@ def get_whole_fsc(timestamp, mask=None):
 
 
 if __name__ == '__main__':
-	stamp = 20160414162830
-	# stamp = 20160530192700
-	mask = get_mask(stamp)
-	show_skymask(stamp)
-
-	# new_mask = get_pixels_in_center(stamp, mask)
-	# fsc = get_fsc2(new_mask)
-	# print(fsc)
-	# show_skymask(stamp, new_mask)
-
-	fsc1, fsc2 = get_fsc(stamp, mask)
-	print(fsc1, fsc2)
-
-	fsc1, fsc2 = get_whole_fsc(stamp, mask)
-	print(fsc1, fsc2)
+	pass
+# stamp = 20160414162830
+# # stamp = 20160530192700
+# mask = get_mask(stamp)
+# show_skymask(stamp)
+#
+# # new_mask = get_pixels_in_center(stamp, mask)
+# # fsc = get_fsc2(new_mask)
+# # print(fsc)
+# # show_skymask(stamp, new_mask)
+#
+# fsc1, fsc2 = get_fsc(stamp, mask)
+# print(fsc1, fsc2)
+#
+# fsc1, fsc2 = get_whole_fsc(stamp, mask)
+# print(fsc1, fsc2)
