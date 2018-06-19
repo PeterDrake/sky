@@ -8,6 +8,7 @@ import numpy as np
 from PIL import Image
 from scipy import misc
 from preprocess import *
+from analyze import *
 
 
 # DONE: Make sure fsc is easily computed from simplified masks
@@ -27,12 +28,27 @@ def get_simple_mask(timestamp, input_dir='good_data'):
 	return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))
 
 
-def show_skymask(timestamp, mask=None):
+def get_network_mask(timestamp, exp_label):
+	"""Returns the mask of a given timestamp from the network's output."""
+	network_dir = "results/" + exp_label + "/"
+	args = read_parameters(network_dir)
+	step_version = read_last_iteration_number(network_dir)
+	layer_info = args['Layer info'].split()
+	_, _, saver, _, x, y, _, _ = build_net(layer_info)
+	with tf.Session() as sess:
+		saver.restore(sess, network_dir + 'weights-' + str(step_version))
+		img = load_inputs(timestamp)
+		mask = out_to_image(y.eval(feed_dict={x: img}))
+	return mask
+
+
+def show_skymask(mask, save_instead=False, save_path=None):
 	""" Shows the mask for a given timestamp, alternatively can show a given mask."""
-	if mask is None:
-		mask = get_simple_mask(timestamp)
 	mask_image = Image.fromarray(mask.astype('uint8'))
-	mask_image.show()
+	if not save_instead:
+		mask_image.show()
+	else:
+		mask_image.save(save_path)
 
 
 def find_center(mask):
@@ -116,10 +132,8 @@ def get_fsc(mask, threshold=0.645):
 	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
 
-def get_whole_fsc(timestamp, mask=None):
+def get_whole_fsc(mask):
 	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
-	if mask is None:
-		mask = get_simple_mask(timestamp)
 	sky_pixels = 0
 	cloud_pixels = 0
 	thin_pixels = 0
