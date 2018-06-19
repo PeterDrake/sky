@@ -15,7 +15,7 @@ from preprocess import *
 # TODO: Read in some new masks from our network in good_data
 
 # TODO: Loosely compare between the different methods. The csv info should agree with the simplified masks,
-# hopefully the network outputs as well.
+# TODO: hopefully the network outputs as well.
 # TODO: Be able to display simple masks and network output for images with the most disagreement
 
 
