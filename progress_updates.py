@@ -18,4 +18,5 @@ if __name__ == "__main__":
 			with open(file, 'r') as f:
 				print(file)
 				print(f.readlines()[-1])
+				print()
 		time.sleep(10)
