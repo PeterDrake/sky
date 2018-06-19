@@ -16,5 +16,6 @@ if __name__ == "__main__":
 	while True:
 		for file in files:
 			with open(file, 'r') as f:
+				print(file)
 				print(f.readlines()[-1])
 		time.sleep(10)
