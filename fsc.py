@@ -13,7 +13,8 @@ from analyze import *
 
 # DONE: Make sure fsc is easily computed from simplified masks
 # TODO: Grab fsc info from shcu_good_data csv file (and possibly other files in the future)
-# TODO: Read in some new masks from our network in good_data
+# DONE?: Read in some new masks from our network in good_data
+
 
 # TODO: Loosely compare between the different methods. The csv info should agree with the simplified masks,
 # TODO: hopefully the network outputs as well.
@@ -158,4 +159,6 @@ def get_whole_fsc(mask):
 
 
 if __name__ == '__main__':
-	pass
+	test_time = '20120501170000'
+	mask = get_simple_mask(test_time)
+	show_skymask(mask, save_instead=True, save_path='simplemasktest1.png')
