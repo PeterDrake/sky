@@ -19,6 +19,7 @@ if __name__ == "__main__":
 			with open(file, 'r') as f:
 				print(file)
 				line = f.readlines()[-1].strip('\n').split()
-				print(line[0])
+				print("{}%".format(int(line[0]) / 20))
+				print(line)
 		print()
 		time.sleep(30)
