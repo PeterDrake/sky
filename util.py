@@ -104,11 +104,6 @@ def extract_ceilometer_fsc_for_date(timestamp):
 	return (math.floor(df.loc[timestamp, "cf_tot"] * 10 ** 6)) / 10 ** 6
 
 
-# for time in timestamps:
-# 	csv.loc[csv['timestamp_utc'] == time]
-# all_fsc = extract_data_from_csv("shcu_good_data.csv", "fsc_z")
-# 	for time in empty_masks:
-
 def read_csv_file(filename):
 	"""Reads a csv file using the pandas csv reader and returns a pandas data frame."""
 	return pd.read_csv(filename)
