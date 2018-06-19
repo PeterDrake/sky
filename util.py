@@ -1,3 +1,4 @@
+import math
 import os
 
 import pandas as pd
@@ -77,7 +78,7 @@ def extract_data_from_csv(filename, column_header):
 	return {str(d) for d in data}
 
 
-def extract_fsc_for_dates(timestamps):
+def extract_tsi_fsc_for_bad_dates(timestamps):
 	nan_fsc = set()
 	csv = read_csv_file("shcu_good_data.csv")
 	df = csv.set_index("timestamp_utc", drop=False)
@@ -87,6 +88,20 @@ def extract_fsc_for_dates(timestamps):
 		if fsc_value == 0:
 			nan_fsc.add(time)
 	return nan_fsc
+
+
+def extract_tsi_fsc_for_date(timestamp):
+	csv = read_csv_file("shcu_good_data.csv")
+	df = csv.set_index("timestamp_utc", drop=False)
+	# drop=False to not delete timestamp_utc column if other index set later
+	return (math.floor(df.loc[timestamp, "fsc_z"] * 10 ** 6)) / 10 ** 6
+
+
+def extract_ceilometer_fsc_for_date(timestamp):
+	csv = read_csv_file("shcu_good_data.csv")
+	df = csv.set_index("timestamp_utc", drop=False)
+	# drop=False to not delete timestamp_utc column if other index set later
+	return (math.floor(df.loc[timestamp, "cf_tot"] * 10 ** 6)) / 10 ** 6
 
 
 # for time in timestamps:

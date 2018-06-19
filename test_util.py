@@ -1,4 +1,5 @@
 import unittest
+
 from util import *
 
 
@@ -42,3 +43,13 @@ class TestUtil(unittest.TestCase):
 		files = [mask_path + m for m in masks] + [image_path + i for i in images]
 		actual = {'20131118133200', '20131118133230', '20131118133300'}
 		self.assertEqual(actual, extract_times_from_filenames(files))
+
+	def test_extract_tsi_fsc_from_csv(self):
+		self.assertEqual(0.300045, extract_tsi_fsc_for_date(20120501170900))
+		self.assertEqual(0.256652, extract_tsi_fsc_for_date(20120501170230))
+		self.assertEqual(0.530595, extract_tsi_fsc_for_date(20120501170500))
+
+	def test_extract_ceilometer_fsc_from_csv(self):
+		self.assertEqual(0.368888, extract_ceilometer_fsc_for_date(20120501170900))
+		self.assertEqual(0.44, extract_ceilometer_fsc_for_date(20120501170230))
+		self.assertEqual(0.431111, extract_ceilometer_fsc_for_date(20120501170500))
