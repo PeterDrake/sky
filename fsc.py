@@ -162,4 +162,4 @@ if __name__ == '__main__':
 	test_time = '20120501170000'
 	# mask = get_simple_mask(test_time)
 	mask = get_network_mask(test_time, 'e70-02')
-	show_skymask(mask, save_instead=True, save_path='simplemasktest1.png')
+	show_skymask(mask, save_instead=True, save_path='simplemasktest2.png')
