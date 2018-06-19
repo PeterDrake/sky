@@ -39,7 +39,7 @@ def get_network_mask(timestamp, exp_label):
 	with tf.Session() as sess:
 		saver.restore(sess, network_dir + 'weights-' + str(step_version))
 		img = load_inputs([timestamp])
-		mask = out_to_image(y.eval(feed_dict={x: img}))
+		mask = out_to_image(y.eval(feed_dict={x: img}))[0]
 	return mask
 
 
