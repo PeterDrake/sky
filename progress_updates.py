@@ -17,7 +17,6 @@ if __name__ == "__main__":
 		for file in files:
 			with open(file, 'r') as f:
 				print(file)
-				print(f.readlines()[-1].strip('\n')[0])
 				print(f.readlines()[-1].strip('\n'))
 		print()
 		time.sleep(10)
