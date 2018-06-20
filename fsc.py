@@ -150,7 +150,7 @@ def get_fsc(mask, threshold=0.645):
 def save_network_mask(timestamp, exp_label, mask=None):
 	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
 	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
-	if mask is not None:
+	if mask is None:
 		mask = get_network_mask(timestamp, exp_label)
 	path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
 			timestamp) + '/'
