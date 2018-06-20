@@ -131,6 +131,8 @@ def get_fsc(mask, threshold=0.645):
 
 
 def save_network_masks(timestamp, exp_label):
+	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
+	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
 	mask = get_network_mask(timestamp, exp_label)
 	path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
 			timestamp) + '/'
@@ -139,11 +141,15 @@ def save_network_masks(timestamp, exp_label):
 	show_skymask(mask, save_instead=True, save_path=path + file)
 
 
-def get_fsc_from_file(file):
+def get_fsc_from_file(filename):
 	"""Computes the fractional sky cover given a filepath."""
-	# TODO: Load the mask from a file (should already have a method for this)
-	# TODO: Compute the fractional sky cover, use get_fsc() for this.
-	pass
+	# Load the mask from a file (should already have a method for this)
+	if "simplemask" in filename:
+		mask = get_simple_mask(extract_timestamp(filename))
+	if "networkmask" in filename:
+		mask = get_network_mask(extract_timestamp(filename), extract_exp_label(filename))
+	# Compute the fractional sky cover, use get_fsc() for this.
+	return get_fsc(mask)
 
 if __name__ == '__main__':
 	times = extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')
@@ -152,4 +158,5 @@ if __name__ == '__main__':
 	exp_labels = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
 	for t in times:
 		for i in exp_labels:
+			os.makedirs('results/' + i + '/masks/' + time_to_year(t), exist_ok=True)
 			save_network_masks(t, i)

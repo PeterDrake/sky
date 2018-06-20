@@ -30,6 +30,10 @@ class TestUtil(unittest.TestCase):
 		self.assertEqual('20150208093000',
 				extract_timestamp('sgptsiskyimageC1.a1.20150208.093000.jpg.20150208093000.jpg'))
 
+	def test_exp_label_is_extracted_from_filename(self):
+		self.assertEqual('e70-00', extract_exp_label('networkmask_e70-00.20160411234030.png'))
+		self.assertEqual('e70-01', extract_exp_label('networkmask_e70-01.20150208093000.png'))
+
 	def test_all_timestamps_are_extracted(self):
 		self.assertEqual(20, len(extract_all_times(self.INPUT_DIR, ['/SkyImage', '/CloudMask'])))
 
