@@ -1,4 +1,3 @@
-from util import extract_data_from_csv
 import os
 
 exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04']
