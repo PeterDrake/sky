@@ -5,7 +5,7 @@ Finds the zenith area of TSI skymasks
 """
 
 import random
-
+import sys
 from analyze import *
 
 
@@ -171,9 +171,8 @@ def get_fsc_from_file(filename):
 
 
 if __name__ == '__main__':
-	times = extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')
-	times = random.sample(times, 5)
-
-	exp_labels = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
-	for label in exp_labels:
-		masks = get_network_masks(times, label)
+	exp_label = sys.argv[1]  # The experiment number / directory name in results
+	start = int(sys.argv[2])  # The starting index of the timestamp in the shcu_good_data.csv file to consider
+	finish = int(sys.argv[3])  # Final timestamp to consider
+	times = extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')[start:finish]
+	masks = get_network_masks(times, exp_label)
