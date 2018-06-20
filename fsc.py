@@ -64,8 +64,7 @@ def find_circle_boundary(mask):
 	""" Finds the first non-black pixel in all cardinal directions."""
 	answer = []
 	flag = False
-	# Top
-	for i in range(mask.shape[0]):
+	for i in range(mask.shape[0]):  # Top
 		if flag:
 			break
 		for j in range(mask.shape[1]):
@@ -73,9 +72,8 @@ def find_circle_boundary(mask):
 				answer += [i]
 				flag = True
 				break
-	# Bottom
 	flag = False
-	for i in range(mask.shape[0] - 1, -1, -1):
+	for i in range(mask.shape[0] - 1, -1, -1):  # Bottom
 		if flag:
 			break
 		for j in range(mask.shape[1]):
@@ -83,9 +81,8 @@ def find_circle_boundary(mask):
 				answer += [i]
 				flag = True
 				break
-	# Left
 	flag = False
-	for j in range(mask.shape[1]):
+	for j in range(mask.shape[1]):  # Left
 		if flag:
 			break
 		for i in range(mask.shape[0]):
@@ -93,9 +90,8 @@ def find_circle_boundary(mask):
 				answer += [j]
 				flag = True
 				break
-	# Right
 	flag = False
-	for j in range(mask.shape[1] - 1, -1, -1):
+	for j in range(mask.shape[1] - 1, -1, -1):  # Right
 		if flag:
 			break
 		for i in range(mask.shape[0]):
@@ -107,7 +103,9 @@ def find_circle_boundary(mask):
 
 
 def get_fsc(mask, threshold=0.645):
-	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
+	""" Computes the fractional sky cover from a given mask. By default, computes these values in the zenith region.
+	Specify zenith ratio by changing threshold between 0 and 1. Returns total sky cover, opaque sky cover,
+	thin sky cover. """
 	sky_pixels = 0
 	cloud_pixels = 0
 	thin_pixels = 0
@@ -132,62 +130,26 @@ def get_fsc(mask, threshold=0.645):
 	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
 
-def get_whole_fsc(mask):
-	""" Computes the fractional sky cover from a given mask. Returns total sky cover, opaque sky cover."""
-	sky_pixels = 0
-	cloud_pixels = 0
-	thin_pixels = 0
-	t, b, l, r = find_circle_boundary(mask)
-	center, rad = find_center(mask)
-	for i in range(t, b + 1):
-		for j in range(l, r + 1):
-			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > rad ** 2:
-				# mask[i, j] = [0, 0, 0] # Uncomment this to show the portion used to calculate fsc
-				continue
-			color = tuple(mask[i, j])
-			if color == (0, 0, 0) or color == (0, 255, 0):
-				continue
-			elif color == (0, 0, 255):
-				sky_pixels += 1
-			elif color == (255, 255, 255):
-				cloud_pixels += 1
-			else:
-				thin_pixels += 1
-	total = sky_pixels + cloud_pixels + thin_pixels
-	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
-
-
 def save_network_masks(timestamp, exp_label):
 	mask = get_network_mask(timestamp, exp_label)
 	path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-		timestamp) + '/' + 'networkmask_' + exp_label + '.' + timestamp + '.png'
-	show_skymask(mask, save_instead=True, save_path=path)
+			timestamp) + '/'
+	os.makedirs(path, exist_ok=True)
+	file = 'networkmask_' + exp_label + '.' + timestamp + '.png'
+	show_skymask(mask, save_instead=True, save_path=path + file)
 
 
-def get_fsc_from_mask():
+def get_fsc_from_file(file):
+	"""Computes the fractional sky cover given a filepath."""
+	# TODO: Load the mask from a file (should already have a method for this)
+	# TODO: Compute the fractional sky cover, use get_fsc() for this.
 	pass
-	p
 
 if __name__ == '__main__':
-	test_time = '20120501170000'
 	times = extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')
 	times = random.sample(times, 5)
 
-	os.makedirs('results/masks', exist_ok=True)
-
 	exp_labels = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
 	for t in times:
-		os.makedirs('results/masks/' + t, exist_ok=True)
 		for i in exp_labels:
 			save_network_masks(t, i)
-
-# mask = get_network_mask(test_time, 'e70-00')
-# show_skymask(mask, save_instead=True, save_path='fsc_networkmask0.png')
-# mask = get_network_mask(test_time, 'e70-01')
-# show_skymask(mask, save_instead=True, save_path='fsc_networkmask1.png')
-# mask = get_network_mask(test_time, 'e70-02')
-# show_skymask(mask, save_instead=True, save_path='fsc_networkmask2.png')
-# mask = get_network_mask(test_time, 'e70-03')
-# show_skymask(mask, save_instead=True, save_path='fsc_networkmask3.png')
-# mask = get_network_mask(test_time, 'e70-04')
-# show_skymask(mask, save_instead=True, save_path='fsc_networkmask4.png')
