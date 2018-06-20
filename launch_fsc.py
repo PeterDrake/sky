@@ -3,7 +3,7 @@ import os
 exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04']
 
 num_batches = len(exp_labels)
-num_batches_per_network = 1
+num_batches_per_network = 5
 
 total_length = -1  # This file has a header
 for line in open('shcu_good_data.csv'):
