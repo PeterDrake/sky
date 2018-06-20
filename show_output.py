@@ -45,7 +45,7 @@ RED = [255, 0, 0]
 
 def gather_images(times):
     """"""
-    return [load_input(t) for t in times]
+    return [load_inputs(t) for t in times]
 
 def one_hot_to_mask(max_indices, output):
     """Modifies (and returns) img to have sensible colors in place of

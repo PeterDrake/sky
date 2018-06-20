@@ -1,6 +1,6 @@
 import os
 import shutil
-from preprocess_old import create_dirs
+from preprocess_old import create_dirs, simplify_name
 
 
 def simplify_all_names():
