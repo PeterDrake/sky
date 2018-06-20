@@ -4,15 +4,13 @@
 Finds the zenith area of TSI skymasks
 """
 
-import numpy as np
-from PIL import Image
-from scipy import misc
-from preprocess import *
+import random
+
 from analyze import *
 
 
 # DONE: Make sure fsc is easily computed from simplified masks
-# TODO: Grab fsc info from shcu_good_data csv file (and possibly other files in the future)
+# DONE: Grab fsc info from shcu_good_data csv file (and possibly other files in the future)
 # DONE?: Read in some new masks from our network in good_data
 
 
@@ -29,6 +27,7 @@ def get_simple_mask(timestamp, input_dir='good_data'):
 	return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))
 
 
+# TODO: Split this into two function: one which returns the network, another one that creates images
 def get_network_mask(timestamp, exp_label):
 	"""Returns the mask of a given timestamp from the network's output."""
 	network_dir = "results/" + exp_label + "/"
@@ -158,19 +157,33 @@ def get_whole_fsc(mask):
 	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
 
+def save_network_masks(timestamp, exp_label):
+	mask = get_network_mask(timestamp, exp_label)
+	path = 'results/masks/' + timestamp + '/' + 'networkmask' + exp_label + '.png'
+	show_skymask(mask, save_instead=True, save_path=path)
+
 if __name__ == '__main__':
 	test_time = '20120501170000'
+	times = extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')
+	times = random.sample(times, 5)
 
-	mask = get_simple_mask(test_time)
-	show_skymask(mask, save_instead=True, save_path='fsc_simplemasktest1.png')
+	os.makedirs('results/masks', exist_ok=True)
 
-	mask = get_network_mask(test_time, 'e70-00')
-	show_skymask(mask, save_instead=True, save_path='fsc_networkmask0.png')
-	mask = get_network_mask(test_time, 'e70-01')
-	show_skymask(mask, save_instead=True, save_path='fsc_networkmask1.png')
-	mask = get_network_mask(test_time, 'e70-02')
-	show_skymask(mask, save_instead=True, save_path='fsc_networkmask2.png')
-	mask = get_network_mask(test_time, 'e70-03')
-	show_skymask(mask, save_instead=True, save_path='fsc_networkmask3.png')
-	mask = get_network_mask(test_time, 'e70-04')
-	show_skymask(mask, save_instead=True, save_path='fsc_networkmask4.png')
+	exp_labels = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
+	for t in times:
+		os.makedirs('results/masks/' + t, exist_ok=True)
+		mask = get_simple_mask(t)
+		show_skymask(mask, save_instead=True, save_path='results/masks/' + t + '/' + 'simplemask' + '.png')
+		for i in exp_labels:
+			save_network_masks(t, i)
+
+# mask = get_network_mask(test_time, 'e70-00')
+# show_skymask(mask, save_instead=True, save_path='fsc_networkmask0.png')
+# mask = get_network_mask(test_time, 'e70-01')
+# show_skymask(mask, save_instead=True, save_path='fsc_networkmask1.png')
+# mask = get_network_mask(test_time, 'e70-02')
+# show_skymask(mask, save_instead=True, save_path='fsc_networkmask2.png')
+# mask = get_network_mask(test_time, 'e70-03')
+# show_skymask(mask, save_instead=True, save_path='fsc_networkmask3.png')
+# mask = get_network_mask(test_time, 'e70-04')
+# show_skymask(mask, save_instead=True, save_path='fsc_networkmask4.png')
