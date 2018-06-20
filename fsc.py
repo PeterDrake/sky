@@ -159,7 +159,7 @@ def get_whole_fsc(mask):
 
 def save_network_masks(timestamp, exp_label):
 	mask = get_network_mask(timestamp, exp_label)
-	path = 'results/masks/' + timestamp + '/' + 'networkmask' + exp_label + '.png'
+	path = 'results/masks/' + timestamp + '/' + 'networkmask_' + exp_label + '.' + timestamp + '.png'
 	show_skymask(mask, save_instead=True, save_path=path)
 
 if __name__ == '__main__':
@@ -173,7 +173,7 @@ if __name__ == '__main__':
 	for t in times:
 		os.makedirs('results/masks/' + t, exist_ok=True)
 		mask = get_simple_mask(t)
-		show_skymask(mask, save_instead=True, save_path='results/masks/' + t + '/' + 'simplemask' + '.png')
+		show_skymask(mask, save_instead=True, save_path='results/masks/' + t + '/' + 'simplemask_' + t + '.png')
 		for i in exp_labels:
 			save_network_masks(t, i)
 
