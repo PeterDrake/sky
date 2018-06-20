@@ -159,25 +159,25 @@ def index_of(x, sequence):
 			return i
 
 
-def load_inputs(stamps):
+def load_inputs(stamps, input_dir=INPUT_DIR):
 	"""Returns a tensor of images specified by stamps. Dimensions are: image,
 	row, column, color."""
 	inputs = np.empty((len(stamps), 480, 480, 3))
 	for i, s in enumerate(stamps):
 		# inputs[i] = np.array(misc.imread(INPUT_DIR + '/simpleimage/simpleimage' +
 		#                      str(s) + '.jpg'))
-		inputs[i] = np.array(misc.imread(extract_img_path_from_time(s, INPUT_DIR)))
+		inputs[i] = np.array(misc.imread(extract_img_path_from_time(s, input_dir)))
 	return inputs
 
 
-def load_masks(stamps):
+def load_masks(stamps, input_dir=INPUT_DIR):
 	"""Returns a tensor of correct label categories (i.e., indices into
 	preprocess.COLORS) for each pixel in each image specified by stamps.
 	Dimensons are image, row, column. The tensor has been flattened into a
 	single vector."""
 	masks = np.empty((len(stamps), 480, 480))
 	for i, s in enumerate(stamps):
-		masks[i] = mask_to_index(np.array(misc.imread(extract_mask_path_from_time(s, INPUT_DIR))))
+		masks[i] = mask_to_index(np.array(misc.imread(extract_mask_path_from_time(s, input_dir))))
 	return masks.reshape((-1))
 
 
