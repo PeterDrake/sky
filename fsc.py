@@ -160,8 +160,17 @@ def get_whole_fsc(mask):
 
 if __name__ == '__main__':
 	test_time = '20120501170000'
+
 	mask = get_simple_mask(test_time)
-	print(mask.shape)
+	show_skymask(mask, save_instead=True, save_path='fsc_simplemasktest1.png')
+
+	mask = get_network_mask(test_time, 'e70-00')
+	show_skymask(mask, save_instead=True, save_path='fsc_networkmask0.png')
+	mask = get_network_mask(test_time, 'e70-01')
+	show_skymask(mask, save_instead=True, save_path='fsc_networkmask1.png')
 	mask = get_network_mask(test_time, 'e70-02')
-	print(mask.shape)
-	show_skymask(mask, save_instead=True, save_path='simplemasktest2.png')
+	show_skymask(mask, save_instead=True, save_path='fsc_networkmask2.png')
+	mask = get_network_mask(test_time, 'e70-03')
+	show_skymask(mask, save_instead=True, save_path='fsc_networkmask3.png')
+	mask = get_network_mask(test_time, 'e70-04')
+	show_skymask(mask, save_instead=True, save_path='fsc_networkmask4.png')
