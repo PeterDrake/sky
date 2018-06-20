@@ -27,7 +27,6 @@ def get_simple_mask(timestamp, input_dir='good_data'):
 	return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))
 
 
-# TODO: Split this into two function: one which returns the network, another one that creates images
 def get_network_mask(timestamp, exp_label):
 	"""Returns the mask of a given timestamp from the network's output."""
 	network_dir = "results/" + exp_label + "/"
@@ -40,6 +39,24 @@ def get_network_mask(timestamp, exp_label):
 		img = load_inputs([timestamp])
 		mask = out_to_image(y.eval(feed_dict={x: img}))[0]
 	return mask
+
+
+def get_network_masks(timestamps, exp_label):
+	"""Returns a list of masks that have been processed by the network and saves each one in the network directory. """
+	network_dir = "results/" + exp_label + "/"
+	args = read_parameters(network_dir)
+	step_version = read_last_iteration_number(network_dir)
+	layer_info = args['Layer info'].split()
+	_, _, saver, _, x, y, _, _ = build_net(layer_info)
+	masks = []
+	with tf.Session() as sess:
+		saver.restore(sess, network_dir + 'weights-' + str(step_version))
+		for t in timestamps:
+			inputs = load_inputs([t])
+			result = out_to_image(y.eval(feed_dict={x: inputs}))[0]
+			masks.append(result)
+			save_network_mask(t, exp_label, result)
+	return masks
 
 
 def show_skymask(mask, save_instead=False, save_path=None):
@@ -130,10 +147,11 @@ def get_fsc(mask, threshold=0.645):
 	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
 
-def save_network_masks(timestamp, exp_label):
+def save_network_mask(timestamp, exp_label, mask=None):
 	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
 	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
-	mask = get_network_mask(timestamp, exp_label)
+	if not mask:
+		mask = get_network_mask(timestamp, exp_label)
 	path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
 			timestamp) + '/'
 	os.makedirs(path, exist_ok=True)
@@ -143,20 +161,19 @@ def save_network_masks(timestamp, exp_label):
 
 def get_fsc_from_file(filename):
 	"""Computes the fractional sky cover given a filepath."""
-	# Load the mask from a file (should already have a method for this)
 	if "simplemask" in filename:
 		mask = get_simple_mask(extract_timestamp(filename))
-	if "networkmask" in filename:
+	elif "networkmask" in filename:
 		mask = get_network_mask(extract_timestamp(filename), extract_exp_label(filename))
-	# Compute the fractional sky cover, use get_fsc() for this.
+	else:
+		return
 	return get_fsc(mask)
+
 
 if __name__ == '__main__':
 	times = extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')
 	times = random.sample(times, 5)
 
 	exp_labels = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
-	for t in times:
-		for i in exp_labels:
-			os.makedirs('results/' + i + '/masks/' + time_to_year(t), exist_ok=True)
-			save_network_masks(t, i)
+	for label in exp_labels:
+		masks = get_network_masks(times, label)
