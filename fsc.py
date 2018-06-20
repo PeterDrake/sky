@@ -174,5 +174,5 @@ if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	start = int(sys.argv[2])  # The starting index of the timestamp in the shcu_good_data.csv file to consider
 	finish = int(sys.argv[3])  # Final timestamp to consider
-	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')[start:finish]))
+	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))[start:finish]
 	masks = get_network_masks(times, exp_label)
