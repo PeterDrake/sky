@@ -1,7 +1,7 @@
 import unittest
 from shutil import rmtree
 
-from preprocess import *
+from preprocess_setup_launch import *
 
 
 class TestPreprocess(unittest.TestCase):

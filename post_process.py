@@ -2,7 +2,7 @@
 This program creates pickled files for timestamps and creates a constant mask in the output directory.
 """
 
-from preprocess import *
+from preprocess_setup_launch import *
 
 OUTPUT_DIR = "good_data"
 RES_DIR = "res"

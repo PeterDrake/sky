@@ -26,17 +26,14 @@ Created on Mon May 22 10:20:00 2017
 
 """
 
-import numpy as np
-from scipy import misc
-import tensorflow as tf
-import sys
-import os
-import math
-import time
-import pickle
 import subprocess
-from preprocess import *
-from preprocess_old import BLUE, BLACK, GREEN, COLORS
+import sys
+import time
+
+import tensorflow as tf
+
+from preprocess_old import BLACK, BLUE, COLORS
+from preprocess_setup_launch import *
 
 # Training parameters
 BATCH_SIZE = 50

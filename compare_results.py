@@ -1,4 +1,4 @@
-from preprocess import *
+from preprocess_setup_launch import *
 
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'

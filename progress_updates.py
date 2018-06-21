@@ -13,7 +13,6 @@ if __name__ == "__main__":
 	for ext in sub_folders:
 		files.append(base_folder + ext + "/output.txt")
 
-	files
 	while True:
 		for file in files:
 			with open(file, 'r') as f:

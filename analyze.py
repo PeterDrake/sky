@@ -18,15 +18,11 @@ Created on Thu Jun 15 15:32:13 2017
 import sys
 
 import matplotlib
-import numpy as np
 import tensorflow as tf
-from PIL import Image
-from scipy import misc
 
-from preprocess import *
-from show_output import out_to_image, read_parameters, \
-	read_last_iteration_number, show_output
-from train import build_net, load_inputs, BATCH_SIZE, load_validation_stamps
+from preprocess_setup_launch import *
+from show_output import out_to_image, read_last_iteration_number, read_parameters, show_output
+from train import BATCH_SIZE, build_net, load_inputs, load_validation_stamps
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
