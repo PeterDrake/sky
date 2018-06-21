@@ -6,7 +6,8 @@ Preprocess Total Sky Imager data from arm.gov. To use this:
 3) Specify BATCH_SIZE to help parallelize this process. This is the number of timestamps each batch needs to process.
 To run sequentially, set this absurdly high.
 4) Run this program, wait for it to finish.
-5) Run process.py to do the actual simplification of masks & cropping of images
+5) Run preprocess_launch.py to do the actual simplification of masks & cropping of images
+6) Once that is done, run preprocess_stamps_launch.py to separate stamps into training, validation, and testing batches.
 
 # TODO All of the steps in preprocess, process, and postprocess should count as preprocessing.
 
