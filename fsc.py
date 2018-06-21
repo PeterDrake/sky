@@ -8,7 +8,7 @@ import os
 import sys
 
 from fsc_launch import get_fsc_from_file
-from process_launch import get_network_mask
+from process_launch import get_network_mask_path
 from utils import extract_data_from_csv
 
 # DONE: Make sure fsc is easily computed from simplified masks
@@ -17,16 +17,15 @@ from utils import extract_data_from_csv
 # TODO: Loosely compare between the different methods. The csv info should agree with the simplified masks,
 # TODO: hopefully the network outputs as well.
 # TODO: Be able to display simple masks and network output for images with the most disagreement
-
+# TODO: Compute these for every mask file in results/exp_label/masks, not just for good_times masks
 
 if __name__ == '__main__':
-	print(134)
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
 	with open('results/' + exp_label + '/' + 'fsc.csv', 'w') as f:
 		f.write('timestamp_utc, fsc_z, fsc_thn_z, fsc_opq_z')
 		for t in times:
-			if not os.path.isfile(get_network_mask(t, exp_label)):
+			if not os.path.isfile(get_network_mask_path(t, exp_label)):
 				continue
-			fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(get_network_mask(t, exp_label))
-			f.write('{}, {}, {}. {}'.format(t, fsc_z, fsc_thn_z, fsc_opq_z))
+			fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(get_network_mask_path(t, exp_label))
+			f.write('{}, {}, {}, {}'.format(t, fsc_z, fsc_thn_z, fsc_opq_z))

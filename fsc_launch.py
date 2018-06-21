@@ -1,3 +1,11 @@
+"""
+Run this program to create a csv file for each network. Each csv contains the timestamp, fsc_z, fsc_thn_z,
+and fsc_opq_z for all of the times that have been processed by the network.
+Run this only after process_launch.py has finished processing all of the masks desired.
+"""
+
+import os
+
 from process_launch import get_network_mask, get_simple_mask
 from utils import extract_exp_label, extract_timestamp
 
@@ -97,4 +105,4 @@ if __name__ == "__main__":
 
 	for exp_label in exp_labels:
 		name = "fsc_net-" + exp_label
-	# os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {}" -P 1'.format(name, exp_label))
+	os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {}" -P 1'.format(name, exp_label))
