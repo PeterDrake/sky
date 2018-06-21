@@ -6,8 +6,7 @@ Finds the zenith area of TSI skymasks
 
 from analyze import *
 # TODO: Look into reading this as a uint8 image
-from utils import extract_img_path_from_time, get_network_mask, get_simple_mask, network_output_exists, \
-	process_network_masks
+from utils import get_network_mask, get_simple_mask
 
 
 # DONE: Make sure fsc is easily computed from simplified masks
@@ -94,7 +93,7 @@ def get_fsc(mask, threshold=0.645):
 			else:
 				thin_pixels += 1
 	total = sky_pixels + cloud_pixels + thin_pixels
-	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
+	return (cloud_pixels + thin_pixels) / total, thin_pixels / total, cloud_pixels / total
 
 
 def get_fsc_from_file(filename):
@@ -110,13 +109,11 @@ def get_fsc_from_file(filename):
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	start = int(sys.argv[2])  # The starting index of the timestamp in the shcu_good_data.csv file to consider
-	finish = int(sys.argv[3])  # Final timestamp to consider
-	temp = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))[start:finish]
-	times = []
-	for t in temp:
-		if not network_output_exists(t, exp_label):
-			if os.path.isfile(extract_img_path_from_time(t, 'good_data')):
-				if os.path.getsize(extract_img_path_from_time(t, 'good_data')) != 0:
-					times.append(t)
-	masks = process_network_masks(times, exp_label)
+	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
+	with open('results/' + exp_label + '/' + 'fsc.csv', 'w') as f:
+		f.write('timestamp_utc, fsc_z, fsc_thn_z, fsc_opq_z')
+		for t in times:
+			if not os.path.isfile(get_network_mask(t, exp_label)):
+				continue
+			fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(get_network_mask(t, exp_label))
+			f.write('{}, {}, {}. {}'.format(t, fsc_z, fsc_thn_z, fsc_opq_z))
