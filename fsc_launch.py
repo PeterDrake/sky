@@ -105,4 +105,4 @@ if __name__ == "__main__":
 
 	for exp_label in exp_labels:
 		name = "fsc_net-" + exp_label
-	os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {}" -P 1'.format(name, exp_label))
+		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {}" -P 1'.format(name, exp_label))
