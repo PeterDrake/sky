@@ -23,7 +23,7 @@ import tensorflow as tf
 from PIL import Image
 from scipy import misc
 
-from fsc_launch import get_fsc
+from fsc import get_fsc
 from preprocess_old import BLACK, BLUE, GRAY, WHITE
 from train import build_net, load_inputs, load_masks
 # Time stamp of default image
