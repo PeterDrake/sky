@@ -183,6 +183,12 @@ def show_skymask(mask, save_instead=False, save_path=None):
 		mask_image.save(save_path)
 
 
+def get_network_mask_path(timestamp, exp_label):
+	"""Returns the save path of a network mask. The mask does not necessarily need to exist."""
+	return 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+			timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
+
+
 def save_network_mask(timestamp, exp_label, mask=None):
 	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
 	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
@@ -198,8 +204,7 @@ def save_network_mask(timestamp, exp_label, mask=None):
 def network_output_exists(timestamp, exp_label, path=None):
 	"""Returns true if the mask has already been created, false otherwise."""
 	if path is None:
-		path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-				timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
+		path = get_network_mask_path(timestamp, exp_label)
 	return os.path.isfile(path)
 
 
