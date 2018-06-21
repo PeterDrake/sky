@@ -23,11 +23,12 @@ import tensorflow as tf
 from PIL import Image
 from scipy import misc
 
-from fsc import get_fsc
-from preprocess_old import BLACK, BLUE, GRAY, GREEN, WHITE
+from fsc_launch import get_fsc
+from preprocess_old import BLACK, BLUE, GRAY, WHITE
 from train import build_net, load_inputs, load_masks
-
 # Time stamp of default image
+from utils import out_to_image, read_last_iteration_number, read_parameters
+
 TIME_STAMP = 20160414162830
 
 # Don't show comparison images by default
@@ -47,48 +48,6 @@ RED = [255, 0, 0]
 def gather_images(times):
 	""""""
 	return [load_inputs(t) for t in times]
-
-
-def one_hot_to_mask(max_indices, output):
-	"""Modifies (and returns) img to have sensible colors in place of
-	one-hot vectors."""
-	out = np.zeros([len(output), 480, 480, 3])
-	out[(max_indices == 0)] = WHITE
-	out[(max_indices == 1)] = BLUE
-	out[(max_indices == 2)] = GRAY
-	out[(max_indices == 3)] = BLACK
-	out[(max_indices == 4)] = GREEN
-	return out
-
-
-def out_to_image(output):
-	"""Modifies (and returns) the output of the network as a human-readable RGB
-	image."""
-	output = output.reshape([-1, 480, 480, 4])
-	# We use argmax instead of softmax so that we really will get one-hots
-	max_indexes = np.argmax(output, axis=3)
-	return one_hot_to_mask(max_indexes, output)
-
-
-def read_last_iteration_number(directory):
-	"""Reads the output.txt file in directory. Returns the iteration number
-	on the last row."""
-	F = open(directory + 'output.txt', 'r')
-	file = F.readlines()
-	line = file[len(file) - 1]
-	return (line.split()[0])
-
-
-def read_parameters(directory):
-	"""Reads the parameters.txt file in directory. Returns a dictionary
-	associating labels with keys."""
-	F = open(directory + 'parameters.txt', 'r')
-	file = F.readlines()
-	args = {}
-	for line in file:
-		key, value = line.split(':\t')
-		args[key] = value
-	return args
 
 
 def save_images(times, directory):

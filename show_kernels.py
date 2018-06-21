@@ -19,8 +19,8 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 
-from show_output import read_last_iteration_number, read_parameters
 from train import build_net
+from utils import read_last_iteration_number, read_parameters
 
 
 def display_kernels_on_grid(weights, width, num_kernels):

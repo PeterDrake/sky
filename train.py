@@ -30,7 +30,9 @@ import subprocess
 import sys
 import time
 
-from preprocess_old import BLACK, BLUE, COLORS
+import tensorflow as tf
+
+from preprocess_old import COLORS
 from preprocess_setup_launch import *
 # Training parameters
 from utils import extract_img_path_from_time, extract_mask_path_from_time

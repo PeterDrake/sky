@@ -8,7 +8,8 @@ directory.
 import os
 import sys
 
-from utils import extract_data_from_csv, extract_img_path_from_time, network_output_exists, process_network_masks
+from process_launch import network_output_exists, process_network_masks
+from utils import extract_data_from_csv, extract_img_path_from_time
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results

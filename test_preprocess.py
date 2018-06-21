@@ -2,7 +2,9 @@ import unittest
 from shutil import rmtree
 
 from preprocess_setup_launch import *
-from utils import find_unpaired_images, img_save_path, mask_save_path
+from utils import extract_img_path_from_time_old, extract_mask_path_from_time_old, find_unpaired_images, \
+	img_save_path, \
+	mask_save_path
 
 
 class TestPreprocess(unittest.TestCase):

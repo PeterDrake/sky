@@ -18,12 +18,14 @@ Created on Fri Jun  2 14:58:47 2017
 @author: drake
 """
 
-from train import build_net, load_masks
-from show_output import read_parameters, read_last_iteration_number, out_to_image, show_output, TIME_STAMP, SHOW_ALL
-import numpy as np
-from PIL import Image
 import argparse
 
+import numpy as np
+from PIL import Image
+
+from show_output import SHOW_ALL, TIME_STAMP, show_output
+from train import build_net, load_masks
+from utils import out_to_image, read_last_iteration_number, read_parameters
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

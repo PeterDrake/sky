@@ -1,6 +1,8 @@
 from preprocess_setup_launch import *
 
 # Constants for input and output locations
+from utils import extract_img_path_from_time_old, extract_mask_path_from_time_old
+
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
 OUTPUT_DIR = 'good_data'
 

@@ -24,12 +24,15 @@ program goes through.
 Written by Zoe Harrington & Maxwell Levin
 """
 
-import glob
 from random import shuffle
+
+from scipy import misc
 
 from utils import *
 # These constants are colors that appear in cloud masks
-from utils import find_unpaired_images, img_save_path, mask_save_path
+from utils import extract_img_path_from_time_old, extract_mask_path_from_time_old, find_unpaired_images, \
+	img_save_path, \
+	mask_save_path
 
 WHITE = np.array([255, 255, 255])
 BLUE = np.array([0, 0, 255])
@@ -106,24 +109,6 @@ def depth_first_search(r, c, img, visited, ever_visited, stack):
 	return True
 
 
-def extract_img_path_from_time_old(time, input_dir=INPUT_DIR):
-	"""Extracts the path of an image from the timestamp and input directory."""
-	for dir in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
-		image = dir + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
-				time) + '.jpg.' + time + '.jpg'
-		if os.path.isfile(image):
-			return image
-	return str()
-
-
-def extract_mask_path_from_time_old(time, input_dir=INPUT_DIR):
-	"""Extracts the path of a mask from the timestamp and input directory."""
-	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
-			time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
-			time) + '.png.' + time + '.png'
-	return mask
-
-
 def remove_white_sun(img, stride=10):
 	"""Removes the sun disk from img if it is white. (A yellow sun is easier
 	to remove; that is handled directly in simplify_masks.) Stride indicates distance
@@ -192,11 +177,11 @@ def preprocess(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
 	print("Reading times from good csv file.")
 	good_times = extract_data_from_csv("shcu_good_data.csv", "timestamp_utc")
 	print("Finished reading times. Eliminating unpaired times.")
-	blacklist = find_unpaired_images(good_times, INPUT_DIR)
+	blacklist = find_unpaired_images(good_times, input_dir)
 	times = good_times - blacklist
 	print("{} paired images and masks found.".format(len(times)))
 	print("Creating directories for results.")
-	create_dirs(times, OUTPUT_DIR)
+	create_dirs(times, output_dir)
 	print("Directories created. Preparing batches.")
 	batches = make_batches_by_size(times)
 	print("Batches created. Launching simplification on batches.")

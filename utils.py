@@ -1,16 +1,15 @@
+import glob
 import math
 import os
 import pickle
 
 import numpy as np
 import pandas as pd
-import tensorflow as tf
 from PIL import Image
-from scipy import misc
 
-from preprocess_setup_launch import INPUT_DIR, extract_img_path_from_time_old, extract_mask_path_from_time_old
-from show_output import out_to_image, read_last_iteration_number, read_parameters
-from train import build_net, load_inputs
+from preprocess_old import BLACK, BLUE, GRAY, GREEN, WHITE
+
+INPUT_DIR = 'good_data'
 
 
 def time_to_year(time):
@@ -134,46 +133,6 @@ def listdir_f(dir=None):
 	return (name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)))
 
 
-def get_simple_mask(timestamp, input_dir='good_data'):
-	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
-	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp
-	20170215000000."""
-	return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))
-
-
-def get_network_mask(timestamp, exp_label):
-	"""Returns the mask of a given timestamp from the network's output."""
-	network_dir = "results/" + exp_label + "/"
-	args = read_parameters(network_dir)
-	step_version = read_last_iteration_number(network_dir)
-	layer_info = args['Layer info'].split()
-	_, _, saver, _, x, y, _, _ = build_net(layer_info)
-	with tf.Session() as sess:
-		saver.restore(sess, network_dir + 'weights-' + str(step_version))
-		img = load_inputs([timestamp])
-		mask = out_to_image(y.eval(feed_dict={x: img}))[0]
-	return mask
-
-
-def process_network_masks(timestamps, exp_label):
-	"""Processes images corresponding to a list of timestamps. Saves each mask in the network directory. Does NOT
-	check to make sure that the image exists. This must be done by the user before calling this method."""
-	network_dir = "results/" + exp_label + "/"
-	args = read_parameters(network_dir)
-	step_version = read_last_iteration_number(network_dir)
-	layer_info = args['Layer info'].split()
-	_, _, saver, _, x, y, _, _ = build_net(layer_info)
-	masks = []
-	with tf.Session() as sess:
-		saver.restore(sess, network_dir + 'weights-' + str(step_version))
-		for t in timestamps:
-			inputs = load_inputs([t])
-			result = out_to_image(y.eval(feed_dict={x: inputs}))[0]
-			masks.append(result)
-			save_network_mask(t, exp_label, result)
-	return masks
-
-
 def show_skymask(mask, save_instead=False, save_path=None):
 	""" Shows the mask for a given timestamp, alternatively can show a given mask."""
 	mask_image = Image.fromarray(mask.astype('uint8'))
@@ -181,31 +140,6 @@ def show_skymask(mask, save_instead=False, save_path=None):
 		mask_image.show()
 	else:
 		mask_image.save(save_path)
-
-
-def get_network_mask_path(timestamp, exp_label):
-	"""Returns the save path of a network mask. The mask does not necessarily need to exist."""
-	return 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-			timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
-
-
-def save_network_mask(timestamp, exp_label, mask=None):
-	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
-	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
-	if mask is None:
-		mask = get_network_mask(timestamp, exp_label)
-	path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-			timestamp) + '/'
-	os.makedirs(path, exist_ok=True)
-	file = 'networkmask_' + exp_label + '.' + timestamp + '.png'
-	show_skymask(mask, save_instead=True, save_path=path + file)
-
-
-def network_output_exists(timestamp, exp_label, path=None):
-	"""Returns true if the mask has already been created, false otherwise."""
-	if path is None:
-		path = get_network_mask_path(timestamp, exp_label)
-	return os.path.isfile(path)
 
 
 def find_unpaired_images(timestamps, input_dir=INPUT_DIR):
@@ -243,15 +177,17 @@ def mask_save_path(time, dir):
 	return dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def separate_data(timestamps):
+def separate_data(timestamps, output_dir=None):
 	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
 	train.stamps."""
+	if output_dir:
+		output_dir = output_dir + '/'
 	test, valid, train = separate_stamps(timestamps)
-	with open('test.stamps', 'wb') as f:
+	with open(output_dir + 'test.stamps', 'wb') as f:
 		pickle.dump(test, f)
-	with open('valid.stamps', 'wb') as f:
+	with open(output_dir + 'valid.stamps', 'wb') as f:
 		pickle.dump(valid, f)
-	with open('train.stamps', 'wb') as f:
+	with open(output_dir + 'train.stamps', 'wb') as f:
 		pickle.dump(train, f)
 	return test, valid, train
 
@@ -264,3 +200,71 @@ def separate_stamps(timestamps):
 	valid = timestamps[int(len(timestamps) * 0.2):int(len(timestamps) * 0.4)]
 	train = timestamps[int(len(timestamps) * 0.4):]
 	return test, valid, train
+
+
+def extract_img_path_from_time_old(time, input_dir=INPUT_DIR):
+	"""Extracts the path of an image from the timestamp and input directory."""
+	for dir in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
+		image = dir + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+				time) + '.jpg.' + time + '.jpg'
+		if os.path.isfile(image):
+			return image
+	return str()
+
+
+def extract_mask_path_from_time_old(time, input_dir=INPUT_DIR):
+	"""Extracts the path of a mask from the timestamp and input directory."""
+	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
+			time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+			time) + '.png.' + time + '.png'
+	return mask
+
+
+def read_last_iteration_number(directory):
+	"""Reads the output.txt file in directory. Returns the iteration number
+	on the last row."""
+	F = open(directory + 'output.txt', 'r')
+	file = F.readlines()
+	line = file[len(file) - 1]
+	return (line.split()[0])
+
+
+def read_parameters(directory):
+	"""Reads the parameters.txt file in directory. Returns a dictionary
+	associating labels with keys."""
+	F = open(directory + 'parameters.txt', 'r')
+	file = F.readlines()
+	args = {}
+	for line in file:
+		key, value = line.split(':\t')
+		args[key] = value
+	return args
+
+
+def extract_times_from_files_in_directory(dir=None):
+	"""Extracts all timestamps from all the files in the directory given."""
+	times = set()
+	for file in os.listdir(dir):
+		times.update(extract_times_from_file(dir + '/' + file))
+	return {t.strip('\n') for t in times}
+
+
+def out_to_image(output):
+	"""Modifies (and returns) the output of the network as a human-readable RGB
+	image."""
+	output = output.reshape([-1, 480, 480, 4])
+	# We use argmax instead of softmax so that we really will get one-hots
+	max_indexes = np.argmax(output, axis=3)
+	return one_hot_to_mask(max_indexes, output)
+
+
+def one_hot_to_mask(max_indices, output):
+	"""Modifies (and returns) img to have sensible colors in place of
+	one-hot vectors."""
+	out = np.zeros([len(output), 480, 480, 3])
+	out[(max_indices == 0)] = WHITE
+	out[(max_indices == 1)] = BLUE
+	out[(max_indices == 2)] = GRAY
+	out[(max_indices == 3)] = BLACK
+	out[(max_indices == 4)] = GREEN
+	return out
