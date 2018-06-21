@@ -4,68 +4,18 @@
 Finds the zenith area of TSI skymasks
 """
 
-import random
-import sys
 from analyze import *
+# TODO: Look into reading this as a uint8 image
+from utils import extract_img_path_from_time, get_network_mask, get_simple_mask, network_output_exists, \
+	process_network_masks
 
 
 # DONE: Make sure fsc is easily computed from simplified masks
 # DONE: Grab fsc info from shcu_good_data csv file (and possibly other files in the future)
 # DONE?: Read in some new masks from our network in good_data
-
-
 # TODO: Loosely compare between the different methods. The csv info should agree with the simplified masks,
 # TODO: hopefully the network outputs as well.
 # TODO: Be able to display simple masks and network output for images with the most disagreement
-
-
-# TODO: Look into reading this as a uint8 image
-def get_simple_mask(timestamp, input_dir='good_data'):
-	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
-	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp
-	20170215000000."""
-	return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))
-
-
-def get_network_mask(timestamp, exp_label):
-	"""Returns the mask of a given timestamp from the network's output."""
-	network_dir = "results/" + exp_label + "/"
-	args = read_parameters(network_dir)
-	step_version = read_last_iteration_number(network_dir)
-	layer_info = args['Layer info'].split()
-	_, _, saver, _, x, y, _, _ = build_net(layer_info)
-	with tf.Session() as sess:
-		saver.restore(sess, network_dir + 'weights-' + str(step_version))
-		img = load_inputs([timestamp])
-		mask = out_to_image(y.eval(feed_dict={x: img}))[0]
-	return mask
-
-
-def get_network_masks(timestamps, exp_label):
-	"""Returns a list of masks that have been processed by the network and saves each one in the network directory. """
-	network_dir = "results/" + exp_label + "/"
-	args = read_parameters(network_dir)
-	step_version = read_last_iteration_number(network_dir)
-	layer_info = args['Layer info'].split()
-	_, _, saver, _, x, y, _, _ = build_net(layer_info)
-	masks = []
-	with tf.Session() as sess:
-		saver.restore(sess, network_dir + 'weights-' + str(step_version))
-		for t in timestamps:
-			inputs = load_inputs([t])
-			result = out_to_image(y.eval(feed_dict={x: inputs}))[0]
-			masks.append(result)
-			save_network_mask(t, exp_label, result)
-	return masks
-
-
-def show_skymask(mask, save_instead=False, save_path=None):
-	""" Shows the mask for a given timestamp, alternatively can show a given mask."""
-	mask_image = Image.fromarray(mask.astype('uint8'))
-	if not save_instead:
-		mask_image.show()
-	else:
-		mask_image.save(save_path)
 
 
 def find_center(mask):
@@ -147,18 +97,6 @@ def get_fsc(mask, threshold=0.645):
 	return (cloud_pixels + thin_pixels) / total, cloud_pixels / total
 
 
-def save_network_mask(timestamp, exp_label, mask=None):
-	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
-	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
-	if mask is None:
-		mask = get_network_mask(timestamp, exp_label)
-	path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-			timestamp) + '/'
-	os.makedirs(path, exist_ok=True)
-	file = 'networkmask_' + exp_label + '.' + timestamp + '.png'
-	show_skymask(mask, save_instead=True, save_path=path + file)
-
-
 def get_fsc_from_file(filename):
 	"""Computes the fractional sky cover given a filepath."""
 	if "simplemask" in filename:
@@ -169,13 +107,6 @@ def get_fsc_from_file(filename):
 		return
 	return get_fsc(mask)
 
-
-def network_output_exists(timestamp, exp_label, path=None):
-	"""Returns true if the mask has already been created, false otherwise."""
-	if path is None:
-		path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-				timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
-	return os.path.isfile(path)
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
@@ -188,4 +119,4 @@ if __name__ == '__main__':
 			if os.path.isfile(extract_img_path_from_time(t, 'good_data')):
 				if os.path.getsize(extract_img_path_from_time(t, 'good_data')) != 0:
 					times.append(t)
-	masks = get_network_masks(times, exp_label)
+	masks = process_network_masks(times, exp_label)

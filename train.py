@@ -30,12 +30,11 @@ import subprocess
 import sys
 import time
 
-import tensorflow as tf
-
 from preprocess_old import BLACK, BLUE, COLORS
 from preprocess_setup_launch import *
-
 # Training parameters
+from utils import extract_img_path_from_time, extract_mask_path_from_time
+
 BATCH_SIZE = 50
 LEARNING_RATE = 0.0001
 TRAINING_STEPS = 2000

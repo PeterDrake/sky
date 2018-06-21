@@ -1,3 +1,10 @@
+"""
+Call this program after completing all preprocess launch tasks. This method goes through all cropped sky images and
+produces the network output mask for each. Breaks up tasks into many smaller batches to improve speed. Specify the
+number of batches per network to increase the number of batches created & increase speed. Make sure that the number
+of batches times the number of batches per network is small enough so that BLT can fit all of the jobs.
+"""
+
 import os
 
 exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04']

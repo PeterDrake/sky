@@ -25,16 +25,12 @@ Written by Zoe Harrington & Maxwell Levin
 """
 
 import glob
-import pickle
 from random import shuffle
 
-import numpy as np
-from PIL import Image
-from scipy import misc
-
-from util import *
-
+from utils import *
 # These constants are colors that appear in cloud masks
+from utils import find_unpaired_images, img_save_path, mask_save_path
+
 WHITE = np.array([255, 255, 255])
 BLUE = np.array([0, 0, 255])
 GRAY = np.array([192, 192, 192])
@@ -110,19 +106,6 @@ def depth_first_search(r, c, img, visited, ever_visited, stack):
 	return True
 
 
-def find_unpaired_images(timestamps, input_dir=INPUT_DIR):
-	"""Blacklists files for timestamps that do not have both images and masks."""
-	blacklist = set()
-	for time in timestamps:
-		mask = extract_mask_path_from_time_old(time, input_dir)
-		image = extract_img_path_from_time_old(time, input_dir)
-		if not os.path.isfile(mask) or not os.path.isfile(image):
-			blacklist.add(time)
-		elif os.path.getsize(mask) == 0 or os.path.getsize(image) == 0:
-			blacklist.add(time)
-	return blacklist
-
-
 def extract_img_path_from_time_old(time, input_dir=INPUT_DIR):
 	"""Extracts the path of an image from the timestamp and input directory."""
 	for dir in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
@@ -133,24 +116,12 @@ def extract_img_path_from_time_old(time, input_dir=INPUT_DIR):
 	return str()
 
 
-def extract_img_path_from_time(time, input_dir=INPUT_DIR):
-	"""Extracts the path of an image from the timestamp and input directory."""
-	return input_dir + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(
-			time) + '/simpleimage' + time + '.jpg'
-
-
 def extract_mask_path_from_time_old(time, input_dir=INPUT_DIR):
 	"""Extracts the path of a mask from the timestamp and input directory."""
 	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
 			time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
 			time) + '.png.' + time + '.png'
 	return mask
-
-
-def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
-	"""Extracts the path of an image from the timestamp and input directory."""
-	return input_dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(
-			time) + '/simplemask' + time + '.png'
 
 
 def remove_white_sun(img, stride=10):
@@ -172,16 +143,6 @@ def remove_white_sun(img, stride=10):
 					return img
 	print('No sun found!')
 	return img
-
-
-def img_save_path(time, dir):
-	"""Creates path for image."""
-	return dir + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
-
-
-def mask_save_path(time, dir):
-	"""Creates path for mask."""
-	return dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
 def simplify_image(timestamp, input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
@@ -223,29 +184,6 @@ def make_batches_by_size(timestamps, batch_size=BATCH_SIZE):
 def launch_blt_simplify_task(filename):
 	"""Launches run_batch.py to preprocess the data in parallel on blt."""
 	os.system('SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(filename[4:-4], filename))
-
-
-def separate_data(timestamps):
-	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
-	train.stamps."""
-	test, valid, train = separate_stamps(timestamps)
-	with open('test.stamps', 'wb') as f:
-		pickle.dump(test, f)
-	with open('valid.stamps', 'wb') as f:
-		pickle.dump(valid, f)
-	with open('train.stamps', 'wb') as f:
-		pickle.dump(train, f)
-	return test, valid, train
-
-
-def separate_stamps(timestamps):
-	"""Shuffles stamps and returns three lists: 20% of the stamps for
-	testing, 16% for validation, and the rest for training."""
-	timestamps = list(timestamps)
-	test = timestamps[0:int(len(timestamps) * 0.2)]
-	valid = timestamps[int(len(timestamps) * 0.2):int(len(timestamps) * 0.4)]
-	train = timestamps[int(len(timestamps) * 0.4):]
-	return test, valid, train
 
 
 def preprocess(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
