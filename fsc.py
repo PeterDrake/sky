@@ -170,9 +170,22 @@ def get_fsc_from_file(filename):
 	return get_fsc(mask)
 
 
+def network_output_exists(timestamp, exp_label, path=None):
+	"""Returns true if the mask has already been created, false otherwise."""
+	if path is None:
+		path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+				timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
+	return os.path.isfile(path)
+
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	start = int(sys.argv[2])  # The starting index of the timestamp in the shcu_good_data.csv file to consider
 	finish = int(sys.argv[3])  # Final timestamp to consider
-	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))[start:finish]
+	temp = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))[start:finish]
+	times = []
+	for t in temp:
+		if not network_output_exists(t, exp_label):
+			if os.path.isfile(extract_img_path_from_time(t, 'good_data')):
+				if os.path.getsize(extract_img_path_from_time(t, 'good_data')) != 0:
+					times.append(t)
 	masks = get_network_masks(times, exp_label)
