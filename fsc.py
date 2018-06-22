@@ -112,12 +112,12 @@ def get_fsc_from_file(filename):
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
-	with open('results/' + exp_label + '/' + 'fsc.csv', 'w', buffering=1) as f:
+	with open('results/' + exp_label + '/' + 'fsc.csv', 'w') as f:
 		f.write("timestamp_utc, fsc_z, fsc_thn_z, fsc_opq_z" + "\n")
 		count = 0
 		for t in times:
 			if count % 100 == 0:
-				print("progress: ", count / len(times))
+				print("progress: ", round(count / len(times) * 10000) / 100, "%")
 			if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)):
 				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, exp_label))
 				f.write("{}, {}, {}, {}".format(t, fsc_z, fsc_thn_z, fsc_opq_z) + "\n")
