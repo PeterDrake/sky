@@ -7,8 +7,8 @@ Just prints the last line from each directory.
 import time
 
 if __name__ == "__main__":
-	base_folder = "results/e70-"
-	sub_folders = ['00', '01', '02', '03', '04']
+	base_folder = "results/e72-"
+	sub_folders = ['00', '01', '02']
 	files = []
 	for ext in sub_folders:
 		files.append(base_folder + ext + "/output.txt")
