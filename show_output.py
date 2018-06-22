@@ -121,8 +121,8 @@ def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
 					comparison_image.show()
 			acc = accuracy.eval(feed_dict={x: input, y_: load_masks([t])})
 			print('Accuracy = ' + str(acc))
-			print("Network mask: ", get_fsc(times[0], img))
-			print("TSI mask: ", get_fsc(times[0], mask))
+			print("Network mask: ", get_fsc(times[0], img))  # TODO: get_fsc takes a mask as an argument
+			print("TSI mask: ", get_fsc(times[0], mask))  # TODO: get_fsc takes a mask as an argument
 
 
 if __name__ == '__main__':
