@@ -7,8 +7,8 @@ Finds the zenith area of TSI skymasks
 import os
 import sys
 
-from process_launch import get_network_mask, get_network_mask_path, get_simple_mask
-from utils import extract_data_from_csv, extract_exp_label, extract_timestamp
+from utils import extract_data_from_csv, extract_exp_label, extract_network_mask_path_from_time, extract_timestamp, \
+	get_network_mask_from_time_and_label, get_simple_mask
 
 
 # DONE: Make sure fsc is easily computed from simplified masks
@@ -100,23 +100,22 @@ def get_fsc(mask, threshold=0.645):
 
 
 def get_fsc_from_file(filename):
-	"""Computes the fractional sky cover given a filepath."""
+	"""Computes the fractional sky cover given a filename that leads to a sky mask."""
 	if "simplemask" in filename:
 		mask = get_simple_mask(extract_timestamp(filename))
+		return get_fsc(mask)
 	elif "networkmask" in filename:
-		mask = get_network_mask(extract_timestamp(filename), extract_exp_label(filename))
-	else:
-		return
-	return get_fsc(mask)
+		mask = get_network_mask_from_time_and_label(extract_timestamp(filename), extract_exp_label(filename))
+		return get_fsc(mask)
 
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
 	with open('results/' + exp_label + '/' + 'fsc.csv', 'w') as f:
-		f.write('timestamp_utc, fsc_z, fsc_thn_z, fsc_opq_z')
+		f.write('timestamp_utc, fsc_z, fsc_thn_z, fsc_opq_z\n')
 		for t in times:
-			if not os.path.isfile(get_network_mask_path(t, exp_label)):
+			if not os.path.isfile(extract_network_mask_path_from_time(t, exp_label)):
 				continue
-			fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(get_network_mask_path(t, exp_label))
-			f.write('{}, {}, {}, {}'.format(t, fsc_z, fsc_thn_z, fsc_opq_z))
+			fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, exp_label))
+			f.write('{}, {}, {}, {}\n'.format(t, fsc_z, fsc_thn_z, fsc_opq_z))

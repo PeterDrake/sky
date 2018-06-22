@@ -7,21 +7,11 @@ of batches times the number of batches per network is small enough so that BLT c
 
 import os
 
-import numpy as np
 import tensorflow as tf
-from scipy import misc
 
 from train import build_net, load_inputs
-from utils import extract_mask_path_from_time, out_to_image, read_last_iteration_number, read_parameters, \
-	show_skymask, \
-	time_to_month_and_day, time_to_year
-
-
-def get_simple_mask(timestamp, input_dir='good_data'):
-	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
-	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp
-	20170215000000."""
-	return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))
+from utils import extract_network_mask_path_from_time, out_to_image, read_last_iteration_number, read_parameters, \
+	show_skymask, time_to_month_and_day, time_to_year
 
 
 def get_network_mask(timestamp, exp_label):
@@ -57,12 +47,6 @@ def process_network_masks(timestamps, exp_label):
 	return masks
 
 
-def get_network_mask_path(timestamp, exp_label):
-	"""Returns the save path of a network mask. The mask does not necessarily need to exist."""
-	return 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-			timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
-
-
 def save_network_mask(timestamp, exp_label, mask=None):
 	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
 	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
@@ -78,7 +62,7 @@ def save_network_mask(timestamp, exp_label, mask=None):
 def network_output_exists(timestamp, exp_label, path=None):
 	"""Returns true if the mask has already been created, false otherwise."""
 	if path is None:
-		path = get_network_mask_path(timestamp, exp_label)
+		path = extract_network_mask_path_from_time(timestamp, exp_label)
 	return os.path.isfile(path)
 
 

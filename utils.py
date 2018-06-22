@@ -6,6 +6,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from PIL import Image
+from scipy import misc
 
 from preprocess_old import BLACK, BLUE, GRAY, GREEN, WHITE
 
@@ -268,3 +269,23 @@ def one_hot_to_mask(max_indices, output):
 	out[(max_indices == 3)] = BLACK
 	out[(max_indices == 4)] = GREEN
 	return out
+
+
+def extract_network_mask_path_from_time(timestamp, exp_label):
+	"""Returns the save path of a network mask. The mask does not necessarily need to exist."""
+	return 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+			timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
+
+
+def get_simple_mask(timestamp, input_dir='good_data'):
+	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
+	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp
+	20170215000000."""
+	return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))
+
+
+def get_network_mask_from_time_and_label(timestamp, exp_label):
+	""" Returns the mask of a given timestamp in the results/exp_label directory. Assumes the timestamp is organized
+	in the input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the
+	timestamp 20170215000000."""
+	return np.array(misc.imread(extract_network_mask_path_from_time(timestamp, exp_label)))
