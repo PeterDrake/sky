@@ -4,9 +4,10 @@
 Finds the zenith area of TSI skymasks
 """
 
+import os
 import sys
 
-from utils import extract_data_from_csv, extract_exp_label, extract_timestamp, \
+from utils import extract_data_from_csv, extract_exp_label, extract_network_mask_path_from_time, extract_timestamp, \
 	get_network_mask_from_time_and_label, get_simple_mask
 
 
@@ -113,11 +114,11 @@ if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
 	with open('results/' + exp_label + '/' + 'fsc.csv', 'w') as f:
 		f.write("timestamp_utc, fsc_z, fsc_thn_z, fsc_opq_z" + "\n")
-	# count = 0
-	# for t in times:
-	# 	if count % 100 == 0:
-	# 		print("progress: ", count / len(times))
-	# 	if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)):
-	# 		fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, exp_label))
-	# 		f.write("{}, {}, {}, {}\n".format(t, fsc_z, fsc_thn_z, fsc_opq_z))
-	# 	count += 1
+	count = 0
+	for t in times:
+		if count % 100 == 0:
+			print("progress: ", count / len(times))
+		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)):
+			fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, exp_label))
+			f.write("{}, {}, {}, {}".format(t, fsc_z, fsc_thn_z, fsc_opq_z) + "\n")
+		count += 1
