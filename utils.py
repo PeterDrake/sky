@@ -119,9 +119,9 @@ def extract_tsi_fsc_for_date(timestamp):
 
 def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	df = frame.set_index("timestamp_utc", drop=False)
-	print("Is it here?" + str(df.loc[timestamp]))
-	for h in df.columns.values:
-		print('<{}>'.format(h))
+	# print("Is it here?" + str(df.loc[timestamp]))
+	# for h in df.columns.values:
+	# 	print('<{}>'.format(h))
 	ans = df.loc[timestamp, "fsc_z"]
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
