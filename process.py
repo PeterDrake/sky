@@ -10,10 +10,10 @@ import sys
 
 import tensorflow as tf
 
-from process_launch import network_output_exists
 from train import build_net, load_inputs
-from utils import extract_data_from_csv, extract_img_path_from_time, out_to_image, read_last_iteration_number, \
-	read_parameters, show_skymask, time_to_month_and_day, time_to_year
+from utils import extract_data_from_csv, extract_img_path_from_time, extract_network_mask_path_from_time, \
+	out_to_image, \
+	read_last_iteration_number, read_parameters, show_skymask, time_to_month_and_day, time_to_year
 
 
 def process_network_masks(timestamps, exp_label):
@@ -59,6 +59,13 @@ def save_network_mask(timestamp, exp_label, mask=None):
 	os.makedirs(path, exist_ok=True)
 	file = 'networkmask_' + exp_label + '.' + timestamp + '.png'
 	show_skymask(mask, save_instead=True, save_path=path + file)
+
+
+def network_output_exists(timestamp, exp_label, path=None):
+	"""Returns true if the mask has already been created, false otherwise."""
+	if path is None:
+		path = extract_network_mask_path_from_time(timestamp, exp_label)
+	return os.path.isfile(path)
 
 
 if __name__ == '__main__':

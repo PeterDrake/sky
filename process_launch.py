@@ -7,17 +7,7 @@ of batches times the number of batches per network is small enough so that BLT c
 
 import os
 
-from utils import extract_network_mask_path_from_time
-
 exp_labels = ['e72-00', 'e72-01', 'e72-02']  # Specify the labels that correspond to networks of interest. Ie 'e70-00'
-
-
-def network_output_exists(timestamp, exp_label, path=None):
-	"""Returns true if the mask has already been created, false otherwise."""
-	if path is None:
-		path = extract_network_mask_path_from_time(timestamp, exp_label)
-	return os.path.isfile(path)
-
 
 if __name__ == "__main__":
 	num_batches = len(exp_labels)
