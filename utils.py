@@ -123,6 +123,7 @@ def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	# for h in df.columns.values:
 	# 	print('<{}>'.format(h))
 	ans = df.loc[timestamp, "fsc_z"]
+	print(type(ans))
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
