@@ -122,8 +122,10 @@ def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	# print("Is it here?" + str(df.loc[timestamp]))
 	# for h in df.columns.values:
 	# 	print('<{}>'.format(h))
-	ans = df.loc[timestamp, "fsc_z"].applymap(float)
+	ans = df.loc[timestamp, "fsc_z"]
 	print(type(ans))
+	print(type(ans.to_numeric()))
+	print(type(ans[0]))
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
