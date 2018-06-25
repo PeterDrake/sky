@@ -13,6 +13,8 @@ from train import build_net, load_inputs
 from utils import extract_network_mask_path_from_time, out_to_image, read_last_iteration_number, read_parameters, \
 	show_skymask, time_to_month_and_day, time_to_year
 
+exp_labels = ['e72-00', 'e72-01', 'e72-02']  # Specify the labels that correspond to networks of interest. Ie 'e70-00'
+
 
 def get_network_mask(timestamp, exp_label):
 	"""Returns the mask of a given timestamp from the network's output."""
@@ -67,10 +69,8 @@ def network_output_exists(timestamp, exp_label, path=None):
 
 
 if __name__ == "__main__":
-	exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04']
-
 	num_batches = len(exp_labels)
-	num_batches_per_network = 5
+	num_batches_per_network = 10
 
 	total_length = -1  # This file has a header
 	for line in open('shcu_good_data.csv'):
@@ -83,4 +83,5 @@ if __name__ == "__main__":
 			name = "net-" + exp_label + "-" + str(i)
 			start = batch_length * i
 			finish = batch_length * (i + 1) if batch_length * (i + 1) < total_length else total_length
-			os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, exp_label, start, finish))
+			os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, exp_label, int(start),
+					int(finish)))
