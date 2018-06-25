@@ -18,6 +18,7 @@ def find_worst_results(filename, num_worst=5):
 	disagreement_rates = [(-1, '')] * num_worst
 	heapq.heapify(disagreement_rates)
 	for t in times:
+		t = str(t)
 		net_fsc = extract_fsc_for_date_from_dataframe(frame, t)
 		shcu_fsc = extract_fsc_for_date_from_dataframe(shcu, t)
 		diff = (abs(net_fsc - shcu_fsc), t)
