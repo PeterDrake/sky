@@ -1,6 +1,7 @@
 """Compares the fsc values in fsc.csv file of each network to the shcu_good_data.csv"""
 
 import heapq
+import sys
 
 from utils import *
 
@@ -17,3 +18,8 @@ def find_worst_results(filename, num_worst=5):
 		diff = (abs(net_fsc - shcu_fsc), t)
 		heapq.heappushpop(disagreement_rates, diff)
 	return sorted(disagreement_rates)
+
+
+if __name__ == "__main__":
+	net_csv_path = sys.argv[1]
+	print(find_worst_results(net_csv_path))
