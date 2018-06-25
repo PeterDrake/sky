@@ -119,8 +119,8 @@ def extract_tsi_fsc_for_date(timestamp):
 
 def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	df = frame.set_index("timestamp_utc", drop=False)
-	# drop=False to not delete timestamp_utc column if other index set later
-	return (math.floor(df.loc[timestamp, "fsc_z"] * 10 ** 6)) / 10 ** 6
+	ans = df.loc[timestamp, "fsc_z"]
+	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
 def extract_ceilometer_fsc_for_date(timestamp):

@@ -8,10 +8,15 @@ from utils import *
 
 def find_worst_results(filename, num_worst=5):
 	frame = read_csv_file(filename)
+	net_times = set(extract_data_from_dataframe(frame, "timestamp_utc"))
+
 	shcu = read_csv_file('shcu_good_data.csv')
+	shcu_times = set(extract_data_from_csv(shcu, "timestamp_utc"))
+
+	times = net_times.intersection(shcu_times)
+
 	disagreement_rates = [(-1, '')] * num_worst
 	heapq.heapify(disagreement_rates)
-	times = extract_data_from_dataframe(frame, "timestamp_utc")
 	for t in times:
 		net_fsc = extract_fsc_for_date_from_dataframe(frame, t)
 		shcu_fsc = extract_fsc_for_date_from_dataframe(shcu, t)
