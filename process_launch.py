@@ -24,5 +24,5 @@ if __name__ == "__main__":
 			name = "net-" + exp_label + "-" + str(i)
 			start = batch_length * i
 			finish = batch_length * (i + 1) if batch_length * (i + 1) < total_length else total_length
-			os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, exp_label, int(start),
+			os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {}" -P 1'.format(name, exp_label, int(start),
 					int(finish)))
