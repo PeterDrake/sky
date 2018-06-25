@@ -29,4 +29,4 @@ def find_worst_results(filename, num_worst=5):
 
 if __name__ == "__main__":
 	net_csv_path = sys.argv[1]
-	print(find_worst_results(net_csv_path))
+	print("The biggest differences in fsc occur during the times: \n<{}>".format(find_worst_results(net_csv_path)))
