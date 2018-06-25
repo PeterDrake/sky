@@ -11,7 +11,7 @@ def find_worst_results(filename, num_worst=5):
 	net_times = set(extract_data_from_dataframe(frame, "timestamp_utc"))
 
 	shcu = read_csv_file('shcu_good_data.csv')
-	shcu_times = set(extract_data_from_csv(shcu, "timestamp_utc"))
+	shcu_times = set(extract_data_from_csv('shcu_good_data.csv', "timestamp_utc"))
 
 	times = net_times.intersection(shcu_times)
 
