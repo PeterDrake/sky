@@ -7,4 +7,4 @@ if __name__ == "__main__":
 	for exp_label in exp_labels:
 		name = "fsc-" + exp_label
 		fsc_path = 'results/' + exp_label + '/fsc.csv'
-		os.system('SGE_Batch -r "{}" -c "python3 -u process.py {}" -P 1'.format(name, fsc_path))
+		os.system('SGE_Batch -r "{}" -c "python3 -u fsc_analyze.py {}" -P 1'.format(name, fsc_path))
