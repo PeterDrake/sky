@@ -9,10 +9,7 @@ To run sequentially, set this absurdly high.
 5) Run preprocess_launch.py to do the actual simplification of masks & cropping of images
 6) Once that is done, run preprocess_stamps_launch.py to separate stamps into training, validation, and testing batches.
 
-# TODO All of the steps in preprocess, process, and postprocess should count as preprocessing.
-
 This will create (within data):
-
 - A folder simpleimage containing folders by year. In this are folders by month and day (mmdd). In these folders are
 cropped 480x480 sky images
 - A folder simplemask with the same structure as simpleimage, but the (mmdd) folders contain cloudmasks which have
@@ -25,8 +22,6 @@ Written by Zoe Harrington & Maxwell Levin
 """
 
 from random import shuffle
-
-from scipy import misc
 
 from utils import *
 # These constants are colors that appear in cloud masks
@@ -44,11 +39,12 @@ COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
-OUTPUT_DIR = 'good_data'
+OUTPUT_DIR = 'bad_data'
 RES_DIR = 'res'
+csv_path = 'shcu_bad_data.csv'  # bad_data has about 5,000 times, good_data has about 100,000 times
 
 # Size of each batch, should be able to specify via command-line
-BATCH_SIZE = 10000
+BATCH_SIZE = 1000
 
 
 def create_dirs(times, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
@@ -175,7 +171,7 @@ def preprocess(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
 	"""Launches the preprocess task, which creates the appropriate directories and creates text files to store
 	timestamps."""
 	print("Reading times from good csv file.")
-	good_times = extract_data_from_csv("shcu_good_data.csv", "timestamp_utc")
+	good_times = extract_data_from_csv(csv_path, "timestamp_utc")
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, input_dir)
 	times = good_times - blacklist
