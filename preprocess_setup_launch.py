@@ -167,9 +167,10 @@ def launch_blt_simplify_task(filename):
 	os.system('SGE_Batch -r "{}" -c "python3 -u run_batch.py {}" -P 1'.format(filename[4:-4], filename))
 
 
-def preprocess(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
-	"""Launches the preprocess task, which creates the appropriate directories and creates text files to store
-	timestamps."""
+def preprocess_setup(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
+	"""Sets up the project for preprocessing."""
+	print("Cleaning the csv file.")
+	clean_csv(csv_path)
 	print("Reading times from good csv file.")
 	good_times = extract_data_from_csv(csv_path, "timestamp_utc")
 	print("Finished reading times. Eliminating unpaired times.")
@@ -195,4 +196,4 @@ def preprocess(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, res_dir=RES_DIR):
 
 
 if __name__ == '__main__':
-	preprocess()
+	preprocess_setup()

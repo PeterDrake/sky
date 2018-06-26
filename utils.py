@@ -87,16 +87,25 @@ def extract_times_from_file(filename):
 	return times
 
 
+def clean_csv(filename):
+	"""Removes all of the spaces in a csv file. Might have memory issues for extremely large files."""
+	with open(filename) as f:
+		lines = f.readlines()
+	with open(filename, 'w') as f:
+		lines = filter(lambda x: x.strip(), lines)
+		f.writelines(lines)
+
+
 def extract_data_from_csv(filename, column_header):
 	"""Returns a list of data from a csv file. Assumes the csv has headers."""
 	data = pd.read_csv(filename).get(column_header)
-	return {str(d) for d in data}
+	return {str(d).strip() for d in data}
 
 
 def extract_data_from_dataframe(frame, column_header):
 	"""Returns a list of data from a csv file. Assumes the csv has headers."""
 	data = frame.get(column_header)
-	return {str(d) for d in data}
+	return {str(d).strip() for d in data}
 
 
 def extract_tsi_fsc_for_bad_dates(timestamps):
