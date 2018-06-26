@@ -95,7 +95,6 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	for i, t in enumerate(timestamps):
 		# our_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'results/' + network_dir + '/masks/' + time_to_year(t) + time_to_month_and_day(t) + )))
 		# tsi_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'good_data/simplemask/' + time_to_year(t) + '/' + time_to_month_and_day(t) + "/simplemask" + t + ".png")))
-		t = str(t)
 		print(t)
 		print([t])
 		# if os.path.isfile(extract_network_mask_path_from_time(timestamp, exp_label)) and os.path.isfile(
