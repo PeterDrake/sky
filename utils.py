@@ -98,6 +98,7 @@ def extract_data_from_dataframe(frame, column_header):
 	data = frame.get(column_header)
 	return {str(d) for d in data}
 
+
 def extract_tsi_fsc_for_bad_dates(timestamps):
 	nan_fsc = set()
 	csv = read_csv_file("shcu_good_data.csv")
@@ -117,13 +118,37 @@ def extract_tsi_fsc_for_date(timestamp):
 	return (math.floor(df.loc[timestamp, "fsc_z"] * 10 ** 6)) / 10 ** 6
 
 
+# TODO
+def isSeries(data):
+	"""Returns true if the data is a pandas series."""
+	return False
+
+
+# TODO
+def allDuplicates(data):
+	"""Returns true if all the data is identical."""
+	return False
+
+
+# TODO
+def pickDuplicate(data):
+	"""Returns the first element in data"""
+	return -1
+
+
 def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	df = frame.set_index("timestamp_utc", drop=False)
 	# print("Is it here?" + str(df.loc[timestamp]))
 	# for h in df.columns.values:
 	# 	print('<{}>'.format(h))
 	ans = df.loc[timestamp, "fsc_z"]
-	print(ans)
+	if isSeries(ans):
+		if allDuplicates(ans):
+			ans = pickDuplicate(ans)
+		else:
+			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this " \
+			       "manually."
+	# print(ans)
 	return (math.floor(ans.item() * 10 ** 6)) / 10 ** 6
 
 
