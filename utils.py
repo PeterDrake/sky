@@ -87,6 +87,7 @@ def extract_times_from_file(filename):
 	return times
 
 
+# TODO: Figure out why this does not work
 def clean_csv(filename):
 	"""Removes all of the spaces in a csv file. Might have memory issues for extremely large files."""
 	with open(filename) as f:
