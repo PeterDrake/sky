@@ -121,18 +121,25 @@ def extract_tsi_fsc_for_date(timestamp):
 # TODO
 def isSeries(data):
 	"""Returns true if the data is a pandas series."""
+	if type(data).contains('pandas.core.series.Series'):
+		return True
 	return False
 
 
 # TODO
 def allDuplicates(data):
 	"""Returns true if all the data is identical."""
-	return False
+	unique = set()
+	for d in data:
+		unique.add(d)
+	return len(unique) == 1
 
 
 # TODO
 def pickDuplicate(data):
 	"""Returns the first element in data"""
+	for d in data:
+		return d
 	return -1
 
 

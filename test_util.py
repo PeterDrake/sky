@@ -57,3 +57,9 @@ class TestUtil(unittest.TestCase):
 		self.assertEqual(0.368888, extract_ceilometer_fsc_for_date(20120501170900))
 		self.assertEqual(0.44, extract_ceilometer_fsc_for_date(20120501170230))
 		self.assertEqual(0.431111, extract_ceilometer_fsc_for_date(20120501170500))
+
+	def test_extract_fsc_for_date_from_dataframe(self):
+		csv = read_csv_file("shcu_good_data.csv")
+		self.assertEqual(0.300045, extract_fsc_for_date_from_dataframe(csv, 20120501170900))
+	# self.assertEqual(0.300056, extract_fsc_for_date_from_dataframe(csv, 20120513004100))
+	# self.assertEqual(0.300056, extract_fsc_for_date_from_dataframe(csv, 20150911230730))
