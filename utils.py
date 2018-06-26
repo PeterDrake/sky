@@ -140,7 +140,7 @@ def pickDuplicate(data):
 	"""Returns the first element in data"""
 	for d in data:
 		return d
-	return -1
+	return 'Cant return the first element in data'
 
 
 def extract_fsc_for_date_from_dataframe(frame, timestamp):
