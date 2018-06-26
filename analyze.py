@@ -93,12 +93,12 @@ def show_sky_images(timestamps):
 def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
 	for i, t in enumerate(timestamps):
-		print(t)
+		# print(t)
 		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
 				extract_mask_path_from_time(t, 'good_data')):
 			tsi_mask = get_simple_mask(t)
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
-			print(disagreement_rate(our_mask, tsi_mask))
+			#print(disagreement_rate(our_mask, tsi_mask))
 			rates[i] = disagreement_rate(our_mask, tsi_mask)
 		else:
 			print("not here")
