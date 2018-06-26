@@ -156,7 +156,9 @@ def extract_fsc_for_date_from_dataframe(frame, timestamp):
 			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this " \
 			       "manually."
 	# print(ans)
-	return (math.floor(ans.item() * 10 ** 6)) / 10 ** 6
+	else:
+		ans = ans.item()
+	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
 def extract_ceilometer_fsc_for_date(timestamp):
