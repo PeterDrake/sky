@@ -118,16 +118,14 @@ def extract_tsi_fsc_for_date(timestamp):
 	return (math.floor(df.loc[timestamp, "fsc_z"] * 10 ** 6)) / 10 ** 6
 
 
-# TODO
-def isSeries(data):
+def is_series(data):
 	"""Returns true if the data is a pandas series."""
 	if 'pandas.core.series.Series' in str(type(data)):
 		return True
 	return False
 
 
-# TODO
-def allDuplicates(data):
+def all_duplicates(data):
 	"""Returns true if all the data is identical."""
 	unique = set()
 	for d in data:
@@ -135,8 +133,7 @@ def allDuplicates(data):
 	return len(unique) == 1
 
 
-# TODO
-def pickDuplicate(data):
+def pick_duplicate(data):
 	"""Returns the first element in data"""
 	for d in data:
 		return d
@@ -149,9 +146,9 @@ def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	# for h in df.columns.values:
 	# 	print('<{}>'.format(h))
 	ans = df.loc[timestamp, "fsc_z"]
-	if isSeries(ans):
-		if allDuplicates(ans):
-			ans = pickDuplicate(ans)
+	if is_series(ans):
+		if all_duplicates(ans):
+			ans = pick_duplicate(ans)
 		else:
 			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this " \
 			       "manually."

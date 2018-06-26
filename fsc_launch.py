@@ -7,7 +7,7 @@ Run this only after process_launch.py has finished processing all of the masks d
 import os
 
 if __name__ == "__main__":
-	exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04']
+	exp_labels = ['e72-00', 'e72-01', 'e72-02']
 
 	for exp_label in exp_labels:
 		name = "fsc-net-" + exp_label[-2:]
