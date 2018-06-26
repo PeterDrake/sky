@@ -121,7 +121,7 @@ def extract_tsi_fsc_for_date(timestamp):
 # TODO
 def isSeries(data):
 	"""Returns true if the data is a pandas series."""
-	if type(data).contains('pandas.core.series.Series'):
+	if 'pandas.core.series.Series' in str(type(data)):
 		return True
 	return False
 
