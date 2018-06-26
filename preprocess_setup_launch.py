@@ -40,8 +40,8 @@ COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
 OUTPUT_DIR = 'bad_data'
-RES_DIR = 'res'
-csv_path = 'shcu_bad_data.csv'  # bad_data has about 5,000 times, good_data has about 100,000 times
+RES_DIR = OUTPUT_DIR + '/res'
+csv_path = 'shcu_bad_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
 
 # Size of each batch, should be able to specify via command-line
 BATCH_SIZE = 1000

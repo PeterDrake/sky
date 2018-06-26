@@ -7,6 +7,7 @@ Created on Tues, June 26 2017
 
 import matplotlib.pyplot as plt
 
+# exp_label = "e70-00"
 exp_label = "e72-00"
 with open("results/" + exp_label + "/output.txt") as f:
 	x, train, valid = [], [], []
@@ -20,6 +21,7 @@ with open("results/" + exp_label + "/output.txt") as f:
 		ax = fig.add_subplot(1, 1, 1)
 		ax.set_xlabel("Epoch")
 		ax.set_ylabel("Accuracy")
+		# ax.set_title("Accuracy vs. Epoch (Network #1)")
 		ax.set_title("Accuracy vs. Epoch (Network #2)")
 		ax.plot(x, train, label="training")
 		ax.plot(x, valid, label="validation")
