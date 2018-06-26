@@ -15,15 +15,12 @@ Created on Thu Jun 15 15:32:13 2017
 @author: jeffmullins
 """
 
-import sys
-
 import matplotlib
 import tensorflow as tf
 
 from preprocess_setup_launch import *
-from show_output import show_output
 from train import BATCH_SIZE, build_net, load_inputs, load_validation_stamps
-from utils import extract_mask_path_from_time, out_to_image, read_last_iteration_number, read_parameters
+from utils import extract_mask_path_from_time, out_to_image, get_simple_mask, get_network_mask_from_time_and_label
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -93,16 +90,39 @@ def show_sky_images(timestamps):
 		Image.fromarray(np.array(misc.imread(extract_mask_path_from_time(s, INPUT_DIR)))).show()
 
 
+def show_plot_of_pixel_difference(timestamps, exp_label, directory):
+	rates = np.zeros(len(timestamps))
+	for t, i in enumerate(timestamps):
+		# our_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'results/' + network_dir + '/masks/' + time_to_year(t) + time_to_month_and_day(t) + )))
+		# tsi_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'good_data/simplemask/' + time_to_year(t) + '/' + time_to_month_and_day(t) + "/simplemask" + t + ".png")))
+		if os.path.isfile(extract_mask_path_from_time(t, "results")) and os.path.isfile(extract_mask_path_from_time(t)):
+			tsi_mask = get_simple_mask(t)
+			our_mask = get_network_mask_from_time_and_label(t, exp_label)
+		else:
+			pass
+		rates[i] = disagreement_rate(our_mask, tsi_mask)
+	# Display a graph of accuracies
+	fig, ax = plt.subplots(nrows=1, ncols=1)
+	ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+	ax.set_ylabel('Percent of Pixels Incorrect')
+	ax.set_xlabel('Mask (sorted by accuracy)')
+	fig.savefig(directory + '/' + exp_label + '/accuracy_plot.png', bbox_inches='tight')
+
+
 if __name__ == '__main__':
-	timestamps = load_validation_stamps(BATCH_SIZE)
-	dir_name = "results/" + sys.argv[1] + "/"
-	args = read_parameters(dir_name)
-	step_version = read_last_iteration_number(dir_name)
-	layer_info = args['Layer info'].split()
-	worst_timestamps = find_worst_results(5, timestamps, dir_name, step_version, layer_info)
-	print("Worst timestamps:\t" + str(worst_timestamps))
-	_, accuracy, saver, _, x, y, y_, _ = build_net(layer_info)
-	show_output(accuracy, saver, x, y, y_, dir_name, step_version, True, worst_timestamps, True)
+	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
+	networks = list('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
+	for n in networks:
+		show_plot_of_pixel_difference(times, n, 'plots')
+# timestamps = load_validation_stamps(BATCH_SIZE)
+# dir_name = "results/" + sys.argv[1] + "/"
+# args = read_parameters(dir_name)
+# step_version = read_last_iteration_number(dir_name)
+# layer_info = args['Layer info'].split()
+# worst_timestamps = find_worst_results(5, timestamps, dir_name, step_version, layer_info)
+# print("Worst timestamps:\t" + str(worst_timestamps))
+# _, accuracy, saver, _, x, y, y_, _ = build_net(layer_info)
+# show_output(accuracy, saver, x, y, y_, dir_name, step_version, True, worst_timestamps, True)
 # outputs = run_stamps(saver, x, y, dir_name, step_version, worst_timestamps)
 # targets = read_targets(worst_timestamps)
 # show_comparison_images(outputs, targets, dir_name)
