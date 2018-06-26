@@ -95,7 +95,8 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	for t, i in enumerate(timestamps):
 		# our_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'results/' + network_dir + '/masks/' + time_to_year(t) + time_to_month_and_day(t) + )))
 		# tsi_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'good_data/simplemask/' + time_to_year(t) + '/' + time_to_month_and_day(t) + "/simplemask" + t + ".png")))
-		if os.path.isfile(extract_mask_path_from_time(t, "results")) and os.path.isfile(extract_mask_path_from_time(t)):
+		if os.path.isfile(extract_mask_path_from_time(t, 'results')) and os.path.isfile(
+				extract_mask_path_from_time(t, 'good_data')):
 			tsi_mask = get_simple_mask(t)
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
 		else:
@@ -111,7 +112,7 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
-	networks = list('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
+	networks = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
 	for n in networks:
 		show_plot_of_pixel_difference(times, n, 'plots')
 # timestamps = load_validation_stamps(BATCH_SIZE)
