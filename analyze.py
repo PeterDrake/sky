@@ -93,10 +93,7 @@ def show_sky_images(timestamps):
 def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
 	for i, t in enumerate(timestamps):
-		# our_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'results/' + network_dir + '/masks/' + time_to_year(t) + time_to_month_and_day(t) + )))
-		# tsi_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'good_data/simplemask/' + time_to_year(t) + '/' + time_to_month_and_day(t) + "/simplemask" + t + ".png")))
 		print(t)
-		print([t])
 		# if os.path.isfile(extract_network_mask_path_from_time(timestamp, exp_label)) and os.path.isfile(
 		# extract_mask_path_from_time(t, 'good_data')):
 		# print("I was here")
@@ -116,10 +113,8 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
-	times = str(times)
 	networks = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
 	for n in networks:
-		print(type(n))
 		show_plot_of_pixel_difference(times, n, 'plots')
 # timestamps = load_validation_stamps(BATCH_SIZE)
 # dir_name = "results/" + sys.argv[1] + "/"
