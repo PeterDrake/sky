@@ -115,7 +115,7 @@ if __name__ == '__main__':
 	times = str(times)
 	networks = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
 	for n in networks:
-		print(n)
+		print(type(n))
 		show_plot_of_pixel_difference(times, n, 'plots')
 # timestamps = load_validation_stamps(BATCH_SIZE)
 # dir_name = "results/" + sys.argv[1] + "/"
