@@ -92,9 +92,10 @@ def show_sky_images(timestamps):
 
 def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
-	for t, i in enumerate(timestamps):
+	for i, t in enumerate(timestamps):
 		# our_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'results/' + network_dir + '/masks/' + time_to_year(t) + time_to_month_and_day(t) + )))
 		# tsi_mask = np.array(misc.imread(extract_mask_path_from_time(t, 'good_data/simplemask/' + time_to_year(t) + '/' + time_to_month_and_day(t) + "/simplemask" + t + ".png")))
+		t = str(t)
 		if os.path.isfile(extract_mask_path_from_time(t, 'results')) and os.path.isfile(
 				extract_mask_path_from_time(t, 'good_data')):
 			tsi_mask = get_simple_mask(t)
