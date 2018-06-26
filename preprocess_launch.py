@@ -9,8 +9,8 @@ This program launches process_batch.py with each file in the 'res' folder.
 
 import os
 
-batches = os.listdir('res')
+batches = os.listdir('bad_data/res')
 for batch in batches:
 	os.system('SGE_Batch -r "{}" -c "python3 -u process_batch.py {}" -P 1'.format(batch[:-4],
-			"res/" + batch))  # TODO Make this more flexible.
+			"bad_data/res/" + batch))  # TODO Make this more flexible.
 	print("Launched {} successfully".format(batch))

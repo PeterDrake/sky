@@ -12,5 +12,5 @@ if __name__ == "__main__":
 	print("Opened {}".format(sys.argv[1]))
 	for time in f:
 		time = time.replace('\n', '')
-		simplify_mask(time)
-		simplify_image(time)
+		simplify_mask(time, output_dir="bad_data")
+		simplify_image(time, output_dir="bad_data")
