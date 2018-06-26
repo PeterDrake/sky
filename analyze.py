@@ -112,6 +112,7 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
+	times = str(times)
 	networks = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
 	for n in networks:
 		show_plot_of_pixel_difference(times, n, 'plots')
