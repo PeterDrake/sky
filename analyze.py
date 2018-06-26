@@ -98,6 +98,7 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 				extract_mask_path_from_time(t, 'good_data')):
 			tsi_mask = get_simple_mask(t)
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
+			print(disagreement_rate(our_mask, tsi_mask))
 			rates[i] = disagreement_rate(our_mask, tsi_mask)
 		else:
 			print("not here")
