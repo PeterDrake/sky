@@ -100,13 +100,15 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
 			rates[i] = disagreement_rate(our_mask, tsi_mask)
 		else:
+			print("not here")
 			pass
 	# Display a graph of accuracies
-	fig, ax = plt.subplots(nrows=1, ncols=1)
-	ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-	ax.set_ylabel('Percent of Pixels Incorrect')
-	ax.set_xlabel('Mask (sorted by accuracy)')
-	fig.savefig(directory + '/' + exp_label + '/accuracy_plot.png', bbox_inches='tight')
+	with plt.xkcd():
+		fig, ax = plt.subplots(nrows=1, ncols=1)
+		ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+		ax.set_ylabel('Percent of Pixels Incorrect')
+		ax.set_xlabel('Mask (sorted by accuracy)')
+		fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'accuracy_plot.png', bbox_inches='tight')
 
 
 if __name__ == '__main__':
