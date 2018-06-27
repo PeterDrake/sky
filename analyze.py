@@ -92,24 +92,28 @@ def show_sky_images(timestamps):
 
 def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
-	for i, t in enumerate(timestamps):
-		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
-				extract_mask_path_from_time(t, 'good_data')):
-			tsi_mask = get_simple_mask(t)
-			our_mask = get_network_mask_from_time_and_label(t, exp_label)
-			rates[i] = disagreement_rate(our_mask, tsi_mask)
+	with open('plots/' + exp_label + '/' + 'pixel_rate.csv', 'w') as f:
+		f.write("timestamp_utc,pixel_disagreement" + "\n")
+		for i, t in enumerate(timestamps):
+			if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
+					extract_mask_path_from_time(t, 'good_data')):
+				f.write(t + ',')
+				tsi_mask = get_simple_mask(t)
+				our_mask = get_network_mask_from_time_and_label(t, exp_label)
+				rates[i] = disagreement_rate(our_mask, tsi_mask)
+				f.write(rates[i] + "\n")
 		else:
 			print("not here")
 			pass
 	# Save a graph of accuracies
-	with plt.xkcd():
-		fig, ax = plt.subplots(nrows=1, ncols=1)
-		ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-		ax.set_ylabel('Percent of Pixels Incorrect')
-		ax.set_xlabel('Masks (sorted by accuracy)')
-		ax.set_title("Pixel disagreement rate between our masks and TSI masks")
-		fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'accuracy_plot.png', bbox_inches='tight')
-
+# with plt.xkcd():
+# 	fig, ax = plt.subplots(nrows=1, ncols=1)
+# 	ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+# 	ax.set_ylabel('Percent of Pixels Incorrect')
+# 	ax.set_xlabel('Masks (sorted by accuracy)')
+# 	ax.set_title("Pixel disagreement rate between our masks and TSI masks")
+# 	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'accuracy_plot.png', bbox_inches='tight')
+#
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
