@@ -97,15 +97,14 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 		for i, t in enumerate(timestamps):
 			if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
 					extract_mask_path_from_time(t, 'good_data')):
-				f.write(t + ',')
 				tsi_mask = get_simple_mask(t)
 				our_mask = get_network_mask_from_time_and_label(t, exp_label)
 				rates[i] = disagreement_rate(our_mask, tsi_mask)
 				rate = str(rates[i])
-				f.write(rate + "\n")
-		else:
-			print("not here")
-			pass
+				f.write(t + "," + rate + "\n")
+	# else:
+	# print("not here")
+	# pass
 	# Save a graph of accuracies
 # with plt.xkcd():
 # 	fig, ax = plt.subplots(nrows=1, ncols=1)
