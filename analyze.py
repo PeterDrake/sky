@@ -107,6 +107,7 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 		ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
 		ax.set_ylabel('Percent of Pixels Incorrect')
 		ax.set_xlabel('Masks (sorted by accuracy)')
+		ax.set_title("Pixel disagreement rate between our masks and TSI masks")
 		fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'accuracy_plot.png', bbox_inches='tight')
 
 
