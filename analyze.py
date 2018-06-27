@@ -101,7 +101,8 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 				tsi_mask = get_simple_mask(t)
 				our_mask = get_network_mask_from_time_and_label(t, exp_label)
 				rates[i] = disagreement_rate(our_mask, tsi_mask)
-				f.write(rates[i] + "\n")
+				rate = str(rates[i])
+				f.write(rate + "\n")
 		else:
 			print("not here")
 			pass
