@@ -92,7 +92,7 @@ def show_sky_images(timestamps):
 
 def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
-	with open('plots/' + exp_label + '/' + 'pixel_rate_no_buffer.csv', 'w', 0) as f:
+	with open('plots/' + exp_label + '/' + 'pixel_rate_no_buffer.csv', 'w') as f:
 		f.write("timestamp_utc,pixel_disagreement" + "\n")
 		for i, t in enumerate(timestamps):
 			if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
