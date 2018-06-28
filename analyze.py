@@ -90,33 +90,32 @@ def show_sky_images(timestamps):
 		Image.fromarray(np.array(misc.imread(extract_mask_path_from_time(s, INPUT_DIR)))).show()
 
 
+# TODO: write a function that saves the disagreement rates in a csv file, in order
+# TODO: create plots from the csv file
+
 def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
-	with open('plots/' + exp_label + '/' + 'pixel_rate_no_buffer.csv', 'w') as f:
-		f.write("timestamp_utc,pixel_disagreement" + "\n")
-		for i, t in enumerate(timestamps):
-			if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
-					extract_mask_path_from_time(t, 'good_data')):
-				tsi_mask = get_simple_mask(t)
-				our_mask = get_network_mask_from_time_and_label(t, exp_label)
-				rates[i] = disagreement_rate(our_mask, tsi_mask)
-				rate = str(rates[i])
-				f.write(t + "," + rate + "\n")
-	# else:
-	# print("not here")
-	# pass
+	for i, t in enumerate(timestamps):
+		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
+				extract_mask_path_from_time(t, 'good_data')):
+			tsi_mask = get_simple_mask(t)
+			our_mask = get_network_mask_from_time_and_label(t, exp_label)
+			rates[i] = disagreement_rate(our_mask, tsi_mask)
+		else:
+			print("not here")
+			pass
 	# Save a graph of accuracies
-# with plt.xkcd():
-# 	fig, ax = plt.subplots(nrows=1, ncols=1)
-# 	ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-# 	ax.set_ylabel('Percent of Pixels Incorrect')
-# 	ax.set_xlabel('Masks (sorted by accuracy)')
-# 	ax.set_title("Pixel disagreement rate between our masks and TSI masks")
-# 	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'accuracy_plot.png', bbox_inches='tight')
-#
+	with plt.xkcd():
+		fig, ax = plt.subplots(nrows=1, ncols=1)
+		ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+		ax.set_ylabel('Percent of Pixels Incorrect')
+		ax.set_xlabel('Masks (sorted by accuracy)')
+		ax.set_title("Pixel disagreement rate between our masks and TSI masks")
+		fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'presentation_accuracy_plot.png',
+		            bbox_inches='tight')
 
 if __name__ == '__main__':
-	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
+	times = sorted(list(extract_data_from_csv('pixel_rate.csv', 'timestamp_utc')))
 	networks = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
 	for n in networks:
 		show_plot_of_pixel_difference(times, n, 'plots')

@@ -175,6 +175,13 @@ def extract_ceilometer_fsc_for_date(timestamp):
 	return (math.floor(df.loc[timestamp, "cf_tot"] * 10 ** 6)) / 10 ** 6
 
 
+def extract_disag_rate_for_date(timestamp):
+	csv = read_csv_file("pixel_rate.csv")
+	df = csv.set_index("timestamp_utc", drop=False)
+	# drop=False to not delete timestamp_utc column if other index set later
+	return (math.floor(df.loc[timestamp, "pixel_disagreement"] * 10 ** 6)) / 10 ** 6
+
+
 def read_csv_file(filename):
 	"""Reads a csv file using the pandas csv reader and returns a pandas data frame."""
 	return pd.read_csv(filename)
