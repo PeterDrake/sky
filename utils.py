@@ -180,6 +180,7 @@ def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
 		ans = ans.item()
 	else:
 		return -1
+	print(type(ans))
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
