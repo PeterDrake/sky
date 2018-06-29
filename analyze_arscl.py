@@ -22,7 +22,7 @@ if __name__ == "__main__":
 	net_fsc, arscl_fsc = [], []
 	for t in net_times:
 		temp_arscl = extract_data_for_date_from_dataframe(arscl_frame, t, "cf_tot")
-		if temp_arscl < 0:
+		if temp_arscl < 0:  # Silly workaround to NaN and other weird values
 			continue
 		arscl_fsc.append(temp_arscl)
 		net_fsc.append(extract_data_for_date_from_dataframe(net_frame, t, "fsc_z"))

@@ -168,19 +168,27 @@ def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
+# TODO: Figure out how to deal with weird types and shit
 def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
 	df = frame.set_index("timestamp_utc", drop=False)
 	ans = df.loc[timestamp, data_label]
-	if is_series(ans):
-		if all_duplicates(ans):
-			ans = pick_duplicate(ans)
+	try:
+		if is_series(ans):
+			if all_duplicates(ans):
+				ans = pick_duplicate(ans)
+			else:
+				return "Error: There are multiple timestamps with unique values in this frame. Please resolve this."
+		elif "numpy" in str(type(ans)) or "Numpy" in str(type(ans)): # TODO: get a better workaround
+			ans = ans.item()
+		elif "NaN" in str(type(ans)):
+			print(type(ans))
+			return -1
 		else:
-			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this."
-	elif "numpy" in str(type(ans)) or "Numpy" in str(type(ans)): # TODO: get a better workaround
-		ans = ans.item()
-	else:
-		return -1
-	print(type(ans))
+			print(type(ans))
+			return -2
+	except ValueError:
+		print("Could not convert data to float. ")
+
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
