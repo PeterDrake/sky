@@ -1,5 +1,6 @@
 from utils import *
 import matplotlib.pyplot as plt
+import sys
 
 if __name__ == "__main__":
 	# TODO: read in the network's csv file for timestamps and fsc_z
@@ -9,16 +10,25 @@ if __name__ == "__main__":
 	net_label = "e70-00"
 	net_fsc_path = "results/" + net_label + "/fsc.csv"
 
+
+	print("reading net_fsc file")
 	net_frame = read_csv_file(net_fsc_path)
 	net_times = net_frame.get("timestamp_utc")
 
+	print("reading shcu_good_data file")
 	arscl_frame = read_csv_file("shcu_good_data.csv")
 
+	print("matching network and arscl fsc to times")
+	net_fsc, arscl_fsc = [], []
+	for t in net_times:
+		temp_arscl = extract_data_for_date_from_dataframe(arscl_frame, t, "cf_tot")
+		if temp_arscl < 0:
+			continue
+		arscl_fsc.append(temp_arscl)
+		net_fsc.append(extract_data_for_date_from_dataframe(net_frame, t, "fsc_z"))
+
+	print("plotting the results.")
 	with plt.xkcd():
-		net_fsc, arscl_fsc = [], []
-		for t in net_times:
-			net_fsc.append(extract_data_for_date_from_dataframe(net_frame, t, "fsc_z"))
-			arscl_fsc.append(extract_data_for_date_from_dataframe(arscl_frame, t, "cf_tot"))
 		fig = plt.figure()
 		ax = fig.add_subplot(1, 1, 1)
 		ax.set_xlabel("ARSCL fsc")

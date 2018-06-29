@@ -176,8 +176,10 @@ def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
 			ans = pick_duplicate(ans)
 		else:
 			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this."
-	else:
+	elif "numpy" in str(type(ans)) or "Numpy" in str(type(ans)): # TODO: get a better workaround
 		ans = ans.item()
+	else:
+		return -1
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
