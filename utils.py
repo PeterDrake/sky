@@ -168,6 +168,19 @@ def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
+def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
+	df = frame.set_index("timestamp_utc", drop=False)
+	ans = df.loc[timestamp, data_label]
+	if is_series(ans):
+		if all_duplicates(ans):
+			ans = pick_duplicate(ans)
+		else:
+			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this."
+	else:
+		ans = ans.item()
+	return (math.floor(ans * 10 ** 6)) / 10 ** 6
+
+
 def extract_ceilometer_fsc_for_date(timestamp):
 	csv = read_csv_file("shcu_good_data.csv")
 	df = csv.set_index("timestamp_utc", drop=False)
