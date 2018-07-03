@@ -22,7 +22,7 @@ Layer c concatenates the outputs of layers a and b.
 
 Created on Mon May 22 10:20:00 2017
 
-@author: Jeff Mullins, Sean Richardson
+@author: Zoe Harrington, Maxwell Levin, Jeff Mullins, Sean Richardson
 
 """
 
@@ -263,8 +263,7 @@ def parse_layer_info(layer_info):
 		# Concatenation layer
 		# name:concat-prev1-prev2
 		if oper == 'concat':
-			outs = str(int(table[args[0]]["outs"]) +
-			           int(table[args[1]]["outs"]))
+			outs = str(int(table[args[0]]["outs"]) + int(table[args[1]]["outs"]))
 			prev_1 = args[0]
 			prev_2 = args[1]
 			info = {"outs": outs, "prev_1": prev_1, "prev_2": prev_2}
@@ -285,8 +284,7 @@ def save_params(job_number, layer_info, out_dir):
 	F.close()
 
 
-def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy,
-		valid_inputs, valid_correct, result_dir):
+def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_inputs, valid_correct, result_dir):
 	"""Trains the network."""
 	print("Training network")
 	start = time.time()
@@ -312,11 +310,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy,
 						x: inputs, y_: correct})
 					valid_accuracy = accuracy.eval(feed_dict={
 						x: valid_inputs, y_: valid_correct})
-					print('{}\t{:1.5f}\t{:1.5f}'.format(i,
-							train_accuracy,
-							valid_accuracy),
-							file=f,
-							flush=True)
+					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy), file=f, flush=True)
 		stop = time.time()
 		F = open(out_dir + 'parameters.txt', 'a')
 		F.write('Elapsed time:\t' + str(stop - start) + ' seconds\n')
