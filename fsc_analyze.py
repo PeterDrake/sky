@@ -1,11 +1,11 @@
 """Compares the fsc values in fsc.csv file of each network to the shcu_good_data.csv"""
 
 import heapq
-import sys
+
+import matplotlib.pyplot as plt
 
 from analyze import disagreement_rate
 from utils import *
-import matplotlib.pyplot as plt
 
 
 def find_worst_results(filename, num_worst=5):
@@ -28,6 +28,26 @@ def find_worst_results(filename, num_worst=5):
 		heapq.heappushpop(disagreement_rates, diff)
 	return sorted(disagreement_rates)
 
+
+def show_network_arscl_tsi_fsc(image_dataframe, arscl_dataframce):
+	x = list()
+	y = list()
+	i = 0
+	image_times = set(extract_data_from_dataframe(image_dataframe, "timestamp_utc"))
+	print("first converted to set")
+	arscl_times = set(extract_data_from_dataframe(arscl_dataframce, "timestamp_utc"))
+	print("second converted to set")
+	times = image_times.intersection(arscl_times)
+	print("found intersection")
+	for t in times:
+		image_fsc = extract_data_for_date_from_dataframe("fsc_z", t, image_dataframe)
+		arscl_fsc = extract_data_for_date_from_dataframe("cf_tot", t, arscl_dataframce)
+		x.append(arscl_fsc)
+		y.append(image_fsc)
+		i += 1
+		if i % 1000 == 0:
+			print(i)
+	return x, y
 
 # TODO: This doesn't show the fsc difference at all. Currently configured to show pixel difference, if it even works.
 def show_plot_of_fsc_difference(timestamps, exp_label, directory):
@@ -52,5 +72,9 @@ def show_plot_of_fsc_difference(timestamps, exp_label, directory):
 
 
 if __name__ == "__main__":
-	net_csv_path = sys.argv[1]
-	print("The biggest differences in fsc occur during the times: \n<{}>".format(find_worst_results(net_csv_path)))
+	image_csv = read_csv_file('shcu_good_data.csv').dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
+	print("done reading in csv")
+	x, y = show_network_arscl_tsi_fsc(image_csv, image_csv)
+	plt.plot(x, y, "Fsc Agreement Rate")
+# net_csv_path = sys.argv[1]
+# print("The biggest differences in fsc occur during the times: \n<{}>".format(find_worst_results(net_csv_path)))

@@ -168,27 +168,45 @@ def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
-# TODO: Figure out how to deal with weird types
-def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
+def extract_data_for_date_from_dataframe(header, timestamp, frame):
 	df = frame.set_index("timestamp_utc", drop=False)
-	ans = df.loc[timestamp, data_label]
-	try:
-		if is_series(ans):
-			if all_duplicates(ans):
-				ans = pick_duplicate(ans)
-			else:
-				return "Error: There are multiple timestamps with unique values in this frame. Please resolve this."
-		elif "numpy" in str(type(ans)) or "Numpy" in str(type(ans)): # TODO: get a better workaround
-			ans = ans.item()
-		elif "NaN" in str(type(ans)):
-			print(type(ans))
-			return -1
+	# print("Is it here?" + str(df.loc[timestamp]))
+	# for h in df.columns.values:
+	# 	print('<{}>'.format(h))
+	ans = df.loc[int(timestamp), header]
+	if is_series(ans):
+		if all_duplicates(ans):
+			ans = pick_duplicate(ans)
 		else:
-			print(type(ans))
-			return -2
-	except ValueError:
-		print("Could not convert data to float. ")
-	return (math.floor(ans * 10 ** 6)) / 10 ** 6
+			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this " \
+			       "manually."
+	# print(ans)
+	else:
+		ans = ans.item()
+	return ans
+
+
+# # TODO: Figure out how to deal with weird types
+# def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
+# 	df = frame.set_index("timestamp_utc", drop=False)
+# 	ans = df.loc[timestamp, data_label]
+# 	try:
+# 		if is_series(ans):
+# 			if all_duplicates(ans):
+# 				ans = pick_duplicate(ans)
+# 			else:
+# 				return "Error: There are multiple timestamps with unique values in this frame. Please resolve this."
+# 		elif "numpy" in str(type(ans)) or "Numpy" in str(type(ans)): # TODO: get a better workaround
+# 			ans = ans.item()
+# 		elif "NaN" in str(type(ans)):
+# 			print(type(ans))
+# 			return -1
+# 		else:
+# 			print(type(ans))
+# 			return -2
+# 	except ValueError:
+# 		print("Could not convert data to float. ")
+# 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
 def extract_ceilometer_fsc_for_date(timestamp):
@@ -198,11 +216,11 @@ def extract_ceilometer_fsc_for_date(timestamp):
 	return (math.floor(df.loc[timestamp, "cf_tot"] * 10 ** 6)) / 10 ** 6
 
 
-def extract_disag_rate_for_date(timestamp):
-	csv = read_csv_file("pixel_rate.csv")
+def extract_disag_rate_for_date(csv, timestamp):
 	df = csv.set_index("timestamp_utc", drop=False)
 	# drop=False to not delete timestamp_utc column if other index set later
-	return (math.floor(df.loc[timestamp, "pixel_disagreement"] * 10 ** 6)) / 10 ** 6
+	timestamp = int(timestamp)
+	return df.loc[timestamp, "pixel_disagreement"]
 
 
 def read_csv_file(filename):
