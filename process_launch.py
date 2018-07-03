@@ -11,10 +11,10 @@ exp_labels = ['e72-00', 'e72-01', 'e72-02']  # Specify the labels that correspon
 
 if __name__ == "__main__":
 	num_batches = len(exp_labels)
-	num_batches_per_network = 10
+	num_batches_per_network = 5
 
 	total_length = -1  # This file has a header
-	for line in open('shcu_good_data.csv'):
+	for line in open('shcu_bad_data.csv'):
 		total_length += 1
 
 	batch_length = int(total_length / num_batches_per_network)
