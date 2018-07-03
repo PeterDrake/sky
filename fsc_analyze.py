@@ -3,7 +3,9 @@
 import heapq
 import sys
 
+from analyze import disagreement_rate
 from utils import *
+import matplotlib.pyplot as plt
 
 
 def find_worst_results(filename, num_worst=5):
@@ -27,6 +29,7 @@ def find_worst_results(filename, num_worst=5):
 	return sorted(disagreement_rates)
 
 
+# TODO: This doesn't show the fsc difference at all. Currently configured to show pixel difference, if it even works.
 def show_plot_of_fsc_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
 	for i, t in enumerate(timestamps):
