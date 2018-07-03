@@ -14,6 +14,8 @@ from train import build_net, load_inputs
 from utils import extract_data_from_csv, extract_img_path_from_time, extract_network_mask_path_from_time, \
 	out_to_image, \
 	read_last_iteration_number, read_parameters, show_skymask, time_to_month_and_day, time_to_year
+INPUT_DIR = "bad_data"
+input_csv = "shcu_bad_data.csv"
 
 
 def process_network_masks(timestamps, exp_label):
@@ -72,11 +74,11 @@ if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	start = int(sys.argv[2])  # The starting index of the timestamp in the shcu_good_data.csv file to consider
 	finish = int(sys.argv[3])  # Final timestamp to consider
-	temp = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))[start:finish]
+	temp = sorted(list(extract_data_from_csv(input_csv, 'timestamp_utc')))[start:finish]
 	times = []
 	for t in temp:
 		if not network_output_exists(t, exp_label):
-			if os.path.isfile(extract_img_path_from_time(t, 'good_data')):
-				if os.path.getsize(extract_img_path_from_time(t, 'good_data')) != 0:
+			if os.path.isfile(extract_img_path_from_time(t, INPUT_DIR)):
+				if os.path.getsize(extract_img_path_from_time(t, INPUT_DIR)) != 0:
 					times.append(t)
 	masks = process_network_masks(times, exp_label)
