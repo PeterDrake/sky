@@ -168,7 +168,7 @@ def extract_fsc_for_date_from_dataframe(frame, timestamp):
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
-# TODO: Figure out how to deal with weird types and shit
+# TODO: Figure out how to deal with weird types
 def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
 	df = frame.set_index("timestamp_utc", drop=False)
 	ans = df.loc[timestamp, data_label]
@@ -188,7 +188,6 @@ def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
 			return -2
 	except ValueError:
 		print("Could not convert data to float. ")
-
 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
