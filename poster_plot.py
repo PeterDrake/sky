@@ -27,5 +27,5 @@ with open("results/" + exp_label + "/output.txt") as f:
 		# ax.plot(x, valid, label="validation")
 		# ax.legend(loc='lower right')
 		plt.tight_layout()
-		fig.show()
-		fig.savefig('results/accuracy_vs_batch_' + exp_label + '_.png', dpi=300, bbox_inches='tight')
+		# fig.show()
+		fig.savefig('results/' + exp_label + '/accuracy_vs_batch_' + exp_label + '.png', dpi=300, bbox_inches='tight')
