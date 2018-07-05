@@ -54,11 +54,23 @@ if __name__ == "__main__":
 	good_arscl_dataframe = good_arscl_dataframe[0:N_SAMPLES]
 	good_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_arscl_dataframe)
 
+	bad_arscl_dataframe = read_csv_file('shcu_bad_data.csv')  # Contains both ARSCL and TSI Data
+	bad_arscl_dataframe = bad_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
+	# good_arscl_dataframe = good_arscl_dataframe.sample(n=N_SAMPLES)
+	bad_arscl_dataframe = bad_arscl_dataframe[0:N_SAMPLES]
+	bad_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_arscl_dataframe)
+
 	good_network_dataframe = read_csv_file('results/e70-00/fsc.csv')  # Contains NETWORK Data
 	good_network_dataframe = good_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	# good_network_dataframe = good_network_dataframe.sample(n=N_SAMPLES)
 	good_network_dataframe = good_network_dataframe[0:N_SAMPLES]
 	good_arscl_network = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_network_dataframe)
+
+	# bad_network_dataframe = read_csv_file('results/e70-00/fsc_bad.csv')  # Contains NETWORK Data
+	# bad_network_dataframe = bad_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
+	# # good_network_dataframe = good_network_dataframe.sample(n=N_SAMPLES)
+	# bad_network_dataframe = bad_network_dataframe[0:N_SAMPLES]
+	# bad_arscl_network = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_network_dataframe)
 
 	# TODO: Get arscl_tsi and arscl_network data for bad times
 	bad_arscl_tsi, bad_arscl_network = (0, 0), (0, 0)
