@@ -37,10 +37,12 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 	arscl_times = set(extract_data_from_dataframe(arscl_dataframe, "timestamp_utc"))
 	times = image_times.intersection(arscl_times)  # Necessary to correct for missing times
 	x, y = [], []
+	sd = 0
 	for t in times:
 		x.append(extract_data_for_date_from_dataframe("fsc_z", t, image_dataframe))
 		y.append(extract_data_for_date_from_dataframe("cf_tot", t, arscl_dataframe))
-	return x, y
+		sd += abs(y[-1] - x[-1])
+	return x, y, (sd / len(times)) ** 0.5
 
 
 if __name__ == "__main__":
@@ -75,17 +77,20 @@ if __name__ == "__main__":
 		bad_network_dataframe = bad_network_dataframe[bad_network_dataframe['timestamp_utc'].isin(bad_times)]
 		bad_arscl_network = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_network_dataframe)
 
-		x_labels = ['TSI FSC']*2 + ['NETWORK FSC']*2
-		y_label = 'CF SHCU'
+		x_label = 'CF SHCU'
+		y_labels = ['TSI FSC'] * 2 + ['NETWORK FSC'] * 2
 		titles = ['Good Data', 'Bad Data', 'Good Data', 'Bad Data']
 		DATA = [good_arscl_tsi, bad_arscl_tsi, good_arscl_network, bad_arscl_network]
 		fig = plt.figure()
-		for i, d in enumerate(DATA):
+		for i, data in enumerate(DATA):
 			ax = fig.add_subplot(2, 2, i + 1)
-			ax.set_xlabel(x_labels[i])
-			ax.set_ylabel(y_label)
+			ax.set_ylabel(y_labels[i])
+			ax.set_xlabel(x_label)
 			ax.set_title(titles[i])
 			plt.plot([0, 1], [0, 1], c='orange', lw=2)
-			plt.scatter(d[1], d[0], s=.25)
+			plt.scatter(data[0], data[1], s=.25)
 		plt.tight_layout()
 		plt.savefig("results/" + exp_label + "/good_tsi_arscl_fsc.png", dpi=600)
+
+		for i, data in enumerate(DATA):
+			print("The standard deviation for plot {} is {}.".format(i+1, data[2]))

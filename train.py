@@ -22,7 +22,7 @@ Layer c concatenates the outputs of layers a and b.
 
 Created on Mon May 22 10:20:00 2017
 
-@author: Zoe Harrington, Maxwell Levin, Jeff Mullins, Sean Richardson
+@author: Jeff Mullins, Sean Richardson, Zoe Harrington, Maxwell Levin
 
 """
 

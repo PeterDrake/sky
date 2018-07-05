@@ -1,3 +1,2 @@
-e72-00 a:conv-5-25-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-5-25-e g:conv-5-25-f h:concat-g-in i:conv-5-4-h
-e72-01 a:conv-5-25-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-5-25-e g:conv-5-25-f h:concat-g-in i:conv-5-4-h
-e72-02 a:conv-5-25-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-5-25-e g:conv-5-25-f h:concat-g-in i:conv-5-4-h
+e73-00 a:conv-5-32-in b:conv-5-32-a c:conv-5-32-a d:concat-a-b e:concat-c-d f:conv-5-32-e g:conv-5-32-f h:concat-g-in i:conv-5-4-h
+e73-01 a:conv-5-32-in b:conv-5-32-a c:conv-5-32-a d:concat-a-b e:concat-c-d f:conv-5-32-e g:conv-5-32-f h:concat-g-in i:conv-5-4-h
