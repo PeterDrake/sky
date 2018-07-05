@@ -15,9 +15,7 @@ def find_worst_results(filename, num_worst=5):
 	# print(net_times)
 	shcu = read_csv_file('shcu_good_data.csv')
 	shcu_times = set(extract_data_from_csv('shcu_good_data.csv', "timestamp_utc"))
-
 	times = net_times.intersection(shcu_times)
-
 	disagreement_rates = [(-1, '')] * num_worst
 	heapq.heapify(disagreement_rates)
 	for t in times:
@@ -63,11 +61,12 @@ if __name__ == "__main__":
 	good_arscl_network = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_network_dataframe)
 
 	# TODO: Get arscl_tsi and arscl_network data for bad times
+	bad_arscl_tsi, bad_arscl_network = (0, 0), (0, 0)
 
 	# TODO: Plot arscl_tsi and arscl_network data for bad times
 	x_label = 'ARSCL FSC'
-	y_labels = ['TSI FSC'] + ['NETWORK FSC']
-	DATA = [good_arscl_tsi, good_arscl_network]
+	y_labels = ['TSI FSC']*2 + ['NETWORK FSC']*2
+	DATA = [good_arscl_tsi, bad_arscl_tsi, good_arscl_network, bad_arscl_network]
 	fig = plt.figure()
 	with plt.xkcd():
 		for i, d in enumerate(DATA):
