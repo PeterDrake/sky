@@ -1,2 +1,2 @@
-e73-00 a:conv-5-32-in b:conv-5-32-a c:conv-5-32-a d:concat-a-b e:concat-c-d f:conv-5-32-e g:conv-5-32-f h:concat-g-in i:conv-5-4-h
-e73-01 a:conv-5-32-in b:conv-5-32-a c:conv-5-32-a d:concat-a-b e:concat-c-d f:conv-5-32-e g:conv-5-32-f h:concat-g-in i:conv-5-4-h
+e73-00 a:conv-3-32-in b:conv-3-48-a c:conv-3-64-b d:conv-3-80-c e:conv-3-96-d f:concat-e-in g:conv-3-112-f 
+e73-01 a:conv-3-32-in b:conv-3-48-a c:conv-3-64-b d:conv-3-80-c e:conv-3-96-d f:concat-e-in g:conv-3-112-f 
