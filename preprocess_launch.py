@@ -11,6 +11,6 @@ import os
 
 batches = os.listdir('bad_data/res')
 for batch in batches:
-	os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {}" -P 1'.format(batch[:-4],
-			"bad_data/res/" + batch))  # TODO Make this more flexible.
+	# TODO Make this more flexible.
+	os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {}" -P 1'.format(batch[:-4], "bad_data/res/" + batch))
 	print("Launched {} successfully".format(batch))
