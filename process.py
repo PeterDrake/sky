@@ -18,7 +18,7 @@ INPUT_DIR = "bad_data"
 input_csv = "shcu_bad_data.csv"
 
 
-def process_network_masks(timestamps, exp_label):
+def process_network_masks(timestamps, exp_label, input_dir=INPUT_DIR):
 	"""Processes images corresponding to a list of timestamps. Saves each mask in the network directory. Does NOT
 	check to make sure that the image exists. This must be done by the user before calling this method."""
 	network_dir = "results/" + exp_label + "/"
@@ -30,14 +30,15 @@ def process_network_masks(timestamps, exp_label):
 	with tf.Session() as sess:
 		saver.restore(sess, network_dir + 'weights-' + str(step_version))
 		for t in timestamps:
-			inputs = load_inputs([t])
+			inputs = load_inputs([t], input_dir)
 			result = out_to_image(y.eval(feed_dict={x: inputs}))[0]
 			masks.append(result)
 			save_network_mask(t, exp_label, result)
 	return masks
 
 
-def get_network_mask(timestamp, exp_label):
+# TODO: Is this method even used?
+def get_network_mask(timestamp, exp_label, input_dir=INPUT_DIR):
 	"""Returns the mask of a given timestamp from the network's output."""
 	network_dir = "results/" + exp_label + "/"
 	args = read_parameters(network_dir)
@@ -46,7 +47,7 @@ def get_network_mask(timestamp, exp_label):
 	_, _, saver, _, x, y, _, _ = build_net(layer_info)
 	with tf.Session() as sess:
 		saver.restore(sess, network_dir + 'weights-' + str(step_version))
-		img = load_inputs([timestamp])
+		img = load_inputs([timestamp], input_dir)
 		mask = out_to_image(y.eval(feed_dict={x: img}))[0]
 	return mask
 
