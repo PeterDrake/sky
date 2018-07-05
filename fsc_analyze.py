@@ -4,8 +4,8 @@ import heapq
 
 import matplotlib.pyplot as plt
 
-from analyze import disagreement_rate
-from utils import *
+from utils import read_csv_file, extract_data_from_dataframe, extract_data_from_csv, \
+	extract_data_for_date_from_dataframe
 
 
 def find_worst_results(filename, num_worst=5):
@@ -22,59 +22,58 @@ def find_worst_results(filename, num_worst=5):
 	heapq.heapify(disagreement_rates)
 	for t in times:
 		t = int(t)
-		net_fsc = extract_fsc_for_date_from_dataframe(frame, t)
-		shcu_fsc = extract_fsc_for_date_from_dataframe(shcu, t)
+		net_fsc = extract_data_for_date_from_dataframe("fsc_z", t, frame)
+		shcu_fsc = extract_data_for_date_from_dataframe("fsc_z", t, shcu)
 		diff = (abs(net_fsc - shcu_fsc), t)
 		heapq.heappushpop(disagreement_rates, diff)
 	return sorted(disagreement_rates)
 
 
-def show_network_arscl_tsi_fsc(image_dataframe, arscl_dataframce):
-	x = list()
-	y = list()
-	i = 0
+def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe):
+	"""Returns lists containing fractional sky cover obtained from two dataframes. Expects 'image_dataframe' to be a
+	pandas dataframe with a header for 'fsc_z' and expects 'arscl_dataframe' to be a pandas dataframe with a header
+	for 'cf_tot'. Expects both dataframes to have a header for 'timestamp_utc'. Additionally expects the dataframes to
+	be clean in the aforementioned categories. I.e. NaN values are not permitted. Please us df.dropna() or some other
+	method to handle missing values."""
 	image_times = set(extract_data_from_dataframe(image_dataframe, "timestamp_utc"))
-	print("first converted to set")
-	arscl_times = set(extract_data_from_dataframe(arscl_dataframce, "timestamp_utc"))
-	print("second converted to set")
+	arscl_times = set(extract_data_from_dataframe(arscl_dataframe, "timestamp_utc"))
 	times = image_times.intersection(arscl_times)
-	print("found intersection")
-	for t in times:
-		image_fsc = extract_data_for_date_from_dataframe("fsc_z", t, image_dataframe)
-		arscl_fsc = extract_data_for_date_from_dataframe("cf_tot", t, arscl_dataframce)
-		x.append(arscl_fsc)
-		y.append(image_fsc)
-		i += 1
-		if i % 1000 == 0:
-			print(i)
+	x, y = [], []
+	for i, t in enumerate(times):
+		x.append(extract_data_for_date_from_dataframe("fsc_z", t, image_dataframe))
+		y.append(extract_data_for_date_from_dataframe("cf_tot", t, arscl_dataframe))
 	return x, y
-
-# TODO: This doesn't show the fsc difference at all. Currently configured to show pixel difference, if it even works.
-def show_plot_of_fsc_difference(timestamps, exp_label, directory):
-	rates = np.zeros(len(timestamps))
-	for i, t in enumerate(timestamps):
-		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
-				extract_mask_path_from_time(t, 'good_data')):
-			tsi_mask = get_simple_mask(t)
-			our_mask = get_network_mask_from_time_and_label(t, exp_label)
-			rates[i] = disagreement_rate(our_mask, tsi_mask)
-		else:
-			print("not here")
-			pass
-	# Save a graph of accuracies
-	with plt.xkcd():
-		fig, ax = plt.subplots(nrows=1, ncols=1)
-		ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-		ax.set_ylabel('Percent of Pixels Incorrect')
-		ax.set_xlabel('Masks (sorted by accuracy)')
-		ax.set_title("Pixel disagreement rate between our masks and TSI masks")
-		fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'accuracy_plot.png', bbox_inches='tight')
 
 
 if __name__ == "__main__":
-	image_csv = read_csv_file('shcu_good_data.csv').dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
-	print("done reading in csv")
-	x, y = show_network_arscl_tsi_fsc(image_csv, image_csv)
-	plt.plot(x, y, "Fsc Agreement Rate")
-# net_csv_path = sys.argv[1]
-# print("The biggest differences in fsc occur during the times: \n<{}>".format(find_worst_results(net_csv_path)))
+	N_SAMPLES = 2500
+
+	# TODO: Find better way to take random subset of data that still has good overlap. Maybe sample timestamps?
+
+	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
+	good_arscl_dataframe = good_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
+	# good_arscl_dataframe = good_arscl_dataframe.sample(n=N_SAMPLES)
+	good_arscl_dataframe = good_arscl_dataframe[0:N_SAMPLES]
+	good_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_arscl_dataframe)
+
+	good_network_dataframe = read_csv_file('results/e70-00/fsc.csv')  # Contains NETWORK Data
+	good_network_dataframe = good_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
+	# good_network_dataframe = good_network_dataframe.sample(n=N_SAMPLES)
+	good_network_dataframe = good_network_dataframe[0:N_SAMPLES]
+	good_arscl_network = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_network_dataframe)
+
+	# TODO: Get arscl_tsi and arscl_network data for bad times
+
+	# TODO: Plot arscl_tsi and arscl_network data for bad times
+	x_label = 'ARSCL FSC'
+	y_labels = ['TSI FSC'] + ['NETWORK FSC']
+	DATA = [good_arscl_tsi, good_arscl_network]
+	fig = plt.figure()
+	with plt.xkcd():
+		for i, d in enumerate(DATA):
+			ax = fig.add_subplot(2, 2, i + 1)
+			ax.set_xlabel(x_label)
+			ax.set_ylabel(y_labels[i])
+			plt.scatter(d[0], d[1], s=.5)
+	plt.tight_layout()
+	plt.savefig("results/e70-00/good_tsi_arscl_fsc.png")
