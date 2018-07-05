@@ -7,7 +7,8 @@ of batches times the number of batches per network is small enough so that BLT c
 
 import os
 
-exp_labels = ['e70-00']  # Specify the labels that correspond to networks of interest. Ie 'e70-00'
+# Specify the labels that correspond to networks of interest. Ie 'e70-00'
+exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04']
 
 if __name__ == "__main__":
 	num_batches = len(exp_labels)
