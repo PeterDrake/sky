@@ -66,14 +66,14 @@ if __name__ == "__main__":
 	good_network_dataframe = good_network_dataframe[0:N_SAMPLES]
 	good_arscl_network = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_network_dataframe)
 
-	# bad_network_dataframe = read_csv_file('results/e70-00/fsc_bad.csv')  # Contains NETWORK Data
+	# bad_network_dataframe = read_csv_file('results/e70-00/bad_fsc.csv')  # Contains NETWORK Data
 	# bad_network_dataframe = bad_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	# # good_network_dataframe = good_network_dataframe.sample(n=N_SAMPLES)
 	# bad_network_dataframe = bad_network_dataframe[0:N_SAMPLES]
 	# bad_arscl_network = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_network_dataframe)
 
 	# TODO: Get arscl_tsi and arscl_network data for bad times
-	bad_arscl_tsi, bad_arscl_network = (0, 0), (0, 0)
+	bad_arscl_network =(1, 3)
 
 	# TODO: Plot arscl_tsi and arscl_network data for bad times
 	x_label = 'ARSCL FSC'
@@ -87,4 +87,4 @@ if __name__ == "__main__":
 			ax.set_ylabel(y_labels[i])
 			plt.scatter(d[0], d[1], s=.5)
 	plt.tight_layout()
-	plt.savefig("results/e70-00/good_tsi_arscl_fsc.png")
+	plt.savefig("results/e70-00/good_tsi_arscl_fsc.png", dpi=300)

@@ -111,8 +111,8 @@ def get_fsc_from_file(filename):
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
-	with open('results/' + exp_label + '/' + 'fsc.csv', 'w') as f:
+	times = sorted(list(extract_data_from_csv('shcu_bad_data.csv', 'timestamp_utc')))
+	with open('results/' + exp_label + '/' + 'bad_fsc.csv', 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
 		for t in times:
