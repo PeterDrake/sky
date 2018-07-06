@@ -16,15 +16,19 @@ Created on Fri Jun  2 14:58:47 2017
 @author: drake
 """
 
-from train import build_net, load_inputs, load_masks
-from preprocess import BLUE, WHITE, GRAY, BLACK, GREEN
+import argparse
+
 import numpy as np
 import tensorflow as tf
 from PIL import Image
 from scipy import misc
-import argparse
 
+from fsc import get_fsc
+from preprocess_old import BLACK, BLUE, GRAY, WHITE
+from train import build_net, load_inputs, load_masks
 # Time stamp of default image
+from utils import out_to_image, read_last_iteration_number, read_parameters
+
 TIME_STAMP = 20160414162830
 
 # Don't show comparison images by default
@@ -38,101 +42,105 @@ GRAY_FOR_WHITE = [255, 0, 0]  # Bright red
 GRAY_FOR_BLUE = [0, 85, 0]  # Dark green
 WHITE_FOR_BLUE = [0, 170, 0]  # Medium green
 WHITE_FOR_GRAY = [0, 255, 0]  # Bright green
+RED = [255, 0, 0]
 
-def one_hot_to_mask(max_indices, output):
-    """Modifies (and returns) img to have sensible colors in place of
-    one-hot vectors."""
-    out = np.zeros([len(output), 480, 480 ,3])
-    out[(max_indices == 0)] = WHITE
-    out[(max_indices == 1)] = BLUE
-    out[(max_indices == 2)] = GRAY
-    out[(max_indices == 3)] = BLACK
-    out[(max_indices == 4)] = GREEN
-    return out
 
-def out_to_image(output):
-    """Modifies (and returns) the output of the network as a human-readable RGB
-    image."""
-    output = output.reshape([-1, 480, 480, 5])
-    # We use argmax instead of softmax so that we really will get one-hots
-    max_indexes = np.argmax(output, axis=3)
-    return one_hot_to_mask(max_indexes, output)
+def gather_images(times):
+	""""""
+	return [load_inputs(t) for t in times]
 
-def read_last_iteration_number(directory):
-    """Reads the output.txt file in directory. Returns the iteration number
-    on the last row."""
-    F = open(directory + 'output.txt', 'r')
-    file = F.readlines()
-    line = file[len(file) - 1]
-    return (line.split()[0])
 
-def read_parameters(directory):
-    """Reads the parameters.txt file in directory. Returns a dictionary
-    associating labels with keys."""
-    F = open(directory + 'parameters.txt', 'r')
-    file = F.readlines()
-    args = {}
-    for line in file:
-        key, value = line.split(':\t')
-        args[key] = value
-    return args
+def save_images(times, directory):
+	inputs = gather_images(times)
+	for i, input in enumerate(inputs):
+		input.save(directory + "input" + str(i) + ".jpg")
 
-def show_comparison_images(outputs, targets):
-    """Shows images of where outputs differ from targets, color-coded by how
-    they agree or disagree. Destructively modifies targets."""
-    targets[np.logical_and((outputs == BLUE).all(axis=3),
-                           (targets == GRAY).all(axis=3))] = BLUE_FOR_GRAY
-    targets[np.logical_and((outputs == BLUE).all(axis=3),
-                           (targets == WHITE).all(axis=3))] = BLUE_FOR_WHITE
-    targets[np.logical_and((outputs == GRAY).all(axis=3),
-                           (targets == BLUE).all(axis=3))] = GRAY_FOR_BLUE
-    targets[np.logical_and((outputs == GRAY).all(axis=3),
-                           (targets == WHITE).all(axis=3))] = GRAY_FOR_WHITE
-    targets[np.logical_and((outputs == WHITE).all(axis=3),
-                           (targets == BLUE).all(axis=3))] = WHITE_FOR_BLUE
-    targets[np.logical_and((outputs == WHITE).all(axis=3),
-                           (targets == GRAY).all(axis=3))] = WHITE_FOR_GRAY
-    for i in range(targets.shape[0]):
-        disp = Image.fromarray(targets[i].astype('uint8'))
-        disp.show()
 
-def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations, time,
-             show_all):
-    """Loads the network and displays the output for the specified time. Returns
-    the network output."""
-    with tf.Session() as sess:
-        saver.restore(sess, result_dir + 'weights-' + str(num_iterations))
-        inputs = load_inputs([TIME_STAMP])
-        result = y.eval(feed_dict={x: inputs})
-        img = out_to_image(result)[0]
-        if (show_all):
-            mask = np.array(misc.imread('data/simplemask/simplemask' + str(time) + '.png'))
-            Image.fromarray(inputs[0].astype('uint8')).show()
-            Image.fromarray(mask.astype('uint8')).show()
-            show_comparison_images(img, mask)
-        img = Image.fromarray(img.astype('uint8'))
-        img.show()
-        img.save(result_dir + 'net-output.png')
-        accuracy = accuracy.eval(feed_dict={x: inputs, y_: load_masks([time])})
-        print('Accuracy = ' + str(accuracy))
-        return result
+def compare(output, target):
+	"""Returns image of where output differs from target, color-coded by how
+	they agree or disagree. Destructively modifies target."""
+	target[np.logical_and((output == BLUE).all(axis=2),
+			(target == GRAY).all(axis=2))] = RED
+	target[np.logical_and((output == BLUE).all(axis=2),
+			(target == WHITE).all(axis=2))] = RED
+	target[np.logical_and((output == GRAY).all(axis=2),
+			(target == BLUE).all(axis=2))] = RED
+	target[np.logical_and((output == GRAY).all(axis=2),
+			(target == WHITE).all(axis=2))] = RED
+	target[np.logical_and((output == WHITE).all(axis=2),
+			(target == BLUE).all(axis=2))] = RED
+	target[np.logical_and((output == WHITE).all(axis=2),
+			(target == GRAY).all(axis=2))] = RED
+	target[np.logical_and((output == WHITE).all(axis=2),
+			(target == BLACK).all(axis=2))] = RED
+	target[np.logical_and((output == BLACK).all(axis=2),
+			(target == WHITE).all(axis=2))] = RED
+	target[np.logical_and((output == GRAY).all(axis=2),
+			(target == BLACK).all(axis=2))] = RED
+	target[np.logical_and((output == BLACK).all(axis=2),
+			(target == GRAY).all(axis=2))] = RED
+	target[np.logical_and((output == BLUE).all(axis=2),
+			(target == BLACK).all(axis=2))] = RED
+	target[np.logical_and((output == BLACK).all(axis=2),
+			(target == BLUE).all(axis=2))] = RED
+	# for i in range(target.shape[0]):
+	#     disp = Image.fromarray(targets[i].astype('uint8'))
+	#     if directory:
+	#         disp.save(directory + "compare" + str(i) + ".png")
+	#     else:
+	#         disp.show()
+	return Image.fromarray(target.astype('uint8'))
+
+
+def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
+		show_all, times, save=False):
+	"""Loads the network and displays the output for the specified time."""
+	with tf.Session() as sess:
+		saver.restore(sess, result_dir + 'weights-' + str(num_iterations))
+		for i, t in enumerate(times):
+			input = load_inputs([t])
+			result = y.eval(feed_dict={x: input})
+			img = out_to_image(result)[0]
+			if show_all:
+				mask = np.array(misc.imread('data/simplemask/simplemask' + str(t) + '.png'))
+				input_image = Image.fromarray(input[0].astype('uint8'))
+				mask_image = Image.fromarray(mask.astype('uint8'))
+				comparison_image = compare(img, mask)
+			output_image = Image.fromarray(img.astype('uint8'))
+			if save:
+				output_image.save(result_dir + 'net-output' + str(i) + '.png')
+				if show_all:
+					input_image.save(result_dir + 'input' + str(i) + '.jpg')
+					mask_image.save(result_dir + 'mask' + str(i) + '.png')
+					comparison_image.save(result_dir + 'compare' + str(i) + '.png')
+			else:
+				output_image.show()
+				if show_all:
+					input_image.show()
+					mask_image.show()
+					comparison_image.show()
+			acc = accuracy.eval(feed_dict={x: input, y_: load_masks([t])})
+			print('Accuracy = ' + str(acc))
+			print("Network mask: ", get_fsc(times[0], img))  # TODO: get_fsc takes a mask as an argument
+			print("TSI mask: ", get_fsc(times[0], mask))  # TODO: get_fsc takes a mask as an argument
+
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('directory')
-    parser.add_argument('--compare', help='If typed, images used to compare output will be displayed', action='store_true')
-    parser.add_argument('--time', help='Sets the time stamp to be loaded', type=int)
-    args = parser.parse_args()
-    time = TIME_STAMP
-    show_all = SHOW_ALL
-    if args.time:
-        time = args.time
-    if args.compare:
-        show_all = True
-    dir_name = "results/" + args.directory + "/"        
-    args = read_parameters(dir_name)
-    step_version = read_last_iteration_number(dir_name)
-    layer_info = args['Layer info'].split()
-    _, accuracy, saver, _, x, y, y_, _ = build_net(layer_info) 
-    show_output(accuracy, saver, x, y, y_, dir_name, step_version, time, show_all)
-
+	parser = argparse.ArgumentParser()
+	parser.add_argument('directory')
+	parser.add_argument('--compare', help='If typed, images used to compare output will be displayed',
+			action='store_true')
+	parser.add_argument('--time', help='Sets the time stamp to be loaded', type=int)
+	args = parser.parse_args()
+	time = TIME_STAMP
+	show_all = SHOW_ALL
+	if args.time:
+		time = args.time
+	if args.compare:
+		show_all = True
+	dir_name = "results/" + args.directory + "/"
+	args = read_parameters(dir_name)
+	step_version = read_last_iteration_number(dir_name)
+	layer_info = args['Layer info'].split()
+	_, accuracy, saver, _, x, y, y_, _ = build_net(layer_info)
+	show_output(accuracy, saver, x, y, y_, dir_name, step_version, show_all, [time])
