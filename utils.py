@@ -1,9 +1,9 @@
 import glob
 import math
+import os
 import pickle
 
 import numpy as np
-import os
 import pandas as pd
 from PIL import Image
 from scipy import misc
@@ -87,14 +87,15 @@ def extract_times_from_file(filename):
 	return times
 
 
-# TODO: Figure out why this does not work
 def clean_csv(filename):
 	"""Removes all of the spaces in a csv file. Might have memory issues for extremely large files."""
-	with open(filename) as f:
-		lines = f.readlines()
-	with open(filename, 'w') as f:
-		lines = filter(lambda x: x.strip(), lines)
-		f.writelines(lines)
+	with open(filename, 'r') as file:
+		lines = []
+		for line in file:
+			lines.append(line.replace(' ', ''))
+	with open(filename, 'w') as file:
+		for line in lines:
+			file.write(line)
 
 
 def extract_data_from_csv(filename, column_header):
@@ -149,6 +150,7 @@ def pick_duplicate(data):
 		return d
 	return 'Cant return the first element in data'
 
+
 def extract_data_for_date_from_dataframe(header, timestamp, frame):
 	"""Extracts any column value given the column header and corresponding timestamp given a dataframe"""
 	df = frame.set_index("timestamp_utc", drop=False)
@@ -166,37 +168,6 @@ def extract_data_for_date_from_dataframe(header, timestamp, frame):
 	else:
 		ans = ans.item()
 	return ans
-
-
-# # TODO: Figure out how to deal with weird types
-# def extract_data_for_date_from_dataframe(frame, timestamp, data_label="fsc_z"):
-# 	df = frame.set_index("timestamp_utc", drop=False)
-# 	ans = df.loc[timestamp, data_label]
-# 	try:
-# 		if is_series(ans):
-# 			if all_duplicates(ans):
-# 				ans = pick_duplicate(ans)
-# 			else:
-# 				return "Error: There are multiple timestamps with unique values in this frame. Please resolve this."
-# 		elif "numpy" in str(type(ans)) or "Numpy" in str(type(ans)): # TODO: get a better workaround
-# 			ans = ans.item()
-# 		elif "NaN" in str(type(ans)):
-# 			print(type(ans))
-# 			return -1
-# 		else:
-# 			print(type(ans))
-# 			return -2
-# 	except ValueError:
-# 		print("Could not convert data to float. ")
-# 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
-
-
-# def extract_disag_rate_for_date(csv, timestamp):
-# 	"""Extracts the value in the pixel_disgreement column of a csv file given the corresponding timestamp"""
-# 	df = csv.set_index("timestamp_utc", drop=False)
-# 	# drop=False to not delete timestamp_utc column if other index set later
-# 	timestamp = int(timestamp)
-# 	return df.loc[timestamp, "pixel_disagreement"]
 
 
 def read_csv_file(filename):
