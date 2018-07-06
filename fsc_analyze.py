@@ -1,7 +1,11 @@
 """Compares the fsc values in fsc.csv file of each network to the shcu_good_data.csv"""
 
-import heapq
+import sys
 
+import heapq
+import matplotlib
+
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_from_csv, \
@@ -48,7 +52,12 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 
 if __name__ == "__main__":
 	N_SAMPLES = 4500
-	exp_labels = ['e70-00']
+	exp_labels = list()
+	inputArgs = sys.argv
+	for i in range(1, len(inputArgs)):
+		# i is a number, from 1 to len(inputArgs)-1
+		exp_labels.append(sys.argv[i])
+	print(exp_labels)
 
 	for exp_label in exp_labels:
 		# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
