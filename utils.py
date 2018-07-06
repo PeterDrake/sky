@@ -1,9 +1,9 @@
 import glob
 import math
-import os
 import pickle
 
 import numpy as np
+import os
 import pandas as pd
 from PIL import Image
 from scipy import misc
@@ -149,26 +149,8 @@ def pick_duplicate(data):
 		return d
 	return 'Cant return the first element in data'
 
-
-def extract_fsc_for_date_from_dataframe(frame, timestamp):
-	df = frame.set_index("timestamp_utc", drop=False)
-	# print("Is it here?" + str(df.loc[timestamp]))
-	# for h in df.columns.values:
-	# 	print('<{}>'.format(h))
-	ans = df.loc[timestamp, "fsc_z"]
-	if is_series(ans):
-		if all_duplicates(ans):
-			ans = pick_duplicate(ans)
-		else:
-			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this " \
-			       "manually."
-	# print(ans)
-	else:
-		ans = ans.item()
-	return (math.floor(ans * 10 ** 6)) / 10 ** 6
-
-
 def extract_data_for_date_from_dataframe(header, timestamp, frame):
+	"""Extracts any column value given the column header and corresponding timestamp given a dataframe"""
 	df = frame.set_index("timestamp_utc", drop=False)
 	# print("Is it here?" + str(df.loc[timestamp]))
 	# for h in df.columns.values:
@@ -209,18 +191,12 @@ def extract_data_for_date_from_dataframe(header, timestamp, frame):
 # 	return (math.floor(ans * 10 ** 6)) / 10 ** 6
 
 
-def extract_ceilometer_fsc_for_date(timestamp):
-	csv = read_csv_file("shcu_good_data.csv")
-	df = csv.set_index("timestamp_utc", drop=False)
-	# drop=False to not delete timestamp_utc column if other index set later
-	return (math.floor(df.loc[timestamp, "cf_tot"] * 10 ** 6)) / 10 ** 6
-
-
-def extract_disag_rate_for_date(csv, timestamp):
-	df = csv.set_index("timestamp_utc", drop=False)
-	# drop=False to not delete timestamp_utc column if other index set later
-	timestamp = int(timestamp)
-	return df.loc[timestamp, "pixel_disagreement"]
+# def extract_disag_rate_for_date(csv, timestamp):
+# 	"""Extracts the value in the pixel_disgreement column of a csv file given the corresponding timestamp"""
+# 	df = csv.set_index("timestamp_utc", drop=False)
+# 	# drop=False to not delete timestamp_utc column if other index set later
+# 	timestamp = int(timestamp)
+# 	return df.loc[timestamp, "pixel_disagreement"]
 
 
 def read_csv_file(filename):

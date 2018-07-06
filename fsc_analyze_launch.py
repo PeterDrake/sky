@@ -1,5 +1,5 @@
 """
-Run this program to launch fsc_analyze.py on blt
+Run this program to launch fsc_analyze.py on blt. Launches five jobs on blt, one for each network.
 Creates and saves plots comparing fsc value from ceilometer, network and TSI for good and bad data (for timestamps
 from shcu_good_data.csv or shcu_bad_data.csv)
 """

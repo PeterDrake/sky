@@ -54,12 +54,21 @@ class TestUtil(unittest.TestCase):
 		self.assertEqual(0.530595, extract_tsi_fsc_for_date(20120501170500))
 
 	def test_extract_ceilometer_fsc_from_csv(self):
-		self.assertEqual(0.368888, extract_ceilometer_fsc_for_date(20120501170900))
-		self.assertEqual(0.44, extract_ceilometer_fsc_for_date(20120501170230))
-		self.assertEqual(0.431111, extract_ceilometer_fsc_for_date(20120501170500))
+		csv = read_csv_file("shcu_good_data.csv")
+
+		def shorten(t):
+			return math.floor(extract_data_for_date_from_dataframe("cf_tot", t, csv) * 10 ** 6) / 10 ** 6
+
+		self.assertEqual(0.368888, shorten(20120501170900))
+		self.assertEqual(0.44, shorten(20120501170230))
+		self.assertEqual(0.431111, shorten(20120501170500))
 
 	def test_extract_fsc_for_date_from_dataframe(self):
 		csv = read_csv_file("shcu_good_data.csv")
-		self.assertEqual(0.300045, extract_fsc_for_date_from_dataframe(csv, 20120501170900))
-	# self.assertEqual(0.300056, extract_fsc_for_date_from_dataframe(csv, 20120513004100))
-	# self.assertEqual(0.300056, extract_fsc_for_date_from_dataframe(csv, 20150911230730))
+
+		def shorten(t):
+			return math.floor(extract_data_for_date_from_dataframe("fsc_z", t, csv) * 10 ** 6) / 10 ** 6
+
+		self.assertEqual(0.300045, shorten(20120501170900))
+		self.assertEqual(0.00, shorten(20120513004100))
+		self.assertEqual(0.002511, shorten(20150911230730))
