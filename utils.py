@@ -2,15 +2,12 @@ import glob
 import math
 import os
 import pickle
-
 import numpy as np
 import pandas as pd
+
 from PIL import Image
 from scipy import misc
-
 from preprocess_old import BLACK, BLUE, GRAY, GREEN, WHITE
-
-INPUT_DIR = 'good_data'
 
 
 def time_to_year(time):
@@ -194,7 +191,7 @@ def show_skymask(mask, save_instead=False, save_path=None):
 		mask_image.save(save_path)
 
 
-def find_unpaired_images(timestamps, input_dir=INPUT_DIR):
+def find_unpaired_images(timestamps, input_dir):
 	"""Blacklists files for timestamps that do not have both images and masks."""
 	blacklist = set()
 	for time in timestamps:
@@ -207,13 +204,13 @@ def find_unpaired_images(timestamps, input_dir=INPUT_DIR):
 	return blacklist
 
 
-def extract_img_path_from_time(time, input_dir=INPUT_DIR):
+def extract_img_path_from_time(time, input_dir):
 	"""Extracts the path of an image from the timestamp and input directory."""
 	return input_dir + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(
 			time) + '/simpleimage' + time + '.jpg'
 
 
-def extract_mask_path_from_time(time, input_dir=INPUT_DIR):
+def extract_mask_path_from_time(time, input_dir):
 	"""Extracts the path of an image from the timestamp and input directory."""
 	return input_dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(
 			time) + '/simplemask' + time + '.png'
@@ -254,7 +251,7 @@ def separate_stamps(timestamps):
 	return test, valid, train
 
 
-def extract_img_path_from_time_old(time, input_dir=INPUT_DIR):
+def extract_img_path_from_time_old(time, input_dir):
 	"""Extracts the path of an image from the timestamp and input directory."""
 	for dir in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
 		image = dir + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
@@ -264,7 +261,7 @@ def extract_img_path_from_time_old(time, input_dir=INPUT_DIR):
 	return str()
 
 
-def extract_mask_path_from_time_old(time, input_dir=INPUT_DIR):
+def extract_mask_path_from_time_old(time, input_dir):
 	"""Extracts the path of a mask from the timestamp and input directory."""
 	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
 			time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
