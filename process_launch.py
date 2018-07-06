@@ -7,6 +7,9 @@ of batches times the number of batches per network is small enough so that BLT c
 
 import os
 
+INPUT_DIR = "bad_data"
+input_csv = "shcu_bad_data.csv"
+
 # Specify the labels that correspond to networks of interest. Ie 'e70-00'
 exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04']
 

@@ -5,17 +5,16 @@ and ending index. Experiment label is to specify the directory in which the netw
 directory.
 """
 
-import os
 import sys
 
+import os
 import tensorflow as tf
 
+from process_launch import INPUT_DIR, input_csv
 from train import build_net, load_inputs
 from utils import extract_data_from_csv, extract_img_path_from_time, extract_network_mask_path_from_time, \
 	out_to_image, \
 	read_last_iteration_number, read_parameters, show_skymask, time_to_month_and_day, time_to_year
-INPUT_DIR = "bad_data"
-input_csv = "shcu_bad_data.csv"
 
 
 def process_network_masks(timestamps, exp_label, input_dir=INPUT_DIR):
