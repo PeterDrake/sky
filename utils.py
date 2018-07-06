@@ -393,3 +393,10 @@ def get_network_mask_from_time_and_label(timestamp, exp_label):
 	in the input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the
 	timestamp 20170215000000."""
 	return np.array(misc.imread(extract_network_mask_path_from_time(timestamp, exp_label)))
+
+
+def write_list_to_file(data, filename):
+	"""Takes an iterable and writes that iterable to a new file. Overwrites an existing file with the same name."""
+	with open(filename, 'w') as file:
+		for d in data:
+			file.write(d + '\n')

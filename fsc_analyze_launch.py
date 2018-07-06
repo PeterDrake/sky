@@ -6,8 +6,8 @@ from shcu_good_data.csv or shcu_bad_data.csv)
 
 import os
 
-exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03',
-	'e70-04']  # Specify the labels that correspond to networks of interest. Ie 'e70-00'
+# Specify the labels that correspond to networks of interest. Ie 'e70-00'
+exp_labels = ['e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04']
 
 if __name__ == "__main__":
 	for exp_label in exp_labels:

@@ -7,16 +7,11 @@ Just prints the last line from each directory.
 import time
 
 if __name__ == "__main__":
-	base_folder = "results/e72-"
-	sub_folders = ['00', '01', '02']
-	files = []
-	for ext in sub_folders:
-		files.append(base_folder + ext + "/output.txt")
-
+	exp_labels = ['e70-00', 'e70-01', 'e70-02']
 	while True:
-		for file in files:
-			with open(file, 'r') as f:
-				print(file)
+		for exp_label in exp_labels:
+			with open('results/' + exp_label + '/output.txt', 'r') as f:
+				print(exp_label)
 				line = f.readlines()[-1].strip('\n').split()
 				print("{}%".format(int(line[0]) / 20))
 				print(line)
