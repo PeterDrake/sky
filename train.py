@@ -34,14 +34,10 @@ import tensorflow as tf
 
 # from preprocess_old import COLORS
 from preprocess_setup_launch import *
+from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, INPUT_DIR
 from utils import extract_img_path_from_time, extract_mask_path_from_time, BLUE, BLACK, COLORS
 
-# Training parameters
-BATCH_SIZE = 50
-LEARNING_RATE = 0.0001
-TRAINING_STEPS = 2000
 
-INPUT_DIR = "good_data"
 
 
 def build_net(layer_info):

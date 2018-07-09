@@ -4,8 +4,7 @@
 Ad-hoc script to generate conditions.txt, which describes experimental
 conditions for training. Run this before launching the training task.
 
-
-@author: Maxwell Levin, Zoe Harrington, Peter Drake
+@author: Peter Drake, Maxwell Levin, Zoe Harrington
 """
 
 exp = 73
