@@ -1,6 +1,9 @@
 """
-Opens the file provided by the command line and iterates through it. Expects the file contains timestamps,
-one in each row.
+This script is intended to be run from preprocess_launch.py, which calls this script and sends it a file. In that
+file should be a collection of timestamps separated by line.
+
+This script crops the sky photos and simplifies the decision images in the INPUT_DIR. Simplification entails cropping
+and removal of the sun from the sun band.
 """
 
 import sys
@@ -78,5 +81,6 @@ if __name__ == "__main__":
 	print("Opened {}".format(sys.argv[1]))
 	for time in f:
 		time = time.replace('\n', '')
+		time = time.replace(' ', '')
 		simplify_mask(time, INPUT_DIR, OUTPUT_DIR)
 		simplify_image(time, INPUT_DIR, OUTPUT_DIR)

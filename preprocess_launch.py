@@ -8,9 +8,7 @@ This program launches preprocess.py for each file in the 'res' folder in the OUT
 """
 
 import os
-
-# Specify the directory to store the simplified versions of the original sky photos and decision images
-OUTPUT_DIR = 'bad_data'
+from preprocess_setup_launch import OUTPUT_DIR
 
 batches = os.listdir(OUTPUT_DIR + '/res')
 for i, batch in enumerate(batches):

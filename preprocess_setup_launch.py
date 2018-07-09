@@ -28,7 +28,7 @@ from utils import *
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
 OUTPUT_DIR = 'good_data'
 RES_DIR = OUTPUT_DIR + '/res'
-csv_path = 'shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
+TIMESTAMP_DATA_CSV = 'shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
 
 # Used to create batches of timestamps. This is the number of images to preprocess in a single job.
 BATCH_SIZE = 1000
@@ -82,10 +82,10 @@ def make_batches_by_size(timestamps, batch_size=BATCH_SIZE):
 
 if __name__ == '__main__':
 	print("Cleaning the csv file.")
-	clean_csv(csv_path)
+	clean_csv(TIMESTAMP_DATA_CSV)
 
 	print("Reading times from good csv file.")
-	good_times = extract_data_from_csv(csv_path, "timestamp_utc")
+	good_times = extract_data_from_csv(TIMESTAMP_DATA_CSV, "timestamp_utc")
 
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 	print("Directories created. Preparing batches.")
 	batches = make_batches_by_size(times)
 
-	print("Batches created. Launching simplification on batches.")
+	print("Batches prepared. Writing batches to file.")
 	for i in range(len(batches)):
 		name = RES_DIR + "/batch" + str(i) + ".txt"
 		if not os.path.isfile(name):  # TODO Do we need this?
