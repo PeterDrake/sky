@@ -4,29 +4,18 @@
 Finds the zenith area of TSI skymasks
 """
 
-import os
 import sys
 
-from utils import extract_data_from_csv, extract_exp_label, extract_network_mask_path_from_time, extract_timestamp, \
-	get_network_mask_from_time_and_label, get_simple_mask
-
-
-# DONE: Make sure fsc is easily computed from simplified masks
-# DONE: Grab fsc info from shcu_good_data csv file (and possibly other files in the future)
-# DONE?: Read in some new masks from our network in good_data
-# TODO: Loosely compare between the different methods. The csv info should agree with the simplified masks,
-# TODO: hopefully the network outputs as well.
-# TODO: Be able to display simple masks and network output for images with the most disagreement
-# TODO: Compute these for every mask file in results/exp_label/masks, not just for good_times masks
+from utils import *
 
 
 def find_center(mask):
-	""" Returns the center of the locations of the first and last non-black pixels and the difference in
-	height between them."""
-	t, b, l, r = find_circle_boundary(mask)
-	r_vertical = (b - t) / 2
-	r_horizontal = (r - l) / 2
-	return ((t + b) / 2, (l + r) / 2), (r_vertical + r_horizontal) / 2
+	""" Returns the center of the locations of the first and last non-black pixels and the difference in height
+	between them. Returns the center (y, x) and the average radius."""
+	top, bottom, left, right = find_circle_boundary(mask)
+	vertical_radius = (bottom - top) / 2
+	horizontal_radius = (right - left) / 2
+	return ((top + bottom) / 2, (left + right) / 2), (vertical_radius + horizontal_radius) / 2
 
 
 def find_circle_boundary(mask):
@@ -74,7 +63,7 @@ def find_circle_boundary(mask):
 def get_fsc(mask, threshold=0.645):
 	""" Computes the fractional sky cover from a given mask. By default, computes these values in the zenith region.
 	Specify zenith ratio by changing threshold between 0 and 1. Returns total sky cover, opaque sky cover,
-	thin sky cover. """
+	thin sky cover."""
 	sky_pixels = 0
 	cloud_pixels = 0
 	thin_pixels = 0
