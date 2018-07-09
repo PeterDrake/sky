@@ -21,8 +21,9 @@ EXP_LABELS = ['e73-00', 'e73-01']
 # Set the input and output csv files to match the file containing timestamps you would like to use.
 INPUT_DATA_CSV = 'shcu_good_data.csv'
 OUTPUT_DATA_CSV = 'fsc.csv'
+JOB_NAME = 'good-fsc-'
 
 if __name__ == "__main__":
 	for exp_label in EXP_LABELS:
-		name = "bad-fsc-csv-" + exp_label
+		name = JOB_NAME + exp_label
 		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {}" -P 1'.format(name, exp_label))
