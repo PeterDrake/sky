@@ -8,7 +8,7 @@ import os
 from utils import extract_img_path_from_time_old, extract_mask_path_from_time_old, extract_data_from_csv, \
 	write_list_to_file
 
-# The filepath on BLT to the directory containing folders for masks and images
+# The directory on BLT to the directory containing folders for masks and images
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
 
 

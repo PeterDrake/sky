@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Finds the zenith area of TSI skymasks
+This script is intended to be run from fsc_launch.py, but can be run from the command line if the experiment label is
+specified.
+
+Computes the fractional sky cover for a set of decision images specified in fsc_launch.py and saves the results in
+OUTPUT_DATA_CSV.
+
+Should you choose the manual option, you will need to change the INPUT_DATA_CSV and OUTPUT_DATA_CSV parameters in
+fsc_launch.csv to match your goals. EX: python3 fsc.py e70-00
 """
 
 import sys
@@ -11,7 +18,7 @@ from utils import *
 
 
 def find_center(mask):
-	""" Returns the center of the locations of the first and last non-black pixels and the difference in height
+	"""Returns the center of the locations of the first and last non-black pixels and the difference in height
 	between them. Returns the center (y, x) and the average radius."""
 	top, bottom, left, right = find_circle_boundary(mask)
 	vertical_radius = (bottom - top) / 2
@@ -20,7 +27,7 @@ def find_center(mask):
 
 
 def find_circle_boundary(mask):
-	""" Finds the first non-black pixel in all cardinal directions."""
+	"""Finds the first non-black pixel in all cardinal directions."""
 	answer = []
 	flag = False
 	for i in range(mask.shape[0]):  # Top
@@ -62,7 +69,7 @@ def find_circle_boundary(mask):
 
 
 def get_fsc(mask, threshold=0.645):
-	""" Computes the fractional sky cover from a given mask. By default, computes these values in the zenith region.
+	"""Computes the fractional sky cover from a given mask. By default, computes these values in the zenith region.
 	Specify zenith ratio by changing threshold between 0 and 1. Returns total sky cover, opaque sky cover,
 	thin sky cover."""
 	sky_pixels = 0
