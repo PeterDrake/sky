@@ -1,10 +1,11 @@
 import unittest
 from shutil import rmtree
 
+from preprocess import remove_white_sun, crop_image
 from preprocess_setup_launch import *
 from utils import extract_img_path_from_time_old, extract_mask_path_from_time_old, find_unpaired_images, \
 	img_save_path, \
-	mask_save_path
+	mask_save_path, WHITE, BLUE, BLACK
 
 
 class TestPreprocess(unittest.TestCase):

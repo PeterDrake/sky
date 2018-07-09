@@ -32,11 +32,11 @@ import time
 
 import tensorflow as tf
 
-from preprocess_old import COLORS
+# from preprocess_old import COLORS
 from preprocess_setup_launch import *
-# Training parameters
-from utils import extract_img_path_from_time, extract_mask_path_from_time
+from utils import extract_img_path_from_time, extract_mask_path_from_time, BLUE, BLACK, COLORS
 
+# Training parameters
 BATCH_SIZE = 50
 LEARNING_RATE = 0.0001
 TRAINING_STEPS = 2000
@@ -53,8 +53,7 @@ def build_net(layer_info):
 	x = tf.placeholder(tf.float32, [None, 480, 480, 3])
 	num_layers = len(layer_info)
 	table, last_name = parse_layer_info(layer_info)
-	h = {}
-	h["in"] = x
+	h = {"in": x}
 	for n in range(0, num_layers - 1):
 		name, oper = get_name_oper(layer_info[n])
 		if (oper == 'conv'):
@@ -63,12 +62,12 @@ def build_net(layer_info):
 					table[name]["kernel"],
 					h[table[name]["prev"]],
 					table[name]["tf_name"])
-		if (oper == 'maxpool'):
+		if oper == 'maxpool':
 			h[name] = max_pool_layer(h[table[name]["prev"]],
 					table[name]["pool_width"],
 					table[name]["pool_height"],
 					name)
-		if (oper == 'concat'):
+		if oper == 'concat':
 			h[name] = tf.concat([h[table[name]["prev_1"]],
 				h[table[name]["prev_2"]]], 3)
 	h[last_name] = convo_layer(table[last_name]["ins"],
@@ -97,7 +96,7 @@ def check_for_commit():
 	any experiment is run from code in one specific commit."""
 	label = subprocess.check_output(["git", "status", "--untracked-files=no",
 		"--porcelain"])
-	if (str(label).count('\\n') != 0):
+	if str(label).count('\\n') != 0:
 		raise Exception('Not in clean git state\n')
 
 
@@ -149,30 +148,25 @@ def get_name_oper(layer):
 
 
 def index_of(x, sequence):
-	"""Returns the index of x in sequence. We can't figure out how to do this
-	more directly; the standard index method doesn't work when x is a numpy
-	array."""
+	"""Returns the index of x in sequence. We can't figure out how to do this more directly; the standard index method
+	doesn't work when x is a numpy array."""
 	for i, item in enumerate(sequence):
 		if (item == x).all():
 			return i
 
 
 def load_inputs(stamps, input_dir=INPUT_DIR):
-	"""Returns a tensor of images specified by stamps. Dimensions are: image,
-	row, column, color."""
+	"""Returns a tensor of images specified by stamps. Dimensions are: image, row, column, color."""
 	inputs = np.empty((len(stamps), 480, 480, 3))
 	for i, s in enumerate(stamps):
-		# inputs[i] = np.array(misc.imread(INPUT_DIR + '/simpleimage/simpleimage' +
-		#                      str(s) + '.jpg'))
 		inputs[i] = np.array(misc.imread(extract_img_path_from_time(s, input_dir)))
 	return inputs
 
 
 def load_masks(stamps, input_dir=INPUT_DIR):
-	"""Returns a tensor of correct label categories (i.e., indices into
-	preprocess.COLORS) for each pixel in each image specified by stamps.
-	Dimensons are image, row, column. The tensor has been flattened into a
-	single vector."""
+	"""Returns a tensor of correct label categories (i.e., indices into preprocess.COLORS) for each pixel in each
+	image specified by stamps. Dimensions are image, row, column. The tensor has been flattened into a single
+	vector."""
 	masks = np.empty((len(stamps), 480, 480))
 	for i, s in enumerate(stamps):
 		masks[i] = mask_to_index(np.array(misc.imread(extract_mask_path_from_time(s, input_dir))))
@@ -180,8 +174,7 @@ def load_masks(stamps, input_dir=INPUT_DIR):
 
 
 def load_validation_batch(n):
-	"""Returns the inputs and correct outputs for the first n validation
-	examples."""
+	"""Returns the inputs and correct outputs for the first n validation examples."""
 	valid_stamps = load_validation_stamps(n)
 	valid_inputs = load_inputs(valid_stamps)
 	valid_correct = load_masks(valid_stamps)
@@ -189,8 +182,7 @@ def load_validation_batch(n):
 
 
 def load_validation_stamps(n):
-	"""Reads the valid.stamps file in data and returns a list of the first
-	n stamps."""
+	"""Reads the valid.stamps file in data and returns a list of the first n stamps."""
 	with open(INPUT_DIR + '/valid.stamps', 'rb') as f:
 		return pickle.load(f)[:n]
 
@@ -205,8 +197,7 @@ def mask_layer(last_layer, b_mask):
 
 
 def mask_to_index(img):
-	"""Returns a new version of img with an index (in COLORS)
-	for each pixel."""
+	"""Returns a new version of img with an index (in COLORS) for each pixel."""
 	result = np.ndarray(shape=[img.shape[0], img.shape[1]])
 	for i in range(len(COLORS)):
 		result[(img == COLORS[i]).all(axis=2)] = i

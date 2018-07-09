@@ -3,7 +3,7 @@ This program creates pickled files for timestamps and creates a constant mask in
 """
 
 from preprocess_setup_launch import *
-from utils import extract_times_from_files_in_directory, separate_data
+from utils import extract_times_from_files_in_directory, separate_data, BLACK
 
 OUTPUT_DIR = "good_data"
 RES_DIR = "res"

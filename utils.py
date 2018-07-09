@@ -7,7 +7,15 @@ import pandas as pd
 
 from PIL import Image
 from scipy import misc
-from preprocess_old import BLACK, BLUE, GRAY, GREEN, WHITE
+
+# Colors used in the decision image - DO NOT TOUCH
+WHITE = np.array([255, 255, 255])
+BLUE = np.array([0, 0, 255])
+GRAY = np.array([192, 192, 192])
+BLACK = np.array([0, 0, 0])
+GREEN = np.array([0, 255, 0])
+YELLOW = np.array([255, 255, 0])
+COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 
 
 def time_to_year(time):
@@ -47,24 +55,24 @@ def extract_timestamp(filename):
 
 
 def extract_exp_label(filename):
-	"""Returns the experiment label within filename of networkmasks. Assumes filename ends in something like
+	"""Returns the experiment label within filename of network masks. Assumes filename ends in something like
 	e70-00.20160415235930.png"""
 	return filename[-25:-19]
 
 
-def extract_all_times(dir, subdirs=None):
+def extract_all_times(directory, subdirs=None):
 	"""Returns timestamps from all directories that are within the input directory. You can specify a list of
 	subdirectories if you only want to grab files within specific subdirectories.
 	Ex: dir/masks/mask20160411000000.jpg would be extracted, and
 		dir/masks/folder/mask20160411000000.jpg would also be extracted."""
 	times = set()
 	if not subdirs:
-		for dirpath, subdirs, files in os.walk(dir):
+		for dirpath, subdirs, files in os.walk(directory):
 			for file in files:
 				times.add(extract_timestamp(file))
 	else:
 		for subdir in subdirs:
-			for dirpath, subdirs, files in os.walk(dir + subdir):
+			for dirpath, subdirs, files in os.walk(directory + subdir):
 				for file in files:
 					times.add(extract_timestamp(file))
 	return times
@@ -142,26 +150,21 @@ def all_duplicates(data):
 
 
 def pick_duplicate(data):
-	"""Returns the first element in data"""
+	"""Returns the first element in data."""
 	for d in data:
 		return d
-	return 'Cant return the first element in data'
 
 
 def extract_data_for_date_from_dataframe(header, timestamp, frame):
 	"""Extracts any column value given the column header and corresponding timestamp given a dataframe"""
 	df = frame.set_index("timestamp_utc", drop=False)
-	# print("Is it here?" + str(df.loc[timestamp]))
-	# for h in df.columns.values:
-	# 	print('<{}>'.format(h))
 	ans = df.loc[int(timestamp), header]
 	if is_series(ans):
 		if all_duplicates(ans):
 			ans = pick_duplicate(ans)
 		else:
-			return "Error: There are multiple timestamps with unique values in this frame. Please resolve this " \
-			       "manually."
-	# print(ans)
+			print("Error: There are multiple timestamps with distinct values in this frame. Please resolve manually.")
+			return
 	else:
 		ans = ans.item()
 	return ans
@@ -172,14 +175,14 @@ def read_csv_file(filename):
 	return pd.read_csv(filename)
 
 
-def listdir_d(dir=None):
+def listdir_d(directory=None):
 	"""Returns an iterable of directories in the current or a given directory."""
-	return (name for name in os.listdir(dir) if os.path.isdir(os.path.join(dir, name)))
+	return (name for name in os.listdir(directory) if os.path.isdir(os.path.join(directory, name)))
 
 
-def listdir_f(dir=None):
+def listdir_f(directory=None):
 	"""Returns an iterable of files in the current of a given directory."""
-	return (name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name)))
+	return (name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name)))
 
 
 def show_skymask(mask, save_instead=False, save_path=None):
@@ -216,14 +219,14 @@ def extract_mask_path_from_time(time, input_dir):
 			time) + '/simplemask' + time + '.png'
 
 
-def img_save_path(time, dir):
+def img_save_path(time, directory):
 	"""Creates path for image."""
-	return dir + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
+	return directory + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def mask_save_path(time, dir):
+def mask_save_path(time, directory):
 	"""Creates path for mask."""
-	return dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
+	return directory + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
 def separate_data(timestamps, output_dir=None):
@@ -253,8 +256,9 @@ def separate_stamps(timestamps):
 
 def extract_img_path_from_time_old(time, input_dir):
 	"""Extracts the path of an image from the timestamp and input directory."""
-	for dir in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
-		image = dir + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+	for directory in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
+		image = directory + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
+				time) + '.' + time_to_hour_minute_second(
 				time) + '.jpg.' + time + '.jpg'
 		if os.path.isfile(image):
 			return image
@@ -272,17 +276,17 @@ def extract_mask_path_from_time_old(time, input_dir):
 def read_last_iteration_number(directory):
 	"""Reads the output.txt file in directory. Returns the iteration number
 	on the last row."""
-	F = open(directory + 'output.txt', 'r')
-	file = F.readlines()
+	file = open(directory + 'output.txt', 'r')
+	file = file.readlines()
 	line = file[len(file) - 1]
-	return (line.split()[0])
+	return line.split()[0]
 
 
 def read_parameters(directory):
 	"""Reads the parameters.txt file in directory. Returns a dictionary
 	associating labels with keys."""
-	F = open(directory + 'parameters.txt', 'r')
-	file = F.readlines()
+	file = open(directory + 'parameters.txt', 'r')
+	file = file.readlines()
 	args = {}
 	for line in file:
 		key, value = line.split(':\t')
@@ -290,11 +294,11 @@ def read_parameters(directory):
 	return args
 
 
-def extract_times_from_files_in_directory(dir=None):
+def extract_times_from_files_in_directory(directory=None):
 	"""Extracts all timestamps from all the files in the directory given."""
 	times = set()
-	for file in os.listdir(dir):
-		times.update(extract_times_from_file(dir + '/' + file))
+	for file in os.listdir(directory):
+		times.update(extract_times_from_file(directory + '/' + file))
 	return {t.strip('\n') for t in times}
 
 

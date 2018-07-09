@@ -36,7 +36,6 @@ def process_network_masks(timestamps, exp_label, input_dir=INPUT_DIR):
 	return masks
 
 
-# TODO: Is this method even used?
 def get_network_mask(timestamp, exp_label, input_dir=INPUT_DIR):
 	"""Returns the mask of a given timestamp from the network's output."""
 	network_dir = "results/" + exp_label + "/"

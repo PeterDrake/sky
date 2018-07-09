@@ -92,8 +92,7 @@ def compare(output, target):
 	return Image.fromarray(target.astype('uint8'))
 
 
-def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations,
-		show_all, times, save=False):
+def show_output(accuracy, saver, x, y, y_, result_dir, num_iterations, show_all, times, save=False):
 	"""Loads the network and displays the output for the specified time."""
 	with tf.Session() as sess:
 		saver.restore(sess, result_dir + 'weights-' + str(num_iterations))
