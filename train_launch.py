@@ -14,7 +14,7 @@ Launches the training process.
 
 import os
 
-# Specify the experiment number. EX: 'e70'
+# Specify the experiment number. EX: 'e73'
 exp_number = 'e73'
 
 # Specify the location of the cropped sky photos and simplified decision images
