@@ -8,10 +8,13 @@ of batches times the number of batches per network is small enough so that BLT c
 import os
 
 # Specify the directory where the sky images are stored: ex: good_data
-INPUT_DIR = "good_data"
+INPUT_DIR = "bad_data"
 
 # Specify the location of the csv file that contains desired timestamp_utc information.
-input_csv = "shcu_good_data.csv"
+input_csv = "shcu_bad_data.csv"
+
+# Specify the base of the job id
+JOB_NAME = "bad-net-"
 
 # Specify the labels that correspond to networks of interest. Ie 'e70-00'
 exp_labels = ['e73-00', 'e73-01']
@@ -30,7 +33,7 @@ if __name__ == "__main__":
 
 	for exp_label in exp_labels:
 		for i in range(num_batches_per_network):
-			name = "good-net-" + exp_label + "-" + str(i)
+			name = JOB_NAME + exp_label + "-" + str(i)
 			start = batch_length * i
 			finish = batch_length * (i + 1) if batch_length * (i + 1) < total_length else total_length
 			os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {}" -P 1'.format(name, exp_label, int(start),
