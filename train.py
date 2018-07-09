@@ -38,8 +38,6 @@ from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, INPUT_DIR
 from utils import extract_img_path_from_time, extract_mask_path_from_time, BLUE, BLACK, COLORS
 
 
-
-
 def build_net(layer_info):
 	"""Builds a network given command-line layer info."""
 	print("Building network")
