@@ -56,16 +56,6 @@ def create_dirs(timestamps, output_dir, res_dir):
 	return
 
 
-def create_constant_mask(color, filename):
-	"""Creates a mask where any pixels not always of color are BLUE. Saves it in filename."""
-	b_mask = np.full((480, 480, 3), color)
-	for dirpath, subdirs, files in os.walk(OUTPUT_DIR + '/simplemask/'):
-		for file in files:
-			img = misc.imread(os.path.join(dirpath, file))
-			b_mask[(img != color).any(axis=2)] = BLUE
-	Image.fromarray(b_mask.astype('uint8')).save(OUTPUT_DIR + '/' + filename)
-
-
 def make_batches_by_size(timestamps, batch_size=BATCH_SIZE):
 	"""Returns a set of batches of timestamps. The number of batches is determined by the length of the timestamps
 	collection and the number of elements in a batch can be provided by the user. batch_size is set to 10000 by

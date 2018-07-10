@@ -10,7 +10,7 @@ import sys
 import os
 import tensorflow as tf
 
-from process_launch import INPUT_DIR, input_csv
+from process_launch import INPUT_DIR, INPUT_DATA_CSV
 from train import build_net, load_inputs
 from utils import extract_data_from_csv, extract_img_path_from_time, extract_network_mask_path_from_time, \
 	out_to_image, \
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	start = int(sys.argv[2])  # The starting index of the timestamp in the shcu_good_data.csv file to consider
 	finish = int(sys.argv[3])  # Final timestamp to consider
-	temp = sorted(list(extract_data_from_csv(input_csv, 'timestamp_utc')))[start:finish]
+	temp = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))[start:finish]
 	times = []
 	for t in temp:
 		if not network_output_exists(t, exp_label):
