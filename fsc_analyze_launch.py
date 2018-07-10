@@ -19,7 +19,9 @@ results/exp_label/ directory.
 import os
 from fsc_launch import EXP_LABELS
 
+JOB_NAME = "fsc-analyze-"
+
 if __name__ == "__main__":
 	for exp_label in EXP_LABELS:
-		name = "fsc-compare-" + exp_label
+		name =  JOB_NAME + exp_label
 		os.system('SGE_Batch -r "{}" -c "python3 -u fsc_analyze.py {}" -P 1'.format(name, exp_label))

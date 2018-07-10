@@ -23,9 +23,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 from fsc_launch import INPUT_DATA_CSV
-
-from utils import read_csv_file, extract_data_from_dataframe, extract_data_from_csv, \
-	extract_data_for_date_from_dataframe
+from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
 
 
 def find_worst_results(filename, num_worst=5):
