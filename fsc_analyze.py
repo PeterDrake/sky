@@ -55,18 +55,20 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 	image_times = set(extract_data_from_dataframe(image_dataframe, "timestamp_utc"))
 	arscl_times = set(extract_data_from_dataframe(arscl_dataframe, "timestamp_utc"))
 	times = image_times.intersection(arscl_times)  # Necessary to correct for missing times
-	x, y = [], []
+	x, y, residual = [], [], []
 	mse = 0
 	for t in times:
 		x.append(extract_data_for_date_from_dataframe(arscl_header, t, arscl_dataframe))
 		y.append(extract_data_for_date_from_dataframe(image_header, t, image_dataframe))
 		mse += (y[-1] - x[-1]) ** 2
-	return x, y, (mse / len(times)) ** 0.5
+		residual.append(y[-1] - x[-1])
+	return x, y, (mse / len(times)) ** 0.5, residual
 
 
 if __name__ == "__main__":
 	N_SAMPLES = 4500
-	exp_label = sys.argv[1]
+	# exp_label = sys.argv[1]
+	exp_label = 'e70-00'
 
 	# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
 	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
@@ -114,7 +116,7 @@ if __name__ == "__main__":
 		plt.plot([0, 1], [0, 1], c='orange', lw=2)
 		plt.scatter(data[0], data[1], s=.25)
 	plt.tight_layout()
-	plt.savefig("results/" + exp_label + "/good_tsi_arscl_fsc.png", dpi=300)
+	plt.savefig("results/" + exp_label + "/fsc_analyze_image_arscl.png", dpi=300)
 	for i, data in enumerate(DATA):
 		print("The RMSE for plot {} is {}.".format(i + 1, data[2]))
 
@@ -130,6 +132,6 @@ if __name__ == "__main__":
 		plt.scatter(DATA[i][0], DATA[i][1], s=0.25)
 		plt.plot([0, 1], [0, 1], c='orange', lw=2)
 	plt.tight_layout()
-	plt.savefig("results/" + exp_label + "/compare_tsi_network_fsc.png", dpi=300)
+	plt.savefig("results/" + exp_label + "/fsc_analyze_tsi_network.png", dpi=300)
 	print("The RMSE for TSI/NET on GOOD DATA is {}.".format(good_tsi_network[2]))
 	print("The RMSE for TSI/NET on BAD DATA is {}.".format(bad_tsi_network[2]))

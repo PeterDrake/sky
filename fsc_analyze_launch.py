@@ -12,7 +12,7 @@ This script requires four files: 'shcu_good_data.csv', 'shcu_bad_data.csv', 'fsc
 * The 'shcu' files should be located in the same directory as this file.
 * The 'fsc' files should be located in the results/exp_label/ directory. EX: results/e70-00/fsc.csv
 
-This script creates two plots and saves them as 'good_tsi_arscl_fsc.png' and 'compare_tsi_network_fsc.png' in the
+This script creates two plots and saves them as 'fsc_analyze_image_arscl.png' and 'fsc_analyze_tsi_network.png' in the
 results/exp_label/ directory.
 """
 
