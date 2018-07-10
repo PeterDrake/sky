@@ -1,24 +1,30 @@
+"""
+This script can be launched at any time.
+
+Grabs "timestamp_utc" data from a given csv file and separates it into two chunks for later use. One chunk is for
+validation/standard plotting, the other is for testing/final plotting. Saves the two chunks into VALID_FILE and
+TEST_FILE as pickled python lists.
+"""
+
 import pickle
+from utils import extract_data_from_csv
 
+# Set the csv file containing the timestamps to set
+INPUT_DATA_CSV = 'shcu_bad_data.csv'
 
-def separate_data(timestamps, output_dir=None, test_ratio=0.4, valid_ratio=0.6):
-	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
-	train.stamps."""
-	if output_dir:
-		output_dir = output_dir + '/'
-	test, valid = separate_stamps(timestamps, test_ratio, valid_ratio)
-	with open(output_dir + 'test.stamps', 'wb') as f:
-		pickle.dump(test, f)
-	with open(output_dir + 'valid.stamps', 'wb') as f:
+# Set the filenames to store the batches in
+VALID_FILE = 'poster_valid.stamps'
+TEST_FILE = 'poster_test.stamps'
+
+# Set the ratio of validation to total stamps. Ie: RATIO > 0.5 means more validation than testing.
+RATIO = 0.6
+
+if __name__ == "__main__":
+	times = extract_data_from_csv(INPUT_DATA_CSV, "timestamp_utc")
+	timestamps = list(times)
+	valid = timestamps[:int(len(timestamps) * RATIO)]
+	test = timestamps[int(len(timestamps) * RATIO):]
+	with open(VALID_FILE, 'wb') as f:
 		pickle.dump(valid, f)
-	return test, valid
-
-
-def separate_stamps(timestamps, test_ratio, valid_ratio):
-	"""Shuffles stamps and returns three lists: 20% of the stamps for
-	testing, 16% for validation, and the rest for training."""
-	if test_ratio + valid_ratio == 1:
-		timestamps = list(timestamps)
-		test = timestamps[0:int(len(timestamps) * test_ratio)]
-		valid = timestamps[int(len(timestamps) * (test_ratio + valid_ratio)):]
-		return test, valid
+	with open(TEST_FILE, 'wb') as f:
+		pickle.dump(test, f)
