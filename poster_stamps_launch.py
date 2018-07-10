@@ -19,6 +19,7 @@ TEST_FILE = 'poster_test.stamps'
 # Set the ratio of validation to total stamps. Ie: RATIO > 0.5 means more validation than testing.
 RATIO = 0.6
 
+# TODO: Shuffle the times before writing it to a list.
 if __name__ == "__main__":
 	times = extract_data_from_csv(INPUT_DATA_CSV, "timestamp_utc")
 	timestamps = list(times)
