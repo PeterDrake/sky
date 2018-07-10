@@ -19,7 +19,8 @@ import matplotlib
 import tensorflow as tf
 
 from preprocess_setup_launch import *
-from train import BATCH_SIZE, build_net, load_inputs, load_validation_stamps
+from train import build_net, load_inputs, load_validation_stamps
+from train_launch import BATCH_SIZE
 from utils import extract_mask_path_from_time, out_to_image, get_simple_mask, get_network_mask_from_time_and_label
 
 matplotlib.use('Agg')

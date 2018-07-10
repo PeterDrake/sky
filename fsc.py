@@ -1,36 +1,33 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Finds the zenith area of TSI skymasks
+This script is intended to be run from fsc_launch.py, but can be run from the command line if the experiment label is
+specified.
+
+Computes the fractional sky cover for a set of decision images specified in fsc_launch.py and saves the results in
+OUTPUT_DATA_CSV.
+
+Should you choose the manual option, you will need to change the INPUT_DATA_CSV and OUTPUT_DATA_CSV parameters in
+fsc_launch.csv to match your goals. EX: python3 fsc.py e70-00
 """
 
-import os
 import sys
 
-from utils import extract_data_from_csv, extract_exp_label, extract_network_mask_path_from_time, extract_timestamp, \
-	get_network_mask_from_time_and_label, get_simple_mask
-
-
-# DONE: Make sure fsc is easily computed from simplified masks
-# DONE: Grab fsc info from shcu_good_data csv file (and possibly other files in the future)
-# DONE?: Read in some new masks from our network in good_data
-# TODO: Loosely compare between the different methods. The csv info should agree with the simplified masks,
-# TODO: hopefully the network outputs as well.
-# TODO: Be able to display simple masks and network output for images with the most disagreement
-# TODO: Compute these for every mask file in results/exp_label/masks, not just for good_times masks
+from fsc_launch import INPUT_DATA_CSV, OUTPUT_DATA_CSV
+from utils import *
 
 
 def find_center(mask):
-	""" Returns the center of the locations of the first and last non-black pixels and the difference in
-	height between them."""
-	t, b, l, r = find_circle_boundary(mask)
-	r_vertical = (b - t) / 2
-	r_horizontal = (r - l) / 2
-	return ((t + b) / 2, (l + r) / 2), (r_vertical + r_horizontal) / 2
+	"""Returns the center of the locations of the first and last non-black pixels and the difference in height
+	between them. Returns the center (y, x) and the average radius."""
+	top, bottom, left, right = find_circle_boundary(mask)
+	vertical_radius = (bottom - top) / 2
+	horizontal_radius = (right - left) / 2
+	return ((top + bottom) / 2, (left + right) / 2), (vertical_radius + horizontal_radius) / 2
 
 
 def find_circle_boundary(mask):
-	""" Finds the first non-black pixel in all cardinal directions."""
+	"""Finds the first non-black pixel in all cardinal directions."""
 	answer = []
 	flag = False
 	for i in range(mask.shape[0]):  # Top
@@ -72,9 +69,9 @@ def find_circle_boundary(mask):
 
 
 def get_fsc(mask, threshold=0.645):
-	""" Computes the fractional sky cover from a given mask. By default, computes these values in the zenith region.
+	"""Computes the fractional sky cover from a given mask. By default, computes these values in the zenith region.
 	Specify zenith ratio by changing threshold between 0 and 1. Returns total sky cover, opaque sky cover,
-	thin sky cover. """
+	thin sky cover."""
 	sky_pixels = 0
 	cloud_pixels = 0
 	thin_pixels = 0
@@ -111,8 +108,8 @@ def get_fsc_from_file(filename):
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	times = sorted(list(extract_data_from_csv('shcu_bad_data.csv', 'timestamp_utc')))
-	with open('results/' + exp_label + '/' + 'bad_fsc.csv', 'w') as f:
+	times = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))
+	with open('results/' + exp_label + '/' + OUTPUT_DATA_CSV, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
 		for t in times:

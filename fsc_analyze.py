@@ -1,25 +1,40 @@
-"""Compares the fsc values in fsc.csv file of each network to the shcu_good_data.csv"""
+"""
+Plots a comparison between network and the TSI measurements of fractional sky cover. Also compares both sources to
+the Laser Ceilometer.
+
+This file is typically run from fsc_analyze_launch.py, but can be run from the command line with an argument for the
+experiment label.
+EX: python3 fsc_analyze.py e70-00
+
+This script requires four files: 'shcu_good_data.csv', 'shcu_bad_data.csv', 'fsc.csv', and 'bad_fsc.csv'.
+* The 'shcu' files should be located in the same directory as this file.
+* The 'fsc' files should be located in the results/exp_label/ directory. EX: results/e70-00/fsc.csv
+
+This script creates two plots and saves them as 'good_tsi_arscl_fsc.png' and 'compare_tsi_network_fsc.png' in the
+results/exp_label/ directory.
+"""
 
 import sys
-
 import heapq
+
 import matplotlib
 
 matplotlib.use('TkAgg')
-
 import matplotlib.pyplot as plt
+
+from fsc_launch import INPUT_DATA_CSV
 
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_from_csv, \
 	extract_data_for_date_from_dataframe
 
 
 def find_worst_results(filename, num_worst=5):
+	"""Finds the timestamps with the largest disagreement between network and TSI decision images. Returns a
+	dictionary of length num_worst where the key is the disagreement rate and the value is the timestamp."""
 	frame = read_csv_file(filename)
 	net_times = set(extract_data_from_dataframe(frame, "timestamp_utc"))
-	# print(frame)
-	# print(net_times)
-	shcu = read_csv_file('shcu_good_data.csv')
-	shcu_times = set(extract_data_from_csv('shcu_good_data.csv', "timestamp_utc"))
+	shcu = read_csv_file(INPUT_DATA_CSV)
+	shcu_times = set(extract_data_from_dataframe(shcu, "timestamp_utc"))
 	times = net_times.intersection(shcu_times)
 	disagreement_rates = [(-1, '')] * num_worst
 	heapq.heapify(disagreement_rates)
