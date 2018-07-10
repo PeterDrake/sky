@@ -1,10 +1,10 @@
 import glob
 import math
-import os
 import pickle
-import numpy as np
-import pandas as pd
 
+import numpy as np
+import os
+import pandas as pd
 from PIL import Image
 from scipy import misc
 
@@ -229,12 +229,12 @@ def mask_save_path(time, directory):
 	return directory + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def separate_data(timestamps, output_dir=None):
+def separate_data(timestamps, output_dir=None, test_ratio=0.2, valid_ratio=0.2, train_ratio=0.6):
 	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
 	train.stamps."""
 	if output_dir:
 		output_dir = output_dir + '/'
-	test, valid, train = separate_stamps(timestamps)
+	test, valid, train = separate_stamps(timestamps, test_ratio, valid_ratio, train_ratio)
 	with open(output_dir + 'test.stamps', 'wb') as f:
 		pickle.dump(test, f)
 	with open(output_dir + 'valid.stamps', 'wb') as f:
@@ -244,14 +244,15 @@ def separate_data(timestamps, output_dir=None):
 	return test, valid, train
 
 
-def separate_stamps(timestamps):
+def separate_stamps(timestamps, test_ratio, valid_ratio, train_ratio):
 	"""Shuffles stamps and returns three lists: 20% of the stamps for
 	testing, 16% for validation, and the rest for training."""
-	timestamps = list(timestamps)
-	test = timestamps[0:int(len(timestamps) * 0.2)]
-	valid = timestamps[int(len(timestamps) * 0.2):int(len(timestamps) * 0.4)]
-	train = timestamps[int(len(timestamps) * 0.4):]
-	return test, valid, train
+	if test_ratio + valid_ratio + train_ratio == 1:
+		timestamps = list(timestamps)
+		test = timestamps[0:int(len(timestamps) * test_ratio)]
+		valid = timestamps[int(len(timestamps) * test_ratio):int(len(timestamps) * (test_ratio + valid_ratio))]
+		train = timestamps[int(len(timestamps) * (test_ratio + valid_ratio)):]
+		return test, valid, train
 
 
 def extract_img_path_from_time_old(time, input_dir):
