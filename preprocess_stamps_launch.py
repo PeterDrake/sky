@@ -8,8 +8,8 @@ Recommended to run this script on blt with the command:
 SGE_Batch -r "preprocess_stamps" -c "python3 -u preprocess_stamps_launch.py" -P 1
 """
 
-import os
 import numpy as np
+import os
 from PIL import Image
 from scipy import misc
 
@@ -17,9 +17,9 @@ from preprocess_setup_launch import OUTPUT_DIR, RES_DIR
 from utils import extract_times_from_files_in_directory, separate_data, BLACK, BLUE
 
 # Set the names of the training, validation, and testing timestamp files.
-TRAIN_STAMP_PATH = 'train.stamps'
-VALID_STAMP_PATH = 'valid.stamps'
-TEST_STAMP_PATH = 'test.stamps'
+TRAIN_STAMP_PATH = OUTPUT_DIR + '/train.stamps'
+VALID_STAMP_PATH = OUTPUT_DIR + '/valid.stamps'
+TEST_STAMP_PATH = OUTPUT_DIR + '/test.stamps'
 
 
 def create_constant_mask(color, filename):
@@ -34,5 +34,5 @@ def create_constant_mask(color, filename):
 
 if __name__ == "__main__":
 	times = extract_times_from_files_in_directory(RES_DIR)
-	separate_data(times, OUTPUT_DIR, TRAIN_STAMP_PATH, VALID_STAMP_PATH, TEST_STAMP_PATH)
+	separate_data(times, TRAIN_STAMP_PATH, VALID_STAMP_PATH, TEST_STAMP_PATH)
 	create_constant_mask(BLACK, OUTPUT_DIR + '/always_black_mask.png')

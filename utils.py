@@ -229,18 +229,16 @@ def mask_save_path(time, directory):
 	return directory + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def separate_data(timestamps, output_dir=None, train_stamp_path='train.stamps', valid_stamp_path='valid.stamps',
-		test_stamp_path='test.stamps', train_ratio=0.6, valid_ratio=0.2, test_ratio=0.2):
+def separate_data(timestamps, train_stamp_path='train.stamps', valid_stamp_path='valid.stamps',
+                  test_stamp_path='test.stamps', train_ratio=0.6, valid_ratio=0.2, test_ratio=0.2):
 	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
 	train.stamps."""
-	if output_dir:
-		output_dir = output_dir + '/'
 	test, valid, train = separate_stamps(timestamps, test_ratio, valid_ratio, train_ratio)
-	with open(output_dir + test_stamp_path, 'wb') as f:
+	with open(test_stamp_path, 'wb') as f:
 		pickle.dump(test, f)
-	with open(output_dir + valid_stamp_path, 'wb') as f:
+	with open(valid_stamp_path, 'wb') as f:
 		pickle.dump(valid, f)
-	with open(output_dir + train_stamp_path, 'wb') as f:
+	with open(train_stamp_path, 'wb') as f:
 		pickle.dump(train, f)
 	return test, valid, train
 

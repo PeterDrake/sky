@@ -15,14 +15,16 @@ results/exp_label/ directory.
 """
 
 import pickle
+
 import heapq
 import matplotlib
 
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from fsc_launch import INPUT_DATA_CSV
-from poster_stamps_launch import BAD_VALID_FILE, BAD_TEST_FILE
+from poster_stamps_launch import BAD_VALID_FILE
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
+from preprocess_stamps_launch import VALID_STAMP_PATH
 
 
 def load_pickled_file(filename):
@@ -78,7 +80,9 @@ if __name__ == "__main__":
 	# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
 	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
 	good_arscl_dataframe = good_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
-	good_times = good_arscl_dataframe.get('timestamp_utc').sample(n=N_SAMPLES)
+	good_times = load_pickled_file(VALID_STAMP_PATH)
+	good_times = good_times[0:N_SAMPLES]
+	# good_times = good_arscl_dataframe.get('timestamp_utc').sample(n=N_SAMPLES)
 	good_arscl_dataframe = good_arscl_dataframe[good_arscl_dataframe['timestamp_utc'].isin(good_times)]
 	good_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_arscl_dataframe)
 
