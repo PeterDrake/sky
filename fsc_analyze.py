@@ -75,7 +75,6 @@ if __name__ == "__main__":
 	# exp_label = sys.argv[1]
 	exp_label = 'e70-00'
 
-
 	# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
 	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
 	good_arscl_dataframe = good_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
