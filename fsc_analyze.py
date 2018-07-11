@@ -21,7 +21,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from fsc_launch import INPUT_DATA_CSV
-from poster_stamps_launch import VALID_FILE, TEST_FILE
+from poster_stamps_launch import BAD_VALID_FILE, BAD_TEST_FILE
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
 
 
@@ -73,7 +73,7 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 if __name__ == "__main__":
 	N_SAMPLES = 2000
 	# exp_label = sys.argv[1]
-	exp_label = 'e70-00'
+	exp_label = 'e73-01'
 
 	# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
 	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
@@ -82,11 +82,10 @@ if __name__ == "__main__":
 	good_arscl_dataframe = good_arscl_dataframe[good_arscl_dataframe['timestamp_utc'].isin(good_times)]
 	good_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_arscl_dataframe)
 
-	# TODO: Intersection of bad times between sources before taking sample.
 	# Reads data from shcu_bad_data.csv, takes a sample of the times, and gets data for plotting
 	bad_arscl_dataframe = read_csv_file('shcu_bad_data.csv')  # Contains both ARSCL and TSI Data
 	bad_arscl_dataframe = bad_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
-	bad_times = load_pickled_file(VALID_FILE)  # Change this to TEST_FILE for final plotting.
+	bad_times = load_pickled_file(BAD_VALID_FILE)  # Change this to TEST_FILE for final plotting.
 	bad_times = bad_times[0:N_SAMPLES]
 	# bad_times = set(bad_arscl_dataframe.get('timestamp_utc')
 	# bad_times = bad_arscl_dataframe.get('timestamp_utc').sample(n=N_SAMPLES)
