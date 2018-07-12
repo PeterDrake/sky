@@ -27,8 +27,8 @@ if __name__ == "__main__":
 				ax.set_ylabel("Accuracy")
 				ax.set_title("Machine Learning Curve")
 				ax.plot(x, train, label="training")
-				# ax.plot(x, valid, label="validation")
+				ax.plot(x, valid, label="validation")
 				ax.legend(loc='lower right')
 				plt.tight_layout()
-				fig.savefig('results/' + exp_label + '/accuracy_vs_batch_' + exp_label + '.png', dpi=300,
+				fig.savefig('results/' + exp_label + '/accuracy_vs_batch.png', dpi=300,
 						bbox_inches='tight')
