@@ -15,7 +15,7 @@ Launches the training process.
 import os
 
 # Specify the experiment number. EX: 'e73'
-exp_number = 'e73'
+exp_number = 'e74'
 
 # Specify the location of the cropped sky photos and simplified decision images
 INPUT_DIR = "good_data"
@@ -33,7 +33,9 @@ TRAINING_STEPS = 2000
 num_cores = 25
 
 # Specify the structure of the network. This defines how train.py constructs the network to train.
-variants = ['a:conv-3-32-in b:conv-3-48-a c:conv-3-64-b d:conv-3-80-c e:conv-3-96-d f:concat-e-in g:conv-3-4-f']
+variants = [
+	'a:conv-{0}-{1}-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-{0}-{1}-e g:conv-{0}-{1}-f '
+	'h:concat-g-in i:conv-{0}-5-h']
 
 if __name__ == "__main__":
 	i = 0
