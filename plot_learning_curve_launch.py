@@ -17,18 +17,17 @@ if __name__ == "__main__":
 			x, train, valid = [], [], []
 			for line in f.readlines()[1:]:
 				line = line.split()
-				x.append(50 * int(line[0]))
+				x.append(int(line[0]))
 				train.append(float(line[1]))
 				valid.append(float(line[2]))
-			with plt.xkcd():
-				fig = plt.figure()
-				ax = fig.add_subplot(1, 1, 1)
-				ax.set_xlabel("Number of Photos Trained On")
-				ax.set_ylabel("Accuracy")
-				ax.set_title("Machine Learning Curve")
-				ax.plot(x, train, label="training")
-				ax.plot(x, valid, label="validation")
-				ax.legend(loc='lower right')
-				plt.tight_layout()
-				fig.savefig('results/' + exp_label + '/accuracy_vs_batch.png', dpi=300,
-						bbox_inches='tight')
+			fig = plt.figure()
+			ax = fig.add_subplot(1, 1, 1)
+			ax.set_xlabel("Minibatches of 50 Images")
+			ax.set_ylabel("Accuracy")
+			ax.set_title("Machine Learning Curve")
+			ax.plot(x, train, label="training")
+			ax.plot(x, valid, label="validation")
+			ax.legend(loc='lower right')
+			plt.tight_layout()
+			fig.savefig('results/' + exp_label + '/accuracy_vs_batch.png', dpi=300,
+					bbox_inches='tight')
