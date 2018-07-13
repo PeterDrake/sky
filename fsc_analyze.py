@@ -72,10 +72,21 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 	return x, y, (mse / len(times)) ** 0.5, residual
 
 
+def plot(title, xlabel, ylabel, scatter, name):
+	"""Makes a plot with the given parameters"""
+	plt.title(title)
+	plt.xlabel(xlabel)
+	plt.ylabel(ylabel)
+	plt.scatter(scatter[0], scatter[1], s=0.5)
+	plt.plot([0, 1], [0, 1], c='orange', lw=2)
+	plt.savefig('results/' + exp_label + name, dpi=300)
+	plt.close()
+
+
 if __name__ == "__main__":
 	N_SAMPLES = 2000
 	# exp_label = sys.argv[1]
-	exp_label = 'e73-01'
+	exp_label = 'e70-00'
 
 	# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
 	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
@@ -114,36 +125,45 @@ if __name__ == "__main__":
 	bad_tsi_network = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_network_dataframe,
 			arscl_header="fsc_z")
 
-	# Makes four plots for the performance comparison and prints out the Root Mean Squared Error
-	x_label = 'CF SHCU'
-	y_labels = ['TSI FSC'] * 2 + ['NETWORK FSC'] * 2
-	titles = ['Good Data', 'Bad Data', 'Good Data', 'Bad Data']
-	DATA = [good_arscl_tsi, bad_arscl_tsi, good_arscl_network, bad_arscl_network]
-	fig = plt.figure(figsize=(12, 8))
-	for i, data in enumerate(DATA):
-		ax = fig.add_subplot(2, 2, i + 1)
-		ax.set_ylabel(y_labels[i])
-		ax.set_xlabel(x_label)
-		ax.set_title(titles[i] + " ({})".format(i + 1))
-		plt.plot([0, 1], [0, 1], c='orange', lw=2)
-		plt.scatter(data[0], data[1], s=.5)
-	plt.tight_layout()
-	plt.savefig("results/" + exp_label + "/fsc_analyze_image_arscl.png", dpi=300)
-	for i, data in enumerate(DATA):
-		print("The RMSE for plot {} is {}.".format(i + 1, data[2]))
 
-	# Makes two plots for direct comparison between TSI and Network on good and bad data
-	fig2 = plt.figure(figsize=(12, 8))
-	titles = ["Good Data", "Bad Data"]
-	DATA = [good_tsi_network, bad_tsi_network]
-	for i, title in enumerate(titles):
-		ax = fig2.add_subplot(1, 2, i + 1)
-		ax.set_xlabel("TSI FSC")
-		ax.set_ylabel("NETWORK FSC")
-		ax.set_title(title)
-		plt.scatter(DATA[i][0], DATA[i][1], s=0.5)
-		plt.plot([0, 1], [0, 1], c='orange', lw=2)
-	plt.tight_layout()
-	plt.savefig("results/" + exp_label + "/fsc_analyze_tsi_network.png", dpi=300)
-	print("The RMSE for TSI/NET on GOOD DATA is {}.".format(good_tsi_network[2]))
-	print("The RMSE for TSI/NET on BAD DATA is {}.".format(bad_tsi_network[2]))
+	plot('Good Data', 'Ceilometer CF', 'Total Sky Imager FSC', good_arscl_tsi, '/good_tsi_ceilometer.png')
+	plot('Bad Data', 'Ceilometer CF', 'Total Sky Imager FSC', bad_arscl_tsi, '/bad_tsi_ceilometer.png')
+	plot('Good Data', 'Ceilometer CF', 'Network FSC', good_arscl_network, '/good_network_ceilometer.png')
+	plot('Bad Data', 'Ceilometer CF', 'Network FSC', bad_arscl_network, '/bad_network_ceilometer.png')
+
+	#
+	# # Makes four plots for the performance comparison and prints out the Root Mean Squared Error
+	# x_label = 'CF SHCU'
+	# # y_labels = ['TSI FSC'] * 2 + ['NETWORK FSC'] * 2
+	# y_labels = ['NETWORK FSC'] * 2
+	# titles = ['Good Data', 'Bad Data']
+	# DATA = [good_arscl_network, bad_arscl_network]
+	# fig = plt.figure(figsize=(12, 4))
+	# for i, data in enumerate(DATA):
+	# 	ax = fig.add_subplot(1, 2, i + 1)
+	# 	ax.set_aspect('auto')
+	# 	ax.set_ylabel(y_labels[i])
+	# 	ax.set_xlabel(x_label)
+	# 	ax.set_title(titles[i] + " ({})".format(i + 1))
+	# 	plt.plot([0, 1], [0, 1], c='orange', lw=2)
+	# 	plt.scatter(data[0], data[1], s=.5)
+	# # plt.tight_layout()
+	# plt.savefig("results/" + exp_label + "/fsc_analyze_image_arscl.png", dpi=300)
+	# for i, data in enumerate(DATA):
+	# 	print("The RMSE for plot {} is {}.".format(i + 1, data[2]))
+	#
+	# # Makes two plots for direct comparison between TSI and Network on good and bad data
+	# fig2 = plt.figure(figsize=(12, 8))
+	# titles = ["Good Data", "Bad Data"]
+	# DATA = [good_tsi_network, bad_tsi_network]
+	# for i, title in enumerate(titles):
+	# 	ax = fig2.add_subplot(1, 2, i + 1)
+	# 	ax.set_xlabel("TSI FSC")
+	# 	ax.set_ylabel("NETWORK FSC")
+	# 	ax.set_title(title)
+	# 	plt.scatter(DATA[i][0], DATA[i][1], s=0.5)
+	# 	plt.plot([0, 1], [0, 1], c='orange', lw=2)
+	# plt.tight_layout()
+	# plt.savefig("results/" + exp_label + "/fsc_analyze_tsi_network.png", dpi=300)
+	# print("The RMSE for TSI/NET on GOOD DATA is {}.".format(good_tsi_network[2]))
+	# print("The RMSE for TSI/NET on BAD DATA is {}.".format(bad_tsi_network[2]))
