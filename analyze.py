@@ -111,7 +111,7 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	ax.set_ylabel('Percent of Pixels Incorrect')
 	ax.set_xlabel('Masks (sorted by accuracy)')
 	ax.set_title("Pixel disagreement rate between our masks and TSI masks")
-	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'presentation_accuracy_plot.png', bbox_inches='tight')
+	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'poster_accuracy_plot.png', bbox_inches='tight')
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
