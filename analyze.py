@@ -102,7 +102,7 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 		print("tsi mask:" + extract_mask_path_from_time(t, 'bad_data'))
 		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
 				extract_mask_path_from_time(t, 'bad_data')):
-			tsi_mask = get_simple_mask(t)
+			tsi_mask = get_simple_mask(t, 'bad_data')
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
 			rates[i] = disagreement_rate(our_mask, tsi_mask)
 		else:
