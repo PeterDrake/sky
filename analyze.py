@@ -96,6 +96,7 @@ def show_sky_images(timestamps):
 
 def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
+	sum = 0
 	for i, t in enumerate(timestamps):
 		print("network mask:" + extract_network_mask_path_from_time(t, exp_label))
 		print("tsi mask:" + extract_mask_path_from_time(t, 'good_data'))
@@ -106,8 +107,10 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 			rates[i] = disagreement_rate(our_mask, tsi_mask)
 		else:
 			print("not here")
+			sum = sum + 1
 			pass
 	# Save a graph of accuracies
+	print(sum + "masks are missing")
 	fig, ax = plt.subplots(nrows=1, ncols=1)
 	ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
 	ax.set_ylabel('Percent of Pixels Incorrect')
