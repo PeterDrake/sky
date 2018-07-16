@@ -106,20 +106,17 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 			print("not here")
 			pass
 	# Save a graph of accuracies
-	with plt.xkcd():
-		fig, ax = plt.subplots(nrows=1, ncols=1)
-		ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-		ax.set_ylabel('Percent of Pixels Incorrect')
-		ax.set_xlabel('Masks (sorted by accuracy)')
-		ax.set_title("Pixel disagreement rate between our masks and TSI masks")
-		fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'presentation_accuracy_plot.png',
-		            bbox_inches='tight')
+	fig, ax = plt.subplots(nrows=1, ncols=1)
+	ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+	ax.set_ylabel('Percent of Pixels Incorrect')
+	ax.set_xlabel('Masks (sorted by accuracy)')
+	ax.set_title("Pixel disagreement rate between our masks and TSI masks")
+	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'presentation_accuracy_plot.png', bbox_inches='tight')
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
-	networks = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
-	for n in networks:
-		show_plot_of_pixel_difference(times, n, 'plots')
+	network = ('e70-00')
+	show_plot_of_pixel_difference(times, network, 'plots')
 # timestamps = load_validation_stamps(BATCH_SIZE)
 # dir_name = "results/" + sys.argv[1] + "/"
 # args = read_parameters(dir_name)
