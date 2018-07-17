@@ -105,9 +105,9 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 			rates[i] = 1 - disagreement_rate(our_mask, tsi_mask)
 		else:
 			print('tsi:')
-			print(get_simple_mask(t, 'good_data'))
+			print(extract_mask_path_from_time(t, 'good_data'))
 			print('our:')
-			print(get_network_mask_from_time_and_label(t, exp_label))
+			print(extract_network_mask_path_from_time(t, exp_label))
 			print("not here")
 			sum = sum + 1
 			pass
@@ -119,7 +119,7 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	ax.plot(np.take(rates * 100, rates.argsort()))
 	ax.set_ylabel('Accuracy (percent of pixels correct)')
 	ax.set_xlabel('Masks (sorted by accuracy)')
-	ax.set_title("Pixel Accuracy for Bad Data")
+	ax.set_title("Pixel Accuracy for Good Data")
 	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'postergood1.png', bbox_inches='tight')
 
 if __name__ == '__main__':
