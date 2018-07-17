@@ -21,10 +21,11 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import numpy as np
 from fsc_launch import INPUT_DATA_CSV
 from poster_stamps_launch import BAD_VALID_FILE
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
-from preprocess_stamps_launch import VALID_STAMP_PATH
+from preprocess_stamps_launch import VALID_STAMP_PATH # TODO: Make this a bit more clear..
 
 
 def load_pickled_file(filename):
@@ -68,11 +69,20 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 		x.append(extract_data_for_date_from_dataframe(arscl_header, t, arscl_dataframe))
 		y.append(extract_data_for_date_from_dataframe(image_header, t, image_dataframe))
 		mse += (y[-1] - x[-1]) ** 2
-		residual.append(y[-1] - x[-1])
-	return x, y, (mse / len(times)) ** 0.5, residual
+		# residual.append(y[-1] - x[-1])
+		residual.append(abs(y[-1] - x[-1]))
+	return x, y, (mse / len(times)) ** 0.5, np.array(residual)
 
 
-def plot(title, xlabel, ylabel, scatter, name):
+def residual_to_quartiles(residual):
+	"""Sorts a list of residual errors and returns the 25th and 75th quartiles."""
+	residual = sorted(list(residual))
+	q25 = residual[int(0.25 * len(residual))]
+	q75 = residual[int(0.75 * len(residual))]
+	return q25, q75
+
+
+def scatter_plot(title, xlabel, ylabel, scatter, name):
 	"""Makes a plot with the given parameters"""
 	plt.title(title)
 	plt.xlabel(xlabel)
@@ -93,7 +103,6 @@ if __name__ == "__main__":
 	good_arscl_dataframe = good_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	good_times = load_pickled_file(VALID_STAMP_PATH)
 	good_times = good_times[0:N_SAMPLES]
-	# good_times = good_arscl_dataframe.get('timestamp_utc').sample(n=N_SAMPLES)
 	good_arscl_dataframe = good_arscl_dataframe[good_arscl_dataframe['timestamp_utc'].isin(good_times)]
 	good_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_arscl_dataframe)
 
@@ -102,8 +111,6 @@ if __name__ == "__main__":
 	bad_arscl_dataframe = bad_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	bad_times = load_pickled_file(BAD_VALID_FILE)  # Change this to TEST_FILE for final plotting.
 	bad_times = bad_times[0:N_SAMPLES]
-	# bad_times = set(bad_arscl_dataframe.get('timestamp_utc')
-	# bad_times = bad_arscl_dataframe.get('timestamp_utc').sample(n=N_SAMPLES)
 	bad_arscl_dataframe = bad_arscl_dataframe[bad_arscl_dataframe['timestamp_utc'].isin(bad_times)]
 	bad_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_arscl_dataframe)
 
@@ -125,45 +132,112 @@ if __name__ == "__main__":
 	bad_tsi_network = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_network_dataframe,
 			arscl_header="fsc_z")
 
-
-	plot('Good Data', 'Ceilometer CF', 'Total Sky Imager FSC', good_arscl_tsi, '/good_tsi_ceilometer.png')
-	plot('Bad Data', 'Ceilometer CF', 'Total Sky Imager FSC', bad_arscl_tsi, '/bad_tsi_ceilometer.png')
-	plot('Good Data', 'Ceilometer CF', 'Network FSC', good_arscl_network, '/good_network_ceilometer.png')
-	plot('Bad Data', 'Ceilometer CF', 'Network FSC', bad_arscl_network, '/bad_network_ceilometer.png')
-
+	# TODO: Uncomment below to plot with rmse
+	# good_tsi_rmse, good_network_rmse = good_arscl_tsi[2], good_arscl_network[2]
+	# bad_tsi_rmse, bad_network_rmse = bad_arscl_tsi[2], bad_arscl_network[2]
 	#
-	# # Makes four plots for the performance comparison and prints out the Root Mean Squared Error
-	# x_label = 'CF SHCU'
-	# # y_labels = ['TSI FSC'] * 2 + ['NETWORK FSC'] * 2
-	# y_labels = ['NETWORK FSC'] * 2
-	# titles = ['Good Data', 'Bad Data']
-	# DATA = [good_arscl_network, bad_arscl_network]
-	# fig = plt.figure(figsize=(12, 4))
-	# for i, data in enumerate(DATA):
-	# 	ax = fig.add_subplot(1, 2, i + 1)
-	# 	ax.set_aspect('auto')
-	# 	ax.set_ylabel(y_labels[i])
-	# 	ax.set_xlabel(x_label)
-	# 	ax.set_title(titles[i] + " ({})".format(i + 1))
-	# 	plt.plot([0, 1], [0, 1], c='orange', lw=2)
-	# 	plt.scatter(data[0], data[1], s=.5)
-	# # plt.tight_layout()
-	# plt.savefig("results/" + exp_label + "/fsc_analyze_image_arscl.png", dpi=300)
-	# for i, data in enumerate(DATA):
-	# 	print("The RMSE for plot {} is {}.".format(i + 1, data[2]))
+	# good_tsi_quartiles = residual_to_quartiles(good_arscl_tsi[3])
+	# good_network_quartiles = residual_to_quartiles(good_arscl_network[3])
+	# bad_tsi_quartiles = residual_to_quartiles(bad_arscl_tsi[3])
+	# bad_network_quartiles = residual_to_quartiles(bad_arscl_network[3])
 	#
-	# # Makes two plots for direct comparison between TSI and Network on good and bad data
-	# fig2 = plt.figure(figsize=(12, 8))
-	# titles = ["Good Data", "Bad Data"]
-	# DATA = [good_tsi_network, bad_tsi_network]
-	# for i, title in enumerate(titles):
-	# 	ax = fig2.add_subplot(1, 2, i + 1)
-	# 	ax.set_xlabel("TSI FSC")
-	# 	ax.set_ylabel("NETWORK FSC")
-	# 	ax.set_title(title)
-	# 	plt.scatter(DATA[i][0], DATA[i][1], s=0.5)
-	# 	plt.plot([0, 1], [0, 1], c='orange', lw=2)
+	# x_data = [' TSI ', ' NETWORK ', 'TSI', 'NETWORK']
+	# rmse_data = [good_tsi_rmse, good_network_rmse, bad_tsi_rmse, bad_network_rmse]
+	# lower_error = [good_tsi_quartiles[0], good_network_quartiles[0], bad_tsi_quartiles[0], bad_network_quartiles[0]]
+	# upper_error = [good_tsi_quartiles[1], good_network_quartiles[1], bad_tsi_quartiles[1], bad_network_quartiles[1]]
+	# for i in range(4):
+	# 	lower_error[i] = rmse_data[i] - lower_error[i]
+	# 	upper_error[i] -= rmse_data[i]
+	#
+	# plt.title("")
+	# plt.ylabel("FSC Difference")
+	# plt.xlabel("GOOD DATA                                                                BAD DATA")
+	# plt.tick_params(
+	# 		axis='x',  # changes apply to the x-axis
+	# 		which='both',  # both major and minor ticks are affected
+	# 		bottom=True,  # ticks along the bottom edge are on
+	# 		top=True,  # ticks along the top edge are on
+	# 		labelbottom=True)  # labels along the bottom edge are on
+	# plt.errorbar(x_data, rmse_data, yerr=[lower_error, upper_error], fmt='.', ecolor='orange', capsize=4)
+	# plt.plot(x_data, rmse_data, 'o', label="RMSE")
 	# plt.tight_layout()
-	# plt.savefig("results/" + exp_label + "/fsc_analyze_tsi_network.png", dpi=300)
-	# print("The RMSE for TSI/NET on GOOD DATA is {}.".format(good_tsi_network[2]))
-	# print("The RMSE for TSI/NET on BAD DATA is {}.".format(bad_tsi_network[2]))
+	# plt.legend()
+	# plt.show()
+	# TODO: End uncomment here
+
+
+	# TODO: Uncomment to plot with median instead
+	good_tsi_rmse, good_network_rmse = good_arscl_tsi[2], good_arscl_network[2]
+	bad_tsi_rmse, bad_network_rmse = bad_arscl_tsi[2], bad_arscl_network[2]
+
+	good_tsi_quartiles = residual_to_quartiles(good_arscl_tsi[3])
+	good_network_quartiles = residual_to_quartiles(good_arscl_network[3])
+	bad_tsi_quartiles = residual_to_quartiles(bad_arscl_tsi[3])
+	bad_network_quartiles = residual_to_quartiles(bad_arscl_network[3])
+
+	x_data = [' TSI ', ' NETWORK ', 'TSI', 'NETWORK']
+	rmse_data = [good_tsi_rmse, good_network_rmse, bad_tsi_rmse, bad_network_rmse]
+	lower_error = [good_tsi_quartiles[0], good_network_quartiles[0], bad_tsi_quartiles[0], bad_network_quartiles[0]]
+	upper_error = [good_tsi_quartiles[1], good_network_quartiles[1], bad_tsi_quartiles[1], bad_network_quartiles[1]]
+	for i in range(4):
+		lower_error[i] = rmse_data[i] - lower_error[i]
+		upper_error[i] -= rmse_data[i]
+
+	plt.title("")
+	plt.ylabel("FSC Difference")
+	plt.xlabel("GOOD DATA                                                                BAD DATA")
+	plt.tick_params(
+			axis='x',  # changes apply to the x-axis
+			which='both',  # both major and minor ticks are affected
+			bottom=True,  # ticks along the bottom edge are on
+			top=True,  # ticks along the top edge are on
+			labelbottom=True)  # labels along the bottom edge are on
+	plt.errorbar(x_data, rmse_data, yerr=[lower_error, upper_error], fmt='.', ecolor='orange', capsize=4)
+	plt.plot(x_data, rmse_data, 'o', label="RMSE")
+	plt.tight_layout()
+	plt.legend()
+	plt.show()
+# TODO: End uncomment
+
+
+# # Makes plots of FSC vs CF for TSI and Network on good and bad data
+# scatter_plot('Good Data', 'Ceilometer CF', 'Total Sky Imager FSC', good_arscl_tsi, '/good_tsi_ceilometer.png')
+# scatter_plot('Bad Data', 'Ceilometer CF', 'Total Sky Imager FSC', bad_arscl_tsi, '/bad_tsi_ceilometer.png')
+# scatter_plot('Good Data', 'Ceilometer CF', 'Network FSC', good_arscl_network, '/good_network_ceilometer.png')
+# scatter_plot('Bad Data', 'Ceilometer CF', 'Network FSC', bad_arscl_network, '/bad_network_ceilometer.png')
+#
+# # Makes four plots for the performance comparison and prints out the Root Mean Squared Error
+# x_label = 'CF SHCU'
+# # y_labels = ['TSI FSC'] * 2 + ['NETWORK FSC'] * 2
+# y_labels = ['NETWORK FSC'] * 2
+# titles = ['Good Data', 'Bad Data']
+# DATA = [good_arscl_network, bad_arscl_network]
+# fig = plt.figure(figsize=(12, 4))
+# for i, data in enumerate(DATA):
+# 	ax = fig.add_subplot(1, 2, i + 1)
+# 	ax.set_aspect('auto')
+# 	ax.set_ylabel(y_labels[i])
+# 	ax.set_xlabel(x_label)
+# 	ax.set_title(titles[i] + " ({})".format(i + 1))
+# 	plt.plot([0, 1], [0, 1], c='orange', lw=2)
+# 	plt.scatter(data[0], data[1], s=.5)
+# # plt.tight_layout()
+# plt.savefig("results/" + exp_label + "/fsc_analyze_image_arscl.png", dpi=300)
+# for i, data in enumerate(DATA):
+# 	print("The RMSE for plot {} is {}.".format(i + 1, data[2]))
+#
+# # Makes two plots for direct comparison between TSI and Network on good and bad data
+# fig2 = plt.figure(figsize=(12, 8))
+# titles = ["Good Data", "Bad Data"]
+# DATA = [good_tsi_network, bad_tsi_network]
+# for i, title in enumerate(titles):
+# 	ax = fig2.add_subplot(1, 2, i + 1)
+# 	ax.set_xlabel("TSI FSC")
+# 	ax.set_ylabel("NETWORK FSC")
+# 	ax.set_title(title)
+# 	plt.scatter(DATA[i][0], DATA[i][1], s=0.5)
+# 	plt.plot([0, 1], [0, 1], c='orange', lw=2)
+# plt.tight_layout()
+# plt.savefig("results/" + exp_label + "/fsc_analyze_tsi_network.png", dpi=300)
+# print("The RMSE for TSI/NET on GOOD DATA is {}.".format(good_tsi_network[2]))
+# print("The RMSE for TSI/NET on BAD DATA is {}.".format(bad_tsi_network[2]))
