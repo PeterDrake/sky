@@ -99,10 +99,10 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	sum = 0
 	for i, t in enumerate(timestamps):
 		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
-				extract_mask_path_from_time(t, 'good_data')):
-			tsi_mask = get_simple_mask(t, 'good_data')
+				extract_mask_path_from_time(t, 'bad_data')):
+			tsi_mask = get_simple_mask(t, 'bad_data')
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
-			rates[i] = disagreement_rate(our_mask, tsi_mask)
+			rates[i] = 1 - disagreement_rate(our_mask, tsi_mask)
 		else:
 			print("not here")
 			sum = sum + 1
@@ -112,13 +112,13 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	print(sum)
 	fig, ax = plt.subplots(nrows=1, ncols=1)
 	ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-	ax.set_ylabel('Percent of Pixels Incorrect')
+	ax.set_ylabel('Accuracy (percent of pixels correct)')
 	ax.set_xlabel('Masks (sorted by accuracy)')
-	ax.set_title("Pixel disagreement for good data")
-	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'poster_accuracy_plot_good2.png', bbox_inches='tight')
+	ax.set_title("Pixel Accuracy for Bad Data")
+	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'posterbad.png', bbox_inches='tight')
 
 if __name__ == '__main__':
-	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
+	times = sorted(list(extract_data_from_csv('shcu_bad_data.csv', 'timestamp_utc')))
 	network = 'e70-00'
 	show_plot_of_pixel_difference(times, network, 'plots')  # 'results/e70-00'
 # timestamps = load_validation_stamps(BATCH_SIZE)
