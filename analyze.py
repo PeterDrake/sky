@@ -99,8 +99,8 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	sum = 0
 	for i, t in enumerate(timestamps):
 		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
-				extract_mask_path_from_time(t, 'good_data')):
-			tsi_mask = get_simple_mask(t, 'good_data')
+				extract_mask_path_from_time(t, 'bad_data')):
+			tsi_mask = get_simple_mask(t, 'bad_data')
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
 			rates[i] = 1 - disagreement_rate(our_mask, tsi_mask)
 		else:
@@ -119,11 +119,11 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	ax.plot(np.take(rates * 100, rates.argsort()))
 	ax.set_ylabel('Accuracy (percent of pixels correct)')
 	ax.set_xlabel('Decision Images (sorted by accuracy)')
-	ax.set_title("Pixel Accuracy for Good Data")
-	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'good.png', bbox_inches='tight')
+	ax.set_title("Pixel Accuracy for Bad Data")
+	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'bad.png', bbox_inches='tight')
 
 if __name__ == '__main__':
-	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
+	times = sorted(list(extract_data_from_csv('shcu_bad_data.csv', 'timestamp_utc')))
 	network = 'e70-00'
 	show_plot_of_pixel_difference(times, network, 'plots')  # 'results/e70-00'
 # timestamps = load_validation_stamps(BATCH_SIZE)
