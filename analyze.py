@@ -118,9 +118,9 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	# ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
 	ax.plot(np.take(rates * 100, rates.argsort()))
 	ax.set_ylabel('Accuracy (percent of pixels correct)')
-	ax.set_xlabel('Masks (sorted by accuracy)')
+	ax.set_xlabel('Decision Images (sorted by accuracy)')
 	ax.set_title("Pixel Accuracy for Good Data")
-	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'postergood2.png', bbox_inches='tight')
+	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'good.png', bbox_inches='tight')
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
