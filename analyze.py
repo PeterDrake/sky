@@ -104,6 +104,10 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
 			rates[i] = 1 - disagreement_rate(our_mask, tsi_mask)
 		else:
+			print('tsi:')
+			print(get_simple_mask(t, 'bad_data'))
+			print('our:')
+			print(get_network_mask_from_time_and_label(t, exp_label))
 			print("not here")
 			sum = sum + 1
 			pass
@@ -111,7 +115,8 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	print("masks are missing:")
 	print(sum)
 	fig, ax = plt.subplots(nrows=1, ncols=1)
-	ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+	# ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+	ax.plot(np.take(rates * 100))
 	ax.set_ylabel('Accuracy (percent of pixels correct)')
 	ax.set_xlabel('Masks (sorted by accuracy)')
 	ax.set_title("Pixel Accuracy for Bad Data")
