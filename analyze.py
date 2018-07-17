@@ -120,7 +120,7 @@ def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	ax.set_ylabel('Accuracy (percent of pixels correct)')
 	ax.set_xlabel('Masks (sorted by accuracy)')
 	ax.set_title("Pixel Accuracy for Bad Data")
-	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'posterbad.png', bbox_inches='tight')
+	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'posterbad1.png', bbox_inches='tight')
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_bad_data.csv', 'timestamp_utc')))
