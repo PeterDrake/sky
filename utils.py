@@ -214,10 +214,9 @@ def extract_img_path_from_time(time, input_dir):
 
 
 def extract_mask_path_from_time(time, input_dir):
-	"""Extracts the path of an image from the timestamp and input directory."""
+	"""Extracts the path of an mask from the timestamp and input directory."""
 	return input_dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(
 			time) + '/simplemask' + time + '.png'
-
 
 def img_save_path(time, directory):
 	"""Creates path for image."""
