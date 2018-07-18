@@ -63,23 +63,24 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 	image_times = set(extract_data_from_dataframe(image_dataframe, "timestamp_utc"))
 	arscl_times = set(extract_data_from_dataframe(arscl_dataframe, "timestamp_utc"))
 	times = image_times.intersection(arscl_times)  # Necessary to correct for missing times
-	x, y, residual = [], [], []
+	x, y, residual, residual1 = [], [], [], []
 	mse = 0
 	for t in times:
 		x.append(extract_data_for_date_from_dataframe(arscl_header, t, arscl_dataframe))
 		y.append(extract_data_for_date_from_dataframe(image_header, t, image_dataframe))
 		mse += (y[-1] - x[-1]) ** 2
-		# residual.append(y[-1] - x[-1])
 		residual.append(abs(y[-1] - x[-1]))
-	return x, y, (mse / len(times)) ** 0.5, np.array(residual)
+		residual1.append(y[-1] - x[-1])
+	return x, y, (mse / len(times)) ** 0.5, np.array(residual), np.array(residual1)
 
 
 def residual_to_quartiles(residual):
 	"""Sorts a list of residual errors and returns the 25th and 75th quartiles."""
 	residual = sorted(list(residual))
 	q25 = residual[int(0.25 * len(residual))]
+	q50 = residual[int(0.50 * len(residual))]
 	q75 = residual[int(0.75 * len(residual))]
-	return q25, q75
+	return q25, q50, q75
 
 
 def scatter_plot(title, xlabel, ylabel, scatter, name):
@@ -144,7 +145,7 @@ if __name__ == "__main__":
 	# x_data = [' TSI ', ' NETWORK ', 'TSI', 'NETWORK']
 	# rmse_data = [good_tsi_rmse, good_network_rmse, bad_tsi_rmse, bad_network_rmse]
 	# lower_error = [good_tsi_quartiles[0], good_network_quartiles[0], bad_tsi_quartiles[0], bad_network_quartiles[0]]
-	# upper_error = [good_tsi_quartiles[1], good_network_quartiles[1], bad_tsi_quartiles[1], bad_network_quartiles[1]]
+	# upper_error = [good_tsi_quartiles[2], good_network_quartiles[2], bad_tsi_quartiles[2], bad_network_quartiles[2]]
 	# for i in range(4):
 	# 	lower_error[i] = rmse_data[i] - lower_error[i]
 	# 	upper_error[i] -= rmse_data[i]
@@ -170,18 +171,18 @@ if __name__ == "__main__":
 	good_tsi_rmse, good_network_rmse = good_arscl_tsi[2], good_arscl_network[2]
 	bad_tsi_rmse, bad_network_rmse = bad_arscl_tsi[2], bad_arscl_network[2]
 
-	good_tsi_quartiles = residual_to_quartiles(good_arscl_tsi[3])
-	good_network_quartiles = residual_to_quartiles(good_arscl_network[3])
-	bad_tsi_quartiles = residual_to_quartiles(bad_arscl_tsi[3])
-	bad_network_quartiles = residual_to_quartiles(bad_arscl_network[3])
+	good_tsi_quartiles = residual_to_quartiles(good_arscl_tsi[4])
+	good_network_quartiles = residual_to_quartiles(good_arscl_network[4])
+	bad_tsi_quartiles = residual_to_quartiles(bad_arscl_tsi[4])
+	bad_network_quartiles = residual_to_quartiles(bad_arscl_network[4])
 
 	x_data = [' TSI ', ' NETWORK ', 'TSI', 'NETWORK']
-	rmse_data = [good_tsi_rmse, good_network_rmse, bad_tsi_rmse, bad_network_rmse]
+	median_data = [good_tsi_quartiles[1], good_network_quartiles[1], bad_tsi_quartiles[1], bad_network_quartiles[1]]
 	lower_error = [good_tsi_quartiles[0], good_network_quartiles[0], bad_tsi_quartiles[0], bad_network_quartiles[0]]
-	upper_error = [good_tsi_quartiles[1], good_network_quartiles[1], bad_tsi_quartiles[1], bad_network_quartiles[1]]
+	upper_error = [good_tsi_quartiles[2], good_network_quartiles[2], bad_tsi_quartiles[2], bad_network_quartiles[2]]
 	for i in range(4):
-		lower_error[i] = rmse_data[i] - lower_error[i]
-		upper_error[i] -= rmse_data[i]
+		lower_error[i] = median_data[i] - lower_error[i]
+		upper_error[i] -= median_data[i]
 
 	plt.title("")
 	plt.ylabel("FSC Difference")
@@ -192,8 +193,8 @@ if __name__ == "__main__":
 			bottom=True,  # ticks along the bottom edge are on
 			top=True,  # ticks along the top edge are on
 			labelbottom=True)  # labels along the bottom edge are on
-	plt.errorbar(x_data, rmse_data, yerr=[lower_error, upper_error], fmt='.', ecolor='orange', capsize=4)
-	plt.plot(x_data, rmse_data, 'o', label="RMSE")
+	plt.errorbar(x_data, median_data, yerr=[lower_error, upper_error], fmt='.', ecolor='orange', capsize=4)
+	plt.plot(x_data, median_data, 'o', label="Median")
 	plt.tight_layout()
 	plt.legend()
 	plt.show()
