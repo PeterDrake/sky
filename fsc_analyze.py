@@ -61,7 +61,9 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 	be clean in the aforementioned categories. I.e. NaN values are not permitted. Please us df.dropna() or some other
 	method to handle missing values."""
 	image_times = set(extract_data_from_dataframe(image_dataframe, "timestamp_utc"))
+	print(len(image_times))
 	arscl_times = set(extract_data_from_dataframe(arscl_dataframe, "timestamp_utc"))
+	print(len(arscl_times))
 	times = image_times.intersection(arscl_times)  # Necessary to correct for missing times
 	x, y, residual, residual1 = [], [], [], []
 	mse = 0
@@ -103,6 +105,7 @@ if __name__ == "__main__":
 	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
 	good_arscl_dataframe = good_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	good_times = load_pickled_file(VALID_STAMP_PATH)
+	print(len(good_times))
 	good_times = good_times[0:N_SAMPLES]
 	good_arscl_dataframe = good_arscl_dataframe[good_arscl_dataframe['timestamp_utc'].isin(good_times)]
 	good_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_arscl_dataframe)
@@ -168,36 +171,36 @@ if __name__ == "__main__":
 
 
 	# TODO: Uncomment to plot with median instead
-	good_tsi_rmse, good_network_rmse = good_arscl_tsi[2], good_arscl_network[2]
-	bad_tsi_rmse, bad_network_rmse = bad_arscl_tsi[2], bad_arscl_network[2]
-
-	good_tsi_quartiles = residual_to_quartiles(good_arscl_tsi[4])
-	good_network_quartiles = residual_to_quartiles(good_arscl_network[4])
-	bad_tsi_quartiles = residual_to_quartiles(bad_arscl_tsi[4])
-	bad_network_quartiles = residual_to_quartiles(bad_arscl_network[4])
-
-	x_data = [' TSI ', ' NETWORK ', 'TSI', 'NETWORK']
-	median_data = [good_tsi_quartiles[1], good_network_quartiles[1], bad_tsi_quartiles[1], bad_network_quartiles[1]]
-	lower_error = [good_tsi_quartiles[0], good_network_quartiles[0], bad_tsi_quartiles[0], bad_network_quartiles[0]]
-	upper_error = [good_tsi_quartiles[2], good_network_quartiles[2], bad_tsi_quartiles[2], bad_network_quartiles[2]]
-	for i in range(4):
-		lower_error[i] = median_data[i] - lower_error[i]
-		upper_error[i] -= median_data[i]
-
-	plt.title("")
-	plt.ylabel("FSC Difference")
-	plt.xlabel("GOOD DATA                                                                BAD DATA")
-	plt.tick_params(
-			axis='x',  # changes apply to the x-axis
-			which='both',  # both major and minor ticks are affected
-			bottom=True,  # ticks along the bottom edge are on
-			top=True,  # ticks along the top edge are on
-			labelbottom=True)  # labels along the bottom edge are on
-	plt.errorbar(x_data, median_data, yerr=[lower_error, upper_error], fmt='.', ecolor='orange', capsize=4)
-	plt.plot(x_data, median_data, 'o', label="Median")
-	plt.tight_layout()
-	plt.legend()
-	plt.show()
+# good_tsi_rmse, good_network_rmse = good_arscl_tsi[2], good_arscl_network[2]
+# bad_tsi_rmse, bad_network_rmse = bad_arscl_tsi[2], bad_arscl_network[2]
+#
+# good_tsi_quartiles = residual_to_quartiles(good_arscl_tsi[4])
+# good_network_quartiles = residual_to_quartiles(good_arscl_network[4])
+# bad_tsi_quartiles = residual_to_quartiles(bad_arscl_tsi[4])
+# bad_network_quartiles = residual_to_quartiles(bad_arscl_network[4])
+#
+# x_data = [' TSI ', ' NETWORK ', 'TSI', 'NETWORK']
+# median_data = [good_tsi_quartiles[1], good_network_quartiles[1], bad_tsi_quartiles[1], bad_network_quartiles[1]]
+# lower_error = [good_tsi_quartiles[0], good_network_quartiles[0], bad_tsi_quartiles[0], bad_network_quartiles[0]]
+# upper_error = [good_tsi_quartiles[2], good_network_quartiles[2], bad_tsi_quartiles[2], bad_network_quartiles[2]]
+# for i in range(4):
+# 	lower_error[i] = median_data[i] - lower_error[i]
+# 	upper_error[i] -= median_data[i]
+#
+# plt.title("")
+# plt.ylabel("FSC Difference")
+# plt.xlabel("GOOD DATA                                                                BAD DATA")
+# plt.tick_params(
+# 		axis='x',  # changes apply to the x-axis
+# 		which='both',  # both major and minor ticks are affected
+# 		bottom=True,  # ticks along the bottom edge are on
+# 		top=True,  # ticks along the top edge are on
+# 		labelbottom=True)  # labels along the bottom edge are on
+# plt.errorbar(x_data, median_data, yerr=[lower_error, upper_error], fmt='.', ecolor='orange', capsize=4)
+# plt.plot(x_data, median_data, 'o', label="Median")
+# plt.tight_layout()
+# plt.legend()
+# plt.show()
 # TODO: End uncomment
 
 
@@ -242,3 +245,41 @@ if __name__ == "__main__":
 # plt.savefig("results/" + exp_label + "/fsc_analyze_tsi_network.png", dpi=300)
 # print("The RMSE for TSI/NET on GOOD DATA is {}.".format(good_tsi_network[2]))
 # print("The RMSE for TSI/NET on BAD DATA is {}.".format(bad_tsi_network[2]))
+
+# RMSE plot
+# data to plot
+n_groups = 2
+tsi_rsme = (good_arscl_tsi[2], bad_arscl_tsi[2])
+network_rsme = (good_arscl_network[2], bad_arscl_network[2])
+
+# create plot
+fig, ax = plt.subplots()
+index = np.arange(n_groups)
+bar_width = 0.3
+opacity = 1
+
+rects1 = plt.bar(index, tsi_rsme, bar_width,
+                 alpha=opacity,
+                 # color='blue',
+                 label='TSI')
+
+rects2 = plt.bar(index + bar_width, network_rsme, bar_width,
+                 alpha=opacity,
+                 color='orange',
+                 label='Network')
+
+# plt.xlabel('Person')
+plt.ylabel('Root mean squared error')
+plt.title('Fractional Sky Cover RMSE')
+plt.xticks((index + bar_width / 2), ('Good Data', 'Bad Data'))
+plt.tick_params(
+	axis='x',  # changes apply to the x-axis
+	which='both',  # both major and minor ticks are affected
+	bottom=False,  # ticks along the bottom edge are off
+	top=False,  # ticks along the top edge are off
+	labelbottom=True)
+plt.legend()
+
+# plt.tight_layout()
+fig.savefig("results/" + exp_label + "/fsc_rmse_barchart.png")
+plt.show()
