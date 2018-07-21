@@ -22,6 +22,7 @@ from poster_stamps_launch import BAD_VALID_FILE
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
 from preprocess_stamps_launch import VALID_STAMP_PATH  # TODO: Make this a bit more clear..
 import matplotlib
+
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
@@ -93,7 +94,7 @@ def scatter_plot(title, xlabel, ylabel, scatter, name):
 
 
 if __name__ == "__main__":
-	N_SAMPLES = 2000
+	N_SAMPLES = 2500
 	# exp_label = sys.argv[1]
 	exp_label = 'e70-00'
 
@@ -239,6 +240,45 @@ if __name__ == "__main__":
 	# print("The RMSE for TSI/NET on GOOD DATA is {}.".format(good_tsi_network[2]))
 	# print("The RMSE for TSI/NET on BAD DATA is {}.".format(bad_tsi_network[2]))
 
+	# Makes four plots for the performance comparison and prints out the Root Mean Squared Error
+	# x_label = 'CF SHCU'
+	# y_labels = ['TSI FSC'] * 2 + ['NETWORK FSC'] * 2
+	# titles = ['Good Data', 'Bad Data', 'Good Data', 'Bad Data']
+	# DATA = [good_arscl_tsi, bad_arscl_tsi, good_arscl_network, bad_arscl_network]
+	# fig = plt.figure(figsize=(12, 9))
+	# for i, data in enumerate(DATA):
+	# 	ax = fig.add_subplot(2, 2, i + 1)
+	# 	ax.set_ylabel(y_labels[i], fontsize=18)
+	# 	ax.set_xlabel(x_label, fontsize=18)
+	# 	ax.set_title(titles[i], fontsize=26)
+	# 	plt.yticks(fontsize=14)
+	# 	plt.xticks(fontsize=14)
+	# 	plt.plot([0, 1], [0, 1], c='orange', lw=4)
+	# 	plt.scatter(data[0], data[1], s=40, alpha=0.3)
+	# plt.tight_layout()
+	# plt.savefig("results/" + exp_label + "/fsc_analyze_image_arscl.png", dpi=300)
+	# for i, data in enumerate(DATA):
+	# 	print("The RMSE for plot {} is {}.".format(i + 1, data[2]))
+	titles = ['Good Data', 'Bad Data']
+	ylabels = ['FSC (TSI)', 'FSC (Network)']
+	xlabels = ['Ceilometer CF'] * 2
+	data = [good_arscl_tsi, bad_arscl_tsi, good_arscl_network, bad_arscl_network]
+	fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(14, 9), sharey=True, sharex=True)
+	for ax, col in zip(axes[0], titles):
+		ax.set_title(col, fontsize=30)
+	for ax, row in zip(axes[:, 0], ylabels):
+		ax.set_ylabel(row, fontsize=26)
+	for ax, col in zip(axes[-1], xlabels):
+		ax.set_xlabel(col, fontsize=26)
+	for i, ax in enumerate(axes.ravel()):
+		ax.tick_params(labelsize='x-large')
+		ax.scatter(data[i][0], data[i][1], s=50, alpha=0.3)
+		ax.plot([0, 1], [0, 1], lw=4, color='orange')
+	fig.tight_layout()
+	fig.savefig("results/" + exp_label + "/fsc_analyze_image_arscl.png")
+	# plt.show()
+
+
 	# RMSE plot
 	# data to plot
 	n_groups = 2
@@ -250,17 +290,18 @@ if __name__ == "__main__":
 	index = np.arange(n_groups)
 	bar_width = 0.3
 	ax = fig.add_subplot(111)
+	ax.tick_params(labelsize='x-large')
 	ax.bar(index, tsi_rsme, bar_width, label='TSI')
 	ax.bar(index + bar_width, network_rsme, bar_width, color='orange', label='Network')
-	plt.yticks(fontsize=20)
-	plt.ylabel('Root mean squared error', fontsize=26)
+	# plt.yticks(fontsize=20)
+	plt.ylabel('Root Mean Squared Error', fontsize=26)
 	plt.title('Fractional Sky Cover RMSE', fontsize=30)
-	plt.xticks((index + bar_width / 2), ('Good Data', 'Bad Data'), fontsize=26)
 	ax.tick_params(
 			axis='x',  # changes apply to the x-axis
 			which='both',  # both major and minor ticks are affected
 			bottom=False,  # ticks along the bottom edge are off
 			top=False,  # ticks along the top edge are off
 			labelbottom=True)
+	plt.xticks((index + bar_width / 2), ('Good Data', 'Bad Data'), fontsize=26)
 	ax.legend(fontsize=20)
 	fig.savefig("results/" + exp_label + "/fsc_rmse_barchart.png")

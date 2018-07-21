@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 
 EXP_LABELS = ['e70-00']
 
-
 # TODO: Refactor for poster use instead of presentation use
 if __name__ == "__main__":
 	for exp_label in EXP_LABELS:
@@ -20,14 +19,14 @@ if __name__ == "__main__":
 				x.append(int(line[0]))
 				train.append(float(line[1]))
 				valid.append(float(line[2]))
-			fig = plt.figure()
+			fig = plt.figure(figsize=(12, 9))
 			ax = fig.add_subplot(1, 1, 1)
-			ax.set_xlabel("Minibatches of 50 Images")
-			ax.set_ylabel("Accuracy")
-			ax.set_title("Machine Learning Curve")
+			ax.set_xlabel("Minibatches of 50 Images", fontsize=26)
+			ax.set_ylabel("Accuracy", fontsize=26)
+			ax.set_title("Machine Learning Curve", fontsize=30)
+			ax.tick_params(labelsize='x-large')
 			ax.plot(x, train, label="training")
 			ax.plot(x, valid, label="validation")
-			ax.legend(loc='lower right')
+			ax.legend(loc='lower right', fontsize=20)
 			plt.tight_layout()
-			fig.savefig('results/' + exp_label + '/accuracy_vs_batch.png', dpi=300,
-					bbox_inches='tight')
+			fig.savefig('results/' + exp_label + '/accuracy_vs_batch.png', bbox_inches='tight')
