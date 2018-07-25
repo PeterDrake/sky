@@ -15,7 +15,11 @@ Launches the training process.
 import os
 
 # Specify the experiment number. EX: 'e73'
-exp_number = 'e74'
+exp_number = 'e75'
+
+# Specify the number of networks to train. (Might depend on how much of BLT is in use. Recommended at least 2 if
+# possible)
+num_networks = 1
 
 # Specify the location of the cropped sky photos and simplified decision images
 TRAIN_INPUT_DIR = "good_data"
@@ -38,7 +42,7 @@ variants = ['a:conv-3-32-in b:conv-3-48-a c:conv-3-64-b d:conv-3-80-c e:conv-3-9
 if __name__ == "__main__":
 	i = 0
 	for v in variants:
-		for j in range(2):
+		for j in range(num_networks):
 			exp_label = exp_number + '-{:0>2}'.format(i)
 			condition = exp_label + ' ' + v
 			os.system('SGE_Batch -r "{}" -c "python3 -u train.py {}" -P {}'.format(exp_label, condition, num_cores))
