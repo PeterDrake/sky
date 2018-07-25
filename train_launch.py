@@ -1,7 +1,7 @@
 """
 This script is intended to be run after preprocess_stamps_launch.py has completed its task.
 
-Expects the INPUT_DIR directory to contain the following items:
+Expects the TRAIN_INPUT_DIR directory to contain the following items:
 	test.stamps
 	train.stamps
 	valid.stamps
@@ -15,10 +15,10 @@ Launches the training process.
 import os
 
 # Specify the experiment number. EX: 'e73'
-exp_number = 'e73'
+exp_number = 'e74'
 
 # Specify the location of the cropped sky photos and simplified decision images
-INPUT_DIR = "good_data"
+TRAIN_INPUT_DIR = "good_data"
 
 # Specify the batch size, the learning rate, and the number of training steps to complete
 BATCH_SIZE = 50
