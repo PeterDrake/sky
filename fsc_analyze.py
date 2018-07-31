@@ -96,7 +96,7 @@ def scatter_plot(title, xlabel, ylabel, scatter, name):
 if __name__ == "__main__":
 	N_SAMPLES = 2500
 	# exp_label = sys.argv[1]
-	exp_label = 'e70-00'
+	exp_label = 'e75-00'
 
 	# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
 	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
