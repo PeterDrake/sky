@@ -6,9 +6,9 @@ This file is typically run from fsc_analyze_launch.py, but can be run from the c
 experiment label.
 EX: python3 fsc_analyze.py e70-00
 
-This script requires four files: 'shcu_good_data.csv', 'shcu_bad_data.csv', 'fsc.csv', and 'bad_fsc.csv'.
+This script requires four files: 'shcu_good_data.csv', 'shcu_bad_data.csv', 'good_fsc.csv', and 'bad_fsc.csv'.
 * The 'shcu' files should be located in the same directory as this file.
-* The 'fsc' files should be located in the results/exp_label/ directory. EX: results/e70-00/fsc.csv
+* The 'fsc' files should be located in the results/exp_label/ directory. EX: results/e70-00/good_fsc.csv
 
 This script creates two plots and saves them as 'good_tsi_arscl_fsc.png' and 'compare_tsi_network_fsc.png' in the
 results/exp_label/ directory.
@@ -116,8 +116,8 @@ if __name__ == "__main__":
 	bad_arscl_dataframe = bad_arscl_dataframe[bad_arscl_dataframe['timestamp_utc'].isin(bad_times)]
 	bad_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_arscl_dataframe)
 
-	# Reads data from fsc.csv and uses the times sample from shcu_good_data.csv to get data for plotting
-	good_network_dataframe = read_csv_file('results/' + exp_label + '/fsc.csv')  # Contains NETWORK Data
+	# Reads data from good_fsc.csv and uses the times sample from shcu_good_data.csv to get data for plotting
+	good_network_dataframe = read_csv_file('results/' + exp_label + '/good_fsc.csv')  # Contains NETWORK Data
 	good_network_dataframe = good_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	good_network_dataframe = good_network_dataframe[good_network_dataframe['timestamp_utc'].isin(good_times)]
 	good_arscl_network = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_network_dataframe)
