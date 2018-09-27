@@ -6,15 +6,11 @@ directory.
 """
 
 import sys
-
-import os
 import tensorflow as tf
 
+from utils import *
 from process_launch import INPUT_DIR, INPUT_DATA_CSV
 from train import build_net, load_inputs
-from utils import extract_data_from_csv, extract_img_path_from_time, extract_network_mask_path_from_time, \
-	out_to_image, \
-	read_last_iteration_number, read_parameters, show_skymask, time_to_month_and_day, time_to_year
 
 
 def process_network_masks(timestamps, exp_label, input_dir=INPUT_DIR):
@@ -56,7 +52,7 @@ def save_network_mask(timestamp, exp_label, mask=None):
 	if mask is None:
 		mask = get_network_mask(timestamp, exp_label)
 	path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-			timestamp) + '/'
+		timestamp) + '/'
 	os.makedirs(path, exist_ok=True)
 	file = 'networkmask_' + exp_label + '.' + timestamp + '.png'
 	show_skymask(mask, save_instead=True, save_path=path + file)

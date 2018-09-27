@@ -96,30 +96,39 @@ def show_sky_images(timestamps):
 
 def show_plot_of_pixel_difference(timestamps, exp_label, directory):
 	rates = np.zeros(len(timestamps))
+	rates = []
+	sum = 0
 	for i, t in enumerate(timestamps):
 		if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)) and os.path.isfile(
 				extract_mask_path_from_time(t, 'good_data')):
-			tsi_mask = get_simple_mask(t)
+			tsi_mask = get_simple_mask(t, 'good_data')
 			our_mask = get_network_mask_from_time_and_label(t, exp_label)
-			rates[i] = disagreement_rate(our_mask, tsi_mask)
+			rates.append(1 - disagreement_rate(our_mask, tsi_mask))
+		# rates[i] = 1 - disagreement_rate(our_mask, tsi_mask)
 		else:
+			print('tsi:')
+			print(extract_mask_path_from_time(t, 'good_data'))
+			print('our:')
+			print(extract_network_mask_path_from_time(t, exp_label))
 			print("not here")
+			sum = sum + 1
 			pass
 	# Save a graph of accuracies
-	with plt.xkcd():
-		fig, ax = plt.subplots(nrows=1, ncols=1)
-		ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
-		ax.set_ylabel('Percent of Pixels Incorrect')
-		ax.set_xlabel('Masks (sorted by accuracy)')
-		ax.set_title("Pixel disagreement rate between our masks and TSI masks")
-		fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'presentation_accuracy_plot.png',
-		            bbox_inches='tight')
+	print("masks are missing:")
+	print(sum)
+	rates = np.array(rates)
+	fig, ax = plt.subplots(nrows=1, ncols=1)
+	# ax.plot(np.take(rates * 100, np.flip((rates.argsort()), axis=0)))
+	ax.plot(np.take(rates * 100, rates.argsort()))
+	ax.set_ylabel('Accuracy (percent of pixels correct)')
+	ax.set_xlabel('Decision Images (sorted by accuracy)')
+	ax.set_title("Pixel Accuracy for Good Data")
+	fig.savefig(directory + '/' + exp_label + '/' + exp_label + 'good1.png', bbox_inches='tight')
 
 if __name__ == '__main__':
 	times = sorted(list(extract_data_from_csv('shcu_good_data.csv', 'timestamp_utc')))
-	networks = ('e70-00', 'e70-01', 'e70-02', 'e70-03', 'e70-04')
-	for n in networks:
-		show_plot_of_pixel_difference(times, n, 'plots')
+	network = 'e70-00'
+	show_plot_of_pixel_difference(times, network, 'plots')  # 'results/e70-00'
 # timestamps = load_validation_stamps(BATCH_SIZE)
 # dir_name = "results/" + sys.argv[1] + "/"
 # args = read_parameters(dir_name)

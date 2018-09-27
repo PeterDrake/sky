@@ -19,7 +19,7 @@ INPUT_DATA_CSV = "shcu_bad_data.csv"
 JOB_NAME = "bad-net-"
 
 # Specify the labels that correspond to networks of interest. Ie 'e70-00'
-exp_labels = ['e73-00', 'e73-01']
+exp_labels = ['e76-00']
 
 # Specify the number of batches to run per network. This helps parallelize the processing task.
 num_batches_per_network = 5

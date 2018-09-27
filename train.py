@@ -29,28 +29,24 @@ Created on Mon May 22 10:20:00 2017
 import subprocess
 import sys
 import time
-
 import tensorflow as tf
 
-# from preprocess_old import COLORS
-from preprocess_setup_launch import *
-from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, INPUT_DIR
-from utils import extract_img_path_from_time, extract_mask_path_from_time, BLUE, BLACK, COLORS
+from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
+from utils import *
 
 
 def build_net(layer_info):
 	"""Builds a network given command-line layer info."""
 	print("Building network")
 	tf.reset_default_graph()
-	b_mask = color_mask(misc.imread(INPUT_DIR + '/always_black_mask.png'),
-			index_of(BLACK, COLORS))
+	b_mask = color_mask(misc.imread(TRAIN_INPUT_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
 	x = tf.placeholder(tf.float32, [None, 480, 480, 3])
 	num_layers = len(layer_info)
 	table, last_name = parse_layer_info(layer_info)
 	h = {"in": x}
 	for n in range(0, num_layers - 1):
 		name, oper = get_name_oper(layer_info[n])
-		if (oper == 'conv'):
+		if oper == 'conv':
 			h[name] = convo_layer(table[name]["ins"],
 					table[name]["outs"],
 					table[name]["kernel"],
@@ -88,8 +84,7 @@ def build_net(layer_info):
 def check_for_commit():
 	"""Raises an exception if the git state is not clean. This ensures that
 	any experiment is run from code in one specific commit."""
-	label = subprocess.check_output(["git", "status", "--untracked-files=no",
-		"--porcelain"])
+	label = subprocess.check_output(["git", "status", "--untracked-files=no", "--porcelain"])
 	if str(label).count('\\n') != 0:
 		raise Exception('Not in clean git state\n')
 
@@ -149,7 +144,7 @@ def index_of(x, sequence):
 			return i
 
 
-def load_inputs(stamps, input_dir=INPUT_DIR):
+def load_inputs(stamps, input_dir=TRAIN_INPUT_DIR):
 	"""Returns a tensor of images specified by stamps. Dimensions are: image, row, column, color."""
 	inputs = np.empty((len(stamps), 480, 480, 3))
 	for i, s in enumerate(stamps):
@@ -157,7 +152,7 @@ def load_inputs(stamps, input_dir=INPUT_DIR):
 	return inputs
 
 
-def load_masks(stamps, input_dir=INPUT_DIR):
+def load_masks(stamps, input_dir=TRAIN_INPUT_DIR):
 	"""Returns a tensor of correct label categories (i.e., indices into preprocess.COLORS) for each pixel in each
 	image specified by stamps. Dimensions are image, row, column. The tensor has been flattened into a single
 	vector."""
@@ -177,7 +172,7 @@ def load_validation_batch(n):
 
 def load_validation_stamps(n):
 	"""Reads the valid.stamps file in data and returns a list of the first n stamps."""
-	with open(INPUT_DIR + '/valid.stamps', 'rb') as f:
+	with open(TRAIN_INPUT_DIR + '/valid.stamps', 'rb') as f:
 		return pickle.load(f)[:n]
 
 
@@ -274,7 +269,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 	print("Training network")
 	start = time.time()
 	# Get image and make the mask into a one-hotted mask
-	with open(INPUT_DIR + '/train.stamps', 'rb') as f:
+	with open(TRAIN_INPUT_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
 	with open(result_dir + 'output.txt', 'w') as f:
 		with tf.Session() as sess:
