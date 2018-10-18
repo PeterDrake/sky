@@ -28,7 +28,7 @@ from utils import *
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
 OUTPUT_DIR = 'good_data'
 RES_DIR = OUTPUT_DIR + '/res'
-TIMESTAMP_DATA_CSV = 'shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
+TIMESTAMP_DATA_CSV = 'good_data/shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
 
 # Used to create batches of timestamps. This is the number of images to preprocess in a single job.
 BATCH_SIZE = 1000

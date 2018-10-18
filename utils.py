@@ -117,7 +117,7 @@ def extract_data_from_dataframe(frame, column_header):
 
 def extract_tsi_fsc_for_bad_dates(timestamps):
 	nan_fsc = set()
-	csv = read_csv_file("shcu_good_data.csv")
+	csv = read_csv_file("good_data/shcu_good_data.csv")
 	df = csv.set_index("timestamp_utc", drop=False)
 	# drop=False to not delete timestamp_utc column if other index set later
 	for time in timestamps:
@@ -128,7 +128,7 @@ def extract_tsi_fsc_for_bad_dates(timestamps):
 
 
 def extract_tsi_fsc_for_date(timestamp):
-	csv = read_csv_file("shcu_good_data.csv")
+	csv = read_csv_file("good_data/shcu_good_data.csv")
 	df = csv.set_index("timestamp_utc", drop=False)
 	# drop=False to not delete timestamp_utc column if other index set later
 	return (math.floor(df.loc[timestamp, "fsc_z"] * 10 ** 6)) / 10 ** 6

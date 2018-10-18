@@ -7,7 +7,7 @@ Just prints the last line from each directory.
 import time
 
 if __name__ == "__main__":
-	exp_labels = ['e70-00', 'e70-01', 'e70-02']
+	exp_labels = ['e77-00']
 	while True:
 		for exp_label in exp_labels:
 			with open('results/' + exp_label + '/output.txt', 'r') as f:

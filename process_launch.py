@@ -13,13 +13,13 @@ import os
 INPUT_DIR = "bad_data"
 
 # Specify the location of the csv file that contains desired timestamp_utc information.
-INPUT_DATA_CSV = "shcu_bad_data.csv"
+INPUT_DATA_CSV = "bad_data/shcu_bad_data.csv"
 
 # Specify the base of the job id
 JOB_NAME = "bad-net-"
 
 # Specify the labels that correspond to networks of interest. Ie 'e70-00'
-exp_labels = ['e76-00']
+exp_labels = ['e77-00']
 
 # Specify the number of batches to run per network. This helps parallelize the processing task.
 num_batches_per_network = 5

@@ -67,7 +67,7 @@ def network_output_exists(timestamp, exp_label, path=None):
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	start = int(sys.argv[2])  # The starting index of the timestamp in the shcu_good_data.csv file to consider
+	start = int(sys.argv[2])  # The starting index of the timestamp in the good_data/shcu_good_data.csv file to consider
 	finish = int(sys.argv[3])  # Final timestamp to consider
 	temp = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))[start:finish]
 	times = []

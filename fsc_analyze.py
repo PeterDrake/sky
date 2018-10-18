@@ -7,7 +7,7 @@ experiment label.
 EX: python3 fsc_analyze.py e70-00
 
 This script requires four files: 'shcu_good_data.csv', 'shcu_bad_data.csv', 'good_fsc.csv', and 'bad_fsc.csv'.
-* The 'shcu' files should be located in the same directory as this file.
+* The 'shcu' files should be located in the good_data/ and bad_data/ directories.
 * The 'fsc' files should be located in the results/exp_label/ directory. EX: results/e70-00/good_fsc.csv
 
 This script creates two plots and saves them as 'good_tsi_arscl_fsc.png' and 'compare_tsi_network_fsc.png' in the
@@ -100,7 +100,7 @@ if __name__ == "__main__":
 	exp_label = 'e76-00'
 
 	# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
-	good_arscl_dataframe = read_csv_file('shcu_good_data.csv')  # Contains both ARSCL and TSI Data
+	good_arscl_dataframe = read_csv_file('good_data/shcu_good_data.csv')  # Contains both ARSCL and TSI Data
 	good_arscl_dataframe = good_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	good_times = load_pickled_file(VALID_STAMP_PATH)
 	good_times = good_times[0:N_SAMPLES]
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 	good_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_arscl_dataframe)
 
 	# Reads data from shcu_bad_data.csv, takes a sample of the times, and gets data for plotting
-	bad_arscl_dataframe = read_csv_file('shcu_bad_data.csv')  # Contains both ARSCL and TSI Data
+	bad_arscl_dataframe = read_csv_file('bad_data/shcu_bad_data.csv')  # Contains both ARSCL and TSI Data
 	bad_arscl_dataframe = bad_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	bad_times = load_pickled_file(BAD_VALID_FILE)  # Change this to TEST_FILE for final plotting.
 	bad_times = bad_times[0:N_SAMPLES]
