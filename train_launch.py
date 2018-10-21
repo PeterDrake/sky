@@ -15,11 +15,11 @@ Launches the training process.
 import os
 
 # Specify the experiment number. EX: 'e73'
-exp_number = 'e77'
+exp_number = 'e78'
 
 # Specify the number of networks to train. (Might depend on how much of BLT is in use. Recommended at least 2 if
 # possible)
-num_networks = 1
+num_networks = 2
 
 # Specify the location of the cropped sky photos and simplified decision images, e.g. "good_data"
 TRAIN_INPUT_DIR = "good_data"

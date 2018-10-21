@@ -29,6 +29,10 @@ Created on Mon May 22 10:20:00 2017
 import subprocess
 import sys
 import time
+from numpy.random import seed
+seed(0)
+from tensorflow import set_random_seed
+set_random_seed(0)
 import tensorflow as tf
 
 from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
