@@ -31,7 +31,8 @@ RES_DIR = OUTPUT_DIR + '/res'
 TIMESTAMP_DATA_CSV = 'good_data/shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
 
 # Used to create batches of timestamps. This is the number of images to preprocess in a single job.
-BATCH_SIZE = 1000
+# We suggest using 1000 for bad_data, and 5000 to 10000 for good_data if using a cluster
+BATCH_SIZE = 5000
 
 
 def create_dirs(timestamps, output_dir, res_dir):
