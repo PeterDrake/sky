@@ -10,13 +10,13 @@ of batches times the number of batches per network is small enough so that BLT c
 import os
 
 # Specify the directory where the sky images are stored: ex: good_data
-INPUT_DIR = "good_data"
+INPUT_DIR = "bad_data"
 
 # Specify the location of the csv file that contains desired timestamp_utc information.
-INPUT_DATA_CSV = "good_data/shcu_good_data.csv"
+INPUT_DATA_CSV = "bad_data/shcu_bad_data.csv"
 
 # Specify the base of the job id
-JOB_NAME = "process-good-"
+JOB_NAME = "process-bad-"
 
 # Specify the labels that correspond to networks of interest. Ie 'e70-00'
 exp_labels = ['e78-00', 'e78-01']
