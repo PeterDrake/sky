@@ -22,7 +22,7 @@ def remove_white_sun(img, stride=10):
 			if (img[r][c] == WHITE).all():
 				stack = [(r, c)]
 				visited.fill(False)
-				if depth_first_search(c, visited, ever_visited, stack):
+				if depth_first_search(img, visited, ever_visited, stack):
 					img[visited] = BLACK
 					return img
 	# print('No sun found!')

@@ -9,18 +9,18 @@ EX: head results/e70-00/fsc.csv --lines=2
 
 This script also defines the INPUT_DATA_CSV file, which should contain a timestamp_utc header and timestamps that
 correspond to the decision images you wish to use in fractional sky cover calculations.
-EX: 'shcu_good_data.csv'
+EX: 'good_data/shcu_good_data.csv'
 """
 
 import os
 
 # Set the experiment labels to match the network(s) you'd like to evaluate fractional sky cover tasks with
 # Note: this is not used to open the network, but rather to look through its processed decision images
-EXP_LABELS = ['e76-00']
+EXP_LABELS = ['e78-00', 'e78-01']
 
 # Set the input and output csv files to match the file containing timestamps you would like to use.
-INPUT_DATA_CSV = 'shcu_bad_data.csv'
-OUTPUT_DATA_CSV = 'bad_fsc.csv' # Either fsc.csv or bad_fsc.csv for summer 2018
+INPUT_DATA_CSV = 'bad_data/shcu_bad_data.csv'
+OUTPUT_DATA_CSV = 'bad_fsc.csv'  # Either good_fsc.csv or bad_fsc.csv for summer 2018
 JOB_NAME = 'bad-fsc-'
 
 if __name__ == "__main__":

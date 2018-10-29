@@ -7,7 +7,7 @@ For each network specified in experiment labels, this script makes a plot of the
 
 import matplotlib.pyplot as plt
 
-EXP_LABELS = ['e75-00']
+EXP_LABELS = ['e77-00']
 
 # TODO: Refactor for poster use instead of presentation use
 if __name__ == "__main__":

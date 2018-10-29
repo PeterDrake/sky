@@ -29,7 +29,7 @@ def create_constant_mask(color, filename):
 		for file in files:
 			img = misc.imread(os.path.join(dirpath, file))
 			b_mask[(img != color).any(axis=2)] = BLUE
-	Image.fromarray(b_mask.astype('uint8')).save(OUTPUT_DIR + '/' + filename)
+	Image.fromarray(b_mask.astype('uint8')).save(filename)
 
 
 if __name__ == "__main__":

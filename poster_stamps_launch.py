@@ -10,7 +10,7 @@ import pickle
 from utils import extract_data_from_csv
 
 # Set the csv file containing the timestamps to use.
-INPUT_DATA_CSV = 'shcu_bad_data.csv'
+INPUT_DATA_CSV = 'bad_data/shcu_bad_data.csv'
 
 # Set the directory to save the timestamps in.
 OUTPUT_DIR = 'bad_data'
