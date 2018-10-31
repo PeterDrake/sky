@@ -1,17 +1,13 @@
 """
 Preprocess Total Sky Imager data from arm.gov. To use this:
 
-1) Get the SkyImage and CloudMask data from ARM and unpack tars into your INPUT_DIR
-2) Specify the OUTPUT_DIR (which need not already exist).
-3) Specify BATCH_SIZE to help parallelize this process. This is the number of timestamps each batch needs to process.
-To run sequentially instead of in parallel, set this absurdly high.
-4) Run this program, wait for it to finish.
-5) Run preprocess_launch.py to do the actual simplification of masks & cropping of images
-6) Once that is done, run preprocess_stamps_launch.py to separate stamps into training, validation, and testing batches.
+1) Get the SkyImage and CloudMask data from ARM and unpack tars into your INPUT_DIR (Potentially difficult)
+2) Make sure good_data/ and bad_data/ exist and contain shcu_good_data.csv and shcu_bad_data.csv respectively.
+3) Run this program. It may take a long time, do not interrupt or you may have to start over from the beginning.
 
-This will create (within data):
-- A folder simpleimage containing folders by year. In this are folders by month and day (mmdd). In these folders are
-cropped 480x480 sky images
+This will create (within good_data and bad_data):
+- A folder simpleimage containing folders by year. In this are folders by month and day (mmdd). In each of these
+folders are cropped 480x480 sky images
 - A folder simplemask with the same structure as simpleimage, but the (mmdd) folders contain cloudmasks which have
 been cropped and had the sunband removed.
 
@@ -52,6 +48,7 @@ def create_dirs(timestamps, output_dir):
 			os.makedirs(output_dir + "/simpleimage/" + year + "/" + mmdd, exist_ok=True)
 			os.makedirs(output_dir + "/simplemask/" + year + "/" + mmdd, exist_ok=True)
 	return
+
 
 def remove_white_sun(img, stride=10):
 	"""Removes the sun disk from img if it is white. (A yellow sun is easier to remove; that is handled directly in
@@ -126,7 +123,7 @@ if __name__ == '__main__':
 	times = extract_data_from_csv(GOOD_CSV, "timestamp_utc")
 	print("Blacklisting timestamps with unpaired images/decision images.")
 	blacklist = find_unpaired_images(times, INPUT_DIR)
-	good_times = times - blacklist
+	times = times - blacklist  # Reassign times to just the ones that are valid
 	if blacklist:
 		print("Blacklisted the following ", len(blacklist), " timestamps:")
 		print(blacklist)
@@ -135,11 +132,35 @@ if __name__ == '__main__':
 	create_dirs(times, GOOD_DIR)
 	print("Beginning image preprocessing from ", INPUT_DIR)
 	counter = 0
-	for time in good_times:
+	for time in times:
 		if counter % 1000 == 0:
-			print("Percent complete: {0:.0f}%".format(counter/len(good_times)*100))
+			print("Percent complete: {0:.0f}%".format(counter / len(times) * 100))
 		simplify_mask(time, INPUT_DIR, GOOD_DIR)
 		simplify_image(time, INPUT_DIR, GOOD_DIR)
 	print("Percent complete: 100%")
 
+	# Preprocess BAD DATA
+	print("Beginning to preprocess bad data from ", BAD_CSV)
+	print("Removing white spaces.")
+	clean_csv(BAD_CSV)
+	print("Extracting timestamps.")
+	times = extract_data_from_csv(BAD_CSV, "timestamp_utc")
+	print("Blacklisting timestamps with unpaired images/decision images.")
+	blacklist = find_unpaired_images(times, INPUT_DIR)
+	times = times - blacklist  # Reassign times to just the ones that are valid
+	if blacklist:
+		print("Blacklisted the following ", len(blacklist), " timestamps:")
+		print(blacklist)
+	print("Found ", len(times), " valid image/decision image pairs.")
+	print("Creating simpleimage/ and simplemask/ directories in ", BAD_DIR)
+	create_dirs(times, BAD_DIR)
+	print("Beginning image preprocessing from ", INPUT_DIR)
+	counter = 0
+	for time in times:
+		if counter % 1000 == 0:
+			print("Percent complete: {0:.0f}%".format(counter / len(times) * 100))
+		simplify_mask(time, INPUT_DIR, BAD_DIR)
+		simplify_image(time, INPUT_DIR, BAD_DIR)
+	print("Percent complete: 100%")
 
+	print("Preprocessing complete.")
