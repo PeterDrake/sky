@@ -17,31 +17,28 @@ been cropped and had the sunband removed.
 
 See the code at the end for a high-level description of the steps this
 program goes through.
-
-Written by Zoe Harrington & Maxwell Levin
 """
 
 from random import shuffle
 from utils import *
 
+# TODO: Get this to run for both good and bad data in one run
+# TODO: Allow skipping of preprocessing if simple files already present in the good and bad data directories
+
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
-OUTPUT_DIR = 'good_data'
-RES_DIR = OUTPUT_DIR + '/res'
-TIMESTAMP_DATA_CSV = 'good_data/shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
-
-# Used to create batches of timestamps. This is the number of images to preprocess in a single job.
-# We suggest using 1000 for bad_data, and 5000 to 10000 for good_data if using a cluster
-BATCH_SIZE = 1000
+GOOD_DIR = 'good_data'
+GOOD_CSV = 'good_data/shcu_good_data.csv'
+BAD_DIR = 'bad_data'
+BAD_CSV = 'bad_data/shcu_bad_data.csv'
 
 
-def create_dirs(timestamps, output_dir, res_dir):
+def create_dirs(timestamps, output_dir):
 	"""Creates directories for simpleimage and simplemask in the output_dir as well as creating subdirectories by year
 	and day for the given timestamps. Expects the input_dir and output_dir to be relative to the current working
 	directory. Pass in an iterable collection of timestamps in the yyyymmddhhmmss format."""
 	seen = {}  # yyyy, set(mmdd, ...)
 	os.makedirs(output_dir, exist_ok=True)
-	os.makedirs(res_dir, exist_ok=True)
 	for t in timestamps:
 		year = time_to_year(t)
 		mmdd = time_to_month_and_day(t)
@@ -56,49 +53,93 @@ def create_dirs(timestamps, output_dir, res_dir):
 			os.makedirs(output_dir + "/simplemask/" + year + "/" + mmdd, exist_ok=True)
 	return
 
+def remove_white_sun(img, stride=10):
+	"""Removes the sun disk from img if it is white. (A yellow sun is easier to remove; that is handled directly in
+	simplify_masks.) Stride indicates distance between pixels from which sun searches are started"""
+	ever_visited = np.full(img.shape[:2], False, dtype=bool)
+	visited = np.full(img.shape[:2], False, dtype=bool)
+	for r in range(0, img.shape[0], stride):
+		for c in range(0, img.shape[1], stride):
+			if (img[r][c] == WHITE).all():
+				stack = [(r, c)]
+				visited.fill(False)
+				if depth_first_search(img, visited, ever_visited, stack):
+					img[visited] = BLACK
+					return img
+	# print('No sun found!')
+	return img
 
-def make_batches_by_size(timestamps, batch_size=BATCH_SIZE):
-	"""Returns a set of batches of timestamps. The number of batches is determined by the length of the timestamps
-	collection and the number of elements in a batch can be provided by the user. batch_size is set to 10000 by
-	default as a best guess at the trade-off between parallelization and practicality."""
-	timestamps = list(timestamps)
-	num_batches = math.ceil(len(timestamps) / batch_size)
-	shuffle(timestamps)
-	time_batches = []
-	for i in range(int(num_batches) - 1):
-		time_batches += [timestamps[i * batch_size:(i + 1) * batch_size]]
-	time_batches.append(timestamps[(num_batches - 1) * batch_size:])
-	return time_batches
+
+def depth_first_search(img, visited, ever_visited, stack):
+	"""Returns True if there is a connected region including img[r][c] that is all WHITE and surrounded by BLACK.
+	Modifies visited to include all of the white pixels. Modifies ever_visited to include all pixels explored."""
+	while stack:
+		r, c = stack.pop()
+		if (img[r][c] == BLACK).all():
+			continue
+		if visited[r][c]:
+			continue
+		visited[r][c] = True
+		if ever_visited[r][c]:
+			return False
+		ever_visited[r][c] = True
+		if (img[r][c] == GREEN).all() or (img[r][c] == BLUE).all() or (img[r][c] == GRAY).all():
+			return False
+		stack.extend(((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)))
+	return True
+
+
+def crop_image(img):
+	"""Expect img to be a numpy array of size 640 x 480. Returns a version of img cropped down to 480 x 480. Axis = 0
+	is the vertical axis (i.e. rows) from which the first and last 80 pixels are deleted."""
+	return np.delete(img, np.concatenate((np.arange(80), np.arange(80) + 560)), axis=0)
+
+
+def simplify_image(timestamp, input_dir, output_dir):
+	"""Writes simplified versions of mask to simplemask."""
+	img_path = extract_img_path_from_time_old(timestamp, input_dir)
+	img = misc.imread(img_path)
+	img = crop_image(img)
+	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
+	return
+
+
+def simplify_mask(timestamp, input_dir, output_dir):
+	"""Writes simplified versions of mask to simplemask."""
+	mask_path = extract_mask_path_from_time_old(timestamp, input_dir)
+	mask = misc.imread(mask_path)
+	mask = crop_image(mask)
+	if (mask == YELLOW).all(axis=2).any():
+		mask[(mask == YELLOW).all(axis=2)] = BLACK
+	else:
+		mask = remove_white_sun(mask)
+	Image.fromarray(mask).save(mask_save_path(timestamp, output_dir) + 'simplemask' + timestamp + '.png')
+	return
 
 
 if __name__ == '__main__':
-	print("Cleaning the csv file.")
-	clean_csv(TIMESTAMP_DATA_CSV)
+	# Preprocess GOOD DATA
+	print("Beginning to preprocess good data from ", GOOD_CSV)
+	print("Removing white spaces.")
+	clean_csv(GOOD_CSV)
+	print("Extracting timestamps.")
+	times = extract_data_from_csv(GOOD_CSV, "timestamp_utc")
+	print("Blacklisting timestamps with unpaired images/decision images.")
+	blacklist = find_unpaired_images(times, INPUT_DIR)
+	good_times = times - blacklist
+	if blacklist:
+		print("Blacklisted the following ", len(blacklist), " timestamps:")
+		print(blacklist)
+	print("Found ", len(times), " valid image/decision image pairs.")
+	print("Creating simpleimage/ and simplemask/ directories in ", GOOD_DIR)
+	create_dirs(times, GOOD_DIR)
+	print("Beginning image preprocessing from ", INPUT_DIR)
+	counter = 0
+	for time in good_times:
+		if counter % 1000 == 0:
+			print("Percent complete: {0:.0f}%".format(counter/len(good_times)*100))
+		simplify_mask(time, INPUT_DIR, GOOD_DIR)
+		simplify_image(time, INPUT_DIR, GOOD_DIR)
+	print("Percent complete: 100%")
 
-	print("Reading times from good csv file.")
-	good_times = extract_data_from_csv(TIMESTAMP_DATA_CSV, "timestamp_utc")
 
-	print("Finished reading times. Eliminating unpaired times.")
-	blacklist = find_unpaired_images(good_times, INPUT_DIR)
-	times = good_times - blacklist
-
-	print("{} paired images and masks found.".format(len(times)))
-	print("Creating directories for results.")
-	create_dirs(times, OUTPUT_DIR, RES_DIR)
-
-	print("Directories created. Preparing batches.")
-	batches = make_batches_by_size(times)
-
-	print("Batches prepared. Writing batches to file.")
-	for i in range(len(batches)):
-		name = RES_DIR + "/batch" + str(i) + ".txt"
-		if not os.path.isfile(name):  # TODO Do we need this?
-			f = open(name, 'w')
-			print("Writing batch {} data to {}".format(i, name))
-			for time in batches[i]:
-				f.write(time + '\n')
-			f.close()
-		else:
-			print("{} already exists, continuing to launch.".format(name))
-
-	print("Timestamp files complete.")
