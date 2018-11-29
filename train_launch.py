@@ -15,7 +15,7 @@ Launches the training process.
 import os
 
 # Specify the experiment number. EX: 'e73'
-exp_number = 'e79'
+exp_number = 'e80'
 
 # Specify the number of networks to train. (Might depend on how much of BLT is in use. Recommended at least 2 if
 # possible)
