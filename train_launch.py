@@ -15,11 +15,11 @@ Launches the training process.
 import os
 
 # Specify the experiment number. EX: 'e73'
-exp_number = 'e78'
+exp_number = 'e79'
 
 # Specify the number of networks to train. (Might depend on how much of BLT is in use. Recommended at least 2 if
 # possible)
-num_networks = 1
+num_networks = 2
 
 # Specify the location of the cropped sky photos and simplified decision images, e.g. "good_data"
 TRAIN_INPUT_DIR = "good_data"
@@ -34,7 +34,7 @@ TRAINING_STEPS = 2000
 # which automatically takes advantage of all available resources, so by default the job will use the entire node. To
 # stop training batches from competing with each other for compute resources, set this to a number larger than half
 # of the cores on a single node. For the summer of 2018, 25 works well.
-num_cores = 1
+num_cores = 25
 
 # Specify the structure of the network. This defines how train.py constructs the network to train.
 variants = [
