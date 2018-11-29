@@ -39,7 +39,7 @@ num_cores = 25
 # Specify the structure of the network. This defines how train.py constructs the network to train.
 variants = [
 	'a:conv-3-32-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-3-32-e g:conv-3-32-f '
-	'h:concat-g-in i:conv-3-5-h']
+	'h:concat-g-in i:conv-3-4-h']
 if __name__ == "__main__":
 	i = 0
 	for v in variants:
