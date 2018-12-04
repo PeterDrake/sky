@@ -15,19 +15,19 @@ Launches the training process.
 import os
 
 # Specify the experiment number. EX: 'e73'
-exp_number = 'e80'
+exp_number = 'e81'
 
 # Specify the number of networks to train. (Might depend on how much of BLT is in use. Recommended at least 2 if
 # possible)
-num_networks = 2
+num_networks = 1
 
 # Specify the location of the cropped sky photos and simplified decision images, e.g. "good_data"
 TRAIN_INPUT_DIR = "good_data"
 
 # Specify the batch size, the learning rate, and the number of training steps to complete
-BATCH_SIZE = 50
-LEARNING_RATE = 0.0001
-TRAINING_STEPS = 2000
+BATCH_SIZE = 10
+LEARNING_RATE = 0.01
+TRAINING_STEPS = 10
 
 # Specify the number of cores for BLT. BLT currently does not actually allocate this number of cores for your job,
 # but instead uses this number as a way to limit the number of jobs on a node. Training uses tensorflow,
