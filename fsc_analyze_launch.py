@@ -27,7 +27,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 N_SAMPLES = 2500
-EXP_LABEL = 'e80-00'
+EXP_LABEL = 'e81-00'
 
 
 def load_pickled_file(filename):

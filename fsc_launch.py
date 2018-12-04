@@ -16,7 +16,7 @@ import os
 
 # Set the experiment labels to match the network(s) you'd like to evaluate fractional sky cover tasks with
 # Note: this is not used to open the network, but rather to look through its processed decision images
-EXP_LABELS = ['e80-00']
+EXP_LABELS = ['e81-00']
 
 # Set the input and output csv files to match the file containing timestamps you would like to use.
 INPUT_DATA_CSV = 'good_data/shcu_good_data.csv'
