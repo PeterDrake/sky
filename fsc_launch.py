@@ -19,9 +19,9 @@ import os
 EXP_LABELS = ['e81-00']
 
 # Set the input and output csv files to match the file containing timestamps you would like to use.
-INPUT_DATA_CSV = 'good_data/shcu_good_data.csv'
-OUTPUT_DATA_CSV = 'typical_fsc.csv'  # Either good_fsc.csv or bad_fsc.csv for summer 2018
-JOB_NAME = 'typical-fsc-'
+INPUT_DATA_CSV = 'bad_data/shcu_bad_data.csv'
+OUTPUT_DATA_CSV = 'dubious_fsc.csv'  # Either good_fsc.csv or bad_fsc.csv for summer 2018
+JOB_NAME = 'dubious-fsc-'
 
 if __name__ == "__main__":
 	for exp_label in EXP_LABELS:
