@@ -87,7 +87,14 @@ if __name__ == '__main__':
 
 	# This can be used to process a small amount images instead of everything specified by the csv files.
 	if small_process_size:
-		times = times[small_process_size]
+		few_times = set()
+		count = 0
+		for t in times:
+			few_times.add(t)
+			count += 1
+			if count == 100:
+				break
+		times = few_times
 		print("Using the first {} paired images and masks.".format(len(times)))
 
 	print("Creating directories for results.")
