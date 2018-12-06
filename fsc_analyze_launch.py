@@ -116,13 +116,13 @@ if __name__ == "__main__":
 	bad_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_arscl_dataframe)
 
 	# Reads data from good_fsc.csv and uses the times sample from shcu_good_data.csv to get data for plotting
-	good_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/good_fsc.csv')  # Contains NETWORK Data
+	good_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
 	good_network_dataframe = good_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	good_network_dataframe = good_network_dataframe[good_network_dataframe['timestamp_utc'].isin(good_times)]
 	good_arscl_network = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_network_dataframe)
 
 	# Reads data from bad_fsc.csv and uses the times sample from shcu_bad_data.csv to get data for plotting
-	bad_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/bad_fsc.csv')  # Contains NETWORK Data
+	bad_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
 	bad_network_dataframe = bad_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	bad_network_dataframe = bad_network_dataframe[bad_network_dataframe['timestamp_utc'].isin(bad_times)]
 	bad_arscl_network = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_network_dataframe)
