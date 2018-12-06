@@ -15,16 +15,15 @@ results/EXP_LABEL/ directory.
 
 import pickle
 import heapq
-
 import numpy as np
-from fsc_launch import INPUT_DATA_CSV
-from poster_stamps_launch import BAD_VALID_FILE
-from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
-from preprocess_stamps_launch import VALID_STAMP_PATH  # TODO: Make this a bit more clear..
 import matplotlib
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from fsc_launch import INPUT_DATA_CSV
+from poster_stamps_launch import BAD_VALID_FILE  # TODO: Make this a bit more clear - bad valid stamps file
+from preprocess_stamps_launch import VALID_STAMP_PATH  # TODO: Make this a bit more clear - good valid stamps file
+from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
 
 N_SAMPLES = 2500
 EXP_LABEL = 'e81-00'
