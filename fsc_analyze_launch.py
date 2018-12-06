@@ -23,7 +23,7 @@ from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_d
 from preprocess_stamps_launch import VALID_STAMP_PATH  # TODO: Make this a bit more clear..
 import matplotlib
 
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 N_SAMPLES = 2500
