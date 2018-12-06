@@ -2,7 +2,7 @@
 Preprocess Total Sky Imager data from arm.gov. To use this:
 
 1) Get the SkyImage and CloudMask data from ARM and unpack tars into your INPUT_DIR
-2) Specify the OUTPUT_DIR (which need not already exist).
+2) Specify the OUTPUT_DIR (which need not already exist). We set this to 'good_data' and 'bad_data'
 3) Specify BATCH_SIZE to help parallelize this process. This is the number of timestamps each batch needs to process.
 To run sequentially instead of in parallel, set this absurdly high.
 4) Run this program, wait for it to finish.
@@ -15,10 +15,7 @@ cropped 480x480 sky images
 - A folder simplemask with the same structure as simpleimage, but the (mmdd) folders contain cloudmasks which have
 been cropped and had the sunband removed.
 
-See the code at the end for a high-level description of the steps this
-program goes through.
-
-Written by Zoe Harrington & Maxwell Levin
+See the code at the end for a high-level description of the steps this program goes through.
 """
 
 from random import shuffle
@@ -88,6 +85,7 @@ if __name__ == '__main__':
 
 	print("{} paired images and masks found.".format(len(times)))
 
+	# This can be used to process a small amount images instead of everything specified by the csv files.
 	if small_process_size:
 		times = times[small_process_size]
 		print("Using the first {} paired images and masks.".format(len(times)))
