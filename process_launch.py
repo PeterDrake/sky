@@ -22,7 +22,7 @@ JOB_NAME = "process-typical-"
 exp_labels = ['e81-00']
 
 # Specify the number of batches to run per network. This helps parallelize the processing task.
-num_batches_per_network = 20
+num_batches_per_network = 1
 
 if __name__ == "__main__":
 	num_batches = len(exp_labels)
