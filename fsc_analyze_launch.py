@@ -24,6 +24,7 @@ from preprocess_stamps_launch import VALID_STAMP_PATH  # TODO: Make this a bit m
 import matplotlib
 
 # matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 N_SAMPLES = 2500
