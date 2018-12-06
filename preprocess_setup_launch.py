@@ -23,7 +23,7 @@ from utils import *
 
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
-OUTPUT_DIR = 'good_data'
+OUTPUT_DIR = 'typical_data'
 RES_DIR = OUTPUT_DIR + '/res'
 TIMESTAMP_DATA_CSV = 'good_data/shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
 

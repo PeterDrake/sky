@@ -22,7 +22,7 @@ exp_number = 'e81'
 num_networks = 1
 
 # Specify the location of the cropped sky photos and simplified decision images, e.g. "good_data"
-TRAIN_INPUT_DIR = "good_data"
+TRAIN_INPUT_DIR = "typical_data"
 
 # Specify the batch size, the learning rate, and the number of training steps to complete
 BATCH_SIZE = 10

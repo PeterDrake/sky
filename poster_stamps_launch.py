@@ -13,7 +13,7 @@ from utils import extract_data_from_csv
 INPUT_DATA_CSV = 'bad_data/shcu_bad_data.csv'
 
 # Set the directory to save the timestamps in.
-OUTPUT_DIR = 'bad_data'
+OUTPUT_DIR = 'dubious_data'
 
 # Set the filenames to store the batches in
 BAD_VALID_FILE = OUTPUT_DIR + '/poster_valid.stamps'

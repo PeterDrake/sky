@@ -21,13 +21,15 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from fsc_launch import INPUT_DATA_CSV
-from poster_stamps_launch import BAD_VALID_FILE  # TODO: Make this a bit more clear - bad valid stamps file
-from preprocess_stamps_launch import VALID_STAMP_PATH  # TODO: Make this a bit more clear - good valid stamps file
+# from poster_stamps_launch import DUBIOUS_VALID_FILE  # TODO: Make this a bit more clear - bad valid stamps file
+# from preprocess_stamps_launch import TYPICAL_VALID_FILE  # TODO: Make this a bit more clear - good valid stamps file
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
 
 N_SAMPLES = 2500
 EXP_LABEL = 'e81-00'
 
+TYPICAL_VALID_FILE = "typical_data/valid.stamps"
+DUBIOUS_VALID_FILE = "dubious_data/poster_valid.stamps"
 
 def load_pickled_file(filename):
 	"""Loads a pickled file."""
@@ -100,7 +102,7 @@ if __name__ == "__main__":
 	# Reads data from shcu_good_data.csv, takes a sample of the times, and gets data for plotting
 	good_arscl_dataframe = read_csv_file('good_data/shcu_good_data.csv')  # Contains both ARSCL and TSI Data
 	good_arscl_dataframe = good_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
-	good_times = load_pickled_file(VALID_STAMP_PATH)
+	good_times = load_pickled_file(TYPICAL_VALID_FILE)
 	good_times = good_times[0:N_SAMPLES]
 	good_arscl_dataframe = good_arscl_dataframe[good_arscl_dataframe['timestamp_utc'].isin(good_times)]
 	good_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(good_arscl_dataframe, good_arscl_dataframe)
@@ -108,7 +110,7 @@ if __name__ == "__main__":
 	# Reads data from shcu_bad_data.csv, takes a sample of the times, and gets data for plotting
 	bad_arscl_dataframe = read_csv_file('bad_data/shcu_bad_data.csv')  # Contains both ARSCL and TSI Data
 	bad_arscl_dataframe = bad_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
-	bad_times = load_pickled_file(BAD_VALID_FILE)  # Change this to TEST_FILE for final plotting.
+	bad_times = load_pickled_file(DUBIOUS_VALID_FILE)  # Change this to TEST_FILE for final plotting.
 	bad_times = bad_times[0:N_SAMPLES]
 	bad_arscl_dataframe = bad_arscl_dataframe[bad_arscl_dataframe['timestamp_utc'].isin(bad_times)]
 	bad_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_arscl_dataframe)
