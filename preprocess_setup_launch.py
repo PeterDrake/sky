@@ -35,6 +35,10 @@ TIMESTAMP_DATA_CSV = 'good_data/shcu_good_data.csv'  # shcu_bad_data has about 5
 BATCH_SIZE = 1000
 
 
+# Option to specify a small number for a simple run through the model. Set to None for actual preprocessing
+small_process_size = 100
+
+
 def create_dirs(timestamps, output_dir, res_dir):
 	"""Creates directories for simpleimage and simplemask in the output_dir as well as creating subdirectories by year
 	and day for the given timestamps. Expects the input_dir and output_dir to be relative to the current working
@@ -83,6 +87,11 @@ if __name__ == '__main__':
 	times = good_times - blacklist
 
 	print("{} paired images and masks found.".format(len(times)))
+
+	if small_process_size:
+		times = times[small_process_size]
+		print("Using the first {} paired images and masks.".format(len(times)))
+
 	print("Creating directories for results.")
 	create_dirs(times, OUTPUT_DIR, RES_DIR)
 
@@ -92,13 +101,14 @@ if __name__ == '__main__':
 	print("Batches prepared. Writing batches to file.")
 	for i in range(len(batches)):
 		name = RES_DIR + "/batch" + str(i) + ".txt"
-		if not os.path.isfile(name):  # TODO Do we need this?
+		if not os.path.isfile(name): # The batch file should not already exist.
 			f = open(name, 'w')
 			print("Writing batch {} data to {}".format(i, name))
 			for time in batches[i]:
 				f.write(time + '\n')
 			f.close()
 		else:
-			print("{} already exists, continuing to launch.".format(name))
+			print("Error: File {} already exists.".format(name))
+			exit(-1)
 
 	print("Timestamp files complete.")
