@@ -9,7 +9,7 @@ import sys
 import tensorflow as tf
 
 from utils import *
-from process_launch import INPUT_DIR, INPUT_DATA_CSV
+#from process_launch import INPUT_DIR, INPUT_DATA_CSV
 from train import build_net, load_inputs
 
 
