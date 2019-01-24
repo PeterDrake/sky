@@ -23,9 +23,8 @@ from utils import *
 
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
-OUTPUT_DIR = 'typical_data'
-RES_DIR = OUTPUT_DIR + '/res'
-TIMESTAMP_DATA_CSV = 'good_data/shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
+#OUTPUT_DIR = 'typical_data'
+#TIMESTAMP_DATA_CSV = 'good_data/shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
 
 # Used to create batches of timestamps. This is the number of images to preprocess in a single job.
 # We suggest using 1000 for bad_data, and 5000 to 10000 for good_data if using a cluster
@@ -72,19 +71,16 @@ def make_batches_by_size(timestamps, batch_size=BATCH_SIZE):
 	return time_batches
 
 
-if __name__ == '__main__':
+def setup(OUTPUT_DIR, TIMESTAMP_DATA_CSV):
+	RES_DIR = OUTPUT_DIR + '/res'
 	print("Cleaning the csv file.")
 	clean_csv(TIMESTAMP_DATA_CSV)
-
 	print("Reading times from good csv file.")
 	good_times = extract_data_from_csv(TIMESTAMP_DATA_CSV, "timestamp_utc")
-
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(good_times, INPUT_DIR)
 	times = good_times - blacklist
-
 	print("{} paired images and masks found.".format(len(times)))
-
 	# This can be used to process a small amount images instead of everything specified by the csv files.
 	if small_process_size:
 		few_times = set()
@@ -96,17 +92,14 @@ if __name__ == '__main__':
 				break
 		times = few_times
 		print("Using the first {} paired images and masks.".format(len(times)))
-
 	print("Creating directories for results.")
 	create_dirs(times, OUTPUT_DIR, RES_DIR)
-
 	print("Directories created. Preparing batches.")
 	batches = make_batches_by_size(times)
-
 	print("Batches prepared. Writing batches to file.")
 	for i in range(len(batches)):
 		name = RES_DIR + "/batch" + str(i) + ".txt"
-		if not os.path.isfile(name): # The batch file should not already exist.
+		if not os.path.isfile(name):  # The batch file should not already exist.
 			f = open(name, 'w')
 			print("Writing batch {} data to {}".format(i, name))
 			for time in batches[i]:
@@ -115,5 +108,9 @@ if __name__ == '__main__':
 		else:
 			print("Error: File {} already exists.".format(name))
 			exit(-1)
-
 	print("Timestamp files complete.")
+
+
+if __name__ == '__main__':
+	setup('typical_data','good_data/shcu_good_data.csv')
+	setup('dubious_data', 'bad_data/shcu_bad_data.csv')
