@@ -32,7 +32,20 @@ def create_constant_mask(color, filename):
 	Image.fromarray(b_mask.astype('uint8')).save(filename)
 
 
-if __name__ == "__main__":
+def setup(TRAIN_STAMP_PATH,VALID_STAMP_PATH,TEST_STAMP_PATH):
 	times = extract_times_from_files_in_directory(RES_DIR)
 	separate_data(times, TRAIN_STAMP_PATH, VALID_STAMP_PATH, TEST_STAMP_PATH)
 	create_constant_mask(BLACK, OUTPUT_DIR + '/always_black_mask.png')
+	`
+
+if __name__ == "__main__":
+	OUTPUT_DIR = 'typical_data'
+	TRAIN_STAMP_PATH = OUTPUT_DIR + '/train.stamps'
+	VALID_STAMP_PATH = OUTPUT_DIR + '/valid.stamps'
+	TEST_STAMP_PATH = OUTPUT_DIR + '/test.stamps'
+	setup(TRAIN_STAMP_PATH,VALID_STAMP_PATH,TEST_STAMP_PATH)
+	OUTPUT_DIR = 'dubious_data'
+	TRAIN_STAMP_PATH = OUTPUT_DIR + '/train.stamps'
+	VALID_STAMP_PATH = OUTPUT_DIR + '/valid.stamps'
+	TEST_STAMP_PATH = OUTPUT_DIR + '/test.stamps'
+	setup(TRAIN_STAMP_PATH, VALID_STAMP_PATH, TEST_STAMP_PATH)
