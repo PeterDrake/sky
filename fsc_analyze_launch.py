@@ -20,7 +20,7 @@ import matplotlib
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from fsc_launch import INPUT_DATA_CSV
+#from fsc_launch import INPUT_DATA_CSV
 # from poster_stamps_launch import DUBIOUS_VALID_FILE  # TODO: Make this a bit more clear - bad valid stamps file
 # from preprocess_stamps_launch import TYPICAL_VALID_FILE  # TODO: Make this a bit more clear - good valid stamps file
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
@@ -37,23 +37,23 @@ def load_pickled_file(filename):
 		return pickle.load(f)
 
 
-def find_worst_results(filename, num_worst=5):
-	"""Finds the timestamps with the largest disagreement between network and TSI decision images. Returns a
-	dictionary of length num_worst where the key is the disagreement rate and the value is the timestamp."""
-	frame = read_csv_file(filename)
-	net_times = set(extract_data_from_dataframe(frame, "timestamp_utc"))
-	shcu = read_csv_file(INPUT_DATA_CSV)
-	shcu_times = set(extract_data_from_dataframe(shcu, "timestamp_utc"))
-	times = net_times.intersection(shcu_times)
-	disagreement_rates = [(-1, '')] * num_worst
-	heapq.heapify(disagreement_rates)
-	for t in times:
-		t = int(t)
-		net_fsc = extract_data_for_date_from_dataframe("fsc_z", t, frame)
-		shcu_fsc = extract_data_for_date_from_dataframe("fsc_z", t, shcu)
-		diff = (abs(net_fsc - shcu_fsc), t)
-		heapq.heappushpop(disagreement_rates, diff)
-	return sorted(disagreement_rates)
+# def find_worst_results(filename, num_worst=5):
+# 	"""Finds the timestamps with the largest disagreement between network and TSI decision images. Returns a
+# 	dictionary of length num_worst where the key is the disagreement rate and the value is the timestamp."""
+# 	frame = read_csv_file(filename)
+# 	net_times = set(extract_data_from_dataframe(frame, "timestamp_utc"))
+# 	shcu = read_csv_file(INPUT_DATA_CSV)
+# 	shcu_times = set(extract_data_from_dataframe(shcu, "timestamp_utc"))
+# 	times = net_times.intersection(shcu_times)
+# 	disagreement_rates = [(-1, '')] * num_worst
+# 	heapq.heapify(disagreement_rates)
+# 	for t in times:
+# 		t = int(t)
+# 		net_fsc = extract_data_for_date_from_dataframe("fsc_z", t, frame)
+# 		shcu_fsc = extract_data_for_date_from_dataframe("fsc_z", t, shcu)
+# 		diff = (abs(net_fsc - shcu_fsc), t)
+# 		heapq.heappushpop(disagreement_rates, diff)
+# 	return sorted(disagreement_rates)
 
 
 def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe, arscl_header="cf_tot",
