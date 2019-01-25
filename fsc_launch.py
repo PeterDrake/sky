@@ -19,11 +19,17 @@ import os
 EXP_LABELS = ['e81-00']
 
 # Set the input and output csv files to match the file containing timestamps you would like to use.
-INPUT_DATA_CSV = 'bad_data/shcu_bad_data.csv'
-OUTPUT_DATA_CSV = 'dubious_fsc.csv'  # Either good_fsc.csv or bad_fsc.csv for summer 2018
-JOB_NAME = 'dubious-fsc-'
+# INPUT_DATA_CSV = 'bad_data/shcu_bad_data.csv'
+# OUTPUT_DATA_CSV = 'dubious_fsc.csv'  # Either good_fsc.csv or bad_fsc.csv for summer 2018
+# JOB_NAME = 'dubious-fsc-'
 
-if __name__ == "__main__":
+
+def setup(INPUT_DATA_CSV, OUTPUT_DATA_CSV, JOB_NAME):
 	for exp_label in EXP_LABELS:
 		name = JOB_NAME + exp_label
-		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {}" -P 1'.format(name, exp_label))
+		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV))
+
+
+if __name__ == "__main__":
+	setup('bad_data/shcu_bad_data.csv','dubious_fsc.csv', 'dubious-fsc-')
+	setup('good_data/shcu_good_data.csv', 'typical_fsc.csv', 'typical-fsc-')

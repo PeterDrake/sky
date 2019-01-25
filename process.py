@@ -13,7 +13,7 @@ from utils import *
 from train import build_net, load_inputs
 
 
-def process_network_masks(timestamps, exp_label, input_dir=INPUT_DIR):
+def process_network_masks(timestamps, exp_label, input_dir):
 	"""Processes images corresponding to a list of timestamps. Saves each mask in the network directory. Does NOT
 	check to make sure that the image exists. This must be done by the user before calling this method."""
 	network_dir = "results/" + exp_label + "/"
@@ -32,7 +32,7 @@ def process_network_masks(timestamps, exp_label, input_dir=INPUT_DIR):
 	return masks
 
 
-def get_network_mask(timestamp, exp_label, input_dir=INPUT_DIR):
+def get_network_mask(timestamp, exp_label, input_dir):
 	"""Returns the mask of a given timestamp from the network's output."""
 	network_dir = "results/" + exp_label + "/"
 	args = read_parameters(network_dir)
@@ -69,8 +69,8 @@ if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	start = int(sys.argv[2])  # The starting index of the timestamp in the good_data/shcu_good_data.csv file to consider
 	finish = int(sys.argv[3])  # Final timestamp to consider
-    INPUT_DIR = sys.argv[4]
-    INPUT_DATA_CSV = sys.argv[5]
+	INPUT_DIR = sys.argv[4]
+	INPUT_DATA_CSV = sys.argv[5]
 	temp = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))[start:finish]
 	times = []
 	for t in temp:
@@ -78,4 +78,4 @@ if __name__ == '__main__':
 			if os.path.isfile(extract_img_path_from_time(t, INPUT_DIR)):
 				if os.path.getsize(extract_img_path_from_time(t, INPUT_DIR)) != 0:
 					times.append(t)
-	masks = process_network_masks(times, exp_label)
+	masks = process_network_masks(times, exp_label, INPUT_DIR)

@@ -13,7 +13,7 @@ fsc_launch.csv to match your goals. EX: python3 fsc.py e70-00
 
 import sys
 
-from fsc_launch import INPUT_DATA_CSV, OUTPUT_DATA_CSV
+# from fsc_launch import INPUT_DATA_CSV, OUTPUT_DATA_CSV
 from utils import *
 
 
@@ -108,6 +108,8 @@ def get_fsc_from_file(filename):
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
+	INPUT_DATA_CSV = sys.argv[2]
+	OUTPUT_DATA_CSV = sys.argv[3]
 	times = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))
 	with open('results/' + exp_label + '/' + OUTPUT_DATA_CSV, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
