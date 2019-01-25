@@ -10,7 +10,7 @@ of batches times the number of batches per network is small enough so that BLT c
 import os
 
 # Specify the directory where the sky images are stored: ex: good_data
-INPUT_DIR = "dubious_data"
+#INPUT_DIR = "dubious_data"
 
 # Specify the location of the csv file that contains desired timestamp_utc information.
 #INPUT_DATA_CSV = "bad_data/shcu_bad_data.csv"
@@ -25,7 +25,7 @@ exp_labels = ['e81-00']
 num_batches_per_network = 1
 
 
-def process(INPUT_DATA_CSV, JOB_NAME):
+def process(INPUT_DATA_CSV, JOB_NAME,INPUT_DIR):
 	num_batches = len(exp_labels)
 	total_length = -1  # This file has a header
 	for line in open(INPUT_DATA_CSV):
@@ -36,10 +36,9 @@ def process(INPUT_DATA_CSV, JOB_NAME):
 			name = JOB_NAME + exp_label + '-{:0>2}'.format(i)
 			start = batch_length * i
 			finish = batch_length * (i + 1) if batch_length * (i + 1) < total_length else total_length
-			os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {}" -P 1'.format(name, exp_label, int(start),
-																						  int(finish)))
+			os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {} {} {}" -P 1'.format(name, exp_label, int(start), int(finish), INPUT_DIR, INPUT_DATA_CSV))
 
 
 if __name__ == "__main__":
-	process("bad_data/shcu_bad_data.csv", "process-dubious-")
-	process("good_data/shcu_good_data.csv", "process-typical-")
+	process("bad_data/shcu_bad_data.csv", "process-dubious-", "dubious_data")
+	process("good_data/shcu_good_data.csv", "process-typical-", "typical_data")

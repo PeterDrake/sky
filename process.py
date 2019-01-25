@@ -69,6 +69,8 @@ if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
 	start = int(sys.argv[2])  # The starting index of the timestamp in the good_data/shcu_good_data.csv file to consider
 	finish = int(sys.argv[3])  # Final timestamp to consider
+    INPUT_DIR = sys.argv[4]
+    INPUT_DATA_CSV = sys.argv[5]
 	temp = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))[start:finish]
 	times = []
 	for t in temp:
