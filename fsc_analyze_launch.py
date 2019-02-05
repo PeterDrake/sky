@@ -107,13 +107,13 @@ if __name__ == "__main__":
 	typical_arscl_dataframe = typical_arscl_dataframe[typical_arscl_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
-	# Reads data from shcu_bad_data.csv, takes a sample of the times, and gets data for plotting
-	bad_arscl_dataframe = read_csv_file('bad_data/shcu_bad_data.csv')  # Contains both ARSCL and TSI Data
-	bad_arscl_dataframe = bad_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
-	bad_times = load_pickled_file(DUBIOUS_VALID_FILE)  # Change this to TEST_FILE for final plotting.
-	bad_times = bad_times[0:N_SAMPLES]
-	bad_arscl_dataframe = bad_arscl_dataframe[bad_arscl_dataframe['timestamp_utc'].isin(bad_times)]
-	bad_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_arscl_dataframe)
+	# Reads data from shcu_dubious_data.csv, takes a sample of the times, and gets data for plotting
+	dubious_arscl_dataframe = read_csv_file('dubious_data/shcu_dubious_data.csv')  # Contains both ARSCL and TSI Data
+	dubious_arscl_dataframe = dubious_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
+	dubious_times = load_pickled_file(DUBIOUS_VALID_FILE)  # Change this to TEST_FILE for final plotting.
+	dubious_times = dubious_times[0:N_SAMPLES]
+	dubious_arscl_dataframe = dubious_arscl_dataframe[dubious_arscl_dataframe['timestamp_utc'].isin(dubious_times)]
+	dubious_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_arscl_dataframe)
 
 	# Reads data from typical_fsc.csv and uses the times sample from shcu_typical_data.csv to get data for plotting
 	typical_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
@@ -121,19 +121,19 @@ if __name__ == "__main__":
 	typical_network_dataframe = typical_network_dataframe[typical_network_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)
 
-	# Reads data from bad_fsc.csv and uses the times sample from shcu_bad_data.csv to get data for plotting
-	bad_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
-	bad_network_dataframe = bad_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
-	bad_network_dataframe = bad_network_dataframe[bad_network_dataframe['timestamp_utc'].isin(bad_times)]
-	bad_arscl_network = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_network_dataframe)
+	# Reads data from dubious_fsc.csv and uses the times sample from shcu_dubious_data.csv to get data for plotting
+	dubious_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
+	dubious_network_dataframe = dubious_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
+	dubious_network_dataframe = dubious_network_dataframe[dubious_network_dataframe['timestamp_utc'].isin(dubious_times)]
+	dubious_arscl_network = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_network_dataframe)
 
-	# Gets comparison data for TSI and Network decision images on typical and bad data
+	# Gets comparison data for TSI and Network decision images on typical and dubious data
 	typical_tsi_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe,
 	                                                               arscl_header="fsc_z")
-	bad_tsi_network = extract_arscl_and_image_fsc_from_dataframes(bad_arscl_dataframe, bad_network_dataframe,
+	dubious_tsi_network = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_network_dataframe,
 	                                                              arscl_header="fsc_z")
 
-	# typical/Bad Data FSC vs CF Plots for TSI and Network Decision Images
+	# typical/dubious Data FSC vs CF Plots for TSI and Network Decision Images
 	titles = ['typical Data', 'dubious Data']
 	ylabels = ['FSC (TSI)', 'FSC (Network)']
 	xlabels = ['Ceilometer CF'] * 2
