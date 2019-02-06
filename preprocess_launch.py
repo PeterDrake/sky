@@ -13,9 +13,9 @@ import os
 batches = os.listdir('typical_data' + '/res')
 for i, batch in enumerate(batches):
 	# TODO Make this more flexible.
-	os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {}" -P 1'.format('pre-batch-{}'.format(i), 'typical_data' + '/res/' + batch))
+	os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {}" -P 1'.format('typical-pre-batch-{}'.format(i), 'typical_data' + '/res/' + batch))
 
 batches = os.listdir('dubious_data' + '/res')
 for i, batch in enumerate(batches):
 	# TODO Make this more flexible.
-	os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {}" -P 1'.format('pre-batch-{}'.format(i), 'dubious_data' + '/res/' + batch))
+	os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {}" -P 1'.format('dubious-pre-batch-{}'.format(i), 'dubious_data' + '/res/' + batch))
