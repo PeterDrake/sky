@@ -133,8 +133,8 @@ if __name__ == "__main__":
 	dubious_tsi_network = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_network_dataframe,
 	                                                              arscl_header="fsc_z")
 
-	# typical/dubious Data FSC vs CF Plots for TSI and Network Decision Images
-	titles = ['typical Data', 'dubious Data']
+	# Typical/Dubious Data FSC vs CF Plots for TSI and Network Decision Images
+	titles = ['Typical Data', 'Dubious Data']
 	ylabels = ['FSC (TSI)', 'FSC (Network)']
 	xlabels = ['Ceilometer CF'] * 2
 	data = [typical_arscl_tsi, dubious_arscl_tsi, typical_arscl_network, dubious_arscl_network]
@@ -174,6 +174,6 @@ if __name__ == "__main__":
 		bottom=False,  # ticks along the bottom edge are off
 		top=False,  # ticks along the top edge are off
 		labelbottom=True)
-	plt.xticks((index + bar_width / 2), ('typical Data', 'dubious Data'), fontsize=26)
+	plt.xticks((index + bar_width / 2), ('Typical Data', 'Dubious Data'), fontsize=26)
 	ax.legend(fontsize=20)
 	fig.savefig("results/" + EXP_LABEL + "/fsc_rmse_barchart.png")

@@ -9,11 +9,11 @@ of batches times the number of batches per network is small enough so that BLT c
 
 import os
 
-# Specify the directory where the sky images are stored: ex: good_data
+# Specify the directory where the sky images are stored: ex: typical_data
 #INPUT_DIR = "dubious_data"
 
 # Specify the location of the csv file that contains desired timestamp_utc information.
-#INPUT_DATA_CSV = "bad_data/shcu_bad_data.csv"
+#INPUT_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
 # Specify the base of the job id
 #JOB_NAME = "process-dubious-"
@@ -40,5 +40,5 @@ def process(INPUT_DATA_CSV, JOB_NAME,INPUT_DIR):
 
 
 if __name__ == "__main__":
-	process("bad_data/shcu_bad_data.csv", "process-dubious-", "dubious_data")
-	process("good_data/shcu_good_data.csv", "process-typical-", "typical_data")
+	process("dubious_data/shcu_dubious_data.csv", "process-dubious-", "dubious_data")
+	process("typical_data/shcu_typical_data.csv", "process-typical-", "typical_data")

@@ -9,7 +9,7 @@ EX: head results/e70-00/fsc.csv --lines=2
 
 This script also defines the INPUT_DATA_CSV file, which should contain a timestamp_utc header and timestamps that
 correspond to the decision images you wish to use in fractional sky cover calculations.
-EX: 'good_data/shcu_good_data.csv'
+EX: 'typical_data/shcu_typical_data.csv'
 """
 
 import os
@@ -19,8 +19,8 @@ import os
 EXP_LABELS = ['e81-00']
 
 # Set the input and output csv files to match the file containing timestamps you would like to use.
-# INPUT_DATA_CSV = 'bad_data/shcu_bad_data.csv'
-# OUTPUT_DATA_CSV = 'dubious_fsc.csv'  # Either good_fsc.csv or bad_fsc.csv for summer 2018
+# INPUT_DATA_CSV = 'dubious_data/shcu_dubious_data.csv'
+# OUTPUT_DATA_CSV = 'dubious_fsc.csv'  # Either typical_fsc.csv or dubious_fsc.csv for summer 2018
 # JOB_NAME = 'dubious-fsc-'
 
 
@@ -31,5 +31,5 @@ def setup(INPUT_DATA_CSV, OUTPUT_DATA_CSV, JOB_NAME):
 
 
 if __name__ == "__main__":
-	setup('bad_data/shcu_bad_data.csv','dubious_fsc.csv', 'dubious-fsc-')
-	setup('good_data/shcu_good_data.csv', 'typical_fsc.csv', 'typical-fsc-')
+	setup('dubious_data/shcu_dubious_data.csv','dubious_fsc.csv', 'dubious-fsc-')
+	setup('typical_data/shcu_typical_data.csv', 'typical_fsc.csv', 'typical-fsc-')

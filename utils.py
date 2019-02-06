@@ -115,9 +115,9 @@ def extract_data_from_dataframe(frame, column_header):
 	return {str(d).strip() for d in data}
 
 
-def extract_tsi_fsc_for_bad_dates(timestamps):
+def extract_tsi_fsc_for_dubious_dates(timestamps):
 	nan_fsc = set()
-	csv = read_csv_file("good_data/shcu_good_data.csv")
+	csv = read_csv_file("typical_data/shcu_typical_data.csv")
 	df = csv.set_index("timestamp_utc", drop=False)
 	# drop=False to not delete timestamp_utc column if other index set later
 	for time in timestamps:
@@ -128,7 +128,7 @@ def extract_tsi_fsc_for_bad_dates(timestamps):
 
 
 def extract_tsi_fsc_for_date(timestamp):
-	csv = read_csv_file("good_data/shcu_good_data.csv")
+	csv = read_csv_file("typical_data/shcu_typical_data.csv")
 	df = csv.set_index("timestamp_utc", drop=False)
 	# drop=False to not delete timestamp_utc column if other index set later
 	return (math.floor(df.loc[timestamp, "fsc_z"] * 10 ** 6)) / 10 ** 6
@@ -328,7 +328,7 @@ def extract_network_mask_path_from_time(timestamp, exp_label):
 			timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
 
 
-def get_simple_mask(timestamp, input_dir='good_data'):
+def get_simple_mask(timestamp, input_dir='typical_data'):
 	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
 	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp
 	20170215000000."""

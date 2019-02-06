@@ -2,7 +2,7 @@
 Preprocess Total Sky Imager data from arm.gov. To use this:
 
 1) Get the SkyImage and CloudMask data from ARM and unpack tars into your INPUT_DIR
-2) Specify the OUTPUT_DIR (which need not already exist). We set this to 'good_data' and 'bad_data'
+2) Specify the OUTPUT_DIR (which need not already exist). We set this to 'typical_data' and 'dubious_data'
 3) Specify BATCH_SIZE to help parallelize this process. This is the number of timestamps each batch needs to process.
 To run sequentially instead of in parallel, set this absurdly high.
 4) Run this program, wait for it to finish.
@@ -24,10 +24,10 @@ from utils import *
 # Constants for input and output locations
 INPUT_DIR = '/home/users/jkleiss/TSI_C1'
 #OUTPUT_DIR = 'typical_data'
-#TIMESTAMP_DATA_CSV = 'good_data/shcu_good_data.csv'  # shcu_bad_data has about 5,000 times, shcu_good_data has about 100,000 times
+#TIMESTAMP_DATA_CSV = 'typical_data/shcu_typical_data.csv'  # shcu_dubious_data has about 5,000 times, shcu_typical_data has about 100,000 times
 
 # Used to create batches of timestamps. This is the number of images to preprocess in a single job.
-# We suggest using 1000 for bad_data, and 5000 to 10000 for good_data if using a cluster
+# We suggest using 1000 for dubious_data, and 5000 to 10000 for typical_data if using a cluster
 BATCH_SIZE = 1000
 
 
@@ -75,11 +75,11 @@ def setup(OUTPUT_DIR, TIMESTAMP_DATA_CSV):
 	RES_DIR = OUTPUT_DIR + '/res'
 	print("Cleaning the csv file.")
 	clean_csv(TIMESTAMP_DATA_CSV)
-	print("Reading times from good csv file.")
-	good_times = extract_data_from_csv(TIMESTAMP_DATA_CSV, "timestamp_utc")
+	print("Reading times from typical csv file.")
+	typical_times = extract_data_from_csv(TIMESTAMP_DATA_CSV, "timestamp_utc")
 	print("Finished reading times. Eliminating unpaired times.")
-	blacklist = find_unpaired_images(good_times, INPUT_DIR)
-	times = good_times - blacklist
+	blacklist = find_unpaired_images(typical_times, INPUT_DIR)
+	times = typical_times - blacklist
 	print("{} paired images and masks found.".format(len(times)))
 	# This can be used to process a small amount images instead of everything specified by the csv files.
 	if small_process_size:
@@ -112,5 +112,5 @@ def setup(OUTPUT_DIR, TIMESTAMP_DATA_CSV):
 
 
 if __name__ == '__main__':
-	setup('typical_data','good_data/shcu_good_data.csv')
-	setup('dubious_data', 'bad_data/shcu_bad_data.csv')
+	setup('typical_data','typical_data/shcu_typical_data.csv')
+	setup('dubious_data', 'dubious_data/shcu_dubious_data.csv')
