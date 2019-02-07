@@ -12,15 +12,14 @@ import numpy as np
 import os
 from PIL import Image
 from scipy import misc
-
-from preprocess_setup_launch import OUTPUT_DIR, RES_DIR
 from utils import extract_times_from_files_in_directory, separate_data, BLACK, BLUE
 
 # Set the names of the training, validation, and testing timestamp files.
-TRAIN_STAMP_PATH = OUTPUT_DIR + '/train.stamps'
-VALID_STAMP_PATH = OUTPUT_DIR + '/valid.stamps'
-TEST_STAMP_PATH = OUTPUT_DIR + '/test.stamps'
+TRAIN_STAMP_PATH = 'typical_data/train.stamps'
+VALID_STAMP_PATH = 'typical_data/valid.stamps'
+TEST_STAMP_PATH = 'typical_data/test.stamps'
 
+RES_DIR = 'typical_data/res'
 
 def create_constant_mask(color, filename):
 	"""Creates a mask where any pixels not always of color are BLUE. Saves it in filename."""
