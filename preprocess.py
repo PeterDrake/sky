@@ -8,7 +8,7 @@ and removal of the sun from the sun band.
 
 import sys
 
-from preprocess_setup_launch import INPUT_DIR, OUTPUT_DIR
+from preprocess_setup_launch import INPUT_DIR
 from utils import *
 
 
@@ -78,6 +78,7 @@ def simplify_mask(timestamp, input_dir, output_dir):
 
 if __name__ == "__main__":
 	f = open(sys.argv[1])  # This is the name of the file containing timestamps
+	OUTPUT_DIR = sys.argv[2]
 	print("Opened {}".format(sys.argv[1]))
 	for time in f:
 		time = time.replace('\n', '')
