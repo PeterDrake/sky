@@ -21,15 +21,15 @@ def process_network_masks(timestamps, exp_label, input_dir):
 	step_version = read_last_iteration_number(network_dir)
 	layer_info = args['Layer info'].split()
 	_, _, saver, _, x, y, _, _ = build_net(layer_info)
-	masks = []
+	# masks = []
 	with tf.Session() as sess:
 		saver.restore(sess, network_dir + 'weights-' + str(step_version))
 		for t in timestamps:
 			inputs = load_inputs([t], input_dir)
 			result = out_to_image(y.eval(feed_dict={x: inputs}))[0]
-			masks.append(result)
+			# masks.append(result)
 			save_network_mask(t, exp_label, result)
-	return masks
+	# return masks
 
 
 def get_network_mask(timestamp, exp_label, input_dir):
@@ -78,4 +78,5 @@ if __name__ == '__main__':
 			if os.path.isfile(extract_img_path_from_time(t, INPUT_DIR)):
 				if os.path.getsize(extract_img_path_from_time(t, INPUT_DIR)) != 0:
 					times.append(t)
-	masks = process_network_masks(times, exp_label, INPUT_DIR)
+	# masks = process_network_masks(times, exp_label, INPUT_DIR)
+	process_network_masks(times, exp_label, INPUT_DIR)
