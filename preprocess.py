@@ -76,12 +76,19 @@ def simplify_mask(timestamp, input_dir, output_dir):
 	return
 
 
-if __name__ == "__main__":
-	f = open(sys.argv[1])  # This is the name of the file containing timestamps
-	OUTPUT_DIR = sys.argv[2]
-	print("Opened {}".format(sys.argv[1]))
-	for time in f:
+def preprocess(filename, output_dir):
+	"""Simplifies sky and decision images given a filename containing timestamps and an output_dir to save the
+	simplified images."""
+	file = open(filename)
+	print("Opened {}".format(filename))
+	for time in file:
 		time = time.replace('\n', '')
 		time = time.replace(' ', '')
-		simplify_mask(time, INPUT_DIR, OUTPUT_DIR)
-		simplify_image(time, INPUT_DIR, OUTPUT_DIR)
+		simplify_mask(time, INPUT_DIR, output_dir)
+		simplify_image(time, INPUT_DIR, output_dir)
+
+
+if __name__ == "__main__":
+	f = sys.argv[1]
+	OUTPUT_DIR = sys.argv[2]
+	preprocess(f, OUTPUT_DIR)

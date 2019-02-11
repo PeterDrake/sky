@@ -8,12 +8,21 @@ This program launches preprocess.py for each file in the 'res' folder in the OUT
 """
 
 import os
+from config import BLT
+from preprocess import preprocess
 
-
+# Runs preprocessing for typical data
 batches = os.listdir('typical_data' + '/res')
 for i, batch in enumerate(batches):
-	os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {} {}" -P 1'.format('typical-pre-batch-{}'.format(i), 'typical_data' + '/res/' + batch, "typical_data"))
+	if BLT:
+		os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {} {}" -P 1'.format('typical-pre-batch-{}'.format(i), 'typical_data' + '/res/' + batch, "typical_data"))
+	else:
+		preprocess('typical_data' + '/res/' + batch, "typical_data")
 
+# Runs preprocessing for dubious data
 batches = os.listdir('dubious_data' + '/res')
 for i, batch in enumerate(batches):
-	os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {} {}" -P 1'.format('dubious-pre-batch-{}'.format(i), 'dubious_data' + '/res/' + batch, "dubious_data"))
+	if BLT:
+		os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {} {}" -P 1'.format('dubious-pre-batch-{}'.format(i), 'dubious_data' + '/res/' + batch, "dubious_data"))
+	else:
+		preprocess('dubious_data' + '/res/' + batch, "dubious_data")
