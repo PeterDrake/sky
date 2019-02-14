@@ -65,12 +65,7 @@ def network_output_exists(timestamp, exp_label, path=None):
 	return os.path.isfile(path)
 
 
-if __name__ == '__main__':
-	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	start = int(sys.argv[2])  # The starting index of the timestamp in the typical_data/shcu_typical_data.csv file to consider
-	finish = int(sys.argv[3])  # Final timestamp to consider
-	INPUT_DIR = sys.argv[4]
-	INPUT_DATA_CSV = sys.argv[5]
+def process(exp_label, start, finish, INPUT_DIR, INPUT_DATA_CSV):
 	temp = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))[start:finish]
 	times = []
 	for t in temp:
@@ -78,5 +73,13 @@ if __name__ == '__main__':
 			if os.path.isfile(extract_img_path_from_time(t, INPUT_DIR)):
 				if os.path.getsize(extract_img_path_from_time(t, INPUT_DIR)) != 0:
 					times.append(t)
-	# masks = process_network_masks(times, exp_label, INPUT_DIR)
 	process_network_masks(times, exp_label, INPUT_DIR)
+
+
+if __name__ == '__main__':
+	exp_label = sys.argv[1]  # The experiment number / directory name in results
+	start = int(sys.argv[2])  # The starting index of the timestamp in the typical_data/shcu_typical_data.csv file to consider
+	finish = int(sys.argv[3])  # Final timestamp to consider
+	INPUT_DIR = sys.argv[4]
+	INPUT_DATA_CSV = sys.argv[5]
+	process()
