@@ -9,6 +9,7 @@ of batches times the number of batches per network is small enough so that BLT c
 
 import os
 from config import BLT
+from process import process
 # Specify the directory where the sky images are stored: ex: typical_data
 #INPUT_DIR = "dubious_data"
 
@@ -37,26 +38,11 @@ def process_BLT(INPUT_DATA_CSV, JOB_NAME,INPUT_DIR):
 			name = JOB_NAME + exp_label + '-{:0>2}'.format(i)
 			start = batch_length * i
 			finish = batch_length * (i + 1) if batch_length * (i + 1) < total_length else total_length
-			os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {} {} {}" -P 1'.format(name, exp_label, int(start), int(finish), INPUT_DIR, INPUT_DATA_CSV))
-
-def process_local(INPUT_DATA_CSV, JOB_NAME,INPUT_DIR):
-	""" Processing for BLT. """
-	num_batches = len(exp_labels)
-	total_length = -1  # This file has a header
-	for line in open(INPUT_DATA_CSV):
-		total_length += 1
-	batch_length = int(total_length / num_batches_per_network)
-	for exp_label in exp_labels:
-		name = JOB_NAME + exp_label + '-{:0>2}'
-		start = 0
-		finish = total_length
-		os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {} {} {}" -P 1'.format(name, exp_label, int(start), int(finish), INPUT_DIR, INPUT_DATA_CSV))
-
+			if BLT:
+				os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {} {} {}" -P 1'.format(name, exp_label, int(start), int(finish), INPUT_DIR, INPUT_DATA_CSV))
+			else:
+				process(exp_label, int(start), int(finish), INPUT_DIR, INPUT_DATA_CSV)
 
 if __name__ == "__main__":
-	if BLT:
-		process_BLT("dubious_data/shcu_dubious_data.csv", "process-dubious-", "dubious_data")
-		process_BLT("typical_data/shcu_typical_data.csv", "process-typical-", "typical_data")
-	else:
-		process_local("dubious_data/shcu_dubious_data.csv", "process-dubious-", "dubious_data")
-		process_local("typical_data/shcu_typical_data.csv", "process-typical-", "typical_data")
+	process_BLT("dubious_data/shcu_dubious_data.csv", "process-dubious-", "dubious_data")
+	process_BLT("typical_data/shcu_typical_data.csv", "process-typical-", "typical_data")
