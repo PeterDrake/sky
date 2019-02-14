@@ -301,11 +301,16 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 		F.close()
 
 
-if __name__ == '__main__':
+def train(job_number, layer_info):
+	global out_dir
 	check_for_commit()
-	job_number = sys.argv[1]
-	layer_info = sys.argv[2::]
 	out_dir = 'results/' + job_number + '/'
 	os.makedirs(out_dir, exist_ok=True)
 	save_params(job_number, layer_info, out_dir)
 	train_net(*build_net(layer_info), *load_validation_batch(BATCH_SIZE), out_dir)
+
+
+if __name__ == '__main__':
+	job_number = sys.argv[1]
+	layer_info = sys.argv[2::]
+	train(job_number, layer_info)

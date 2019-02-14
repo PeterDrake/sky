@@ -13,6 +13,8 @@ Launches the training process.
 """
 
 import os
+from config import BLT
+from train import train
 
 # Specify the experiment number. EX: 'e73'
 exp_number = 'e81'
@@ -46,5 +48,8 @@ if __name__ == "__main__":
 		for j in range(num_networks):
 			exp_label = exp_number + '-{:0>2}'.format(i)
 			condition = exp_label + ' ' + v
-			os.system('SGE_Batch -r "{}" -c "python3 -u train.py {}" -P {}'.format(exp_label, condition, num_cores))
+			if BLT:
+				os.system('SGE_Batch -r "{}" -c "python3 -u train.py {}" -P {}'.format(exp_label, condition, num_cores))
+			else:
+				train(exp_label, v)
 			i += 1
