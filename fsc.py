@@ -106,10 +106,7 @@ def get_fsc_from_file(filename):
 		return get_fsc(mask)
 
 
-if __name__ == '__main__':
-	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	INPUT_DATA_CSV = sys.argv[2]
-	OUTPUT_DATA_CSV = sys.argv[3]
+def fsc(exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV):
 	times = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))
 	with open('results/' + exp_label + '/' + OUTPUT_DATA_CSV, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
@@ -122,3 +119,10 @@ if __name__ == '__main__':
 				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, exp_label))
 				f.write("{},{},{},{}".format(t, fsc_z, fsc_thn_z, fsc_opq_z) + "\n")
 			count += 1
+
+
+if __name__ == '__main__':
+	exp_label = sys.argv[1]  # The experiment number / directory name in results
+	INPUT_DATA_CSV = sys.argv[2]
+	OUTPUT_DATA_CSV = sys.argv[3]
+	fsc(exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV)

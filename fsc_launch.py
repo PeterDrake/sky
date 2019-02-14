@@ -13,6 +13,8 @@ EX: 'typical_data/shcu_typical_data.csv'
 """
 
 import os
+from config import BLT
+from fsc import fsc
 
 # Set the experiment labels to match the network(s) you'd like to evaluate fractional sky cover tasks with
 # Note: this is not used to open the network, but rather to look through its processed decision images
@@ -27,8 +29,10 @@ EXP_LABELS = ['e81-00']
 def setup(INPUT_DATA_CSV, OUTPUT_DATA_CSV, JOB_NAME):
 	for exp_label in EXP_LABELS:
 		name = JOB_NAME + exp_label
-		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV))
-
+		if BLT:
+			os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV))
+		else:
+			fsc(exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV)
 
 if __name__ == "__main__":
 	setup('dubious_data/shcu_dubious_data.csv','dubious_fsc.csv', 'dubious-fsc-')
