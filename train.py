@@ -48,7 +48,7 @@ def build_net(layer_info):
 	b_mask = color_mask(misc.imread(TRAIN_INPUT_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
 	x = tf.placeholder(tf.float32, [None, 480, 480, 3])
 	num_layers = len(layer_info)
-	print(type(layer_info))
+	#print(type(layer_info))
 	table, last_name = parse_layer_info(layer_info)
 	h = {"in": x}
 	for n in range(0, num_layers - 1):
@@ -142,7 +142,7 @@ def get_name_oper(layer):
 	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns the name and operator from a command-line layer
 	specification."""
-	print("layer get_name " + layer)
+	#print("layer get_name " + layer)
 	hold = layer.split(":")
 	name = hold[0]
 	oper = hold[1].split("-")[0]
@@ -233,11 +233,11 @@ def parse_layer_info(layer_info):
 	table = {'in': {'outs': 3}}
 	count = 0
 	name = ''
-	print("layer_info parse_layer " +layer_info)
+	#print("layer_info parse_layer " +layer_info)
 	#added following line, split based on spaces
 	#layer_info = layer_info.split()
 	for layer in layer_info:
-		print("layer parse_layer " + layer)
+		#print("layer parse_layer " + layer)
 		name, oper = get_name_oper(layer)
 		args = layer.split(':')[1].split('-')[1:]
 		info = {}
@@ -326,8 +326,8 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 
 
 def train(job_number, layer_info):
-	print("layer_info train " + layer_info)
-	print(job_number)
+	#print("layer_info train " + layer_info)
+	#print(job_number)
 	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	global out_dir
 	check_for_commit()
