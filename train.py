@@ -41,6 +41,7 @@ from utils import *
 
 def build_net(layer_info):
 	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
+	layer_info = layer_info.split()
 	"""Builds a network given command-line layer info."""
 	print("Building network")
 	tf.reset_default_graph()
@@ -234,7 +235,7 @@ def parse_layer_info(layer_info):
 	name = ''
 	print("layer_info parse_layer " +layer_info)
 	#added following line, split based on spaces
-	layer_info = layer_info.split()
+	#layer_info = layer_info.split()
 	for layer in layer_info:
 		print("layer parse_layer " + layer)
 		name, oper = get_name_oper(layer)
