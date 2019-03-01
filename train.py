@@ -319,6 +319,8 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 
 
 def train(job_number, layer_info):
+	print("layer_info" + layer_info)
+	print(job_number)
 	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	global out_dir
 	check_for_commit()
