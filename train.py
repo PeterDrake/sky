@@ -182,8 +182,8 @@ def load_validation_batch(n):
 	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns the inputs and correct outputs for the first n validation examples."""
 	valid_stamps = load_validation_stamps(n)
-	valid_inputs = load_inputs(valid_stamps)
-	valid_correct = load_masks(valid_stamps)
+	valid_inputs = load_inputs(valid_stamps, TRAIN_INPUT_DIR)
+	valid_correct = load_masks(valid_stamps, TRAIN_INPUT_DIR)
 	return valid_inputs, valid_correct
 
 
@@ -309,8 +309,8 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 				if j * BATCH_SIZE >= len(train_stamps):
 					j = 1
 				batch = train_stamps[(j - 1) * BATCH_SIZE: j * BATCH_SIZE]
-				inputs = load_inputs(batch)
-				correct = load_masks(batch)
+				inputs = load_inputs(batch, TRAIN_INPUT_DIR)
+				correct = load_masks(batch, TRAIN_INPUT_DIR)
 				train_step.run(feed_dict={x: inputs, y_: correct})
 				if i % 10 == 0:
 					saver.save(sess, result_dir + 'weights', global_step=i)
