@@ -140,7 +140,7 @@ def get_name_oper(layer):
 	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns the name and operator from a command-line layer
 	specification."""
-	print("layer:" + layer)
+	print("layer get_name " + layer)
 	hold = layer.split(":")
 	name = hold[0]
 	oper = hold[1].split("-")[0]
@@ -231,7 +231,7 @@ def parse_layer_info(layer_info):
 	table = {'in': {'outs': 3}}
 	count = 0
 	name = ''
-	print("layer_info" +layer_info)
+	print("layer_info parse_layer " +layer_info)
 	#added following line, split based on spaces
 	layer_info = layer_info.split()
 	for layer in layer_info:
@@ -323,7 +323,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 
 
 def train(job_number, layer_info):
-	print("layer_info" + layer_info)
+	print("layer_info train " + layer_info)
 	print(job_number)
 	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	global out_dir
