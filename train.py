@@ -235,6 +235,7 @@ def parse_layer_info(layer_info):
 	#added following line, split based on spaces
 	layer_info = layer_info.split()
 	for layer in layer_info:
+		print("layer parse_layer" + layer)
 		name, oper = get_name_oper(layer)
 		args = layer.split(':')[1].split('-')[1:]
 		info = {}
