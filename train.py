@@ -47,7 +47,7 @@ def build_net(layer_info):
 	b_mask = color_mask(misc.imread(TRAIN_INPUT_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
 	x = tf.placeholder(tf.float32, [None, 480, 480, 3])
 	num_layers = len(layer_info)
-	print("type layer_info build_net" + type(layer_info))
+	print(type(layer_info))
 	table, last_name = parse_layer_info(layer_info)
 	h = {"in": x}
 	for n in range(0, num_layers - 1):
