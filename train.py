@@ -35,11 +35,12 @@ from tensorflow import set_random_seed
 set_random_seed(0)
 import tensorflow as tf
 
-from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
+#from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 from utils import *
 
 
 def build_net(layer_info):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Builds a network given command-line layer info."""
 	print("Building network")
 	tf.reset_default_graph()
@@ -86,6 +87,7 @@ def build_net(layer_info):
 
 
 def check_for_commit():
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Raises an exception if the git state is not clean. This ensures that
 	any experiment is run from code in one specific commit."""
 	label = subprocess.check_output(["git", "status", "--untracked-files=no", "--porcelain"])
@@ -94,6 +96,7 @@ def check_for_commit():
 
 
 def color_mask(img, i):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Takes a color mask and returns an image of one-hot vectors.
 	Each vector is all zeroes, except that the ith element of pixels that
 	are not BLUE in img is 1e7. This results in a "mask" that can be
@@ -108,6 +111,7 @@ def color_mask(img, i):
 
 
 def conv2d(x, W, layer_num):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns a 2D convolutional layer with weights W. (Biases are added
 	later.)"""
 	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME',
@@ -115,6 +119,7 @@ def conv2d(x, W, layer_num):
 
 
 def convo_layer(num_in, num_out, width, prev, name, relu=True):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns a TensorFlow convolutional layer with the specified width,
 	taking input from prev."""
 	num_in, num_out, width = int(num_in), int(num_out), int(width)
@@ -132,6 +137,7 @@ def convo_layer(num_in, num_out, width, prev, name, relu=True):
 
 
 def get_name_oper(layer):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns the name and operator from a command-line layer
 	specification."""
 	hold = layer.split(":")
@@ -141,6 +147,7 @@ def get_name_oper(layer):
 
 
 def index_of(x, sequence):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns the index of x in sequence. We can't figure out how to do this more directly; the standard index method
 	doesn't work when x is a numpy array."""
 	for i, item in enumerate(sequence):
@@ -148,7 +155,8 @@ def index_of(x, sequence):
 			return i
 
 
-def load_inputs(stamps, input_dir=TRAIN_INPUT_DIR):
+def load_inputs(stamps, input_dir):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns a tensor of images specified by stamps. Dimensions are: image, row, column, color."""
 	inputs = np.empty((len(stamps), 480, 480, 3))
 	for i, s in enumerate(stamps):
@@ -156,7 +164,8 @@ def load_inputs(stamps, input_dir=TRAIN_INPUT_DIR):
 	return inputs
 
 
-def load_masks(stamps, input_dir=TRAIN_INPUT_DIR):
+def load_masks(stamps, input_dir):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns a tensor of correct label categories (i.e., indices into preprocess.COLORS) for each pixel in each
 	image specified by stamps. Dimensions are image, row, column. The tensor has been flattened into a single
 	vector."""
@@ -167,6 +176,7 @@ def load_masks(stamps, input_dir=TRAIN_INPUT_DIR):
 
 
 def load_validation_batch(n):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns the inputs and correct outputs for the first n validation examples."""
 	valid_stamps = load_validation_stamps(n)
 	valid_inputs = load_inputs(valid_stamps)
@@ -175,12 +185,14 @@ def load_validation_batch(n):
 
 
 def load_validation_stamps(n):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Reads the valid.stamps file in data and returns a list of the first n stamps."""
 	with open(TRAIN_INPUT_DIR + '/valid.stamps', 'rb') as f:
 		return pickle.load(f)[:n]
 
 
 def mask_layer(last_layer, b_mask):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns a TensorFlow layer that adds last_layer and b_mask.
 	Since these masks contain large values at pixels where the correct
 	answer is always black, the output of this layer
@@ -190,6 +202,7 @@ def mask_layer(last_layer, b_mask):
 
 
 def mask_to_index(img):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns a new version of img with an index (in COLORS) for each pixel."""
 	result = np.ndarray(shape=[img.shape[0], img.shape[1]])
 	for i in range(len(COLORS)):
@@ -198,6 +211,7 @@ def mask_to_index(img):
 
 
 def max_pool_layer(prev, width, height, name):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns a TensorFlow max_pool layers of the specified width and height,
 	taking input from prev."""
 	width, height = int(width), int(height)
@@ -206,6 +220,7 @@ def max_pool_layer(prev, width, height, name):
 
 
 def parse_layer_info(layer_info):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Parses layer info from the command line. layer_info is a list of
 	strings like 'f:conv-3-32-e', which says that layer f is a convolutional
 	layer with a 3x3 kernel and 32 output channels taking input from layer
@@ -258,6 +273,7 @@ def parse_layer_info(layer_info):
 
 
 def save_params(job_number, layer_info, out_dir):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Write information about this experiment to a file parameters.txt in
 	out_dir."""
 	F = open(out_dir + 'parameters.txt', "w+")
@@ -269,6 +285,7 @@ def save_params(job_number, layer_info, out_dir):
 
 
 def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_inputs, valid_correct, result_dir):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Trains the network."""
 	print("Training network")
 	start = time.time()
@@ -302,6 +319,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 
 
 def train(job_number, layer_info):
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	global out_dir
 	check_for_commit()
 	out_dir = 'results/' + job_number + '/'
