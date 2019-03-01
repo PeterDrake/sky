@@ -140,6 +140,7 @@ def get_name_oper(layer):
 	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	"""Returns the name and operator from a command-line layer
 	specification."""
+	print("layer:" + layer)
 	hold = layer.split(":")
 	name = hold[0]
 	oper = hold[1].split("-")[0]
@@ -230,6 +231,7 @@ def parse_layer_info(layer_info):
 	table = {'in': {'outs': 3}}
 	count = 0
 	name = ''
+	print("layer_info" +layer_info)
 	for layer in layer_info:
 		name, oper = get_name_oper(layer)
 		args = layer.split(':')[1].split('-')[1:]
