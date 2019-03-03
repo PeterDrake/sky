@@ -22,7 +22,8 @@ from random import shuffle
 from utils import *
 
 # Constants for input and output locations
-INPUT_DIR = '/home/users/jkleiss/TSI_C1'
+# INPUT_DIR = '/home/users/jkleiss/TSI_C1'
+INPUT_DIR = 'D:\Documents - Hard Drive\Lewis & Clark\Research\Sky ML\TSI_C1'
 #OUTPUT_DIR = 'typical_data'
 #TIMESTAMP_DATA_CSV = 'typical_data/shcu_typical_data.csv'  # shcu_dubious_data has about 5,000 times, shcu_typical_data has about 100,000 times
 
