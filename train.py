@@ -34,13 +34,13 @@ seed(0)
 from tensorflow import set_random_seed
 set_random_seed(0)
 import tensorflow as tf
-
-from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 from utils import *
 
 
 def build_net(layer_info):
 	"""Builds a network given command-line layer info."""
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
+	# layer_info = layer_info.split()
 	print("Building network")
 	tf.reset_default_graph()
 	b_mask = color_mask(misc.imread(TRAIN_INPUT_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
@@ -90,7 +90,8 @@ def check_for_commit():
 	any experiment is run from code in one specific commit."""
 	label = subprocess.check_output(["git", "status", "--untracked-files=no", "--porcelain"])
 	if str(label).count('\\n') != 0:
-		raise Exception('Not in clean git state\n')
+		print("WARNING: Not in a clean git state")
+		# raise Exception('Not in clean git state\n')
 
 
 def color_mask(img, i):
@@ -148,7 +149,7 @@ def index_of(x, sequence):
 			return i
 
 
-def load_inputs(stamps, input_dir=TRAIN_INPUT_DIR):
+def load_inputs(stamps, input_dir):
 	"""Returns a tensor of images specified by stamps. Dimensions are: image, row, column, color."""
 	inputs = np.empty((len(stamps), 480, 480, 3))
 	for i, s in enumerate(stamps):
@@ -156,7 +157,7 @@ def load_inputs(stamps, input_dir=TRAIN_INPUT_DIR):
 	return inputs
 
 
-def load_masks(stamps, input_dir=TRAIN_INPUT_DIR):
+def load_masks(stamps, input_dir):
 	"""Returns a tensor of correct label categories (i.e., indices into preprocess.COLORS) for each pixel in each
 	image specified by stamps. Dimensions are image, row, column. The tensor has been flattened into a single
 	vector."""
@@ -168,14 +169,16 @@ def load_masks(stamps, input_dir=TRAIN_INPUT_DIR):
 
 def load_validation_batch(n):
 	"""Returns the inputs and correct outputs for the first n validation examples."""
+	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	valid_stamps = load_validation_stamps(n)
-	valid_inputs = load_inputs(valid_stamps)
-	valid_correct = load_masks(valid_stamps)
+	valid_inputs = load_inputs(valid_stamps, TRAIN_INPUT_DIR)
+	valid_correct = load_masks(valid_stamps, TRAIN_INPUT_DIR)
 	return valid_inputs, valid_correct
 
 
 def load_validation_stamps(n):
 	"""Reads the valid.stamps file in data and returns a list of the first n stamps."""
+	from train_launch import TRAIN_INPUT_DIR
 	with open(TRAIN_INPUT_DIR + '/valid.stamps', 'rb') as f:
 		return pickle.load(f)[:n]
 
@@ -270,6 +273,7 @@ def save_params(job_number, layer_info, out_dir):
 
 def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_inputs, valid_correct, result_dir):
 	"""Trains the network."""
+	from train_launch import BATCH_SIZE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	print("Training network")
 	start = time.time()
 	# Get image and make the mask into a one-hotted mask
@@ -285,8 +289,8 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 				if j * BATCH_SIZE >= len(train_stamps):
 					j = 1
 				batch = train_stamps[(j - 1) * BATCH_SIZE: j * BATCH_SIZE]
-				inputs = load_inputs(batch)
-				correct = load_masks(batch)
+				inputs = load_inputs(batch, TRAIN_INPUT_DIR)
+				correct = load_masks(batch, TRAIN_INPUT_DIR)
 				train_step.run(feed_dict={x: inputs, y_: correct})
 				if i % 10 == 0:
 					saver.save(sess, result_dir + 'weights', global_step=i)
@@ -302,8 +306,10 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 
 
 def train(job_number, layer_info):
+	from train_launch import BATCH_SIZE
 	global out_dir
 	check_for_commit()
+	layer_info = layer_info.split()
 	out_dir = 'results/' + job_number + '/'
 	os.makedirs(out_dir, exist_ok=True)
 	save_params(job_number, layer_info, out_dir)
