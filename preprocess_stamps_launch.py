@@ -13,38 +13,27 @@ import os
 from PIL import Image
 from scipy import misc
 from utils import extract_times_from_files_in_directory, separate_data, BLACK, BLUE
+from config import TYPICAL_DATA_DIR, TYPICAL_DATA_CSV
 
-# Set the names of the training, validation, and testing timestamp files.
-TRAIN_STAMP_PATH = 'typical_data/train.stamps'
-VALID_STAMP_PATH = 'typical_data/valid.stamps'
-TEST_STAMP_PATH = 'typical_data/test.stamps'
-
-RES_DIR = 'typical_data/res'
 
 def create_constant_mask(color, filename):
 	"""Creates a mask where any pixels not always of color are BLUE. Saves it in filename."""
 	b_mask = np.full((480, 480, 3), color)
-	for dirpath, subdirs, files in os.walk(OUTPUT_DIR + '/simplemask/'):
+	for dirpath, subdirs, files in os.walk(TYPICAL_DATA_DIR + '/simplemask/'):
 		for file in files:
 			img = misc.imread(os.path.join(dirpath, file))
 			b_mask[(img != color).any(axis=2)] = BLUE
 	Image.fromarray(b_mask.astype('uint8')).save(filename)
 
 
-def setup(TRAIN_STAMP_PATH,VALID_STAMP_PATH,TEST_STAMP_PATH):
-	times = extract_times_from_files_in_directory(RES_DIR)
-	separate_data(times, TRAIN_STAMP_PATH, VALID_STAMP_PATH, TEST_STAMP_PATH)
-	create_constant_mask(BLACK, OUTPUT_DIR + '/always_black_mask.png')
+def setup(train, valid, test):
+	times = extract_times_from_files_in_directory(TYPICAL_DATA_DIR + "/res")
+	separate_data(times, train, valid, test)
+	create_constant_mask(BLACK, TYPICAL_DATA_DIR + '/always_black_mask.png')
 
 
 if __name__ == "__main__":
-	OUTPUT_DIR = 'typical_data'
-	TRAIN_STAMP_PATH = OUTPUT_DIR + '/train.stamps'
-	VALID_STAMP_PATH = OUTPUT_DIR + '/valid.stamps'
-	TEST_STAMP_PATH = OUTPUT_DIR + '/test.stamps'
-	setup(TRAIN_STAMP_PATH,VALID_STAMP_PATH,TEST_STAMP_PATH)
-	OUTPUT_DIR = 'dubious_data'
-	TRAIN_STAMP_PATH = OUTPUT_DIR + '/train.stamps'
-	VALID_STAMP_PATH = OUTPUT_DIR + '/valid.stamps'
-	TEST_STAMP_PATH = OUTPUT_DIR + '/test.stamps'
-	setup(TRAIN_STAMP_PATH, VALID_STAMP_PATH, TEST_STAMP_PATH)
+	train_stamp_path = TYPICAL_DATA_DIR + '/train.stamps'
+	valid_stamp_path = TYPICAL_DATA_DIR + '/valid.stamps'
+	test_stamp_path = TYPICAL_DATA_DIR + '/test.stamps'
+	setup(train_stamp_path, valid_stamp_path, test_stamp_path)
