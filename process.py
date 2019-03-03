@@ -9,14 +9,14 @@ import sys
 import tensorflow as tf
 
 from utils import *
-#from process_launch import INPUT_DIR, INPUT_DATA_CSV
 from train import build_net, load_inputs
+from config import RESULTS_DIR
 
 
 def process_network_masks(timestamps, exp_label, input_dir):
 	"""Processes images corresponding to a list of timestamps. Saves each mask in the network directory. Does NOT
 	check to make sure that the image exists. This must be done by the user before calling this method."""
-	network_dir = "results/" + exp_label + "/"
+	network_dir = RESULTS_DIR + '/' + exp_label + '/'
 	args = read_parameters(network_dir)
 	step_version = read_last_iteration_number(network_dir)
 	layer_info = args['Layer info'].split()
@@ -34,7 +34,7 @@ def process_network_masks(timestamps, exp_label, input_dir):
 
 def get_network_mask(timestamp, exp_label, input_dir):
 	"""Returns the mask of a given timestamp from the network's output."""
-	network_dir = "results/" + exp_label + "/"
+	network_dir = RESULTS_DIR + '/' + exp_label + '/'
 	args = read_parameters(network_dir)
 	step_version = read_last_iteration_number(network_dir)
 	layer_info = args['Layer info'].split()
@@ -51,7 +51,7 @@ def save_network_mask(timestamp, exp_label, mask=None):
 	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
 	if mask is None:
 		mask = get_network_mask(timestamp, exp_label)
-	path = 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+	path = RESULTS_DIR + '/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
 		timestamp) + '/'
 	os.makedirs(path, exist_ok=True)
 	file = 'networkmask_' + exp_label + '.' + timestamp + '.png'
@@ -78,7 +78,7 @@ def process(exp_label, start, finish, INPUT_DIR, INPUT_DATA_CSV):
 
 if __name__ == '__main__':
 	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	start = int(sys.argv[2])  # The starting index of the timestamp in the typical_data/shcu_typical_data.csv file to consider
+	start = int(sys.argv[2])  # Starting index of the timestamp in the typical_data/shcu_typical_data.csv file
 	finish = int(sys.argv[3])  # Final timestamp to consider
 	INPUT_DIR = sys.argv[4]
 	INPUT_DATA_CSV = sys.argv[5]
