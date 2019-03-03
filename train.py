@@ -35,15 +35,15 @@ from tensorflow import set_random_seed
 set_random_seed(0)
 import tensorflow as tf
 from utils import *
+from config import *
 
 
 def build_net(layer_info):
 	"""Builds a network given command-line layer info."""
-	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
-	# layer_info = layer_info.split()
-	print("Building network")
+	print("Building network with structure: ")
+	print(layer_info)
 	tf.reset_default_graph()
-	b_mask = color_mask(misc.imread(TRAIN_INPUT_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
+	b_mask = color_mask(misc.imread(TYPICAL_DATA_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
 	x = tf.placeholder(tf.float32, [None, 480, 480, 3])
 	num_layers = len(layer_info)
 	table, last_name = parse_layer_info(layer_info)
@@ -75,19 +75,19 @@ def build_net(layer_info):
 	non_green = tf.not_equal(all_y_, 4)
 	y = tf.boolean_mask(all_y, non_green)
 	y_ = tf.boolean_mask(all_y_, non_green)
-	cross_entropy = tf.reduce_mean(
-			tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y_, logits=y))
+	cross_entropy = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y_, logits=y))
 	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 	correct_prediction = tf.equal(tf.argmax(y, 1), y_)
 	saver = tf.train.Saver()
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 	init = tf.global_variables_initializer()
+	print("Finished building network.")
 	return train_step, accuracy, saver, init, x, all_y, all_y_, cross_entropy
 
 
 def check_for_commit():
-	"""Raises an exception if the git state is not clean. This ensures that
-	any experiment is run from code in one specific commit."""
+	"""Raises an exception if the git state is not clean. This ensures that any experiment is run from code in one
+	specific commit."""
 	label = subprocess.check_output(["git", "status", "--untracked-files=no", "--porcelain"])
 	if str(label).count('\\n') != 0:
 		print("WARNING: Not in a clean git state")
@@ -95,11 +95,9 @@ def check_for_commit():
 
 
 def color_mask(img, i):
-	"""Takes a color mask and returns an image of one-hot vectors.
-	Each vector is all zeroes, except that the ith element of pixels that
-	are not BLUE in img is 1e7. This results in a "mask" that can be
-	added to the output of a network layer, overwhelming that layer's
-	normal output to dominate softmax."""
+	"""Takes a color mask and returns an image of one-hot vectors. Each vector is all zeroes, except that the ith
+	element of pixels that are not BLUE in img is 1e7. This results in a "mask" that can be added to the output of a
+	network layer, overwhelming that layer's normal output to dominate softmax."""
 	r, c = img.shape[:-1]
 	bool_mask = np.zeros((r, c), dtype=bool)
 	bool_mask[(img != BLUE).any(axis=2)] = True
@@ -109,19 +107,15 @@ def color_mask(img, i):
 
 
 def conv2d(x, W, layer_num):
-	"""Returns a 2D convolutional layer with weights W. (Biases are added
-	later.)"""
-	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME',
-			name='conv' + str(layer_num))
+	"""Returns a 2D convolutional layer with weights W. (Biases are added later.)"""
+	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME', name='conv' + str(layer_num))
 
 
 def convo_layer(num_in, num_out, width, prev, name, relu=True):
-	"""Returns a TensorFlow convolutional layer with the specified width,
-	taking input from prev."""
+	"""Returns a TensorFlow convolutional layer with the specified width, taking input from prev."""
 	num_in, num_out, width = int(num_in), int(num_out), int(width)
 	with tf.variable_scope(name):
-		initial = tf.truncated_normal([width, width, num_in, num_out],
-				stddev=(2 / math.sqrt(width * width * num_in)))
+		initial = tf.truncated_normal([width, width, num_in, num_out], stddev=(2 / math.sqrt(width * width * num_in)))
 		W = tf.get_variable("weights", initializer=initial)
 		initial = tf.constant(0.1, shape=[num_out])
 		b = tf.Variable(initial, name='biases')
@@ -133,8 +127,7 @@ def convo_layer(num_in, num_out, width, prev, name, relu=True):
 
 
 def get_name_oper(layer):
-	"""Returns the name and operator from a command-line layer
-	specification."""
+	"""Returns the name and operator from a command-line layer specification."""
 	hold = layer.split(":")
 	name = hold[0]
 	oper = hold[1].split("-")[0]
@@ -169,17 +162,15 @@ def load_masks(stamps, input_dir):
 
 def load_validation_batch(n):
 	"""Returns the inputs and correct outputs for the first n validation examples."""
-	from train_launch import BATCH_SIZE, LEARNING_RATE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	valid_stamps = load_validation_stamps(n)
-	valid_inputs = load_inputs(valid_stamps, TRAIN_INPUT_DIR)
-	valid_correct = load_masks(valid_stamps, TRAIN_INPUT_DIR)
+	valid_inputs = load_inputs(valid_stamps, TYPICAL_DATA_DIR)
+	valid_correct = load_masks(valid_stamps, TYPICAL_DATA_DIR)
 	return valid_inputs, valid_correct
 
 
 def load_validation_stamps(n):
 	"""Reads the valid.stamps file in data and returns a list of the first n stamps."""
-	from train_launch import TRAIN_INPUT_DIR
-	with open(TRAIN_INPUT_DIR + '/valid.stamps', 'rb') as f:
+	with open(TYPICAL_DATA_DIR + '/valid.stamps', 'rb') as f:
 		return pickle.load(f)[:n]
 
 
@@ -204,8 +195,7 @@ def max_pool_layer(prev, width, height, name):
 	"""Returns a TensorFlow max_pool layers of the specified width and height,
 	taking input from prev."""
 	width, height = int(width), int(height)
-	return tf.nn.max_pool(prev, [1, width, height, 1], strides=[1, 1, 1, 1],
-			padding='SAME', name=name)
+	return tf.nn.max_pool(prev, [1, width, height, 1], strides=[1, 1, 1, 1], padding='SAME', name=name)
 
 
 def parse_layer_info(layer_info):
@@ -236,8 +226,7 @@ def parse_layer_info(layer_info):
 			else:
 				ins = table[args[2]]['outs']
 			prev_name = args[2]
-			info = {"outs": outs, "ins": ins, "kernel": kernel,
-				"prev": prev_name, "tf_name": tf_name}
+			info = {"outs": outs, "ins": ins, "kernel": kernel, "prev": prev_name, "tf_name": tf_name}
 		# Max-pool layer
 		# name:maxpool-width-height-prev
 		if oper == 'maxpool':
@@ -245,8 +234,7 @@ def parse_layer_info(layer_info):
 			pool_height = args[1]
 			outs = (table[args[2]])["outs"]
 			prev_name = args[2]
-			info = {"outs": outs, "pool_width": pool_width,
-				"pool_height": pool_height, "prev": prev_name}
+			info = {"outs": outs, "pool_width": pool_width, "pool_height": pool_height, "prev": prev_name}
 		# Concatenation layer
 		# name:concat-prev1-prev2
 		if oper == 'concat':
@@ -261,8 +249,7 @@ def parse_layer_info(layer_info):
 
 
 def save_params(job_number, layer_info, out_dir):
-	"""Write information about this experiment to a file parameters.txt in
-	out_dir."""
+	"""Write information about this experiment to a file parameters.txt in out_dir."""
 	F = open(out_dir + 'parameters.txt', "w+")
 	F.write("Job number:\t" + str(job_number) + "\n")
 	F.write("Layer info:\t" + ' '.join(layer_info) + "\n")
@@ -273,50 +260,45 @@ def save_params(job_number, layer_info, out_dir):
 
 def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_inputs, valid_correct, result_dir):
 	"""Trains the network."""
-	from train_launch import BATCH_SIZE, TRAINING_STEPS, TRAIN_INPUT_DIR
 	print("Training network")
 	start = time.time()
 	# Get image and make the mask into a one-hotted mask
-	with open(TRAIN_INPUT_DIR + '/train.stamps', 'rb') as f:
+	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
 	with open(result_dir + 'output.txt', 'w') as f:
 		with tf.Session() as sess:
 			init.run()
 			print('Step\tTrain\tValid', file=f, flush=True)
 			j = 0
-			for i in range(1, TRAINING_STEPS + 1):
+			for i in range(1, NUM_TRAINING_BATCHES + 1):
 				j += 1
-				if j * BATCH_SIZE >= len(train_stamps):
+				if j * TRAINING_BATCH_SIZE >= len(train_stamps):
 					j = 1
-				batch = train_stamps[(j - 1) * BATCH_SIZE: j * BATCH_SIZE]
-				inputs = load_inputs(batch, TRAIN_INPUT_DIR)
-				correct = load_masks(batch, TRAIN_INPUT_DIR)
+				batch = train_stamps[(j - 1) * TRAINING_BATCH_SIZE: j * TRAINING_BATCH_SIZE]
+				inputs = load_inputs(batch, TYPICAL_DATA_DIR)
+				correct = load_masks(batch, TYPICAL_DATA_DIR)
 				train_step.run(feed_dict={x: inputs, y_: correct})
 				if i % 10 == 0:
-					saver.save(sess, result_dir + 'weights', global_step=i)
-					train_accuracy = accuracy.eval(feed_dict={
-						x: inputs, y_: correct})
-					valid_accuracy = accuracy.eval(feed_dict={
-						x: valid_inputs, y_: valid_correct})
+					saver.save(sess, result_dir + 'weights', global_step=i)  # TODO: Shouldn't this be done when training is done?
+					train_accuracy = accuracy.eval(feed_dict={x: inputs, y_: correct})
+					valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
 					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy), file=f, flush=True)
 		stop = time.time()
-		F = open(out_dir + 'parameters.txt', 'a')
+		F = open(result_dir + 'parameters.txt', 'a')
 		F.write('Elapsed time:\t' + str(stop - start) + ' seconds\n')
 		F.close()
 
 
 def train(job_number, layer_info):
-	from train_launch import BATCH_SIZE
-	global out_dir
 	check_for_commit()
 	layer_info = layer_info.split()
-	out_dir = 'results/' + job_number + '/'
+	out_dir = RESULTS_DIR + '/' + job_number + '/'
 	os.makedirs(out_dir, exist_ok=True)
 	save_params(job_number, layer_info, out_dir)
-	train_net(*build_net(layer_info), *load_validation_batch(BATCH_SIZE), out_dir)
+	train_net(*build_net(layer_info), *load_validation_batch(TRAINING_BATCH_SIZE), out_dir)
 
 
 if __name__ == '__main__':
-	job_number = sys.argv[1]
-	layer_info = sys.argv[2::]
-	train(job_number, layer_info)
+	job_num = sys.argv[1]
+	layer_string = sys.argv[2::]
+	train(job_num, layer_string)
