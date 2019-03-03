@@ -6,11 +6,11 @@ This script can be run after fsc_launch.py has been run and its tasks have finis
 
 This script requires four files: 'shcu_typical_data.csv', 'shcu_dubious_data.csv', 'typical_fsc.csv', and 'dubious_fsc.csv'.
 * The 'shcu' files should be located in the typical_data/ and dubious_data/ directories.
-* The 'fsc' files should be located in the results/EXP_LABEL/ directory. EX: results/e70-00/typical_fsc.csv
+* The 'fsc' files should be located in the results/EXPERIMENT_LABEL/ directory. EX: results/e70-00/typical_fsc.csv
 Both of these requirements should be satisfied if the previous scripts have been run correctly.
 
 This script creates two plots and saves them as 'typical_tsi_arscl_fsc.png' and 'compare_tsi_network_fsc.png' in the
-results/EXP_LABEL/ directory.
+results/EXPERIMENT_LABEL/ directory.
 """
 
 import pickle
@@ -22,7 +22,6 @@ from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_d
 from config import *
 
 N_SAMPLES = 2500
-EXP_LABEL = 'e82-00'
 
 TYPICAL_VALID_FILE = "typical_data/valid.stamps"
 DUBIOUS_VALID_FILE = "dubious_data/poster_valid.stamps"
@@ -70,7 +69,7 @@ def scatter_plot(scatter, name, ylabel, title, xlabel):
 	plt.ylabel(ylabel)
 	plt.scatter(scatter[0], scatter[1], s=0.5)
 	plt.plot([0, 1], [0, 1], c='orange', lw=2)
-	plt.savefig(RESULTS_DIR + '/' + EXP_LABEL + name, dpi=300)
+	plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + name, dpi=300)
 	plt.close()
 
 
@@ -93,13 +92,13 @@ if __name__ == "__main__":
 	dubious_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_arscl_dataframe)
 
 	# Reads data from typical_fsc.csv and uses the times sample from shcu_typical_data.csv to get data for plotting
-	typical_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXP_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
+	typical_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
 	typical_network_dataframe = typical_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	typical_network_dataframe = typical_network_dataframe[typical_network_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)
 
 	# Reads data from dubious_fsc.csv and uses the times sample from shcu_dubious_data.csv to get data for plotting
-	dubious_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXP_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
+	dubious_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
 	dubious_network_dataframe = dubious_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	dubious_network_dataframe = dubious_network_dataframe[dubious_network_dataframe['timestamp_utc'].isin(dubious_times)]
 	dubious_arscl_network = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_network_dataframe)
@@ -125,7 +124,7 @@ if __name__ == "__main__":
 		ax.scatter(data[i][0], data[i][1], s=50, alpha=0.3)
 		ax.plot([0, 1], [0, 1], lw=4, color='orange')
 	fig.tight_layout()
-	fig.savefig(RESULTS_DIR + '/' + EXP_LABEL + "/fsc_analyze_image_arscl.png")
+	fig.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + "/fsc_analyze_image_arscl.png")
 	# plt.show()
 
 	# RMSE plot
@@ -151,4 +150,4 @@ if __name__ == "__main__":
 		labelbottom=True)
 	plt.xticks((index + bar_width / 2), ('Typical Data', 'Dubious Data'), fontsize=26)
 	ax.legend(fontsize=20)
-	fig.savefig("results/" + EXP_LABEL + "/fsc_rmse_barchart.png")
+	fig.savefig("results/" + EXPERIMENT_LABEL + "/fsc_rmse_barchart.png")

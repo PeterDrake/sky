@@ -12,10 +12,9 @@ fsc_launch.csv to match your goals. EX: python3 fsc.py e70-00
 """
 
 import sys
-
-# from fsc_launch import INPUT_DATA_CSV, OUTPUT_DATA_CSV
 from utils import *
-from config import RESULTS_DIR
+from config import RESULTS_DIR, EXPERIMENT_LABEL
+
 
 def find_center(mask):
 	"""Returns the center of the locations of the first and last non-black pixels and the difference in height
@@ -106,23 +105,22 @@ def get_fsc_from_file(filename):
 		return get_fsc(mask)
 
 
-def fsc(exp_label, input_data_csv, output_data_csv):
+def fsc(input_data_csv, output_data_csv):
 	times = sorted(list(extract_data_from_csv(input_data_csv, 'timestamp_utc')))
-	with open(RESULTS_DIR + '/' + exp_label + '/' + output_data_csv, 'w') as f:
+	with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + output_data_csv, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
 		for t in times:
 			if count % 100 == 0:
 				print("progress: ", round(count / len(times) * 10000) / 100, "%")
 				f.flush()
-			if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)):
-				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, exp_label))
+			if os.path.isfile(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL)):
+				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL))
 				f.write("{},{},{},{}".format(t, fsc_z, fsc_thn_z, fsc_opq_z) + "\n")
 			count += 1
 
 
 if __name__ == '__main__':
-	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	INPUT_DATA_CSV = sys.argv[2]
-	OUTPUT_DATA_CSV = sys.argv[3]
-	fsc(exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV)
+	INPUT_DATA_CSV = sys.argv[1]
+	OUTPUT_DATA_CSV = sys.argv[2]
+	fsc(INPUT_DATA_CSV, OUTPUT_DATA_CSV)

@@ -7,7 +7,7 @@ BLT = False
 
 # Experiment label: used for organizing data. This should be a unique identifier like "e81-00" and should be changed
 # with each run through the experiment.
-EXPERIMENT_LABEL = "e82-00"
+EXPERIMENT_LABEL = "e83-00"
 
 # Paths for typical (training) and dubious (evaluation) data
 TYPICAL_DATA_DIR = "typical_data"
@@ -21,11 +21,10 @@ SMALL_PROCESS_SIZE = 100
 
 # The number of sky/decision image pairs to train on in a single batch and the number of batches/steps to perform.
 TRAINING_BATCH_SIZE = 10
-NUM_TRAINING_BATCHES = 10
+NUM_TRAINING_BATCHES = 30
 
 # Set the learning rate for training
 LEARNING_RATE = 0.01
-
 
 
 # =========================== Local Configurations (Ignore if BLT = True) =========================== #

@@ -10,7 +10,7 @@ import tensorflow as tf
 
 from utils import *
 from train import build_net, load_inputs
-from config import RESULTS_DIR
+from config import RESULTS_DIR, EXPERIMENT_LABEL
 
 
 def process_network_masks(timestamps, exp_label, input_dir):
@@ -65,21 +65,20 @@ def network_output_exists(timestamp, exp_label, path=None):
 	return os.path.isfile(path)
 
 
-def process(exp_label, start, finish, INPUT_DIR, INPUT_DATA_CSV):
-	temp = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))[start:finish]
+def process(start, finish, input_directory, input_csv):
+	temp = sorted(list(extract_data_from_csv(input_csv, 'timestamp_utc')))[start:finish]
 	times = []
 	for t in temp:
-		if not network_output_exists(t, exp_label):
-			if os.path.isfile(extract_img_path_from_time(t, INPUT_DIR)):
-				if os.path.getsize(extract_img_path_from_time(t, INPUT_DIR)) != 0:
+		if not network_output_exists(t, EXPERIMENT_LABEL):
+			if os.path.isfile(extract_img_path_from_time(t, input_directory)):
+				if os.path.getsize(extract_img_path_from_time(t, input_directory)) != 0:
 					times.append(t)
-	process_network_masks(times, exp_label, INPUT_DIR)
+	process_network_masks(times, EXPERIMENT_LABEL, input_directory)
 
 
 if __name__ == '__main__':
-	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	start = int(sys.argv[2])  # Starting index of the timestamp in the typical_data/shcu_typical_data.csv file
-	finish = int(sys.argv[3])  # Final timestamp to consider
-	INPUT_DIR = sys.argv[4]
-	INPUT_DATA_CSV = sys.argv[5]
-	process()
+	s = int(sys.argv[1])  # Starting index of the timestamp in the typical_data/shcu_typical_data.csv file
+	f = int(sys.argv[2])  # Final timestamp to consider
+	input_dir = sys.argv[3]
+	input_data_csv = sys.argv[4]
+	process(s, f, input_dir, input_data_csv)

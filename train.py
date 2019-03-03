@@ -289,16 +289,15 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 		F.close()
 
 
-def train(job_number, layer_info):
+def train(layer_info):
 	check_for_commit()
 	layer_info = layer_info.split()
-	out_dir = RESULTS_DIR + '/' + job_number + '/'
+	out_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/'
 	os.makedirs(out_dir, exist_ok=True)
-	save_params(job_number, layer_info, out_dir)
+	save_params(EXPERIMENT_LABEL, layer_info, out_dir)
 	train_net(*build_net(layer_info), *load_validation_batch(TRAINING_BATCH_SIZE), out_dir)
 
 
 if __name__ == '__main__':
-	job_num = sys.argv[1]
-	layer_string = sys.argv[2::]
-	train(job_num, layer_string)
+	layer_string = sys.argv[1::]
+	train(layer_string)

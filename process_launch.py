@@ -10,9 +10,6 @@ import os
 from config import *
 from process import process
 
-# Specify the labels that correspond to networks of interest. Ie 'e70-00'
-exp_labels = ['e82-00']
-
 
 def launch_process(input_data_csv, job_name, input_dir):
 	"""Starts processing tasks."""
@@ -20,15 +17,14 @@ def launch_process(input_data_csv, job_name, input_dir):
 	for _ in open(input_data_csv):
 		total_length += 1
 	batch_length = int(total_length / NUM_PROCESS_BATCHES)
-	for exp_label in exp_labels:
-		for i in range(NUM_PROCESS_BATCHES):
-			name = job_name + exp_label + '-{:0>2}'.format(i)
-			start = batch_length * i
-			finish = batch_length * (i + 1) if batch_length * (i + 1) < total_length else total_length
-			if BLT:
-				os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {} {} {}" -P 1'.format(name, exp_label, int(start), int(finish), input_dir, input_data_csv))
-			else:
-				process(exp_label, int(start), int(finish), input_dir, input_data_csv)
+	for i in range(NUM_PROCESS_BATCHES):
+		name = job_name + EXPERIMENT_LABEL + '-{:0>2}'.format(i)
+		start = batch_length * i
+		finish = batch_length * (i + 1) if batch_length * (i + 1) < total_length else total_length
+		if BLT:
+			os.system('SGE_Batch -r "{}" -c "python3 -u process.py {} {} {} {} {}" -P 1'.format(name, int(start), int(finish), input_dir, input_data_csv))
+		else:
+			process(int(start), int(finish), input_dir, input_data_csv)
 
 
 if __name__ == "__main__":
