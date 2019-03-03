@@ -8,22 +8,17 @@ TEST_FILE in the OUTPUT_DIR directory as pickled python lists.
 
 import pickle
 from utils import extract_data_from_csv
+from config import DUBIOUS_DATA_DIR, DUBIOUS_DATA_CSV
 
-# Set the csv file containing the timestamps to use.
-INPUT_DATA_CSV = 'dubious_data/shcu_dubious_data.csv'
-
-# Set the directory to save the timestamps in.
-OUTPUT_DIR = 'dubious_data'
-
-# Set the filenames to store the batches in
-DUBIOUS_VALID_FILE = OUTPUT_DIR + '/poster_valid.stamps'
-DUBIOUS_TEST_FILE = OUTPUT_DIR + '/poster_test.stamps'
+# Set the file names to store the batches in
+DUBIOUS_VALID_FILE = DUBIOUS_DATA_DIR + '/poster_valid.stamps'
+DUBIOUS_TEST_FILE = DUBIOUS_DATA_DIR + '/poster_test.stamps'
 
 # Set the ratio of validation to total stamps. Ie: RATIO > 0.5 means more validation than testing.
 RATIO = 0.6
 
 if __name__ == "__main__":
-	times = extract_data_from_csv(INPUT_DATA_CSV, "timestamp_utc")
+	times = extract_data_from_csv(DUBIOUS_DATA_CSV, "timestamp_utc")
 	timestamps = list(times)
 	valid = timestamps[:int(len(timestamps) * RATIO)]
 	test = timestamps[int(len(timestamps) * RATIO):]
