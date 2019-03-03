@@ -14,22 +14,19 @@ results/EXP_LABEL/ directory.
 """
 
 import pickle
-import heapq
 import numpy as np
 import matplotlib
-
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-#from fsc_launch import INPUT_DATA_CSV
-# from poster_stamps_launch import DUBIOUS_VALID_FILE  # TODO: Make this a bit more clear - dubious valid stamps file
-# from preprocess_stamps_launch import TYPICAL_VALID_FILE  # TODO: Make this a bit more clear - typical valid stamps file
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
+from config import *
 
 N_SAMPLES = 2500
-EXP_LABEL = 'e81-00'
+EXP_LABEL = 'e82-00'
 
 TYPICAL_VALID_FILE = "typical_data/valid.stamps"
 DUBIOUS_VALID_FILE = "dubious_data/poster_valid.stamps"
+
 
 def load_pickled_file(filename):
 	"""Loads a pickled file."""
@@ -37,27 +34,7 @@ def load_pickled_file(filename):
 		return pickle.load(f)
 
 
-# def find_worst_results(filename, num_worst=5):
-# 	"""Finds the timestamps with the largest disagreement between network and TSI decision images. Returns a
-# 	dictionary of length num_worst where the key is the disagreement rate and the value is the timestamp."""
-# 	frame = read_csv_file(filename)
-# 	net_times = set(extract_data_from_dataframe(frame, "timestamp_utc"))
-# 	shcu = read_csv_file(INPUT_DATA_CSV)
-# 	shcu_times = set(extract_data_from_dataframe(shcu, "timestamp_utc"))
-# 	times = net_times.intersection(shcu_times)
-# 	disagreement_rates = [(-1, '')] * num_worst
-# 	heapq.heapify(disagreement_rates)
-# 	for t in times:
-# 		t = int(t)
-# 		net_fsc = extract_data_for_date_from_dataframe("fsc_z", t, frame)
-# 		shcu_fsc = extract_data_for_date_from_dataframe("fsc_z", t, shcu)
-# 		diff = (abs(net_fsc - shcu_fsc), t)
-# 		heapq.heappushpop(disagreement_rates, diff)
-# 	return sorted(disagreement_rates)
-
-
-def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe, arscl_header="cf_tot",
-                                                image_header="fsc_z"):
+def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe, arscl_header="cf_tot", image_header="fsc_z"):
 	"""Returns lists containing fractional sky cover obtained from two dataframes. Expects 'image_dataframe' to be a
 	pandas dataframe with a header for 'fsc_z' and expects 'arscl_dataframe' to be a pandas dataframe with a header
 	for 'cf_tot'. Expects both dataframes to have a header for 'timestamp_utc'. Additionally expects the dataframes to
@@ -93,14 +70,14 @@ def scatter_plot(scatter, name, ylabel, title, xlabel):
 	plt.ylabel(ylabel)
 	plt.scatter(scatter[0], scatter[1], s=0.5)
 	plt.plot([0, 1], [0, 1], c='orange', lw=2)
-	plt.savefig('results/' + EXP_LABEL + name, dpi=300)
+	plt.savefig(RESULTS_DIR + '/' + EXP_LABEL + name, dpi=300)
 	plt.close()
 
 
 if __name__ == "__main__":
 
 	# Reads data from shcu_typical_data.csv, takes a sample of the times, and gets data for plotting
-	typical_arscl_dataframe = read_csv_file('typical_data/shcu_typical_data.csv')  # Contains both ARSCL and TSI Data
+	typical_arscl_dataframe = read_csv_file(TYPICAL_DATA_CSV)  # Contains both ARSCL and TSI Data
 	typical_arscl_dataframe = typical_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	typical_times = load_pickled_file(TYPICAL_VALID_FILE)
 	typical_times = typical_times[0:N_SAMPLES]
@@ -108,7 +85,7 @@ if __name__ == "__main__":
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
 	# Reads data from shcu_dubious_data.csv, takes a sample of the times, and gets data for plotting
-	dubious_arscl_dataframe = read_csv_file('dubious_data/shcu_dubious_data.csv')  # Contains both ARSCL and TSI Data
+	dubious_arscl_dataframe = read_csv_file(DUBIOUS_DATA_CSV)  # Contains both ARSCL and TSI Data
 	dubious_arscl_dataframe = dubious_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	dubious_times = load_pickled_file(DUBIOUS_VALID_FILE)  # Change this to TEST_FILE for final plotting.
 	dubious_times = dubious_times[0:N_SAMPLES]
@@ -116,22 +93,20 @@ if __name__ == "__main__":
 	dubious_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_arscl_dataframe)
 
 	# Reads data from typical_fsc.csv and uses the times sample from shcu_typical_data.csv to get data for plotting
-	typical_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
+	typical_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXP_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
 	typical_network_dataframe = typical_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	typical_network_dataframe = typical_network_dataframe[typical_network_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)
 
 	# Reads data from dubious_fsc.csv and uses the times sample from shcu_dubious_data.csv to get data for plotting
-	dubious_network_dataframe = read_csv_file('results/' + EXP_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
+	dubious_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXP_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
 	dubious_network_dataframe = dubious_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	dubious_network_dataframe = dubious_network_dataframe[dubious_network_dataframe['timestamp_utc'].isin(dubious_times)]
 	dubious_arscl_network = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_network_dataframe)
 
 	# Gets comparison data for TSI and Network decision images on typical and dubious data
-	typical_tsi_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe,
-	                                                               arscl_header="fsc_z")
-	dubious_tsi_network = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_network_dataframe,
-	                                                              arscl_header="fsc_z")
+	typical_tsi_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe, arscl_header="fsc_z")
+	dubious_tsi_network = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_network_dataframe, arscl_header="fsc_z")
 
 	# Typical/Dubious Data FSC vs CF Plots for TSI and Network Decision Images
 	titles = ['Typical Data', 'Dubious Data']
@@ -150,7 +125,7 @@ if __name__ == "__main__":
 		ax.scatter(data[i][0], data[i][1], s=50, alpha=0.3)
 		ax.plot([0, 1], [0, 1], lw=4, color='orange')
 	fig.tight_layout()
-	fig.savefig("results/" + EXP_LABEL + "/fsc_analyze_image_arscl.png")
+	fig.savefig(RESULTS_DIR + '/' + EXP_LABEL + "/fsc_analyze_image_arscl.png")
 	# plt.show()
 
 	# RMSE plot

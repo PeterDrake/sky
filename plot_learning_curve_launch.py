@@ -6,13 +6,14 @@ For each network specified in experiment labels, this script makes a plot of the
 """
 
 import matplotlib.pyplot as plt
+from config import RESULTS_DIR
 
 EXP_LABELS = ['e81-00']
 
 # TODO: Refactor for poster use instead of presentation use
 if __name__ == "__main__":
 	for exp_label in EXP_LABELS:
-		with open("results/" + exp_label + "/output.txt") as f:
+		with open(RESULTS_DIR + '/' + exp_label + "/output.txt") as f:
 			x, train, valid = [], [], []
 			for line in f.readlines()[1:]:
 				line = line.split()
@@ -29,4 +30,4 @@ if __name__ == "__main__":
 			ax.plot(x, valid, label="validation")
 			ax.legend(loc='lower right', fontsize=20)
 			plt.tight_layout()
-			fig.savefig('results/' + exp_label + '/accuracy_vs_batch.png', bbox_inches='tight')
+			fig.savefig(RESULTS_DIR + '/' + exp_label + '/accuracy_vs_batch.png', bbox_inches='tight')
