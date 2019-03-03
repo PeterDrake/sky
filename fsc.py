@@ -15,7 +15,7 @@ import sys
 
 # from fsc_launch import INPUT_DATA_CSV, OUTPUT_DATA_CSV
 from utils import *
-
+from config import RESULTS_DIR
 
 def find_center(mask):
 	"""Returns the center of the locations of the first and last non-black pixels and the difference in height
@@ -106,9 +106,9 @@ def get_fsc_from_file(filename):
 		return get_fsc(mask)
 
 
-def fsc(exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV):
-	times = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))
-	with open('results/' + exp_label + '/' + OUTPUT_DATA_CSV, 'w') as f:
+def fsc(exp_label, input_data_csv, output_data_csv):
+	times = sorted(list(extract_data_from_csv(input_data_csv, 'timestamp_utc')))
+	with open(RESULTS_DIR + '/' + exp_label + '/' + output_data_csv, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
 		for t in times:

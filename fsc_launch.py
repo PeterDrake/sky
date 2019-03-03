@@ -13,27 +13,23 @@ EX: 'typical_data/shcu_typical_data.csv'
 """
 
 import os
-from config import BLT
+from config import *
 from fsc import fsc
 
 # Set the experiment labels to match the network(s) you'd like to evaluate fractional sky cover tasks with
 # Note: this is not used to open the network, but rather to look through its processed decision images
-EXP_LABELS = ['e81-00']
-
-# Set the input and output csv files to match the file containing timestamps you would like to use.
-# INPUT_DATA_CSV = 'dubious_data/shcu_dubious_data.csv'
-# OUTPUT_DATA_CSV = 'dubious_fsc.csv'  # Either typical_fsc.csv or dubious_fsc.csv for summer 2018
-# JOB_NAME = 'dubious-fsc-'
+EXP_LABELS = ['e82-00']
 
 
-def setup(INPUT_DATA_CSV, OUTPUT_DATA_CSV, JOB_NAME):
+def setup(job_name, input_data_csv, output_data_csv):
 	for exp_label in EXP_LABELS:
-		name = JOB_NAME + exp_label
+		name = job_name + exp_label
 		if BLT:
-			os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV))
+			os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, exp_label, input_data_csv, output_data_csv))
 		else:
-			fsc(exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV)
+			fsc(exp_label, input_data_csv, output_data_csv)
+
 
 if __name__ == "__main__":
-	setup('dubious_data/shcu_dubious_data.csv','dubious_fsc.csv', 'dubious-fsc-')
-	setup('typical_data/shcu_typical_data.csv', 'typical_fsc.csv', 'typical-fsc-')
+	setup('dubious-fsc-', DUBIOUS_DATA_CSV, 'dubious_fsc.csv')
+	setup('typical-fsc-', TYPICAL_DATA_CSV, 'typical_fsc.csv')
