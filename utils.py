@@ -1,12 +1,12 @@
 import glob
 import math
 import pickle
-
 import numpy as np
 import os
 import pandas as pd
 from PIL import Image
 from scipy import misc
+
 
 # Colors used in the decision image - DO NOT TOUCH
 WHITE = np.array([255, 255, 255])
@@ -218,6 +218,7 @@ def extract_mask_path_from_time(time, input_dir):
 	return input_dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(
 			time) + '/simplemask' + time + '.png'
 
+
 def img_save_path(time, directory):
 	"""Creates path for image."""
 	return directory + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
@@ -228,8 +229,7 @@ def mask_save_path(time, directory):
 	return directory + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def separate_data(timestamps, train_stamp_path='train.stamps', valid_stamp_path='valid.stamps',
-                  test_stamp_path='test.stamps', train_ratio=0.6, valid_ratio=0.2, test_ratio=0.2):
+def separate_data(timestamps, train_stamp_path='train.stamps', valid_stamp_path='valid.stamps', test_stamp_path='test.stamps', train_ratio=0.6, valid_ratio=0.2, test_ratio=0.2):
 	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
 	train.stamps."""
 	test, valid, train = separate_stamps(timestamps, test_ratio, valid_ratio, train_ratio)
