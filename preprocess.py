@@ -2,13 +2,13 @@
 This script is intended to be run from preprocess_launch.py, which calls this script and sends it a file. In that
 file should be a collection of timestamps separated by line.
 
-This script crops the sky photos and simplifies the decision images in the INPUT_DIR. Simplification entails cropping
+This script crops the sky photos and simplifies the decision images in the RAW_DATA_DIR. Simplification entails cropping
 and removal of the sun from the sun band.
 """
 
 import sys
 
-from preprocess_setup_launch import INPUT_DIR
+from config import RAW_DATA_DIR
 from utils import *
 
 
@@ -84,8 +84,8 @@ def preprocess(filename, output_dir):
 	for time in file:
 		time = time.replace('\n', '')
 		time = time.replace(' ', '')
-		simplify_mask(time, INPUT_DIR, output_dir)
-		simplify_image(time, INPUT_DIR, output_dir)
+		simplify_mask(time, RAW_DATA_DIR, output_dir)
+		simplify_image(time, RAW_DATA_DIR, output_dir)
 
 
 if __name__ == "__main__":
