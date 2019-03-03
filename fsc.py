@@ -112,7 +112,7 @@ def fsc(exp_label, INPUT_DATA_CSV, OUTPUT_DATA_CSV):
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
 		for t in times:
-			if count % 10 == 0:
+			if count % 100 == 0:
 				print("progress: ", round(count / len(times) * 10000) / 100, "%")
 				f.flush()
 			if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)):
