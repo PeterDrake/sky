@@ -86,6 +86,8 @@ def preprocess(filename, output_dir):
 		time = time.replace(' ', '')
 		simplify_mask(time, RAW_DATA_DIR, output_dir)
 		simplify_image(time, RAW_DATA_DIR, output_dir)
+	file.close()
+	print("Finished preprocessing sky and decision images in ", filename)
 
 
 if __name__ == "__main__":
