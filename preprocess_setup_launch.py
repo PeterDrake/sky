@@ -63,22 +63,22 @@ def setup(output_dir, timestamp_data_csv):
 	print("Cleaning the csv file.")
 	clean_csv(timestamp_data_csv)
 	print("Reading times from typical csv file.")
-	typical_times = extract_data_from_csv(timestamp_data_csv, "timestamp_utc")
-	print("Finished reading times. Eliminating unpaired times.")
-	blacklist = find_unpaired_images(typical_times, RAW_DATA_DIR)
-	times = typical_times - blacklist
-	print("{} paired images and masks found.".format(len(times)))
+	timestamps = extract_data_from_csv(timestamp_data_csv, "timestamp_utc")
 	# This can be used to process a small amount images instead of everything specified by the csv files.
 	if SMALL_PROCESS_SIZE:
+		print("Reducing the number of timestamps to around ", SMALL_PROCESS_SIZE)
 		few_times = set()
 		count = 0
-		for t in times:
+		for t in timestamps:
 			few_times.add(t)
 			count += 1
 			if count == SMALL_PROCESS_SIZE:
 				break
-		times = few_times
-		print("Using the first {} paired images and masks.".format(len(times)))
+		timestamps = few_times
+	print("Finished reading times. Eliminating unpaired times.")
+	blacklist = find_unpaired_images(timestamps, RAW_DATA_DIR)
+	times = timestamps - blacklist
+	print("{} paired images and masks found.".format(len(times)))
 	print("Creating directories for results.")
 	create_dirs(times, output_dir, res_dir)
 	print("Directories created. Preparing batches.")
@@ -86,18 +86,14 @@ def setup(output_dir, timestamp_data_csv):
 	print("Batches prepared. Writing batches to file.")
 	for i in range(len(batches)):
 		name = res_dir + "/batch" + str(i) + ".txt"
-		if not os.path.isfile(name):  # The batch file should not already exist.
-			f = open(name, 'w')
-			print("Writing batch {} data to {}".format(i, name))
-			for time in batches[i]:
-				f.write(time + '\n')
-			f.close()
-		else:
-			print("Error: File {} already exists.".format(name))
-			exit(-1)
+		f = open(name, 'w')
+		print("Writing batch {} data to {}".format(i, name))
+		for time in batches[i]:
+			f.write(time + '\n')
+		f.close()
 	print("Timestamp files complete.")
 
 
 if __name__ == '__main__':
 	setup(TYPICAL_DATA_DIR, TYPICAL_DATA_CSV)
-	setup(DUBIOUS_DATA_DIR, DUBIOUS_DATA_CSV)
+	setup(DUBIOUS_DATA_DIR, DUBIOUS_DATA_CSV)  # TODO: Is the batch file here ever used?
