@@ -1,22 +1,30 @@
-# sky
-<i>Applying convolutional neural networks to the task of semantic segmentation on (meteorological) clouds.</i>
+# Sky Machine Learning
 
-<b>Setup</b>: 
-- Download data from a Total Sky Imager (We use TSI C1 in the SGP) and unpack the tars into a convenient location.
-- Look through the documentation in each file ending in launch.py. These will tell you about the parameters to set for your specific configuration
-- Run the launch.py files in the order listed below. Before running a new file you should wait for the previous to finish.
+Applying convolutional neural networks to the task of semantic segmentation of (meteorological) clouds. 
 
 
-<b>Programs to run (<i>Currently only on BLT</i>)</b>:
-- preprocess_setup_launch.py: creates batches and sets many parameters used in preprocessing.
-- preprocess_launch.py: launches parallel tasks to simplify batches of photos and decision images.
-- preprocess_stamps_launch.py: separates data into training, validation, and testing, and makes final preparations for training.
-- train_launch.py: defines parameters for training and launches the training process for several networks.
-- process_launch.py: defines parameters for processing specific sky photos. Launches a number of jobs in parallel.
-- fsc_launch.py: computes the fractional sky cover statistic for each decision image produced by the network and saves results in a csv file.
-
-<b>To generate our plots: (<i>Currently not on BLT</i>)</b>
-- fsc_analyze_launch: requires fsc_launch to be run on good and bad data. Compares network fsc statistic to the TSI and ARSCL.
-- plot_learning_curve_launch.py: plots accuracy vs batch for the networks training process. Can be run after training is complete.
+## Quick Overview
 
 
+
+## Getting Started
+
+### Installing Dependencies
+
+Dependencies used are <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), and scipy.</i> These will need to be installed prior to running our code.
+
+### Running the Project on Your Machine
+
+After downloading our code from our repository, open the configuration file (config.py) and set the desired parameters for your machine. Note that you will have to ensure that "BLT = False" for the code to run properly on your computer.
+
+Once the configuration file is set up, you should be good to go. Now you just need to run the files ending in launch.py in the following order:
+<ol>
+  <li>preprocess_setup_launch.py</li>
+  <li>preprocess_stamps_launch.py</li>
+  <li>preprocess_launch.py</li>
+  ...
+</ol>
+
+Note that this process takes about a week end-to-end on our cluster computer (BLT), so plan acccordingly if you intend to recreate our experiment. 
+
+<b><i>If you do not intend to run our entire experiment on your computer, make sure you set <u>SMALL_PROCESS_SIZE</u> to a sufficiently small value (A few thousand should do) in config.py</i></b>.
