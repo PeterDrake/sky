@@ -18,7 +18,7 @@ Dependencies used are <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (
 After downloading our code from our repository, open the configuration file (config.py) and set the desired parameters and file paths for your machine. Note that you will have to ensure that "BLT = False" for the code to run properly on your computer.
 
 <b><em>If you do not intend to run our entire experiment on your computer, make sure <u>SMALL_PROCESS_SIZE</u> is set to a sufficiently small value (A few hundred or thousand should do) in config.py. For example:</em></b>
-```python
+```
 SMALL_PROCESS_SIZE = 300
 ```
 
