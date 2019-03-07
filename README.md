@@ -41,7 +41,3 @@ Once the configuration file is set up, you should be good to go. Now you just ne
   <li><strong>plot_learning_curve_launch.py</strong></li>
 </ol>
 
-If you are using a Mac you can run these files by opening terminal and directing to the folder to which you downloaded our code. Then type:
-```python
-python3 preprocess_setup_launch.py
-```
