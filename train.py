@@ -271,6 +271,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 		with tf.Session() as sess:
 			init.run()
 			print('Step\tTrain\tValid', file=f, flush=True)
+			print('Step\tTrain\tValid')
 			j = 0
 			for i in range(NUM_TRAINING_BATCHES):
 				j += 1
@@ -284,10 +285,12 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 					train_accuracy = accuracy.eval(feed_dict={x: inputs, y_: correct})
 					valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
 					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy), file=f, flush=True)
+					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy))
 			saver.save(sess, result_dir + 'weights', global_step=NUM_TRAINING_BATCHES)
 			train_accuracy = accuracy.eval(feed_dict={x: inputs, y_: correct})
 			valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
 			print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy), file=f, flush=True)
+			print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy))
 		stop = time.time()
 		print('Elapsed time:\t' + str(stop - start) + ' seconds')
 		F = open(result_dir + 'parameters.txt', 'a')
