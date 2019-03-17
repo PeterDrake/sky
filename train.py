@@ -262,6 +262,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 	"""Trains the network."""
 	print("Training batch size:\t" + str(TRAINING_BATCH_SIZE))
 	print("Number of batches:\t" + str(NUM_TRAINING_BATCHES))
+	print('Learning rate:\t' + str(LEARNING_RATE))
 	print("Training network")
 	start = time.time()
 	# Get image and make the mask into a one-hotted mask
@@ -297,6 +298,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 		F.write('Elapsed time:\t' + str(stop - start) + ' seconds\n')
 		F.write('Training Batch Size:\t' + str(TRAINING_BATCH_SIZE) + '\n')
 		F.write('Number of Batches:\t' + str(NUM_TRAINING_BATCHES) + '\n')
+		F.write('Learning rate:\t' + str(LEARNING_RATE) + '\n')
 		F.close()
 
 
