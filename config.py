@@ -7,7 +7,7 @@ BLT = False
 
 # Experiment label: used for organizing data. This should be a unique identifier like "e81-00" and should be changed
 # with each run through the experiment.
-EXPERIMENT_LABEL = "e90-00"
+EXPERIMENT_LABEL = "e91-00"
 
 # Paths for typical (training & evaluation) and dubious (evaluation) data
 TYPICAL_DATA_DIR = "typical_data"
@@ -17,7 +17,7 @@ DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
 # Allows a small subset of typical and dubious data to be used (Used for debugging, or a quick run through the
 # experiment. Set to 'None' to use the full set of available data.
-SMALL_PROCESS_SIZE = 1000
+SMALL_PROCESS_SIZE = 10000
 
 # Specify the structure of the network. This defines the number and ordering of layers as well as the type and size of
 # each layer.
