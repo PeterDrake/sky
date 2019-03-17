@@ -6,7 +6,7 @@ For each network specified in experiment labels, this script makes a plot of the
 """
 
 import matplotlib.pyplot as plt
-from config import RESULTS_DIR, EXPERIMENT_LABEL
+from config import RESULTS_DIR, EXPERIMENT_LABEL, TRAINING_BATCH_SIZE
 
 
 if __name__ == "__main__":
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 			valid.append(float(line[2]))
 		fig = plt.figure(figsize=(12, 9))
 		ax = fig.add_subplot(1, 1, 1)
-		ax.set_xlabel("Minibatches of 50 Images", fontsize=26)
+		ax.set_xlabel("Minibatches of {} Images".format(TRAINING_BATCH_SIZE), fontsize=26)
 		ax.set_ylabel("Accuracy", fontsize=26)
 		ax.set_title("Machine Learning Curve", fontsize=30)
 		ax.tick_params(labelsize='x-large')
