@@ -15,6 +15,7 @@ EX: 'typical_data/shcu_typical_data.csv'
 import os
 from config import *
 from fsc import fsc
+import time
 
 
 def setup(job_name, input_data_csv, output_data_csv):
@@ -26,5 +27,7 @@ def setup(job_name, input_data_csv, output_data_csv):
 
 
 if __name__ == "__main__":
+	start = time.clock()
 	setup('dubious-fsc-', DUBIOUS_DATA_CSV, 'dubious_fsc.csv')
 	setup('typical-fsc-', TYPICAL_DATA_CSV, 'typical_fsc.csv')
+	print("Elapsed time: " + str(time.clock() - start) + " seconds")

@@ -107,12 +107,13 @@ def get_fsc_from_file(filename):
 
 def fsc(input_data_csv, output_data_csv):
 	times = sorted(list(extract_data_from_csv(input_data_csv, 'timestamp_utc')))
+	spacing = int(len(times)/100)
 	with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + output_data_csv, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
 		for t in times:
-			if count % 100 == 0:
-				print("progress: ", round(count / len(times) * 10000) / 100, "%")
+			if count % spacing == 0:
+				print("progress: ", count, "%")
 				f.flush()
 			if os.path.isfile(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL)):
 				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL))
