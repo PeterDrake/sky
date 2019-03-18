@@ -7,7 +7,7 @@ BLT = False
 
 # Experiment label: used for organizing data. This should be a unique identifier like "e81-00" and should be changed
 # with each run through the experiment.
-EXPERIMENT_LABEL = "e91-03"
+EXPERIMENT_LABEL = "e92-00"
 
 # Paths for typical (training & evaluation) and dubious (evaluation) data
 TYPICAL_DATA_DIR = "typical_data"
@@ -17,7 +17,7 @@ DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
 # Allows a small subset of typical and dubious data to be used (Used for debugging, or a quick run through the
 # experiment. Set to 'None' to use the full set of available data.
-SMALL_PROCESS_SIZE = 10000
+SMALL_PROCESS_SIZE = 20000
 
 # Specify the structure of the network. This defines the number and ordering of layers as well as the type and size of
 # each layer.
@@ -25,11 +25,18 @@ NETWORK_STRUCTURE = 'a:conv-3-32-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat
 
 # The number of sky/decision image pairs to train on in a single batch and the number of batches/steps to perform.
 TRAINING_BATCH_SIZE = 23
-NUM_TRAINING_BATCHES = 1200
+NUM_TRAINING_BATCHES = 10000
 
 # Set the learning rate for training.
-LEARNING_RATE = 0.0001
+LEARNING_RATE = 0.00001
 
+# Set the maximum number of batches in a row allowed without progress. Setting this to None will effectively not bother
+# with early stopping.
+EARLY_STOPPING = 300
+
+# Decide to keep track of the network with the highest validation accuracy. If set to True, then the final network will
+# be the one with the highest observed validation accuracy.
+TRACK_BEST_NETWORK = True
 
 # =========================== Local Configurations (Ignore if BLT = True) =========================== #
 
@@ -51,7 +58,7 @@ if BLT:
 	RESULTS_DIR = "results"
 
 # The number of sky/decision image pairs to preprocess in a single job
-PREPROCESS_BATCH_SIZE = 1500
+PREPROCESS_BATCH_SIZE = 10000
 
 # The number of networks to train simultaneously and the job's priority
 NUM_NETWORKS = 1

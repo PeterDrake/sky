@@ -274,6 +274,8 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 			print('Step\tTrain\tValid', file=f, flush=True)
 			print('Step\tTrain\tValid')
 			j = 0
+			max_valid_accuracy = 0
+			iterations_without_improvement = 0
 			for i in range(NUM_TRAINING_BATCHES):
 				j += 1
 				if j * TRAINING_BATCH_SIZE >= len(train_stamps):
@@ -287,11 +289,28 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 					valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
 					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy), file=f, flush=True)
 					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy))
-			saver.save(sess, result_dir + 'weights', global_step=NUM_TRAINING_BATCHES)
-			train_accuracy = accuracy.eval(feed_dict={x: inputs, y_: correct})
-			valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
-			print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy), file=f, flush=True)
-			print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy))
+
+					if valid_accuracy > max_valid_accuracy:
+						max_valid_accuracy = valid_accuracy
+						iterations_without_improvement = 0
+						# Remove previously saved networks and retain only the best.
+						if TRACK_BEST_NETWORK:
+							old_nets = glob.glob("results/" + EXPERIMENT_LABEL + "/weights*")
+							for net in old_nets:
+								os.remove(net)
+							saver.save(sess, result_dir + 'weights', global_step=i)
+					else:
+						iterations_without_improvement += 10
+
+					# Stop training if it has been too long without an improvement.
+					if EARLY_STOPPING != 0 and EARLY_STOPPING < iterations_without_improvement:
+						break
+			if not TRACK_BEST_NETWORK:
+				saver.save(sess, result_dir + 'weights', global_step=NUM_TRAINING_BATCHES)
+				train_accuracy = accuracy.eval(feed_dict={x: inputs, y_: correct})
+				valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
+				print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy), file=f, flush=True)
+				print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy))
 		stop = time.time()
 		print('Elapsed time:\t' + str(stop - start) + ' seconds')
 		F = open(result_dir + 'parameters.txt', 'a')
