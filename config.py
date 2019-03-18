@@ -17,7 +17,7 @@ DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
 # Allows a small subset of typical and dubious data to be used (Used for debugging, or a quick run through the
 # experiment. Set to 'None' to use the full set of available data.
-SMALL_PROCESS_SIZE = 1000
+SMALL_PROCESS_SIZE = None
 
 # Specify the structure of the network. This defines the number and ordering of layers as well as the type and size of
 # each layer.
