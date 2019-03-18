@@ -11,6 +11,7 @@ SGE_Batch -r "preprocess_stamps" -c "python3 -u preprocess_stamps_launch.py" -P 
 import numpy as np
 import os
 import pickle
+import time
 from PIL import Image
 from scipy import misc
 from utils import extract_data_from_csv, extract_times_from_files_in_directory, separate_data, BLACK, BLUE
@@ -34,6 +35,7 @@ def setup(train, valid, test):
 
 
 if __name__ == "__main__":
+	start = time.clock()
 	# For typical data
 	print("Creating training, validation, and test stamps for typical data")
 	train_stamp_path = TYPICAL_DATA_DIR + '/train.stamps'
@@ -56,3 +58,4 @@ if __name__ == "__main__":
 	with open(test_stamp_path, 'wb') as f:
 		pickle.dump(test_stamps, f)
 	print("Finished. Stamps saved at: ", valid_stamp_path, ", ", test_stamp_path)
+	print("Time elapsed: " + str(time.clock() - start) + " seconds.")

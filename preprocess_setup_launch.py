@@ -21,6 +21,7 @@ See the code at the end for a high-level description of the steps this program g
 from config import *
 from random import shuffle
 from utils import *
+import time
 
 
 def create_dirs(timestamps, output_dir, res_dir):
@@ -95,5 +96,7 @@ def setup(output_dir, timestamp_data_csv):
 
 
 if __name__ == '__main__':
+	start = time.clock()
 	setup(TYPICAL_DATA_DIR, TYPICAL_DATA_CSV)
 	setup(DUBIOUS_DATA_DIR, DUBIOUS_DATA_CSV)  # TODO: Is the batch file here ever used?
+	print("Time elapsed: " + str(time.clock() - start) + " seconds.")
