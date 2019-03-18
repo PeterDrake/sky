@@ -3,7 +3,7 @@ This file sets various parameters used in the experiment.
 """
 
 # Variable used to run our code on BLT. To run locally set to False.
-BLT = False
+BLT = True
 
 # Experiment label: used for organizing data. This should be a unique identifier like "e81-00" and should be changed
 # with each run through the experiment.
