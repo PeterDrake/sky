@@ -1,22 +1,49 @@
-# sky
-<i>Applying convolutional neural networks to the task of semantic segmentation on (meteorological) clouds.</i>
+# Sky Machine Learning
 
-<b>Setup</b>: 
-- Download data from a Total Sky Imager (We use TSI C1 in the SGP) and unpack the tars into a convenient location.
-- Look through the documentation in each file ending in launch.py. These will tell you about the parameters to set for your specific configuration
-- Run the launch.py files in the order listed below. Before running a new file you should wait for the previous to finish.
+Applying convolutional neural networks to the task of semantic segmentation of (meteorological) clouds. 
 
 
-<b>Programs to run (<i>Currently only on BLT</i>)</b>:
-- preprocess_setup_launch.py: creates batches and sets many parameters used in preprocessing.
-- preprocess_launch.py: launches parallel tasks to simplify batches of photos and decision images.
-- preprocess_stamps_launch.py: separates data into training, validation, and testing, and makes final preparations for training.
-- train_launch.py: defines parameters for training and launches the training process for several networks.
-- process_launch.py: defines parameters for processing specific sky photos. Launches a number of jobs in parallel.
-- fsc_launch.py: computes the fractional sky cover statistic for each decision image produced by the network and saves results in a csv file.
+## Quick Overview
 
-<b>To generate our plots: (<i>Currently not on BLT</i>)</b>
-- fsc_analyze_launch: requires fsc_launch to be run on good and bad data. Compares network fsc statistic to the TSI and ARSCL.
-- plot_learning_curve_launch.py: plots accuracy vs batch for the networks training process. Can be run after training is complete.
+## Getting Started
 
+### Setting up your Environment
+
+If you have successfully run python scripts on your machine in the past and you are comfortable with your current editor, you may skip this step. 
+
+We recommend downloading and installing <a href="https://git-scm.com/downloads">git</a>, a version control system that integrates well with github. This will help you download our code and stay up-to-date with bug fixes and other changes. We recommend installing git with the default installation settings if possible. 
+
+If you don't have python installed on your system, you will need to download and install python on your system. You can get python <a href="https://www.python.org/downloads/">here</a>. If you're on Windows, we recommend including Python in your PATH when using the setup wizard.
+
+Once you have python installed on your system, you will need an integrated development environment (IDE) to make a few code changes specific to your system. We recommend using <a href="https://www.jetbrains.com/pycharm/download/">PyCharm</a> because it has many useful features, is well-documented, and seemlessly integrates with git. 
+
+Whatever environment you decide to use, you will need have the following packages installed prior to running our code: <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), and scipy.</i>
+
+### Running the Project on Your Machine
+
+After downloading our code from our repository, open the configuration file (config.py) and set the desired parameters and file paths for your machine. Note that you will have to ensure that "BLT = False" for the code to run properly on your computer.
+
+<b><em>If you do not intend to run our entire experiment on your computer, make sure <u>SMALL_PROCESS_SIZE</u> is set to a sufficiently small value (A few hundred or thousand should do) in config.py. For example:</em></b>
+```
+SMALL_PROCESS_SIZE = 300
+```
+
+If you <em>do</em> intend to run our entire experiment, set
+```
+SMALL_PROCESS_SIZE = None
+```
+
+and be aware that this process takes about a week end-to-end on our cpu-cluster computer (BLT). 
+
+Once the configuration file is set up, you should be good to go. Now you just need to run the files ending in launch.py in the following order:
+<ol>
+  <li> <strong>preprocess_setup_launch.py</strong> - preprocesses TSI data.</li>
+  <li><strong>preprocess_stamps_launch.py</strong></li>
+  <li><strong>preprocess_launch.py</strong></li>
+  <li><strong>train_launch.py</strong></li>
+  <li><strong>process_launch.py</strong></li>
+  <li><strong>fsc_launch.py</strong></li>
+  <li><strong>fsc_analyze_launch.py</strong></li> 
+  <li><strong>plot_learning_curve_launch.py</strong></li>
+</ol>
 

@@ -260,6 +260,8 @@ def save_params(job_number, layer_info, out_dir):
 
 def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_inputs, valid_correct, result_dir):
 	"""Trains the network."""
+	print("Training batch size:\t" + str(TRAINING_BATCH_SIZE))
+	print("Number of batches:\t" + str(NUM_TRAINING_BATCHES))
 	print("Training network")
 	start = time.time()
 	# Get image and make the mask into a one-hotted mask
@@ -278,14 +280,16 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 				inputs = load_inputs(batch, TYPICAL_DATA_DIR)
 				correct = load_masks(batch, TYPICAL_DATA_DIR)
 				train_step.run(feed_dict={x: inputs, y_: correct})
-				if i % 10 == 0:
-					saver.save(sess, result_dir + 'weights', global_step=i)  # TODO: Shouldn't this be done when training is done?
-					train_accuracy = accuracy.eval(feed_dict={x: inputs, y_: correct})
-					valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
-					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy), file=f, flush=True)
+			saver.save(sess, result_dir + 'weights', global_step=NUM_TRAINING_BATCHES)
+			train_accuracy = accuracy.eval(feed_dict={x: inputs, y_: correct})
+			valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
+			print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy), file=f, flush=True)
 		stop = time.time()
+		print('Elapsed time:\t' + str(stop - start) + ' seconds')
 		F = open(result_dir + 'parameters.txt', 'a')
 		F.write('Elapsed time:\t' + str(stop - start) + ' seconds\n')
+		F.write('Training Batch Size:\t' + str(TRAINING_BATCH_SIZE) + '\n')
+		F.write('Number of Batches:\t' + str(NUM_TRAINING_BATCHES) + '\n')
 		F.close()
 
 

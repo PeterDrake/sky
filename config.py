@@ -36,7 +36,8 @@ LEARNING_RATE = 0.01
 # Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage".
 RAW_DATA_DIR = "D:\\Documents - Hard Drive\\Lewis & Clark\\Research\\Sky ML\\TSI_C1"
 
-# Path to directory in which network data will be saved
+# Path to directory in which network data will be saved. Additionally, network-processed decision images will be
+# saved to results/masks
 RESULTS_DIR = "C:\\Users\\Maxwell\\PycharmProjects\\sky\\results"
 
 
@@ -45,7 +46,8 @@ if BLT:
 	# Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage".
 	RAW_DATA_DIR = "/home/users/jkleiss/TSI_C1"
 
-	# Path to directory in which network data will be saved
+	# Path to directory in which network data will be saved. Additionally, network-processed decision images will be
+	# saved to results/masks
 	RESULTS_DIR = "results"
 
 # The number of sky/decision image pairs to preprocess in a single job
@@ -57,5 +59,3 @@ JOB_PRIORITY = 25
 
 # The number of processing tasks to launch for each of typical and dubious data (Per trained network)
 NUM_PROCESS_BATCHES = 1
-
-
