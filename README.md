@@ -24,7 +24,7 @@ Whatever environment you decide to use, you will need have the following package
 Our data consists of sky images and and cloud masks from 5/1/2012 to 9/24/2017. The data belongs to <a href="https://www.arm.gov/">https://www.arm.gov/</a>, so to obtain it for yourself you will need to follow the following steps:
 <ol>
   <li>Log in or create an account with ARM</li>
-  <li>Navigate to the <a href="https://www.archive.arm.gov/discovery/#v/results/s/fsite::sgp.P/ffac::sgp.C1/fdpl::sgptsicldmaskC1.a1/fdpl::sgptsiskyimageC1.a1">Data Discovery</a> page and select the checkboxes next to "tsicldmask C1" and "tsiskyimage" </li>
+  <li>Go to the <a href="https://www.archive.arm.gov/discovery/#v/results/s/fsite::sgp.P/ffac::sgp.C1/fdpl::sgptsicldmaskC1.a1/fdpl::sgptsiskyimageC1.a1">Data Discovery</a> page and select the checkboxes next to "tsicldmask C1" and "tsiskyimage" </li>
   <li>Proceed to checkout with the data and download as tarred files.</li>
   <li>Untar the downloaded files into folders named "CloudMask" and "SkyImage"</li>
 </ol>
