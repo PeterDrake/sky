@@ -13,6 +13,15 @@ from train import build_net, load_inputs
 from config import RESULTS_DIR, EXPERIMENT_LABEL
 
 
+# TODO: Implement this in utils
+def read_last_iteration_number(network_dir):
+	"""Returns something like weights-XXXX, which is the filename (without extension) of the saved network."""
+	filename = glob.glob(network_dir + "weights-*")
+	i = filename[0].index("weights-") + len("weights-")
+	iteration_number = int(filename[0][i:].split('.')[0])
+	return iteration_number
+
+
 def process_network_masks(timestamps, exp_label, input_dir):
 	"""Processes images corresponding to a list of timestamps. Saves each mask in the network directory. Does NOT
 	check to make sure that the image exists. This must be done by the user before calling this method."""
