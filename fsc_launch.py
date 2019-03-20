@@ -20,7 +20,7 @@ from fsc import fsc
 def setup(job_name, input_data_csv, output_data_csv):
 	name = job_name + EXPERIMENT_LABEL
 	if BLT:
-		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {} {}" -P 1'.format(name, input_data_csv, output_data_csv))
+		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {}" -P 1'.format(name, input_data_csv, output_data_csv))
 	else:
 		fsc(input_data_csv, output_data_csv)
 
