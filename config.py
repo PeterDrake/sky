@@ -15,20 +15,28 @@ TYPICAL_DATA_CSV = "typical_data/shcu_typical_data.csv"
 DUBIOUS_DATA_DIR = "dubious_data"
 DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
-# Allows a small subset of typical and dubious data to be used (Used for debugging, or a quick run through the
-# experiment. Set to 'None' to use the full set of available data.
+# When not set to None, this is the number of images to use from each dataset (typical and dubious). For a brief run 
+# through the experiment this can be set to something like 1000. When set to None, the experiment runs on all images 
+# specified in TYPICAL_DATA_CSV and DUBIOUS_DATA_CSV. 
 SMALL_PROCESS_SIZE = None
 
 # Specify the structure of the network. This defines the number and ordering of layers as well as the type and size of
 # each layer.
 NETWORK_STRUCTURE = 'a:conv-3-32-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-3-32-e g:conv-3-32-f h:concat-g-in i:conv-3-4-h'
 
-# The number of sky/decision image pairs to train on in a single batch and the number of batches/steps to perform.
+# The number of sky/decision image pairs to train on in a single batch. We recommend setting this as high as possible 
+# during training. For our GTX 1080 ti the maximum number of images we can use in a batch is 23. On BLT, our CPU-cluster
+# computer we can use upwards of 50 images.
 TRAINING_BATCH_SIZE = 10
+
+# This is the number of batches to run during training. We recommend setting this so that TRAINING_BATCH_SIZE multiplied
+# by NUM_TRAINING_BATCHES is around 100,000. For a brief run through the experiment this can be made significantly
+# smaller without too much performance loss.
 NUM_TRAINING_BATCHES = 30
 
-# Set the learning rate for training.
-LEARNING_RATE = 0.01
+# This is the learning rate for training. We recommend setting this to a small value (1e-4 or smaller) with a large number
+# of training batches. If you decrease the number of training batches significantly, consider increasing the learning rate.
+LEARNING_RATE = 1e-4
 
 
 # =========================== Local Configurations (Ignore if BLT = True) =========================== #
