@@ -38,7 +38,7 @@ After downloading our code from our repository, open the configuration file (con
 
 Once the configuration file is set up, you should be good to go. Now you just need to run the files ending in launch.py in the following order:
 <ol>
-  <li> <strong>preprocess_setup_launch.py</strong> - preprocesses TSI data.</li>
+  <li> <strong>preprocess_setup_launch.py</strong></li>
   <li><strong>preprocess_stamps_launch.py</strong></li>
   <li><strong>preprocess_launch.py</strong></li>
   <li><strong>train_launch.py</strong></li>
