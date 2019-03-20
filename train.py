@@ -303,7 +303,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 						iterations_without_improvement += 10
 
 					# Stop training if it has been too long without an improvement.
-					if EARLY_STOPPING != 0 and EARLY_STOPPING < iterations_without_improvement:
+					if EARLY_STOPPING != 0 and EARLY_STOPPING <= iterations_without_improvement:
 						break
 			if not TRACK_BEST_NETWORK:
 				saver.save(sess, result_dir + 'weights', global_step=NUM_TRAINING_BATCHES)
