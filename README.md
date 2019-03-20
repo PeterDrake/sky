@@ -29,24 +29,12 @@ Our data consists of sky images and and cloud masks from 5/1/2012 to 9/24/2017. 
   <li>Untar the downloaded files into folders named "CloudMask" and "SkyImage"</li>
 </ol>
 
-It can take several days for ARM to stage the files for download, so plan ahead accordingly. Once your data in downloaded and unpacked into a convenient location, you may move on to running our experiment.
+It can take several days for ARM to stage the files for download and the files are several gigabytes altogether. Once your data in downloaded and unpacked into a convenient location, you're all set.
 
 
 ### Running the Project on Your Machine
 
-After downloading our code from our repository, open the configuration file (config.py) and set the desired parameters and file paths for your machine. Note that you will have to ensure that "BLT = False" for the code to run properly on your computer.
-
-<b><em>If you do not intend to run our entire experiment on your computer, make sure <u>SMALL_PROCESS_SIZE</u> is set to a sufficiently small value (A few hundred or thousand should do) in config.py. For example:</em></b>
-```
-SMALL_PROCESS_SIZE = 300
-```
-
-If you <em>do</em> intend to run our entire experiment, set
-```
-SMALL_PROCESS_SIZE = None
-```
-
-and be aware that this process takes about a week end-to-end on our cpu-cluster computer (BLT). 
+After downloading our code from our repository, open the configuration file (config.py) and set the desired parameters and file paths for your machine. Note that you will have to ensure that "BLT = False" for the code to run properly on your computer. Additionally, you will need to set the RAW_DATA_DIR to be the path of the folder containing the "CloudMask" and "SkyImage" folders downloaded from ARM. 
 
 Once the configuration file is set up, you should be good to go. Now you just need to run the files ending in launch.py in the following order:
 <ol>
