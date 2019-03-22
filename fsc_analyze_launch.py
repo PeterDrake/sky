@@ -16,6 +16,7 @@ results/EXPERIMENT_LABEL/ directory.
 import pickle
 import numpy as np
 import matplotlib
+import os
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
@@ -23,8 +24,8 @@ from config import *
 
 N_SAMPLES = 2500
 
-TYPICAL_VALID_FILE = "typical_data/valid.stamps"
-DUBIOUS_VALID_FILE = "dubious_data/poster_valid.stamps"
+TYPICAL_VALID_FILE = TYPICAL_DATA_DIR + "/valid.stamps"
+DUBIOUS_VALID_FILE = DUBIOUS_DATA_DIR + "/poster_valid.stamps"
 
 
 def load_pickled_file(filename):
@@ -42,6 +43,9 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 	image_times = set(extract_data_from_dataframe(image_dataframe, "timestamp_utc"))
 	arscl_times = set(extract_data_from_dataframe(arscl_dataframe, "timestamp_utc"))
 	times = image_times.intersection(arscl_times)  # Necessary to correct for missing times
+	print(len(image_times))
+	print(len(arscl_times))
+	print(len(times))
 	x, y, residual, residual1 = [], [], [], []
 	mse = 0
 	for t in times:
@@ -79,8 +83,12 @@ if __name__ == "__main__":
 	typical_arscl_dataframe = read_csv_file(TYPICAL_DATA_CSV)  # Contains both ARSCL and TSI Data
 	typical_arscl_dataframe = typical_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	typical_times = load_pickled_file(TYPICAL_VALID_FILE)
+	print("ALL: " + str(len(typical_times)))
 	typical_times = typical_times[0:N_SAMPLES]
 	typical_arscl_dataframe = typical_arscl_dataframe[typical_arscl_dataframe['timestamp_utc'].isin(typical_times)]
+	print(os.path.isfile(TYPICAL_DATA_CSV))  # True is expected
+	print(os.path.isfile(TYPICAL_VALID_FILE))  # True is expected
+	print(len(typical_times))  # SMALL_PROCESS_SIZE * 20% is hoped for --> 300 / 5 = 60
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
 	# Reads data from shcu_dubious_data.csv, takes a sample of the times, and gets data for plotting
@@ -150,4 +158,4 @@ if __name__ == "__main__":
 		labelbottom=True)
 	plt.xticks((index + bar_width / 2), ('Typical Data', 'Dubious Data'), fontsize=26)
 	ax.legend(fontsize=20)
-	fig.savefig("results/" + EXPERIMENT_LABEL + "/fsc_rmse_barchart.png")
+	fig.savefig(RESULTS_DIR + "/" + EXPERIMENT_LABEL + "/fsc_rmse_barchart.png")
