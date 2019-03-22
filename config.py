@@ -3,7 +3,7 @@ This file sets various parameters used in the experiment.
 """
 
 # Variable used to run our code on BLT. To run locally set to False.
-BLT = True
+BLT = False
 
 # Experiment label: used for organizing data. This should be a unique identifier like "e81-00" and should be changed
 # with each run through the experiment.
@@ -18,7 +18,7 @@ DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 # When not set to None, this is the number of images to use from each dataset (typical and dubious). For a brief run
 # through the experiment this can be set to something like 1000. When set to None, the experiment runs on all images
 # specified in TYPICAL_DATA_CSV and DUBIOUS_DATA_CSV.
-SMALL_PROCESS_SIZE = None
+SMALL_PROCESS_SIZE = 1000
 
 # Specify the structure of the network. This defines the number and ordering of layers as well as the type and size of
 # each layer.
