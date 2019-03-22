@@ -21,5 +21,5 @@ if __name__ == "__main__":
 	if BLT:
 		os.system('SGE_Batch -r "{}" -c "python3 -u train.py {}" -P {}'.format(EXPERIMENT_LABEL, NETWORK_STRUCTURE, JOB_PRIORITY))
 	else:
-		train(NETWORK_STRUCTURE)
+		train(NETWORK_STRUCTURE.split())
 

@@ -323,7 +323,6 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 
 def train(layer_info):
 	check_for_commit()
-	layer_info = layer_info.split()
 	out_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/'
 	os.makedirs(out_dir, exist_ok=True)
 	save_params(EXPERIMENT_LABEL, layer_info, out_dir)
