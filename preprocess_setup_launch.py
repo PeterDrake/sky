@@ -79,6 +79,12 @@ def setup(output_dir, timestamp_data_csv):
 	print("Finished reading times. Eliminating unpaired times.")
 	blacklist = find_unpaired_images(timestamps, RAW_DATA_DIR)
 	times = timestamps - blacklist
+	if len(times) == 0:
+		print()
+		print("ERROR: No paired images and masks found. Please check paths and settings in config.py and make sure "
+		      "that the raw data is available.")
+		exit(-1)
+
 	print("{} paired images and masks found.".format(len(times)))
 	print("Creating directories for results.")
 	create_dirs(times, output_dir, res_dir)
