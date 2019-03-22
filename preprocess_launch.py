@@ -24,7 +24,7 @@ if __name__ == "__main__":
 			preprocess(TYPICAL_DATA_DIR + '/res/' + batch, "typical_data")
 
 	# Runs preprocessing for dubious data
-	batches = os.listdir('dubious_data' + '/res')
+	batches = os.listdir(DUBIOUS_DATA_DIR + '/res')
 	for i, batch in enumerate(batches):
 		if BLT:
 			os.system('SGE_Batch -r "{}" -c "python3 -u preprocess.py {} {}" -P 1'.format('dubious-pre-batch-{}'.format(i), DUBIOUS_DATA_DIR + '/res/' + batch, "dubious_data"))

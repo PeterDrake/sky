@@ -23,8 +23,8 @@ from config import *
 
 N_SAMPLES = 2500
 
-TYPICAL_VALID_FILE = "typical_data/valid.stamps"
-DUBIOUS_VALID_FILE = "dubious_data/poster_valid.stamps"
+TYPICAL_VALID_FILE = TYPICAL_DATA_DIR + "/valid.stamps"
+DUBIOUS_VALID_FILE = DUBIOUS_DATA_DIR + "/poster_valid.stamps"
 
 
 def load_pickled_file(filename):
@@ -150,4 +150,4 @@ if __name__ == "__main__":
 		labelbottom=True)
 	plt.xticks((index + bar_width / 2), ('Typical Data', 'Dubious Data'), fontsize=26)
 	ax.legend(fontsize=20)
-	fig.savefig("results/" + EXPERIMENT_LABEL + "/fsc_rmse_barchart.png")
+	fig.savefig(RESULTS_DIR + "/" + EXPERIMENT_LABEL + "/fsc_rmse_barchart.png")
