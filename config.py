@@ -10,9 +10,9 @@ BLT = False
 EXPERIMENT_LABEL = "e84-00"
 
 # Paths for typical (training & evaluation) and dubious (evaluation) data
-TYPICAL_DATA_DIR = "D:\\skydata\\typical_data"
+TYPICAL_DATA_DIR = "D:/skydata/typical_data"
 TYPICAL_DATA_CSV = "typical_data/shcu_typical_data.csv"
-DUBIOUS_DATA_DIR = "D:\\skydata\\dubious_data"
+DUBIOUS_DATA_DIR = "D:/skydata/dubious_data"
 DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
 # Allows a small subset of typical and dubious data to be used (Used for debugging, or a quick run through the
@@ -34,10 +34,10 @@ LEARNING_RATE = 0.01
 # =========================== Local Configurations (Ignore if BLT = True) =========================== #
 
 # Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage".
-RAW_DATA_DIR = "D:\\skydata"
+RAW_DATA_DIR = "D:/skydata"
 
 # Path to directory in which network data will be saved
-RESULTS_DIR = "C:\\skydata\\results"
+RESULTS_DIR = "D:/skydata/results"
 
 
 # ====================== BLT - Specific Configurations (Ignore if BLT = False) ====================== #
