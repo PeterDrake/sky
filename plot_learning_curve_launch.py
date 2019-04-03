@@ -1,8 +1,9 @@
 """
-This script can be launched anytime after training of the networks is complete, since it only requires the output.txt
-file. Ie results/e70-00/output.txt must exist
+This script can be launched anytime after training of the networks is complete, since it only requires the output.txt in
+RESULTS_DIR/EXPERIMENT_LABEL to exist.
 
-For each network specified in experiment labels, this script makes a plot of the training and validation accuracy
+This script makes a plot of the training and validation accuracy and saves the result in RESULTS/EXPERIMENT_LABEL as
+'accuracy_vs_batch.png'
 """
 
 import matplotlib.pyplot as plt
