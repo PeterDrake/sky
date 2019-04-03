@@ -1,23 +1,3 @@
-"""
-Preprocess Total Sky Imager data from arm.gov. To use this:
-
-1) Get the SkyImage and CloudMask data from ARM and unpack tars into your RAW_DATA_DIR
-2) Specify the OUTPUT_DIR (which need not already exist). We set this to 'typical_data' and 'dubious_data'
-3) Specify PREPROCESS_BATCH_SIZE to help parallelize this process. This is the number of timestamps each batch needs to process.
-To run sequentially instead of in parallel, set this absurdly high.
-4) Run this program, wait for it to finish.
-5) Run preprocess_launch.py to do the actual simplification of masks & cropping of images
-6) Once that is done, run preprocess_stamps_launch.py to separate stamps into training, validation, and testing batches.
-
-This will create (within data):
-- A folder simpleimage containing folders by year. In this are folders by month and day (mmdd). In these folders are
-cropped 480x480 sky images
-- A folder simplemask with the same structure as simpleimage, but the (mmdd) folders contain cloudmasks which have
-been cropped and had the sunband removed.
-
-See the code at the end for a high-level description of the steps this program goes through.
-"""
-
 from config import *
 from random import shuffle
 from utils import *
