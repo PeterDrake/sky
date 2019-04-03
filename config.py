@@ -26,7 +26,7 @@ RESULTS_DIR = "C:\\Users\\Maxwell\\PycharmProjects\\sky\\results"
 
 # ===================================================================================== #
 #                                                                                       #
-#                            Training/Experiment Parameters                             #
+#                             Training/Experiment Configurations                        #
 #                                                                                       #
 # ===================================================================================== #
 
