@@ -1,16 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-This script is intended to be run from fsc_launch.py, but can be run from the command line if the experiment label is
-specified.
-
-Computes the fractional sky cover for a set of decision images specified in fsc_launch.py and saves the results in
-OUTPUT_DATA_CSV.
-
-Should you choose the manual option, you will need to change the INPUT_DATA_CSV and OUTPUT_DATA_CSV parameters in
-fsc_launch.csv to match your goals. EX: python3 fsc.py e70-00
-"""
-
 import sys
 from utils import *
 from config import RESULTS_DIR, EXPERIMENT_LABEL
