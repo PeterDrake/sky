@@ -1,6 +1,21 @@
 """
 	This file defines many parameters used in the experiment. The configuration file is broken down into three main
 	sections: User-Defined Configurations, Training/Experiment Parameters, and BLT - Specific Configurations.
+
+	Normal users should only need to modify the User-Defined Configurations section in order to run our experiment. Here
+	users will want to change RAW_DATA_DIR to match the path to the directory containing their unpacked/untarred data
+	from ARM (Link in README). Because preprocessed and processed data can still be quite large (Several Gigabytes), we
+	offer the user an opportunity to change the TYPICAL_DATA, DUBIOUS_DATA, and RESULTS_DIR directors to different
+	locations.
+
+	Experienced users may wish to change the Training/Experiment Configurations in order to modify the training process.
+	This is not recommended for recreating our experiment. Users who do modify these configurations should do so with
+	care and read the available documentation before making changes.
+
+	The BLT - Specific Configurations section defines parameters that are used on BLT - A cluster computer hosted by
+	Lewis & Clark College's Watzek Digital Initiatives team. Documentation: https://watzek.github.io/LC-BLT/
+	This section should only be modified by researchers working on this project.
+
 """
 
 # ===================================================================================== #
@@ -21,7 +36,7 @@ DUBIOUS_DATA_DIR = "dubious_data"
 
 # Path to directory in which network data will be saved. Additionally, network-processed decision images will be
 # saved to results/masks
-RESULTS_DIR = "C:\\Users\\Maxwell\\PycharmProjects\\sky\\results"
+RESULTS_DIR = "results"
 
 
 # ===================================================================================== #
@@ -33,13 +48,19 @@ RESULTS_DIR = "C:\\Users\\Maxwell\\PycharmProjects\\sky\\results"
 # Variable used to run our code on BLT. To run locally set to False.
 BLT = False
 
-# Experiment label: used for organizing data. This should be a unique identifier like "e81-00" and should be changed
-# with each run through the experiment.
+# A unique identifier for the network being trained/in use. This can be something like "e81-00". If testing out several
+# networks, be sure to change this with each run. The training process WILL overwrite any existing saved networks
+# identified by this experiment label.
 EXPERIMENT_LABEL = "e84-00"
 
 # Paths to csv files for typical and dubious data.
 TYPICAL_DATA_CSV = "typical_data/shcu_typical_data.csv"
 DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
+
+# The number of sky/decision image pairs to preprocess in a single job. When running locally, set this to 200,000. There
+# is no benefit to creating multiple batches for preprocessing data when not on BLT as our code does not run preprocess
+# tasks in parallel. On BLT, set this to 10000. Our code runs in parallel on BLT.
+PREPROCESS_BATCH_SIZE = 10000
 
 # When not set to None, this is the number of images to use from each dataset (typical and dubious). For a brief run
 # through the experiment this can be set to something like 1000. When set to None, the experiment runs on all images
@@ -85,9 +106,6 @@ if BLT:
 	# Path to directory in which network data will be saved. Additionally, network-processed decision images will be
 	# saved to results/masks
 	RESULTS_DIR = "results"
-
-# The number of sky/decision image pairs to preprocess in a single job
-PREPROCESS_BATCH_SIZE = 10000
 
 # The number of networks to train simultaneously and the job's priority
 NUM_NETWORKS = 1
