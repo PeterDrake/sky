@@ -2,15 +2,20 @@
 Plots a comparison between network and the TSI measurements of fractional sky cover. Also compares both sources to
 the Laser Ceilometer.
 
-This script can be run after fsc_launch.py has been run and its tasks have finished.
+This script can be run after fsc_launch.py has finished.
 
 This script requires four files: 'shcu_typical_data.csv', 'shcu_dubious_data.csv', 'typical_fsc.csv', and 'dubious_fsc.csv'.
 * The 'shcu' files should be located in the typical_data/ and dubious_data/ directories.
-* The 'fsc' files should be located in the results/EXPERIMENT_LABEL/ directory. EX: results/e70-00/typical_fsc.csv
-Both of these requirements should be satisfied if the previous scripts have been run correctly.
+* The 'fsc' files should be located in the RESULTS_DIR/EXPERIMENT_LABEL/ directory. This requirement should be satisfied
+if the previous scripts have run successfully.
 
-This script creates two plots and saves them as 'typical_tsi_arscl_fsc.png' and 'compare_tsi_network_fsc.png' in the
-results/EXPERIMENT_LABEL/ directory.
+This script creates two plots and saves them as 'fsc_analyze_image_arscl.png' and 'fsc_rmse_barchart.png' in the
+RESULTS_DIR/EXPERIMENT_LABEL/ directory. The 'fsc_analyze_image_arscl.png' plot is a set of scatter plots detailing how
+fractional sky cover estimation sourced from our network-processed decision images relates to ARSCL ceilometer time -
+averaged estimates of cloud fraction on typical and dubious data. These are plotted alongside fractional sky cover
+estimates sourced from the total sky imager. The 'fsc_rmse_barchart.png' plot shows the root mean squared error for the
+fractional sky cover obtained from the total sky imager and our network on typical and dubious data. Error is taken to
+be the absolute value of the difference between fractional sky cover and cloud fraction.
 """
 
 import pickle
