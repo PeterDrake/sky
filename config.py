@@ -1,6 +1,34 @@
 """
-This file sets various parameters used in the experiment.
+	This file defines many parameters used in the experiment. The configuration file is broken down into three main
+	sections: User-Defined Configurations, Training/Experiment Parameters, and BLT - Specific Configurations.
 """
+
+# ===================================================================================== #
+#                                                                                       #
+#                               User-Defined Configurations                             #
+#                                                                                       #
+# ===================================================================================== #
+
+# Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage", and must be unpacked/untarred
+# prior to running any part of our project. See the README for more detailed instructions.
+RAW_DATA_DIR = "D:\\Documents - Hard Drive\\Lewis & Clark\\Research\\Sky ML\\TSI_C1"
+
+# Paths for typical (training & evaluation) and dubious (evaluation) data. These directories need not exist prior to
+# running the experiment from scratch; the preprocessing scripts will create and populate these directories with
+# simplified sky and decision images from the RAW_DATA_DIR.
+TYPICAL_DATA_DIR = "typical_data"
+DUBIOUS_DATA_DIR = "dubious_data"
+
+# Path to directory in which network data will be saved. Additionally, network-processed decision images will be
+# saved to results/masks
+RESULTS_DIR = "C:\\Users\\Maxwell\\PycharmProjects\\sky\\results"
+
+
+# ===================================================================================== #
+#                                                                                       #
+#                            Training/Experiment Parameters                             #
+#                                                                                       #
+# ===================================================================================== #
 
 # Variable used to run our code on BLT. To run locally set to False.
 BLT = False
@@ -9,20 +37,14 @@ BLT = False
 # with each run through the experiment.
 EXPERIMENT_LABEL = "e84-00"
 
-# Paths for typical (training & evaluation) and dubious (evaluation) data
-TYPICAL_DATA_DIR = "typical_data"
+# Paths to csv files for typical and dubious data.
 TYPICAL_DATA_CSV = "typical_data/shcu_typical_data.csv"
-DUBIOUS_DATA_DIR = "dubious_data"
 DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
 # When not set to None, this is the number of images to use from each dataset (typical and dubious). For a brief run
 # through the experiment this can be set to something like 1000. When set to None, the experiment runs on all images
 # specified in TYPICAL_DATA_CSV and DUBIOUS_DATA_CSV.
 SMALL_PROCESS_SIZE = 1000
-
-# Specify the structure of the network. This defines the number and ordering of layers as well as the type and size of
-# each layer.
-NETWORK_STRUCTURE = 'a:conv-3-32-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-3-32-e g:conv-3-32-f h:concat-g-in i:conv-3-4-h'
 
 # The number of sky/decision image pairs to train on in a single batch. We recommend setting this as high as possible
 # during training. For our GTX 1080 ti the maximum number of images we can use in a batch is 23. On BLT, our CPU-cluster
@@ -46,17 +68,16 @@ EARLY_STOPPING = 300
 # be the one with the highest observed validation accuracy.
 TRACK_BEST_NETWORK = True
 
-# =========================== Local Configurations (Ignore if BLT = True) =========================== #
+# Specify the structure of the network. This defines the number and ordering of layers as well as the type and size of
+# each layer.
+NETWORK_STRUCTURE = 'a:conv-3-32-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-3-32-e g:conv-3-32-f h:concat-g-in i:conv-3-4-h'
 
-# Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage".
-RAW_DATA_DIR = "D:\\Documents - Hard Drive\\Lewis & Clark\\Research\\Sky ML\\TSI_C1"
+# ===================================================================================== #
+#                                                                                       #
+#                            BLT - Specific Configurations                              #
+#                                                                                       #
+# ===================================================================================== #
 
-# Path to directory in which network data will be saved. Additionally, network-processed decision images will be
-# saved to results/masks
-RESULTS_DIR = "C:\\Users\\Maxwell\\PycharmProjects\\sky\\results"
-
-
-# ====================== BLT - Specific Configurations (Ignore if BLT = False) ====================== #
 if BLT:
 	# Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage".
 	RAW_DATA_DIR = "/home/users/jkleiss/TSI_C1"
@@ -74,3 +95,4 @@ JOB_PRIORITY = 25
 
 # The number of processing tasks to launch for each of typical and dubious data (Per trained network)
 NUM_PROCESS_BATCHES = 1
+
