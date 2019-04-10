@@ -31,10 +31,11 @@ Our data consists of sky images and and cloud masks from 5/1/2012 to 9/24/2017. 
 
 It can take several days for ARM to stage the files for download and the files are several gigabytes altogether. Once your data in downloaded and unpacked into a convenient location, you're all set.
 
-
 ### Running the Project on Your Machine
 
-After downloading our code from our repository, open the configuration file (config.py) and set the desired parameters and file paths for your machine. Note that you will have to ensure that "BLT = False" for the code to run properly on your computer. Additionally, you will need to set the RAW_DATA_DIR to be the path of the folder containing the "CloudMask" and "SkyImage" folders downloaded from ARM. 
+After downloading our code from our repository, open the configuration file (config.py) and set the desired parameters and file paths for your machine. Note that you will have to ensure that "BLT = False" for the code to run properly on your computer.
+
+Navigate to the file path you have specified in the config file as RAW_DATA_DIR. Then create two new directories named SkyImage and CloudMask and put the skyimage and cldmask tar files in their respective directories. Once the files are organized, running unpack_tars.py will unpack all of the tarred files into their appropriate subdirectories in CloudMask and SkyImage.
 
 Once the configuration file is set up, you should be good to go. Now you just need to run the files ending in launch.py in the following order:
 <ol>
