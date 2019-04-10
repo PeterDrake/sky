@@ -16,13 +16,18 @@
 	Lewis & Clark College's Watzek Digital Initiatives team. Documentation: https://watzek.github.io/LC-BLT/
 	This section should only be modified by researchers working on this project.
 
+	Note: Users who want to run the full experiment on their computer can do so with minimal effort by changing which
+	lines are commented out in the training/experiment configurations section. Users wishing to do a full run through
+	the experiment should look to the following variables: SMALL_PROCESS_SIZE, TRAINING_BATCH_SIZE, and
+	NUM_TRAINING_BATCHES.
+
 """
 
-# ===================================================================================== #
-#                                                                                       #
-#                               User-Defined Configurations                             #
-#                                                                                       #
-# ===================================================================================== #
+# ==================================================================================================================== #
+#                                                                                                                      #
+#                                               User-Defined Configurations                                            #
+#                                                                                                                      #
+# ==================================================================================================================== #
 
 # Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage", and must be unpacked/untarred
 # prior to running any part of our project. See the README for more detailed instructions.
@@ -38,12 +43,12 @@ DUBIOUS_DATA_DIR = "dubious_data"
 # saved to results/masks
 RESULTS_DIR = "results"
 
+# ==================================================================================================================== #
+#                                                                                                                      #
+#                                            Training/Experiment Configurations                                        #
+#                                                                                                                      #
+# ==================================================================================================================== #
 
-# ===================================================================================== #
-#                                                                                       #
-#                             Training/Experiment Configurations                        #
-#                                                                                       #
-# ===================================================================================== #
 
 # Variable used to run our code on BLT. To run locally set to False.
 BLT = False
@@ -59,26 +64,31 @@ DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
 # The number of sky/decision image pairs to preprocess in a single job. When running locally, set this to 200,000. There
 # is no benefit to creating multiple batches for preprocessing data when not on BLT as our code does not run preprocess
-# tasks in parallel. On BLT, set this to 10000. Our code runs in parallel on BLT.
-PREPROCESS_BATCH_SIZE = 10000
+# tasks in parallel. If BLT is set to True, this is set to 10000 -- our preprocess code runs in parallel on BLT.
+PREPROCESS_BATCH_SIZE = 200000
 
 # When not set to None, this is the number of images to use from each dataset (typical and dubious). For a brief run
 # through the experiment this can be set to something like 1000. When set to None, the experiment runs on all images
 # specified in TYPICAL_DATA_CSV and DUBIOUS_DATA_CSV.
-SMALL_PROCESS_SIZE = 1000
+# SMALL_PROCESS_SIZE = None  # Full Run
+SMALL_PROCESS_SIZE = 1000  # Small run
 
 # The number of sky/decision image pairs to train on in a single batch. We recommend setting this as high as possible
 # during training. For our GTX 1080 ti the maximum number of images we can use in a batch is 23. On BLT, our CPU-cluster
 # computer we can use upwards of 50 images.
-TRAINING_BATCH_SIZE = 10
+# TRAINING_BATCH_SIZE = 23  # For a run with a GTX 1080 ti
+TRAINING_BATCH_SIZE = 10  # Small run
 
 # This is the number of batches to run during training. We recommend setting this so that TRAINING_BATCH_SIZE multiplied
 # by NUM_TRAINING_BATCHES is around 100,000. For a brief run through the experiment this can be made significantly
 # smaller without too much performance loss.
-NUM_TRAINING_BATCHES = 30
+# NUM_TRAINING_BATCHES = 10000  # Full run (with a graphics card)
+# NUM_TRAINING_BATCHES = 2000  # Medium run (Training takes a long time without a graphics card)
+NUM_TRAINING_BATCHES = 30  # Small run
 
-# This is the learning rate for training. We recommend setting this to a small value (1e-4 or smaller) with a large number
-# of training batches. If you decrease the number of training batches significantly, consider increasing the learning rate.
+# This is the learning rate for training. We recommend setting this to a small value (1e-4 or smaller) with a large
+# number of training batches. If you decrease the number of training batches significantly, consider increasing the
+# learning rate.
 LEARNING_RATE = 1e-4
 
 # Set the maximum number of batches in a row allowed without progress. Setting this to None will effectively not bother
@@ -91,13 +101,15 @@ TRACK_BEST_NETWORK = True
 
 # Specify the structure of the network. This defines the number and ordering of layers as well as the type and size of
 # each layer.
-NETWORK_STRUCTURE = 'a:conv-3-32-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-3-32-e g:conv-3-32-f h:concat-g-in i:conv-3-4-h'
+NETWORK_STRUCTURE = 'a:conv-3-32-in b:maxpool-1-100-a c:maxpool-100-1-a d:concat-a-b e:concat-c-d f:conv-3-32-e ' \
+					'g:conv-3-32-f h:concat-g-in i:conv-3-4-h'
 
-# ===================================================================================== #
-#                                                                                       #
-#                            BLT - Specific Configurations                              #
-#                                                                                       #
-# ===================================================================================== #
+# ==================================================================================================================== #
+#                                                                                                                      #
+#                                            BLT - Specific Configurations                                             #
+#                                                                                                                      #
+# ==================================================================================================================== #
+
 
 if BLT:
 	# Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage".
@@ -107,10 +119,13 @@ if BLT:
 	# saved to results/masks
 	RESULTS_DIR = "results"
 
+	TRAINING_BATCH_SIZE = 50  # Largest batch size possible
+
+	PREPROCESS_BATCH_SIZE = 10000
+
 # The number of networks to train simultaneously and the job's priority
 NUM_NETWORKS = 1
 JOB_PRIORITY = 25
 
 # The number of processing tasks to launch for each of typical and dubious data (Per trained network)
 NUM_PROCESS_BATCHES = 1
-
