@@ -3,9 +3,6 @@
 """
 Trains the network.
 
-Command line arguments:
-job_number layer_1 ... layer_n
-
 Examples of layer specifications with explanations:
 
 b:conv-3-32-a
@@ -19,11 +16,6 @@ layer a.
 
 c:concat-a-b
 Layer c concatenates the outputs of layers a and b.
-
-Created on Mon May 22 10:20:00 2017
-
-@author: Jeff Mullins, Sean Richardson, Zoe Harrington, Maxwell Levin
-
 """
 
 import subprocess
