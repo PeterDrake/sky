@@ -53,4 +53,20 @@ dubious_data_df = dubious_network_fsc_df.join(dubious_arscl_fsc_cf_df.set_index(
 dubious_data_df = dubious_data_df.dropna()  # Drop rows with missing values from mismatched timestamps
 
 print(typical_data_df.head())
-print(dubious_data_df.head())
+# print(dubious_data_df.head())
+
+# Define parameters used for thresholding data from our data frames. LOWER_CF and HIGHER_CF define the lower and upper
+# bounds of values of cloud fraction we wish to observe. FSC_SIMILARITY is the maximum difference in fractional sky
+# cover between the TSI and the network we wish to observe.
+LOWER_CF = 0.3
+HIGHER_CF = 0.6
+FSC_SIMILARITY = 0.2
+
+# Now we reassign typical_data_df and dubious_data_df so that they match our query.
+typical_data_df = typical_data_df[(LOWER_CF <= typical_data_df['cf_tot']) & (typical_data_df['cf_tot'] <= HIGHER_CF) & (
+			(typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2 <= FSC_SIMILARITY ** 2)]
+dubious_data_df = dubious_data_df[(LOWER_CF <= dubious_data_df['cf_tot']) & (dubious_data_df['cf_tot'] <= HIGHER_CF) & (
+			(dubious_data_df['net_fsc_z'] - dubious_data_df['fsc_z']) ** 2 <= FSC_SIMILARITY ** 2)]
+
+
+print(typical_data_df.head())
