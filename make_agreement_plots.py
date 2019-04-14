@@ -16,7 +16,13 @@
 """
 
 from config import *
+from utils import *
+import os
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 
 # The network fsc values can be obtained from the csv files:
 # RESULTS_DIR/EXPERIMENT_LABEL/typical_fsc.csv
@@ -52,21 +58,64 @@ dubious_arscl_fsc_cf_df = dubious_arscl_fsc_cf_df.filter(['timestamp_utc', 'fsc_
 dubious_data_df = dubious_network_fsc_df.join(dubious_arscl_fsc_cf_df.set_index('timestamp_utc'), on='timestamp_utc')
 dubious_data_df = dubious_data_df.dropna()  # Drop rows with missing values from mismatched timestamps
 
-print(typical_data_df.head())
-# print(dubious_data_df.head())
 
 # Define parameters used for thresholding data from our data frames. LOWER_CF and HIGHER_CF define the lower and upper
 # bounds of values of cloud fraction we wish to observe. FSC_SIMILARITY is the maximum difference in fractional sky
 # cover between the TSI and the network we wish to observe.
 LOWER_CF = 0.3
 HIGHER_CF = 0.6
-FSC_SIMILARITY = 0.2
+FSC_SIMILARITY = 0.1
 
 # Now we reassign typical_data_df and dubious_data_df so that they match our query.
 typical_data_df = typical_data_df[(LOWER_CF <= typical_data_df['cf_tot']) & (typical_data_df['cf_tot'] <= HIGHER_CF) & (
-			(typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2 <= FSC_SIMILARITY ** 2)]
+		(typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2 <= FSC_SIMILARITY ** 2)]
 dubious_data_df = dubious_data_df[(LOWER_CF <= dubious_data_df['cf_tot']) & (dubious_data_df['cf_tot'] <= HIGHER_CF) & (
-			(dubious_data_df['net_fsc_z'] - dubious_data_df['fsc_z']) ** 2 <= FSC_SIMILARITY ** 2)]
+		(dubious_data_df['net_fsc_z'] - dubious_data_df['fsc_z']) ** 2 <= FSC_SIMILARITY ** 2)]
 
 
-print(typical_data_df.head())
+# Now we need to iterate over our data frame and load images into memory for plotting.
+os.makedirs(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs', exist_ok=True)
+i = 0
+for _, row in typical_data_df.iterrows():  # Note: itertuples would be slightly faster, but iterrows is easier.
+	# Make the timestamp usable (Without this timestamps would end in '.0').
+	time = str(int(row['timestamp_utc']))
+
+	# Extract image and mask paths from the timestamp
+	sky_image = extract_img_path_from_time(time, TYPICAL_DATA_DIR)
+	tsi_mask = extract_mask_path_from_time(time, TYPICAL_DATA_DIR)
+	net_mask = extract_network_mask_path_from_time(time, EXPERIMENT_LABEL)
+
+	# Load the actual images from their paths
+	try:
+		sky_image = mpimg.imread(sky_image)
+		tsi_mask = mpimg.imread(tsi_mask)
+		net_mask = mpimg.imread(net_mask)
+	except FileNotFoundError:
+		continue
+
+	# Display the images in a plot together
+	fig, (ax0, ax1, ax2, ax3) = plt.subplots(1, 4, figsize=(16, 4), num=i)
+	fig.suptitle("Timestamp: " + time)
+	ax0.imshow(sky_image)  # ax0 is the sky image
+	ax0.set_title("Sky Image")
+	ax0.set_xticks([])
+	ax0.set_yticks([])
+	ax1.imshow(tsi_mask)  # ax1 is the tsi decision image
+	ax1.set_title("TSI Decision Image")
+	ax1.set_xticks([])
+	ax1.set_yticks([])
+	ax2.imshow(net_mask)  # ax2 is the network decision image
+	ax2.set_title("Network Decision Image")
+	ax2.set_xticks([])
+	ax2.set_yticks([])
+	ax3.set_title('FSC and CF Data')  # ax3 is our bar chart
+	ax3.bar('ARSCL\nCF', row['cf_tot'], color='blue', width=0.5)
+	ax3.bar('TSI\nFSC', row['fsc_z'], width=0.5)
+	ax3.bar('NET\nFSC', row['net_fsc_z'], color='skyblue', width=0.5)
+	ax3.set_ylim((0, 1))
+
+	# Save the figure. Close it to save memory. Increment the figure counter
+	plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs/' + time + '.png')
+	plt.close()
+	i += 1
+
