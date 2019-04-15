@@ -31,17 +31,17 @@
 
 # Path to directory downloaded from ARM. Must have the folders "CloudMask" and "SkyImage", and must be unpacked/untarred
 # prior to running any part of our project. See the README for more detailed instructions.
-RAW_DATA_DIR = "D:\\Documents - Hard Drive\\Lewis & Clark\\Research\\Sky ML\\TSI_C1"
+RAW_DATA_DIR = "D:/skydata"
 
 # Paths for typical (training & evaluation) and dubious (evaluation) data. These directories need not exist prior to
 # running the experiment from scratch; the preprocessing scripts will create and populate these directories with
 # simplified sky and decision images from the RAW_DATA_DIR.
-TYPICAL_DATA_DIR = "typical_data"
-DUBIOUS_DATA_DIR = "dubious_data"
+TYPICAL_DATA_DIR = "D:/skydata/typical_data"
+DUBIOUS_DATA_DIR = "D:/skydata/dubious_data"
 
 # Path to directory in which network data will be saved. Additionally, network-processed decision images will be
 # saved to results/masks
-RESULTS_DIR = "results"
+RESULTS_DIR = "D/skydata/results"
 
 # ==================================================================================================================== #
 #                                                                                                                      #
