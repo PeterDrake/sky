@@ -41,7 +41,7 @@ DUBIOUS_DATA_DIR = "D:/skydata/dubious_data"
 
 # Path to directory in which network data will be saved. Additionally, network-processed decision images will be
 # saved to results/masks
-RESULTS_DIR = "D/skydata/results"
+RESULTS_DIR = "D:/skydata/results"
 
 # ==================================================================================================================== #
 #                                                                                                                      #
