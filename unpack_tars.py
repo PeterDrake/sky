@@ -24,8 +24,8 @@ for file in files:
 
 files = glob.glob("CloudMask/*.png.tar")
 for file in files:
-	path = file[:-8]
-	os.makedirs(path)
+	path = file[:-15]
+	os.makedirs(path, exist_ok=True)
 	tar = tarfile.open(file)
 	tar.extractall(path=path)
 
