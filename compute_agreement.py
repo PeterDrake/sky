@@ -43,13 +43,15 @@ def find_agreement_rate(df, data_directory):
 		agreement_rate = cm[0,1] #TODO clarify: is this agreement rate or disagreement rate
 
 		#write agreement rate into csv file
-		filewriter.writerow(time, agreement_rate)
+		filewriter.writerow([time, agreement_rate])
 
 # Step 1 is to load the timestamp data from the shcu files.
 
 #load data for the tsi (only the timestamp_utc column)
-typical_tsi_df = pd.read_csv(TYPICAL_DATA_CSV, usecols = [0])
-dubious_tsi_df = pd.read_csv(DUBIOUS_DATA_CSV, usecols = [0])
+typical_tsi_df = pd.read_csv(TYPICAL_DATA_CSV)
+typical_tsi_df = typical_tsi_df.filter(['timestamp_utc'])
+dubious_tsi_df = pd.read_csv(DUBIOUS_DATA_CSV)
+dubious_tsi_df = dubious_tsi_df.filter(['timestamp_utc'])
 
 #load data for the network mask (only timestamps_utc column)
 typical_network_df = pd.read_csv(RESULTS_DIR + "/" + EXPERIMENT_LABEL + "/typical_fsc.csv")
@@ -68,7 +70,7 @@ dubious_data_df = dubious_data_df.dropna()  # Drop rows with missing values from
 # Step 2 is to define and create the csv file to store the results.
 
 #TODO determine where the csv file is going to be saved. RESULTS_DIR + '/' + EXPERIMENT_LABEL + 'mask_agreement.csv'
-with open('mask_agreement.csv', 'wb') as csvfile:
+with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/mask_agreement.csv', 'w') as csvfile:
 	filewriter = csv.writer(csvfile, delimiter=',')
 	filewriter.writerow(['timestamp_utc', 'agreement_rate'])
 
@@ -81,7 +83,7 @@ with open('mask_agreement.csv', 'wb') as csvfile:
 	find_agreement_rate(dubious_data_df, DUBIOUS_DATA_DIR)
 
 # Step 4 is to close the file and do anything else that I haven't thought of yet
-filewriter.close()
+csvfile.close()
 
 # Step 5 is to update make_agreement_plots.py so that it uses a variety of thresholds to help us find "good", "bad" and
 # "medium" data types. I think having between 30-60% fsc or cf should be used in most of these because it makes the
