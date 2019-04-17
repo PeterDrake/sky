@@ -23,12 +23,10 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 
-def make_plots(df, data_directory, save_path):
+def make_plots(df, data_directory, save_path, i, num_rows):
 	# Now we need to iterate over our data frame and load images into memory for plotting.
 	os.makedirs(save_path, exist_ok=True)
-	num_rows = len(df.index)
-	i = 0
-	for _, row in df.iterrows():  # Note: itertuples would be slightly faster, but iterrows is easier.
+	for _, row in df.iterrows():  # Note: itertuples would be slightly faster, but iterrows is easier to use.
 		# Make the timestamp usable (Without this timestamps would end in '.0').
 		time = str(int(row['timestamp_utc']))
 
@@ -43,6 +41,10 @@ def make_plots(df, data_directory, save_path):
 			tsi_mask = mpimg.imread(tsi_mask)
 			net_mask = mpimg.imread(net_mask)
 		except FileNotFoundError:
+			print("Couldn't find one of:")
+			print("\t" + extract_img_path_from_time(time, data_directory))
+			print("\t" + extract_mask_path_from_time(time, data_directory))
+			print("\t" + extract_network_mask_path_from_time(time, EXPERIMENT_LABEL))
 			continue
 
 		# Display the images in a plot together
@@ -112,15 +114,16 @@ dubious_data_df = dubious_data_df.dropna()  # Drop rows with missing values from
 # cover between the TSI and the network we wish to observe.
 LOWER_CF = 0.3
 HIGHER_CF = 0.6
-FSC_SIMILARITY = 0.1
+FSC_SIMILARITY = 0.01
 
 # Now we reassign typical_data_df and dubious_data_df so that they match our query.
 q1_typical = typical_data_df[(LOWER_CF <= typical_data_df['cf_tot']) & (typical_data_df['cf_tot'] <= HIGHER_CF) & (
 		(typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2 <= FSC_SIMILARITY ** 2)]
 q1_dubious = dubious_data_df[(LOWER_CF <= dubious_data_df['cf_tot']) & (dubious_data_df['cf_tot'] <= HIGHER_CF) & (
 		(dubious_data_df['net_fsc_z'] - dubious_data_df['fsc_z']) ** 2 <= FSC_SIMILARITY ** 2)]
+q1 = pd.concat([q1_typical, q1_dubious]).sort_index(axis=1)
 
-# Print the number of timestamps found in the query
+# Print the number of timestamps found in this query
 print("Query #1: Typical len = " + str(len(q1_typical.index)) + ", Dubious len = " + str(len(q1_dubious.index)))
 
 
@@ -137,16 +140,69 @@ q2_typical = typical_data_df[(LOWER_CF <= typical_data_df['cf_tot']) & (typical_
 		(typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2 >= FSC_SIMILARITY ** 2)]
 q2_dubious = dubious_data_df[(LOWER_CF <= dubious_data_df['cf_tot']) & (dubious_data_df['cf_tot'] <= HIGHER_CF) & (
 		(dubious_data_df['net_fsc_z'] - dubious_data_df['fsc_z']) ** 2 >= FSC_SIMILARITY ** 2)]
+q2 = pd.concat([q2_typical, q2_dubious]).sort_index(axis=1)
 
-# Print the number of timestamps found in the query
+# Print the number of timestamps found in this query
 print("Query #2: Typical len = " + str(len(q2_typical.index)) + ", Dubious len = " + str(len(q2_dubious.index)))
 
+# ============================================= Query # 3: "Good" ==================================================== #
+# Define parameters used for thresholding data from our data frames. LOWER_CF and HIGHER_CF define the lower and upper
+# bounds of values of cloud fraction we wish to observe. AGREEMENT is the minimum agreement between the TSI and the
+# network decision images we wish to observe.
+LOWER_CF = 0.3
+HIGHER_CF = 0.6
+AGREEMENT = 0.85
+
+# Need to gather the agreement data for typical and dubious data
+typical_agree_df = pd.read_csv(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/typical_agreement.csv')
+typical_agree_df = typical_agree_df.join(typical_data_df.set_index('timestamp_utc'), on='timestamp_utc')
+typical_agree_df = typical_agree_df.dropna()
+dubious_agree_df = pd.read_csv(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_agreement.csv')
+dubious_agree_df = dubious_agree_df.join(dubious_data_df.set_index('timestamp_utc'), on='timestamp_utc')
+dubious_agree_df = dubious_agree_df.dropna()
+
+# Now we reassign typical_agree_df and dubious_agree_df so that they match our query.
+q3_typical = typical_agree_df[(LOWER_CF <= typical_agree_df['cf_tot']) & (typical_agree_df['cf_tot'] <= HIGHER_CF) & (
+			typical_agree_df['agreement'] >= AGREEMENT)]
+q3_dubious = dubious_agree_df[(LOWER_CF <= dubious_agree_df['cf_tot']) & (dubious_agree_df['cf_tot'] <= HIGHER_CF) & (
+			dubious_agree_df['agreement'] >= AGREEMENT)]
+q3 = pd.concat([q3_typical, q3_dubious]).sort_index(axis=1)
+
+# Print the number of timestamps found in this query
+print("Query #3: Typical len = " + str(len(q3_typical.index)) + ", Dubious len = " + str(len(q3_dubious.index)))
+
+# ============================================== Query # 4: "Bad" ==================================================== #
+# Define parameters used for thresholding data from our data frames. LOWER_CF and HIGHER_CF define the lower and upper
+# bounds of values of cloud fraction we wish to observe. AGREEMENT is the maximum agreement between the TSI and the
+# network decision images we wish to observe.
+LOWER_CF = 0.3
+HIGHER_CF = 0.6
+AGREEMENT = 0.70  # Inverted meaning -- this is the maximum agreement
+
+# Now we reassign typical_agree_df and dubious_agree_df so that they match our query.
+q4_typical = typical_agree_df[(LOWER_CF <= typical_agree_df['cf_tot']) & (typical_agree_df['cf_tot'] <= HIGHER_CF) & (
+			typical_agree_df['agreement'] <= AGREEMENT)]
+q4_dubious = dubious_agree_df[(LOWER_CF <= dubious_agree_df['cf_tot']) & (dubious_agree_df['cf_tot'] <= HIGHER_CF) & (
+			dubious_agree_df['agreement'] <= AGREEMENT)]
+q4 = pd.concat([q4_typical, q4_dubious]).sort_index(axis=1)
+
+# Print the number of timestamps found in this query
+print("Query #4: Typical len = " + str(len(q4_typical.index)) + ", Dubious len = " + str(len(q4_dubious.index)))
+
+# =========================================== Make plots for Queries ================================================= #
 
 # Make plots for Query #1: "Good"
-make_plots(q1_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_good')
-make_plots(q1_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_good')
+make_plots(q1_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q1', 1, len(q1.index))
+make_plots(q1_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q1', len(q1_typical.index) + 1, len(q1.index))
 
 # Make plots for Query #2: "Bad"
-make_plots(q2_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_bad')
-make_plots(q2_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_bad')
+make_plots(q2_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q2', 1, len(q2.index))
+make_plots(q2_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q2', len(q2_typical.index) + 1, len(q2.index))
 
+# Make plots for Query #3: "Good"
+make_plots(q3_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q3', 1, len(q3.index))
+make_plots(q3_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q3', len(q3_typical.index) + 1, len(q3.index))
+
+# Make plots for Query #4: "Bad"
+make_plots(q4_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q4', 1, len(q4.index))
+make_plots(q4_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q4', len(q4_typical.index) + 1, len(q4.index))
