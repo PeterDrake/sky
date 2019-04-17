@@ -24,7 +24,7 @@ def compute_agreement(df, data_directory, csv_name):
 	"""Computes the agreement between network-processed decision images and tsi decision images then creates a csv file
 	with the given name in the results directory."""
 	with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + csv_name, 'w') as file:
-		file.write('timestamp_utc,agreement_rate\n')
+		file.write('timestamp_utc,agreement\n')
 
 		for _, row in df.iterrows():
 			time = str(int(row['timestamp_utc']))
