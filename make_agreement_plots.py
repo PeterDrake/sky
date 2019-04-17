@@ -189,6 +189,29 @@ q4 = pd.concat([q4_typical, q4_dubious]).sort_index(axis=1)
 # Print the number of timestamps found in this query
 print("Query #4: Typical len = " + str(len(q4_typical.index)) + ", Dubious len = " + str(len(q4_dubious.index)))
 
+
+# ============================================== Query # 5: "Bad" ==================================================== #
+# Define parameters used for thresholding data from our data frames. LOWER_CF and HIGHER_CF define the lower and upper
+# bounds of values of cloud fraction we wish to observe. AGREEMENT is the maximum agreement between the TSI and the
+# network decision images we wish to observe.
+TSI_U = 0.3  # Less than
+TSI_L = 0.1  # Greater than
+
+NET_U = 0.3  # Less than
+NET_L = 0.1  # Greater than
+
+CF = 0.01  # Less than
+
+# Now we reassign typical_agree_df and dubious_agree_df so that they match our query.
+q5_typical = typical_data_df[(typical_data_df['cf_tot'] <= CF) & (typical_data_df['fsc_z'] <= TSI_U) & (typical_data_df['fsc_z'] >= TSI_L) & (typical_data_df['net_fsc_z'] >= NET_L) & (typical_data_df['net_fsc_z'] <= NET_U)]
+q5_dubious = dubious_data_df[(dubious_data_df['cf_tot'] <= CF) & (dubious_data_df['fsc_z'] <= TSI_U) & (dubious_data_df['fsc_z'] >= TSI_L) & (dubious_data_df['net_fsc_z'] >= NET_L) & (dubious_data_df['net_fsc_z'] <= NET_U)]
+
+q5 = pd.concat([q5_typical, q5_dubious]).sort_index(axis=1)
+
+# Print the number of timestamps found in this query
+print("Query #5: Typical len = " + str(len(q5_typical.index)) + ", Dubious len = " + str(len(q5_dubious.index)))
+
+
 # =========================================== Make plots for Queries ================================================= #
 
 # Make plots for Query #1: "Good"
@@ -206,3 +229,7 @@ make_plots(q3_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + 
 # Make plots for Query #4: "Bad"
 make_plots(q4_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q4', 1, len(q4.index))
 make_plots(q4_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q4', len(q4_typical.index) + 1, len(q4.index))
+
+# Make plots for Query #5: "Sunglare"
+make_plots(q5_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q5', 1, len(q5.index))
+make_plots(q5_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/finding_figs_q5', len(q5_typical.index) + 1, len(q5.index))
