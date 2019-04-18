@@ -6,7 +6,7 @@ import os
 import pandas as pd
 from PIL import Image
 from scipy import misc
-
+from config import RESULTS_DIR
 
 # Colors used in the decision image - DO NOT TOUCH
 WHITE = np.array([255, 255, 255])
@@ -328,7 +328,7 @@ def one_hot_to_mask(max_indices, output):
 
 def extract_network_mask_path_from_time(timestamp, exp_label):
 	"""Returns the save path of a network mask. The mask does not necessarily need to exist."""
-	return 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+	return RESULTS_DIR + '/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
 			timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
 
 
