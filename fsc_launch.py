@@ -18,16 +18,20 @@ from fsc import fsc
 import time
 
 
-def setup(job_name, input_data_csv, output_data_csv):
+def setup(job_name, input_data, output_data_csv):
 	name = job_name + EXPERIMENT_LABEL
 	if BLT:
-		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {}" -P 1'.format(name, input_data_csv, output_data_csv))
+		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {}" -P 1'.format(name, input_data, output_data_csv))
 	else:
-		fsc(input_data_csv, output_data_csv)
+		fsc(input_data, output_data_csv)
 
 
 if __name__ == "__main__":
 	start = time.clock()
-	setup('dubious-fsc-', DUBIOUS_DATA_CSV, 'dubious_fsc.csv')
-	setup('typical-fsc-', TYPICAL_DATA_CSV, 'typical_fsc.csv')
+	if USE_VALID_FSC:  # Use a pickled file
+		setup('dubious-fsc-', DUBIOUS_VALID_FILE, 'dubious_fsc.csv')
+		setup('typical-fsc-', TYPICAL_VALID_FILE, 'typical_fsc.csv')
+	else:  # Use a csv file
+		setup('dubious-fsc-', DUBIOUS_DATA_CSV, 'dubious_fsc.csv')
+		setup('typical-fsc-', TYPICAL_DATA_CSV, 'typical_fsc.csv')
 	print("Elapsed time: " + str(time.clock() - start) + " seconds")

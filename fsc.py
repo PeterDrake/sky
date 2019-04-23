@@ -1,6 +1,6 @@
 import sys
 from utils import *
-from config import RESULTS_DIR, EXPERIMENT_LABEL
+from config import *
 
 
 def find_center(mask):
@@ -92,8 +92,11 @@ def get_fsc_from_file(filename):
 		return get_fsc(mask)
 
 
-def fsc(input_data_csv, output_data_csv):
-	times = sorted(list(extract_data_from_csv(input_data_csv, 'timestamp_utc')))
+def fsc(input_data_file, output_data_csv):
+	if USE_VALID_FSC:
+		times = load_pickled_file(input_data_file)
+	else:
+		times = sorted(list(extract_data_from_csv(input_data_file, 'timestamp_utc')))
 	spacing = int(len(times)/100)
 	with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + output_data_csv, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
@@ -106,10 +109,11 @@ def fsc(input_data_csv, output_data_csv):
 				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL))
 				f.write("{},{},{},{}".format(t, fsc_z, fsc_thn_z, fsc_opq_z) + "\n")
 			count += 1
+		f.flush()
 		print("progress: 100%")
 
 
 if __name__ == '__main__':
-	INPUT_DATA_CSV = sys.argv[1]
+	INPUT_DATA_FILE = sys.argv[1]
 	OUTPUT_DATA_CSV = sys.argv[2]
-	fsc(INPUT_DATA_CSV, OUTPUT_DATA_CSV)
+	fsc(INPUT_DATA_FILE, OUTPUT_DATA_CSV)
