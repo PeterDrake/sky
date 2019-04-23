@@ -162,7 +162,7 @@ def load_validation_batch(n):
 
 def load_validation_stamps(n):
 	"""Reads the valid.stamps file in data and returns a list of the first n stamps."""
-	with open(TYPICAL_DATA_DIR + '/valid.stamps', 'rb') as f:
+	with open(TYPICAL_VALID_FILE, 'rb') as f:
 		return pickle.load(f)[:n]
 
 

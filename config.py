@@ -53,6 +53,10 @@ RESULTS_DIR = "results"
 # Variable used to run our code on BLT. To run locally set to False.
 BLT = False
 
+# Variable to only use validation data for computing fsc (Saves a lot of time if just making plots with validation data,
+# but you'll want to set this to false if you are planning on making plots that require more data)
+USE_VALID_FSC = True
+
 # A unique identifier for the network being trained/in use. This can be something like "e81-00". If testing out several
 # networks, be sure to change this with each run. The training process WILL overwrite any existing saved networks
 # identified by this experiment label.
@@ -61,6 +65,10 @@ EXPERIMENT_LABEL = "e84-00"
 # Paths to csv files for typical and dubious data.
 TYPICAL_DATA_CSV = "typical_data/shcu_typical_data.csv"
 DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
+
+# Paths to stamps for typical and dubious data
+TYPICAL_VALID_FILE = TYPICAL_DATA_DIR + "/valid.stamps"
+DUBIOUS_VALID_FILE = DUBIOUS_DATA_DIR + "/poster_valid.stamps"
 
 # The number of sky/decision image pairs to preprocess in a single job. When running locally, set this to 200,000. There
 # is no benefit to creating multiple batches for preprocessing data when not on BLT as our code does not run preprocess
