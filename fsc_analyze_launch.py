@@ -23,19 +23,10 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe
+from utils import read_csv_file, extract_data_from_dataframe, extract_data_for_date_from_dataframe, load_pickled_file
 from config import *
 
 N_SAMPLES = 2500
-
-TYPICAL_VALID_FILE = TYPICAL_DATA_DIR + "/valid.stamps"
-DUBIOUS_VALID_FILE = DUBIOUS_DATA_DIR + "/poster_valid.stamps"
-
-
-def load_pickled_file(filename):
-	"""Loads a pickled file."""
-	with open(filename, 'rb') as f:
-		return pickle.load(f)
 
 
 def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe, arscl_header="cf_tot", image_header="fsc_z"):

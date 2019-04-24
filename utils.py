@@ -185,6 +185,12 @@ def listdir_f(directory=None):
 	return (name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name)))
 
 
+def load_pickled_file(filename):
+	"""Loads a pickled file."""
+	with open(filename, 'rb') as f:
+		return pickle.load(f)
+
+
 def show_skymask(mask, save_instead=False, save_path=None):
 	""" Shows the mask for a given timestamp, alternatively can show a given mask."""
 	mask_image = Image.fromarray(mask.astype('uint8'))

@@ -162,7 +162,7 @@ def load_validation_batch(n):
 
 def load_validation_stamps(n):
 	"""Reads the valid.stamps file in data and returns a list of the first n stamps."""
-	with open(TYPICAL_DATA_DIR + '/valid.stamps', 'rb') as f:
+	with open(TYPICAL_VALID_FILE, 'rb') as f:
 		return pickle.load(f)[:n]
 
 
@@ -287,7 +287,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 						iterations_without_improvement = 0
 						# Remove previously saved networks and retain only the best.
 						if TRACK_BEST_NETWORK:
-							old_nets = glob.glob("results/" + EXPERIMENT_LABEL + "/weights*")
+							old_nets = glob.glob(RESULTS_DIR + "/" + EXPERIMENT_LABEL + "/weights*")
 							for net in old_nets:
 								os.remove(net)
 							saver.save(sess, result_dir + 'weights', global_step=i)
