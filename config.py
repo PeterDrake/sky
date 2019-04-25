@@ -60,7 +60,7 @@ USE_VALID_FSC = True
 # A unique identifier for the network being trained/in use. This can be something like "e81-00". If testing out several
 # networks, be sure to change this with each run. The training process WILL overwrite any existing saved networks
 # identified by this experiment label.
-EXPERIMENT_LABEL = "e84-00"
+EXPERIMENT_LABEL = "e92-01"
 
 # Paths to csv files for typical and dubious data.
 TYPICAL_DATA_CSV = "typical_data/shcu_typical_data.csv"
