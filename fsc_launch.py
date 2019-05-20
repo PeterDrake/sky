@@ -9,21 +9,29 @@ EX: head results/e70-00/fsc.csv --lines=2
 
 This script also defines the INPUT_DATA_CSV file, which should contain a timestamp_utc header and timestamps that
 correspond to the decision images you wish to use in fractional sky cover calculations.
-EX: 'good_data/shcu_good_data.csv'
+EX: 'typical_data/shcu_typical_data.csv'
 """
 
 import os
+from config import *
+from fsc import fsc
+import time
 
-# Set the experiment labels to match the network(s) you'd like to evaluate fractional sky cover tasks with
-# Note: this is not used to open the network, but rather to look through its processed decision images
-EXP_LABELS = ['e78-00', 'e78-01']
 
-# Set the input and output csv files to match the file containing timestamps you would like to use.
-INPUT_DATA_CSV = 'bad_data/shcu_bad_data.csv'
-OUTPUT_DATA_CSV = 'bad_fsc.csv'  # Either good_fsc.csv or bad_fsc.csv for summer 2018
-JOB_NAME = 'bad-fsc-'
+def setup(job_name, input_data, output_data_csv):
+	name = job_name + EXPERIMENT_LABEL
+	if BLT:
+		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {} {}" -P 1'.format(name, input_data, output_data_csv))
+	else:
+		fsc(input_data, output_data_csv)
+
 
 if __name__ == "__main__":
-	for exp_label in EXP_LABELS:
-		name = JOB_NAME + exp_label
-		os.system('SGE_Batch -r "{}" -c "python3 -u fsc.py {}" -P 1'.format(name, exp_label))
+	start = time.clock()
+	if USE_VALID_FSC:  # Use a pickled file
+		setup('dubious-fsc-', DUBIOUS_VALID_FILE, 'dubious_fsc.csv')
+		setup('typical-fsc-', TYPICAL_VALID_FILE, 'typical_fsc.csv')
+	else:  # Use a csv file
+		setup('dubious-fsc-', DUBIOUS_DATA_CSV, 'dubious_fsc.csv')
+		setup('typical-fsc-', TYPICAL_DATA_CSV, 'typical_fsc.csv')
+	print("Elapsed time: " + str(time.clock() - start) + " seconds")

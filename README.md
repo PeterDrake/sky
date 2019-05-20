@@ -1,22 +1,52 @@
-# sky
-<i>Applying convolutional neural networks to the task of semantic segmentation on (meteorological) clouds.</i>
+# Sky Machine Learning
 
-<b>Setup</b>: 
-- Download data from a Total Sky Imager (We use TSI C1 in the SGP) and unpack the tars into a convenient location.
-- Look through the documentation in each file ending in launch.py. These will tell you about the parameters to set for your specific configuration
-- Run the launch.py files in the order listed below. Before running a new file you should wait for the previous to finish.
+Applying convolutional neural networks to the task of semantic segmentation of (meteorological) clouds. 
 
 
-<b>Programs to run (<i>Currently only on BLT</i>)</b>:
-- preprocess_setup_launch.py: creates batches and sets many parameters used in preprocessing.
-- preprocess_launch.py: launches parallel tasks to simplify batches of photos and decision images.
-- preprocess_stamps_launch.py: separates data into training, validation, and testing, and makes final preparations for training.
-- train_launch.py: defines parameters for training and launches the training process for several networks.
-- process_launch.py: defines parameters for processing specific sky photos. Launches a number of jobs in parallel.
-- fsc_launch.py: computes the fractional sky cover statistic for each decision image produced by the network and saves results in a csv file.
+## Quick Overview
 
-<b>To generate our plots: (<i>Currently not on BLT</i>)</b>
-- fsc_analyze_launch: requires fsc_launch to be run on good and bad data. Compares network fsc statistic to the TSI and ARSCL.
-- plot_learning_curve_launch.py: plots accuracy vs batch for the networks training process. Can be run after training is complete.
+## Getting Started
+
+### Setting up your Environment
+
+If you have successfully run python scripts on your machine in the past and you are comfortable with your current editor, you may skip this step. 
+
+We recommend downloading and installing <a href="https://git-scm.com/downloads">git</a>, a version control system that integrates well with github. This will help you download our code and stay up-to-date with bug fixes and other changes. We recommend installing git with the default installation settings if possible. 
+
+If you don't have python installed on your system, you will need to download and install python on your system. You can get python <a href="https://www.python.org/downloads/">here</a>. If you're on Windows, we recommend including Python in your PATH when using the setup wizard.
+
+Once you have python installed on your system, you will need an integrated development environment (IDE) to make a few code changes specific to your system. We recommend using <a href="https://www.jetbrains.com/pycharm/download/">PyCharm</a> because it has many useful features, is well-documented, and seemlessly integrates with git. 
+
+Whatever environment you decide to use, you will need have the following packages installed prior to running our code: <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), and scipy.</i>
 
 
+### Downloading the data
+Our data consists of sky images and and cloud masks from 5/1/2012 to 9/24/2017. The data belongs to <a href="https://www.arm.gov/">https://www.arm.gov/</a>, so to obtain it for yourself you will need to follow the following steps:
+<ol>
+  <li>Log in or create an account with ARM</li>
+  <li>Go to the <a href="https://www.archive.arm.gov/discovery/#v/results/s/fsite::sgp.P/ffac::sgp.C1/fdpl::sgptsicldmaskC1.a1/fdpl::sgptsiskyimageC1.a1">Data Discovery</a> page and select the checkboxes next to "tsicldmask C1" and "tsiskyimage" </li>
+  <li>Proceed to checkout with the data and download as tarred files.</li>
+  <li>Untar the downloaded files into folders named "CloudMask" and "SkyImage"</li>
+</ol>
+
+It can take several days for ARM to stage the files for download and the files are several gigabytes altogether. Once your data in downloaded and unpacked into a convenient location, you're all set.
+
+### Running the Project on Your Machine
+
+After downloading our code from our repository, open the configuration file (config.py) and set the desired parameters and file paths for your machine. Note that you will have to ensure that "BLT = False" for the code to run properly on your computer.
+
+Navigate to the file path you have specified in the config file as RAW_DATA_DIR. Then create two new directories named SkyImage and CloudMask and put the skyimage and cldmask tar files in their respective directories. Once the files are organized, running unpack_tars.py will unpack all of the tarred files into their appropriate subdirectories in CloudMask and SkyImage.
+
+Once the configuration file is set up, you should be good to go. Now you just need to run the files ending in launch.py in the following order:
+<ol>
+  <li> <strong>preprocess_setup_launch.py</strong></li>
+  <li><strong>preprocess_stamps_launch.py</strong></li>
+  <li><strong>preprocess_launch.py</strong></li>
+  <li><strong>train_launch.py</strong></li>
+  <li><strong>plot_learning_curve_launch.py</strong></li>
+  <li><strong>process_launch.py</strong></li>
+  <li><strong>fsc_launch.py</strong></li>
+  <li><strong>fsc_analyze_launch.py</strong></li> 
+</ol>
+
+Note that you can change various training-specific parameters in config.py and run train_launch.py several times without needing to run the preprocessesing tasks again. For example - once the preprocessing tasks are done and you've trained the network once, you may wish to try out a different learning rate or train for a different number of batches. You can do this simply by modifying EXPERIMENT_LABEL in config.py so that your existing network is not overwritten, and then change LEARNING_RATE and NUM_TRAINING_BATCHES to your desired values. Once these changes have been made, running train_launch.py will begin training a new network with your new configurations.

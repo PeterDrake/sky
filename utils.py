@@ -1,12 +1,12 @@
 import glob
 import math
 import pickle
-
 import numpy as np
 import os
 import pandas as pd
 from PIL import Image
 from scipy import misc
+from config import RESULTS_DIR
 
 # Colors used in the decision image - DO NOT TOUCH
 WHITE = np.array([255, 255, 255])
@@ -115,9 +115,9 @@ def extract_data_from_dataframe(frame, column_header):
 	return {str(d).strip() for d in data}
 
 
-def extract_tsi_fsc_for_bad_dates(timestamps):
+def extract_tsi_fsc_for_dubious_dates(timestamps):
 	nan_fsc = set()
-	csv = read_csv_file("good_data/shcu_good_data.csv")
+	csv = read_csv_file("typical_data/shcu_typical_data.csv")
 	df = csv.set_index("timestamp_utc", drop=False)
 	# drop=False to not delete timestamp_utc column if other index set later
 	for time in timestamps:
@@ -128,7 +128,7 @@ def extract_tsi_fsc_for_bad_dates(timestamps):
 
 
 def extract_tsi_fsc_for_date(timestamp):
-	csv = read_csv_file("good_data/shcu_good_data.csv")
+	csv = read_csv_file("typical_data/shcu_typical_data.csv")
 	df = csv.set_index("timestamp_utc", drop=False)
 	# drop=False to not delete timestamp_utc column if other index set later
 	return (math.floor(df.loc[timestamp, "fsc_z"] * 10 ** 6)) / 10 ** 6
@@ -185,6 +185,12 @@ def listdir_f(directory=None):
 	return (name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name)))
 
 
+def load_pickled_file(filename):
+	"""Loads a pickled file."""
+	with open(filename, 'rb') as f:
+		return pickle.load(f)
+
+
 def show_skymask(mask, save_instead=False, save_path=None):
 	""" Shows the mask for a given timestamp, alternatively can show a given mask."""
 	mask_image = Image.fromarray(mask.astype('uint8'))
@@ -198,8 +204,8 @@ def find_unpaired_images(timestamps, input_dir):
 	"""Blacklists files for timestamps that do not have both images and masks."""
 	blacklist = set()
 	for time in timestamps:
-		mask = extract_mask_path_from_time_old(time, input_dir)
-		image = extract_img_path_from_time_old(time, input_dir)
+		mask = extract_mask_path_from_time_raw(time, input_dir)
+		image = extract_img_path_from_time_raw(time, input_dir)
 		if not os.path.isfile(mask) or not os.path.isfile(image):
 			blacklist.add(time)
 		elif os.path.getsize(mask) == 0 or os.path.getsize(image) == 0:
@@ -208,15 +214,39 @@ def find_unpaired_images(timestamps, input_dir):
 
 
 def extract_img_path_from_time(time, input_dir):
-	"""Extracts the path of an image from the timestamp and input directory."""
+	"""Extracts the path of an image from the timestamp and input directory. This is intended to be used for finding sky
+	image paths in the typical or dubious data directories."""
 	return input_dir + '/' + 'simpleimage/' + time_to_year(time) + '/' + time_to_month_and_day(
 			time) + '/simpleimage' + time + '.jpg'
 
 
 def extract_mask_path_from_time(time, input_dir):
-	"""Extracts the path of an mask from the timestamp and input directory."""
+	"""Extracts the path of an mask from the timestamp and input directory. This is intended to be used for finding sky
+	image paths in the typical or dubious data directories."""
 	return input_dir + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(
 			time) + '/simplemask' + time + '.png'
+
+
+def extract_img_path_from_time_raw(time, input_dir):
+	"""Extracts the path of an image from the timestamp and input directory. This is intended to be used for finding sky
+	image paths in the RAW_DATA_DIR."""
+	for directory in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
+		image = directory + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
+				time) + '.' + time_to_hour_minute_second(
+				time) + '.jpg.' + time + '.jpg'
+		if os.path.isfile(image):
+			return image
+	return str()
+
+
+def extract_mask_path_from_time_raw(time, input_dir):
+	"""Extracts the path of a mask from the timestamp and input directory. This is intended to be used for finding sky
+	mask paths in the RAW_DATA_DIR."""
+	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
+			time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
+			time) + '.png.' + time + '.png'
+	return mask
+
 
 def img_save_path(time, directory):
 	"""Creates path for image."""
@@ -228,8 +258,7 @@ def mask_save_path(time, directory):
 	return directory + '/' + 'simplemask/' + time_to_year(time) + '/' + time_to_month_and_day(time) + '/'
 
 
-def separate_data(timestamps, train_stamp_path='train.stamps', valid_stamp_path='valid.stamps',
-                  test_stamp_path='test.stamps', train_ratio=0.6, valid_ratio=0.2, test_ratio=0.2):
+def separate_data(timestamps, train_stamp_path='train.stamps', valid_stamp_path='valid.stamps', test_stamp_path='test.stamps', train_ratio=0.6, valid_ratio=0.2, test_ratio=0.2):
 	"""Saves pickled lists of timestamps to test.stamps, valid.stamps, and
 	train.stamps."""
 	test, valid, train = separate_stamps(timestamps, test_ratio, valid_ratio, train_ratio)
@@ -251,25 +280,6 @@ def separate_stamps(timestamps, test_ratio, valid_ratio, train_ratio):
 		valid = timestamps[int(len(timestamps) * test_ratio):int(len(timestamps) * (test_ratio + valid_ratio))]
 		train = timestamps[int(len(timestamps) * (test_ratio + valid_ratio)):]
 		return test, valid, train
-
-
-def extract_img_path_from_time_old(time, input_dir):
-	"""Extracts the path of an image from the timestamp and input directory."""
-	for directory in glob.glob(input_dir + '/SkyImage/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(time) + '*'):
-		image = directory + '/' + 'sgptsiskyimageC1.a1.' + time_to_year_month_day(
-				time) + '.' + time_to_hour_minute_second(
-				time) + '.jpg.' + time + '.jpg'
-		if os.path.isfile(image):
-			return image
-	return str()
-
-
-def extract_mask_path_from_time_old(time, input_dir):
-	"""Extracts the path of a mask from the timestamp and input directory."""
-	mask = input_dir + '/CloudMask/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(
-			time) + '/' + 'sgptsicldmaskC1.a1.' + time_to_year_month_day(time) + '.' + time_to_hour_minute_second(
-			time) + '.png.' + time + '.png'
-	return mask
 
 
 def read_last_iteration_number(directory):
@@ -324,11 +334,11 @@ def one_hot_to_mask(max_indices, output):
 
 def extract_network_mask_path_from_time(timestamp, exp_label):
 	"""Returns the save path of a network mask. The mask does not necessarily need to exist."""
-	return 'results/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+	return RESULTS_DIR + '/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
 			timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
 
 
-def get_simple_mask(timestamp, input_dir='good_data'):
+def get_simple_mask(timestamp, input_dir='typical_data'):
 	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
 	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp
 	20170215000000."""

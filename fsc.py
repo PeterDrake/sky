@@ -1,20 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-This script is intended to be run from fsc_launch.py, but can be run from the command line if the experiment label is
-specified.
-
-Computes the fractional sky cover for a set of decision images specified in fsc_launch.py and saves the results in
-OUTPUT_DATA_CSV.
-
-Should you choose the manual option, you will need to change the INPUT_DATA_CSV and OUTPUT_DATA_CSV parameters in
-fsc_launch.csv to match your goals. EX: python3 fsc.py e70-00
-"""
-
 import sys
-
-from fsc_launch import INPUT_DATA_CSV, OUTPUT_DATA_CSV
 from utils import *
+from config import *
 
 
 def find_center(mask):
@@ -106,17 +92,28 @@ def get_fsc_from_file(filename):
 		return get_fsc(mask)
 
 
-if __name__ == '__main__':
-	exp_label = sys.argv[1]  # The experiment number / directory name in results
-	times = sorted(list(extract_data_from_csv(INPUT_DATA_CSV, 'timestamp_utc')))
-	with open('results/' + exp_label + '/' + OUTPUT_DATA_CSV, 'w') as f:
+def fsc(input_data_file, output_data_csv):
+	if USE_VALID_FSC:
+		times = load_pickled_file(input_data_file)
+	else:
+		times = sorted(list(extract_data_from_csv(input_data_file, 'timestamp_utc')))
+	spacing = int(len(times)/100)
+	with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + output_data_csv, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
 		for t in times:
-			if count % 10 == 0:
-				print("progress: ", round(count / len(times) * 10000) / 100, "%")
+			if count % spacing == 0:
+				print("progress: " + str(round(count/spacing)) + "%")
 				f.flush()
-			if os.path.isfile(extract_network_mask_path_from_time(t, exp_label)):
-				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, exp_label))
+			if os.path.isfile(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL)):
+				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL))
 				f.write("{},{},{},{}".format(t, fsc_z, fsc_thn_z, fsc_opq_z) + "\n")
 			count += 1
+		f.flush()
+		print("progress: 100%")
+
+
+if __name__ == '__main__':
+	INPUT_DATA_FILE = sys.argv[1]
+	OUTPUT_DATA_CSV = sys.argv[2]
+	fsc(INPUT_DATA_FILE, OUTPUT_DATA_CSV)

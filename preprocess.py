@@ -2,13 +2,13 @@
 This script is intended to be run from preprocess_launch.py, which calls this script and sends it a file. In that
 file should be a collection of timestamps separated by line.
 
-This script crops the sky photos and simplifies the decision images in the INPUT_DIR. Simplification entails cropping
+This script crops the sky photos and simplifies the decision images in the RAW_DATA_DIR. Simplification entails cropping
 and removal of the sun from the sun band.
 """
 
 import sys
 
-from preprocess_setup_launch import INPUT_DIR, OUTPUT_DIR
+from config import RAW_DATA_DIR
 from utils import *
 
 
@@ -56,7 +56,7 @@ def crop_image(img):
 
 def simplify_image(timestamp, input_dir, output_dir):
 	"""Writes simplified versions of mask to simplemask."""
-	img_path = extract_img_path_from_time_old(timestamp, input_dir)
+	img_path = extract_img_path_from_time_raw(timestamp, input_dir)
 	img = misc.imread(img_path)
 	img = crop_image(img)
 	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
@@ -65,7 +65,7 @@ def simplify_image(timestamp, input_dir, output_dir):
 
 def simplify_mask(timestamp, input_dir, output_dir):
 	"""Writes simplified versions of mask to simplemask."""
-	mask_path = extract_mask_path_from_time_old(timestamp, input_dir)
+	mask_path = extract_mask_path_from_time_raw(timestamp, input_dir)
 	mask = misc.imread(mask_path)
 	mask = crop_image(mask)
 	if (mask == YELLOW).all(axis=2).any():
@@ -76,11 +76,21 @@ def simplify_mask(timestamp, input_dir, output_dir):
 	return
 
 
-if __name__ == "__main__":
-	f = open(sys.argv[1])  # This is the name of the file containing timestamps
-	print("Opened {}".format(sys.argv[1]))
-	for time in f:
+def preprocess(filename, output_dir):
+	"""Simplifies sky and decision images given a filename containing timestamps and an output_dir to save the
+	simplified images."""
+	file = open(filename)
+	print("Opened {}".format(filename))
+	for time in file:
 		time = time.replace('\n', '')
 		time = time.replace(' ', '')
-		simplify_mask(time, INPUT_DIR, OUTPUT_DIR)
-		simplify_image(time, INPUT_DIR, OUTPUT_DIR)
+		simplify_mask(time, RAW_DATA_DIR, output_dir)
+		simplify_image(time, RAW_DATA_DIR, output_dir)
+	file.close()
+	print("Finished preprocessing sky and decision images in ", filename)
+
+
+if __name__ == "__main__":
+	f = sys.argv[1]
+	OUTPUT_DIR = sys.argv[2]
+	preprocess(f, OUTPUT_DIR)
