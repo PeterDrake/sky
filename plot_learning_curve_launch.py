@@ -29,3 +29,4 @@ if __name__ == "__main__":
 		ax.legend(loc='lower right', fontsize=20)
 		plt.tight_layout()
 		fig.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/accuracy_vs_batch.png', bbox_inches='tight')
+		print(TRAINING_BATCH_SIZE)
