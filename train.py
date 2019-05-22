@@ -109,7 +109,8 @@ def convo_layer(num_in, num_out, width, prev, name, relu=True):
 	with tf.variable_scope(name):
 		initial = tf.truncated_normal([width, width, num_in, num_out], stddev=(2 / math.sqrt(width * width * num_in)))
 		W = tf.get_variable("weights", initializer=initial)
-		print('!!!!!!!!!!!! WEIGHTS: ' + W)
+		print('!!!!!!!!!!!! WEIGHTS: ')
+        print(W)
 		initial = tf.constant(0.1, shape=[num_out])
 		b = tf.Variable(initial, name='biases')
 		if relu:
