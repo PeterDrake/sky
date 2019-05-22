@@ -127,7 +127,7 @@ if BLT:
 	# saved to results/masks
 	RESULTS_DIR = "results"
 
-	TRAINING_BATCH_SIZE = 50  # Largest batch size possible
+	# TRAINING_BATCH_SIZE = 50  # Largest batch size possible
 
 	PREPROCESS_BATCH_SIZE = 10000
 
