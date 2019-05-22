@@ -109,6 +109,7 @@ def convo_layer(num_in, num_out, width, prev, name, relu=True):
 	with tf.variable_scope(name):
 		initial = tf.truncated_normal([width, width, num_in, num_out], stddev=(2 / math.sqrt(width * width * num_in)))
 		W = tf.get_variable("weights", initializer=initial)
+		print('!!!!!!!!!!!! WEIGHTS: ' + W)
 		initial = tf.constant(0.1, shape=[num_out])
 		b = tf.Variable(initial, name='biases')
 		if relu:
@@ -281,7 +282,6 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 					valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
 					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy), file=f, flush=True)
 					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy))
-
 					if valid_accuracy > max_valid_accuracy:
 						max_valid_accuracy = valid_accuracy
 						iterations_without_improvement = 0
