@@ -109,8 +109,6 @@ def convo_layer(num_in, num_out, width, prev, name, relu=True):
 	with tf.variable_scope(name):
 		initial = tf.truncated_normal([width, width, num_in, num_out], stddev=(2 / math.sqrt(width * width * num_in)))
 		W = tf.get_variable("weights", initializer=initial)
-		print('!!!!!!!!!!!! WEIGHTS: ')
-		print(W)
 		initial = tf.constant(0.1, shape=[num_out])
 		b = tf.Variable(initial, name='biases')
 		if relu:
@@ -270,6 +268,12 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 			j = 0
 			max_valid_accuracy = 0
 			iterations_without_improvement = 0
+			print('Variables before training:')
+			old_var = {}
+			for var in tf.global_variables():
+				old_var[var.name] = sess.run(var)
+			print(old_var)
+			new_var = {}
 			for i in range(NUM_TRAINING_BATCHES):
 				j += 1
 				if j * TRAINING_BATCH_SIZE >= len(train_stamps):
@@ -304,6 +308,14 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 				valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
 				print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy), file=f, flush=True)
 				print('{}\t{:1.5f}\t{:1.5f}'.format(NUM_TRAINING_BATCHES, train_accuracy, valid_accuracy))
+			print('Variables after training:')
+			for var in tf.global_variables():
+				new_var[var.name] = sess.run(var)
+			print(new_var)
+			print('Check for variable changes')
+			for vname in new_var:
+				eq = np.array_equal(old_var[vname], new_var[vname])
+				print('Is {} changed? {}'.format(vname, not eq))
 		stop = time.time()
 		print('Elapsed time:\t' + str(stop - start) + ' seconds')
 		F = open(result_dir + 'parameters.txt', 'a')
