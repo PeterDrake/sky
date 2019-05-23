@@ -92,7 +92,7 @@ TRAINING_BATCH_SIZE = 10  # Small run
 # smaller without too much performance loss.
 # NUM_TRAINING_BATCHES = 10000  # Full run (with a graphics card)
 # NUM_TRAINING_BATCHES = 2000  # Medium run (Training takes a long time without a graphics card)
-NUM_TRAINING_BATCHES = 30  # Small run
+NUM_TRAINING_BATCHES = 1000  # Small run / was 30
 
 # This is the learning rate for training. We recommend setting this to a small value (1e-4 or smaller) with a large
 # number of training batches. If you decrease the number of training batches significantly, consider increasing the
@@ -101,7 +101,7 @@ LEARNING_RATE = 1e-4
 
 # Set the maximum number of batches in a row allowed without progress. Setting this to None will effectively not bother
 # with early stopping.
-EARLY_STOPPING = 300
+EARLY_STOPPING = 1000 # was 300
 
 # Decide to keep track of the network with the highest validation accuracy. If set to True, then the final network will
 # be the one with the highest observed validation accuracy.
