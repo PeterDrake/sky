@@ -333,7 +333,7 @@ def train(layer_info):
 	os.makedirs(out_dir, exist_ok=True)
 	save_params(EXPERIMENT_LABEL, layer_info, out_dir)
 	# train_net(*build_net(layer_info), *load_validation_batch(TRAINING_BATCH_SIZE), out_dir)
-	train_net(*build_net(layer_info), *load_validation_batch(1000), out_dir)
+	train_net(*build_net(layer_info), *load_validation_batch(50), out_dir)
 
 
 if __name__ == '__main__':
