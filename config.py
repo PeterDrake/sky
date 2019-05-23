@@ -99,9 +99,9 @@ NUM_TRAINING_BATCHES = 10000  # Full run (with a graphics card)
 # learning rate.
 LEARNING_RATE = 1e-4
 
-# Set the maximum number of batches in a row allowed without progress. Setting this to None will effectively not bother
+# Set the maximum number of batches in a row allowed without progress. Setting this to 0 will effectively not bother
 # with early stopping.
-EARLY_STOPPING = None # was 300
+EARLY_STOPPING = 0 # was 300
 
 # Decide to keep track of the network with the highest validation accuracy. If set to True, then the final network will
 # be the one with the highest observed validation accuracy.
