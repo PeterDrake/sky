@@ -90,9 +90,9 @@ TRAINING_BATCH_SIZE = 10  # Small run
 # This is the number of batches to run during training. We recommend setting this so that TRAINING_BATCH_SIZE multiplied
 # by NUM_TRAINING_BATCHES is around 100,000. For a brief run through the experiment this can be made significantly
 # smaller without too much performance loss.
-NUM_TRAINING_BATCHES = 10000  # Full run (with a graphics card)
+# NUM_TRAINING_BATCHES = 10000  # Full run (with a graphics card)
 # NUM_TRAINING_BATCHES = 2000  # Medium run (Training takes a long time without a graphics card)
-# NUM_TRAINING_BATCHES = 30  # Small run
+NUM_TRAINING_BATCHES = 30  # Small run
 
 # This is the learning rate for training. We recommend setting this to a small value (1e-4 or smaller) with a large
 # number of training batches. If you decrease the number of training batches significantly, consider increasing the
