@@ -284,7 +284,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 				train_step.run(feed_dict={x: inputs, y_: correct})
 				if i % 10 == 0:
 					train_accuracy = accuracy.eval(feed_dict={x: inputs, y_: correct})
-					print(valid_inputs.shape)
+					# print(valid_inputs.shape)
 					valid_accuracy = accuracy.eval(feed_dict={x: valid_inputs, y_: valid_correct})
 					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy), file=f, flush=True)
 					print('{}\t{:1.5f}\t{:1.5f}'.format(i, train_accuracy, valid_accuracy))
@@ -332,8 +332,8 @@ def train(layer_info):
 	out_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/'
 	os.makedirs(out_dir, exist_ok=True)
 	save_params(EXPERIMENT_LABEL, layer_info, out_dir)
-	# train_net(*build_net(layer_info), *load_validation_batch(TRAINING_BATCH_SIZE), out_dir)
-	train_net(*build_net(layer_info), *load_validation_batch(50), out_dir)
+	train_net(*build_net(layer_info), *load_validation_batch(TRAINING_BATCH_SIZE), out_dir)
+	# train_net(*build_net(layer_info), *load_validation_batch(50), out_dir)
 
 
 if __name__ == '__main__':
