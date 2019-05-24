@@ -84,15 +84,15 @@ SMALL_PROCESS_SIZE = None  # Full Run
 # The number of sky/decision image pairs to train on in a single batch. We recommend setting this as high as possible
 # during training. For our GTX 1080 ti the maximum number of images we can use in a batch is 23. On BLT, our CPU-cluster
 # computer we can use upwards of 50 images.
-TRAINING_BATCH_SIZE = 23  # For a run with a GTX 1080 ti
-# TRAINING_BATCH_SIZE = 10  # Small run
+# TRAINING_BATCH_SIZE = 23  # For a run with a GTX 1080 ti
+TRAINING_BATCH_SIZE = 10  # Small run
 
 # This is the number of batches to run during training. We recommend setting this so that TRAINING_BATCH_SIZE multiplied
 # by NUM_TRAINING_BATCHES is around 100,000. For a brief run through the experiment this can be made significantly
 # smaller without too much performance loss.
-NUM_TRAINING_BATCHES = 10000  # Full run (with a graphics card)
+# NUM_TRAINING_BATCHES = 10000  # Full run (with a graphics card)
 # NUM_TRAINING_BATCHES = 2000  # Medium run (Training takes a long time without a graphics card)
-# NUM_TRAINING_BATCHES = 30  # Small run
+NUM_TRAINING_BATCHES = 30  # Small run
 
 # This is the learning rate for training. We recommend setting this to a small value (1e-4 or smaller) with a large
 # number of training batches. If you decrease the number of training batches significantly, consider increasing the

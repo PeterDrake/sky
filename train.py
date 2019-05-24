@@ -29,6 +29,8 @@ import tensorflow as tf
 from utils import *
 from config import *
 
+tf.reset_default_graph()
+
 
 def build_net(layer_info):
 	"""Builds a network given command-line layer info."""
@@ -262,6 +264,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 		train_stamps = pickle.load(f)
 	with open(result_dir + 'output.txt', 'w') as f:
 		with tf.Session() as sess:
+			writer = tf.summary.FileWriter('./graphs', sess.graph)
 			init.run()
 			print('Step\tTrain\tValid', file=f, flush=True)
 			print('Step\tTrain\tValid')
