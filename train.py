@@ -155,6 +155,7 @@ def load_masks(stamps, input_dir):
 def load_validation_batch(n):
 	"""Returns the inputs and correct outputs for the first n validation examples."""
 	valid_stamps = load_validation_stamps(n)
+	print("VALID_STAMPS: " + valid_stamps)
 	valid_inputs = load_inputs(valid_stamps, TYPICAL_DATA_DIR)
 	valid_correct = load_masks(valid_stamps, TYPICAL_DATA_DIR)
 	return valid_inputs, valid_correct
