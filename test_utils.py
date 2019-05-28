@@ -28,8 +28,7 @@ class TestUtil(unittest.TestCase):
 		self.assertEqual('20160415235930', extract_timestamp('20160415235930.png'))
 
 	def test_extracts_exp_label(self):
-		self.assertEqual('e70-00', extract_timestamp('e70-00.20160415235930.png'))
-
+		self.assertEqual('e70-00', extract_exp_label('e70-00.20160415235930.png'))
 
 if __name__ == '__main__':
 	unittest.main()
