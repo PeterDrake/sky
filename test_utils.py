@@ -30,5 +30,22 @@ class TestUtil(unittest.TestCase):
 	def test_extracts_exp_label(self):
 		self.assertEqual('e70-00', extract_exp_label('e70-00.20160415235930.png'))
 
+	def test_extracts_all_times(self):
+		times = {'20170920195000', '20170920195030', '20170920195100', '20170920195130', '20170920195200'}
+		self.assertEqual(times, extract_all_times('/Users/student/PycharmProjects/sky/test_data/test_simplemask'))
+
+	def test_extracts_times_from_filenames(self):
+		filenames = {'simplemask20170920195000.png', 'simplemask20170920195030.png', 'simplemask20170920195100.png',
+					 'simplemask20170920195130.png', 'simplemask20170920195200.png'}
+		times = {'20170920195000', '20170920195030', '20170920195100', '20170920195130', '20170920195200'}
+		self.assertEqual(times, extract_times_from_filenames(filenames))
+
+	# def test_extracts_times_from_file(self):
+	# 	self.assertEqual('e70-00', extract_times_from_file('e70-00.20160415235930.png'))
+
+	# def test_clean_csv(self):
+
+
+
 if __name__ == '__main__':
 	unittest.main()
