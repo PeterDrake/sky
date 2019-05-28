@@ -4,21 +4,21 @@
 
 	Normal users should only need to modify the User-Defined Configurations section in order to run our experiment. Here
 	users will want to change RAW_DATA_DIR to match the path to the directory containing their unpacked/untarred data
-	from ARM (Link in README). Because preprocessed and processed data can still be quite large (Several Gigabytes), we
-	offer the user an opportunity to change the TYPICAL_DATA, DUBIOUS_DATA, and RESULTS_DIR directors to different
+	from ARM (link in README). Because preprocessed and processed data can still be quite large (Several Gigabytes), we
+	offer the user an opportunity to change the TYPICAL_DATA, DUBIOUS_DATA, and RESULTS_DIR directories to different
 	locations.
 
 	Experienced users may wish to change the Training/Experiment Configurations in order to modify the training process.
 	This is not recommended for recreating our experiment. Users who do modify these configurations should do so with
 	care and read the available documentation before making changes.
 
-	The BLT - Specific Configurations section defines parameters that are used on BLT - A cluster computer hosted by
-	Lewis & Clark College's Watzek Digital Initiatives team. Documentation: https://watzek.github.io/LC-BLT/
+	The BLT - Specific Configurations section defines parameters that are used on BLT (a cluster computer hosted by
+	Lewis & Clark College's Watzek Digital Initiatives team). Documentation: https://watzek.github.io/LC-BLT/
 	This section should only be modified by researchers working on this project.
 
 	Note: Users who want to run the full experiment on their computer can do so with minimal effort by changing which
 	lines are commented out in the training/experiment configurations section. Users wishing to do a full run through
-	the experiment should look to the following variables: SMALL_PROCESS_SIZE, TRAINING_BATCH_SIZE, and
+	of the experiment should look to the following variables: SMALL_PROCESS_SIZE, TRAINING_BATCH_SIZE, and
 	NUM_TRAINING_BATCHES.
 
 """
@@ -40,7 +40,7 @@ TYPICAL_DATA_DIR = "typical_data"
 DUBIOUS_DATA_DIR = "dubious_data"
 
 # Path to directory in which network data will be saved. Additionally, network-processed decision images will be
-# saved to results/masks
+# saved to results/masks.
 RESULTS_DIR = "results"
 
 # ==================================================================================================================== #
@@ -57,16 +57,16 @@ BLT = True
 # but you'll want to set this to false if you are planning on making plots that require more data)
 USE_VALID_FSC = True
 
-# A unique identifier for the network being trained/in use. This can be something like "e81-00". If testing out several
+# A unique identifier for the network being trained/in use. This can be something like "e2019-001". If testing out several
 # networks, be sure to change this with each run. The training process WILL overwrite any existing saved networks
 # identified by this experiment label.
-EXPERIMENT_LABEL = "e2019-01"
+EXPERIMENT_LABEL = "e2019-001"
 
 # Paths to csv files for typical and dubious data.
 TYPICAL_DATA_CSV = "typical_data/shcu_typical_data.csv"
 DUBIOUS_DATA_CSV = "dubious_data/shcu_dubious_data.csv"
 
-# Paths to stamps for typical and dubious data
+# Paths to timestamps for typical and dubious data.
 TYPICAL_VALID_FILE = TYPICAL_DATA_DIR + "/valid.stamps"
 DUBIOUS_VALID_FILE = DUBIOUS_DATA_DIR + "/poster_valid.stamps"
 
@@ -82,15 +82,14 @@ SMALL_PROCESS_SIZE = None  # Full Run
 # SMALL_PROCESS_SIZE = 1000  # Small run
 
 # The number of sky/decision image pairs to train on in a single batch. We recommend setting this as high as possible
-# during training. For our GTX 1080 ti the maximum number of images we can use in a batch is 23. On BLT, our CPU-cluster
-# computer we can use upwards of 50 images.
-TRAINING_BATCH_SIZE = 23  # For a run with a GTX 1080 ti
+# during training. For our GTX 1080 ti the maximum number of images we can use in a batch is 23.
+TRAINING_BATCH_SIZE = 23  # For a run with a GTX 1080 Ti
 # TRAINING_BATCH_SIZE = 10  # Small run
 
 # This is the number of batches to run during training. We recommend setting this so that TRAINING_BATCH_SIZE multiplied
 # by NUM_TRAINING_BATCHES is around 100,000. For a brief run through the experiment this can be made significantly
 # smaller without too much performance loss.
-NUM_TRAINING_BATCHES = 10000  # Full run (with a graphics card)
+NUM_TRAINING_BATCHES = 5000  # Full run (with a graphics card)
 # NUM_TRAINING_BATCHES = 2000  # Medium run (Training takes a long time without a graphics card)
 # NUM_TRAINING_BATCHES = 30  # Small run
 
