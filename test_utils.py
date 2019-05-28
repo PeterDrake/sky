@@ -24,8 +24,11 @@ class TestUtil(unittest.TestCase):
 	def test_extracts_hour_minute_second_from_time(self):
 		self.assertEqual('092430', time_to_hour_minute_second('20170814092430'))
 
-	def test_extracts_(self):
-		self.assertEqual('092430', extract_timestamp('20160415235930.png'))
+	def test_extracts_timestamp(self):
+		self.assertEqual('20160415235930', extract_timestamp('20160415235930.png'))
+
+	def test_extracts_exp_label(self):
+		self.assertEqual('e70-00', extract_timestamp('e70-00.20160415235930.png'))
 
 
 if __name__ == '__main__':
