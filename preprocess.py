@@ -10,6 +10,7 @@ import sys
 
 from config import RAW_DATA_DIR
 from utils import *
+import imageio
 
 
 def remove_white_sun(img, stride=10):
@@ -57,7 +58,7 @@ def crop_image(img):
 def simplify_image(timestamp, input_dir, output_dir):
 	"""Writes simplified versions of mask to simplemask."""
 	img_path = extract_img_path_from_time_raw(timestamp, input_dir)
-	img = misc.imread(img_path)
+	img = imageio.imread(img_path)
 	img = crop_image(img)
 	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
 	return
@@ -66,7 +67,7 @@ def simplify_image(timestamp, input_dir, output_dir):
 def simplify_mask(timestamp, input_dir, output_dir):
 	"""Writes simplified versions of mask to simplemask."""
 	mask_path = extract_mask_path_from_time_raw(timestamp, input_dir)
-	mask = misc.imread(mask_path)
+	mask = imageio.imread(mask_path)
 	mask = crop_image(mask)
 	if (mask == YELLOW).all(axis=2).any():
 		mask[(mask == YELLOW).all(axis=2)] = BLACK
