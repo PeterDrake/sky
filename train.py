@@ -28,6 +28,7 @@ set_random_seed(0)
 import tensorflow as tf
 from utils import *
 from config import *
+import imageio
 
 
 def build_net(layer_info):
@@ -35,7 +36,7 @@ def build_net(layer_info):
 	print("Building network with structure: ")
 	print(layer_info)
 	tf.reset_default_graph()
-	b_mask = color_mask(misc.imread(TYPICAL_DATA_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
+	b_mask = color_mask(imageio.imread(TYPICAL_DATA_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
 	x = tf.placeholder(tf.float32, [None, 480, 480, 3])
 	num_layers = len(layer_info)
 	table, last_name = parse_layer_info(layer_info)
@@ -138,7 +139,7 @@ def load_inputs(stamps, input_dir):
 	"""Returns a tensor of images specified by stamps. Dimensions are: image, row, column, color."""
 	inputs = np.empty((len(stamps), 480, 480, 3))
 	for i, s in enumerate(stamps):
-		inputs[i] = np.array(misc.imread(extract_img_path_from_time(s, input_dir)))
+		inputs[i] = np.array(imageio.imread(extract_img_path_from_time(s, input_dir)))
 	return inputs
 
 
@@ -148,7 +149,7 @@ def load_masks(stamps, input_dir):
 	vector."""
 	masks = np.empty((len(stamps), 480, 480))
 	for i, s in enumerate(stamps):
-		masks[i] = mask_to_index(np.array(misc.imread(extract_mask_path_from_time(s, input_dir))))
+		masks[i] = mask_to_index(np.array(imageio.imread(extract_mask_path_from_time(s, input_dir))))
 	return masks.reshape((-1))
 
 
