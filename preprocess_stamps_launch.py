@@ -13,6 +13,7 @@ def create_constant_mask(color, filename):
 	b_mask = np.full((480, 480, 3), color)
 	for dirpath, subdirs, files in os.walk(TYPICAL_DATA_DIR + '/simplemask/'):
 		for file in files:
+			print("file found")
 			img = misc.imread(os.path.join(dirpath, file))
 			b_mask[(img != color).any(axis=2)] = BLUE
 	Image.fromarray(b_mask.astype('uint8')).save(filename)
