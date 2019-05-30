@@ -36,7 +36,7 @@ def build_net(layer_info):
 	print("Building network with structure: ")
 	print(layer_info)
 	tf.reset_default_graph()
-	b_mask = color_mask(imageio.imread(TYPICAL_DATA_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
+	b_mask = color_mask(plt.imread(TYPICAL_DATA_DIR + '/always_black_mask.png'), index_of(BLACK, COLORS))
 	x = tf.placeholder(tf.float32, [None, 480, 480, 3])
 	num_layers = len(layer_info)
 	table, last_name = parse_layer_info(layer_info)

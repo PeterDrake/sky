@@ -95,7 +95,6 @@ def get_fsc_from_file(filename):
 def fsc(input_data_file, output_data_csv):
 	if USE_VALID_FSC:
 		times = load_pickled_file(input_data_file)
-		print('In fsc.py: times length: ' + str(len(times)))
 	else:
 		times = sorted(list(extract_data_from_csv(input_data_file, 'timestamp_utc')))
 	spacing = int(len(times)/100)
