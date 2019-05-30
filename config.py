@@ -54,7 +54,7 @@ RESULTS_DIR = "results"
 BLT = True
 
 # Variable to only use validation data for computing fsc (Saves a lot of time if just making plots with validation data,
-# but you'll want to set this to false if you are planning on making plots that require more data)
+# but you'll want to set this to false if you are planning on making plots that involve other data)
 USE_VALID_FSC = True
 
 # A unique identifier for the network being trained/in use. This can be something like "e2019-001". If testing out several

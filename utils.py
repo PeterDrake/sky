@@ -5,9 +5,8 @@ import numpy as np
 import os
 import pandas as pd
 from PIL import Image
-from scipy import misc
 from config import RESULTS_DIR
-import imageio
+import matplotlib.pyplot as plt
 
 # Colors used in the decision image - DO NOT TOUCH
 WHITE = np.array([255, 255, 255])
@@ -343,14 +342,14 @@ def get_simple_mask(timestamp, input_dir='typical_data'):
 	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
 	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp
 	20170215000000."""
-	return np.array(imageio.imread(extract_mask_path_from_time(timestamp, input_dir)))
+	return np.array(plt.imread(extract_mask_path_from_time(timestamp, input_dir)))
 
 
 def get_network_mask_from_time_and_label(timestamp, exp_label):
 	""" Returns the mask of a given timestamp in the results/exp_label directory. Assumes the timestamp is organized
 	in the input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the
 	timestamp 20170215000000."""
-	return np.array(imageio.imread(extract_network_mask_path_from_time(timestamp, exp_label)))
+	return np.array(plt.imread(extract_network_mask_path_from_time(timestamp, exp_label)))
 
 
 def write_list_to_file(data, filename):

@@ -5,7 +5,7 @@ import time
 from PIL import Image
 from utils import extract_data_from_csv, extract_times_from_files_in_directory, separate_data, BLACK, BLUE
 from config import TYPICAL_DATA_DIR, DUBIOUS_DATA_DIR, DUBIOUS_DATA_CSV
-import imageio
+import matplotlib.pyplot as plt
 
 
 def create_constant_mask(color, filename, filepath):
@@ -13,7 +13,7 @@ def create_constant_mask(color, filename, filepath):
 	b_mask = np.full((480, 480, 3), color)
 	for dirpath, subdirs, files in os.walk(filepath):
 		for file in files:
-			img = imageio.imread(os.path.join(dirpath, file))
+			img = plt.imread(os.path.join(dirpath, file))
 			b_mask[(img != color).any(axis=2)] = BLUE
 	Image.fromarray(b_mask.astype('uint8')).save(filename)
 
