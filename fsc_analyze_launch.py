@@ -36,11 +36,11 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 	be clean in the aforementioned categories. I.e. NaN values are not permitted. Please us df.dropna() or some other
 	method to handle missing values."""
 	image_times = set(extract_data_from_dataframe(image_dataframe, "timestamp_utc"))
-	print(len(image_times))
+	print('image_times: ' + str(len(image_times)))
 	arscl_times = set(extract_data_from_dataframe(arscl_dataframe, "timestamp_utc"))
-	print(len(arscl_times))
+	print('arscl_times: ' + str(len(arscl_times)))
 	times = image_times.intersection(arscl_times)  # Necessary to correct for missing times
-	print(len(times))
+	print('times: ' + str(len(times)))
 	x, y, residual, residual1 = [], [], [], []
 	mse = 0
 	for t in times:
