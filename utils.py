@@ -333,8 +333,6 @@ def one_hot_to_mask(max_indices, output):
 
 def extract_network_mask_path_from_time(timestamp, exp_label):
 	"""Returns the save path of a network mask. The mask does not necessarily need to exist."""
-	print('exp_label: ' + str(exp_label))
-	print('experiment label' + str(EXPERIMENT_LABEL))
 	return RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
 			timestamp) + '/networkmask_' + EXPERIMENT_LABEL + '.' + timestamp + '.png'
 
