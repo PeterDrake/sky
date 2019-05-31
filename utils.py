@@ -53,12 +53,6 @@ def extract_timestamp(filename):
 	return filename[-18:-4]
 
 
-def extract_exp_label(filename):
-	"""Returns the experiment label within filename of network masks. Assumes filename ends in something like
-	e70-00.20160415235930.png"""
-	return filename[-25:-19]
-
-
 def extract_all_times(directory, subdirs=None):
 	"""Returns timestamps from all directories that are within the input directory. You can specify a list of
 	subdirectories if you only want to grab files within specific subdirectories.

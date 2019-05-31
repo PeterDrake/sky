@@ -27,9 +27,6 @@ class TestUtil(unittest.TestCase):
 	def test_extracts_timestamp(self):
 		self.assertEqual('20160415235930', extract_timestamp('20160415235930.png'))
 
-	def test_extracts_exp_label(self):
-		self.assertEqual('e70-00', extract_exp_label('e70-00.20160415235930.png'))
-
 	def test_extracts_all_times(self):
 		timestamps = {'20170920195000', '20170920195030', '20170920195100', '20170920195130', '20170920195200'}
 		self.assertEqual(timestamps, extract_all_times('/Users/student/PycharmProjects/sky/test_data/test_simplemask'))
