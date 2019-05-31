@@ -88,7 +88,7 @@ def get_fsc_from_file(filename):
 		mask = get_simple_mask(extract_timestamp(filename))
 		return get_fsc(mask)
 	elif "networkmask" in filename:
-		mask = get_network_mask_from_time_and_label(extract_timestamp(filename), extract_exp_label(filename))
+		mask = get_network_mask_from_time_and_label(extract_timestamp(filename), EXPERIMENT_LABEL)
 		return get_fsc(mask)
 
 
