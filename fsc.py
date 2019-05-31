@@ -102,11 +102,14 @@ def fsc(input_data_file, output_data_csv):
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
 		for t in times:
+			print('number: ' + str(t))
 			if count % spacing == 0:
 				print("progress: " + str(round(count/spacing)) + "%")
 				f.flush()
 			if os.path.isfile(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL)):
+				print('files exists')
 				fsc_z, fsc_thn_z, fsc_opq_z = get_fsc_from_file(extract_network_mask_path_from_time(t, EXPERIMENT_LABEL))
+				print("{},{},{},{}".format(t, fsc_z, fsc_thn_z, fsc_opq_z))
 				f.write("{},{},{},{}".format(t, fsc_z, fsc_thn_z, fsc_opq_z) + "\n")
 			count += 1
 		f.flush()
