@@ -14,15 +14,14 @@ Launches the training process.
 
 import os
 from config import *
+from train import train
 from utils import get_experiment_label
 
 
 if __name__ == "__main__":
 	for i in range(NUM_NETWORKS):
 		if BLT:
-			os.system("CUDA_VISIBLE_DEVICES={}".format(i))
 			os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u train.py {} {}" -P {}'.format(get_experiment_label(i), get_experiment_label(i), NETWORK_STRUCTURE, JOB_PRIORITY))
 		else:
-			from train import train
 			train(get_experiment_label(i), NETWORK_STRUCTURE.split())
 
