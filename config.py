@@ -131,7 +131,7 @@ if BLT:
 	PREPROCESS_BATCH_SIZE = 10000
 
 # The number of networks to train simultaneously and the job's priority
-NUM_NETWORKS = 4
+NUM_NETWORKS = 2
 JOB_PRIORITY = 10
 
 # The number of processing tasks to launch for each of typical and dubious data (Per trained network)
