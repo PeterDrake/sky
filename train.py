@@ -339,5 +339,14 @@ def train(label, layer_info):
 
 if __name__ == '__main__':
 	experiment_label = sys.argv[1]
-	layer_string = sys.argv[2::]
+	num_network = sys.argv[2]
+	layer_string = sys.argv[3::]
+	gpus = tf.config.experimental.list_physical_devices('GPU')
+	if gpus:
+		# Restrict TensorFlow to only use the first GPU
+		try:
+			tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
+		except RuntimeError as e:
+			# Visible devices must be set at program startup
+			print(e)
 	train(experiment_label, layer_string)
