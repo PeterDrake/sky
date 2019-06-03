@@ -328,11 +328,11 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 		F.close()
 
 
-def train(experiment_label, layer_info):
+def train(label, layer_info):
 	check_for_commit()
-	out_dir = RESULTS_DIR + '/' + experiment_label + '/'
+	out_dir = RESULTS_DIR + '/' + label + '/'
 	os.makedirs(out_dir, exist_ok=True)
-	save_params(experiment_label, layer_info, out_dir)
+	save_params(label, layer_info, out_dir)
 	train_net(*build_net(layer_info), *load_validation_batch(TRAINING_BATCH_SIZE), out_dir)
 	# train_net(*build_net(layer_info), *load_validation_batch(50), out_dir)
 
