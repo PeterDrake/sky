@@ -11,6 +11,7 @@ np.random.seed(123)  # for reproducibility
 
 b_mask = color_mask(np.asarray(imageio.imread(TYPICAL_DATA_DIR + '/always_black_mask.png')), index_of(BLACK, COLORS))
 
+
 def max_pool(prev, width, height):
     return tf.nn.max_pool(prev, [1, width, height, 1], strides=[1, 1, 1, 1], padding='SAME')
 
@@ -34,6 +35,12 @@ mask_layer = Lambda(lambda x: mask_layer(third_conv, b_mask), name='MaskLayer')(
 
 reshape_layer = Lambda(lambda x: tf.reshape(mask_layer, [-1, 4], name='ReshapeLayer'))(mask_layer)
 
-model = Model(inputs=[first_input], outputs=reshape_layer)
+tsi_layer = Lambda(lambda x: tf.placeholder(tf.int64, [None]), name='TSILayer')
+
+nongreen_layer = Lambda(lambda x: tf.not_equal(tsi_layer, 4), name='NonGreenLayer')(tsi_layer)
+
+boolean_layer_one = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='FirstBoolean')(reshape_layer, nongreen_layer)
+
+model = Model(inputs=[first_input], outputs=boolean_layer_one)
 
 model.summary()
