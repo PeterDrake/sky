@@ -76,7 +76,7 @@ def build_net(layer_info, num_net):
 		accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 		init = tf.global_variables_initializer()
 		print("Finished building network.")
-	return train_step, accuracy, saver, init, x, all_y, all_y_, cross_entropy
+		return train_step, accuracy, saver, init, x, all_y, all_y_, cross_entropy
 
 
 def check_for_commit():
@@ -342,5 +342,6 @@ def train(label, layer_info, num_network):
 if __name__ == '__main__':
 	experiment_label = sys.argv[1]
 	num_network = sys.argv[2]
+	print("NUM_NETWORK: " + str(num_network))
 	layer_string = sys.argv[3::]
 	train(experiment_label, layer_string, num_network)
