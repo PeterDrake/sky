@@ -338,8 +338,6 @@ def train(label, layer_info):
 
 
 if __name__ == '__main__':
-	experiment_label = sys.argv[1]
-	num_network = sys.argv[2]
+	experiment_label = sys.argv[2]
 	layer_string = sys.argv[3::]
-	with tf.device('/device:GPU:' + str(num_network)):
-		train(experiment_label, layer_string)
+	train(experiment_label, layer_string)
