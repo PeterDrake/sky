@@ -35,4 +35,3 @@ mask_layer = Lambda(lambda x: mask_layer(third_conv, b_mask), name='MaskLayer')(
 model = Model(inputs=[first_input], outputs=mask_layer)
 
 model.summary()
-plot_model(model, to_file='model_1.png')
