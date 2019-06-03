@@ -32,6 +32,8 @@ third_conv = Convolution2D(filters=4, kernel_size=3, padding='same', data_format
 
 mask_layer = Lambda(lambda x: mask_layer(third_conv, b_mask), name='MaskLayer')(third_conv)
 
-model = Model(inputs=[first_input], outputs=mask_layer)
+reshape_layer = Lambda(lambda x: tf.reshape(mask_layer, [-1, 4], name='ReshapeLayer'))(mask_layer)
+
+model = Model(inputs=[first_input], outputs=reshape_layer)
 
 model.summary()
