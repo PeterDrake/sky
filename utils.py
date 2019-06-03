@@ -331,6 +331,10 @@ def extract_network_mask_path_from_time(timestamp, exp_label):
 			timestamp) + '/networkmask_' + EXPERIMENT_LABEL + '.' + timestamp + '.png'
 
 
+def get_experiment_label(network_number):
+	return EXPERIMENT_LABEL + '-' + str(network_number)
+
+
 def get_simple_mask(timestamp, input_dir='typical_data'):
 	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
 	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp

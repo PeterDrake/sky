@@ -15,11 +15,13 @@ Launches the training process.
 import os
 from config import *
 from train import train
+from utils import get_experiment_label
 
 
 if __name__ == "__main__":
-	if BLT:
-		os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u train.py {}" -P {}'.format(EXPERIMENT_LABEL, NETWORK_STRUCTURE, JOB_PRIORITY))
-	else:
-		train(NETWORK_STRUCTURE.split())
+	for i in range(NUM_NETWORKS):
+		if BLT:
+			os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u train.py {} {}" -P {}'.format(get_experiment_label(i), get_experiment_label(i), NETWORK_STRUCTURE, JOB_PRIORITY))
+		else:
+			train(get_experiment_label(i), NETWORK_STRUCTURE.split())
 
