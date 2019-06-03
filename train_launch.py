@@ -21,6 +21,8 @@ from utils import get_experiment_label
 if __name__ == "__main__":
 	for i in range(NUM_NETWORKS):
 		if BLT:
+			os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+			os.environ["CUDA_VISIBLE_DEVICES"] = "0,3"  # specify which GPU(s) to be used
 			os.system('SGE_Batch -q gpu.q -r "{}" -c "CUDA_VISIBLE_DEVICES={} python3 -u train.py {} {}" -P {}'.format(get_experiment_label(i), i, get_experiment_label(i), NETWORK_STRUCTURE, JOB_PRIORITY))
 		else:
 			train(get_experiment_label(i), NETWORK_STRUCTURE.split())
