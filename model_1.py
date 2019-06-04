@@ -51,6 +51,10 @@ arg_max = Lambda(lambda x: tf.argmax(boolean_layer_one, 1), name='ArgMax')(boole
 
 correct_prediction = Lambda(lambda x: tf.equal(arg_max, boolean_layer_two), name='CorrectPrediction')([arg_max, boolean_layer_two])
 
-model = Model(inputs=[first_input, tsi], outputs=[cross_entropy,  correct_prediction])
+cast = Lambda(lambda x: tf.cast(correct_prediction, tf.float32), name='Cast')(correct_prediction)
+
+accuracy = Lambda(lambda x: tf.reduce_mean(cast), name='SecondReduceMean')(cast)
+
+model = Model(inputs=[first_input, tsi], outputs=[cross_entropy,  accuracy])
 
 model.summary()
