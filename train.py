@@ -264,7 +264,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
 	with open(result_dir + 'output.txt', 'w') as f:
-		with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
+		with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
 			init.run()
 			print('Step\tTrain\tValid', file=f, flush=True)
 			print('Step\tTrain\tValid')
