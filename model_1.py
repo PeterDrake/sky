@@ -33,7 +33,7 @@ third_conv = Convolution2D(filters=4, kernel_size=3, padding='same', data_format
 
 mask_layer = Lambda(lambda x: mask_layer(third_conv, b_mask), name='MaskLayer')(third_conv)
 
-reshape_layer = Lambda(lambda x: tf.reshape(mask_layer, [-1, 4], name='ReshapeLayer'))(mask_layer)
+reshape_layer = Lambda(lambda x: tf.reshape(mask_layer, [-1, 4], name='Reshape'))(mask_layer)
 
 tsi = Input(shape=[None], dtype='int64', name='TSIDecisionImages')
 
@@ -45,6 +45,8 @@ boolean_layer_two = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name=
 
 s_s_cross_entropy_w_l = Lambda(lambda x: tf.nn.softmax_cross_entropy_with_logits(labels=boolean_layer_two, logits=boolean_layer_one), name='SparseSoftmaxCrossEntropy')([boolean_layer_two, boolean_layer_one])
 
-model = Model(inputs=[first_input, tsi], outputs=s_s_cross_entropy_w_l)
+cross_entropy = Lambda(lambda x: tf.reduce_mean(s_s_cross_entropy_w_l), name='FirstReduceMean')(s_s_cross_entropy_w_l)
+
+model = Model(inputs=[first_input, tsi], outputs=cross_entropy)
 
 model.summary()
