@@ -35,12 +35,16 @@ mask_layer = Lambda(lambda x: mask_layer(third_conv, b_mask), name='MaskLayer')(
 
 reshape_layer = Lambda(lambda x: tf.reshape(mask_layer, [-1, 4], name='ReshapeLayer'))(mask_layer)
 
-tsi = Input(shape=[None], dtype='int64')
+tsi = Input(shape=[None], dtype='int64', name='TSIDecisionImages')
 
 nongreen_layer = Lambda(lambda x: tf.not_equal(tsi, 4), name='NonGreenLayer')(tsi)
 
 boolean_layer_one = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='FirstBoolean')([reshape_layer, nongreen_layer])
 
-model = Model(inputs=[first_input, tsi], outputs=boolean_layer_one)
+boolean_layer_two = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name='SecondBoolean')([tsi, nongreen_layer])
+
+s_s_cross_entropy_w_l = Lambda(lambda x: tf.nn.sparse_softmax_cross_entropy_with_logits(labels=boolean_layer_two, logits=boolean_layer_one), name='SparseSoftmaxCrossEntropy')([boolean_layer_two, boolean_layer_one])
+
+model = Model(inputs=[first_input, tsi], outputs=s_s_cross_entropy_w_l)
 
 model.summary()
