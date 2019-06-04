@@ -132,7 +132,7 @@ if BLT:
 
 # The number of networks to train simultaneously and the job's priority
 NUM_NETWORKS = 2
-JOB_PRIORITY = 10
+JOB_PRIORITY = 25
 
 # The number of processing tasks to launch for each of typical and dubious data (Per trained network)
 NUM_PROCESS_BATCHES = 1
