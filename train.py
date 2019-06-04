@@ -33,7 +33,7 @@ import imageio
 
 def build_net(layer_info, num_net):
 	"""Builds a network given command-line layer info."""
-	with tf.device('/device:GPU:' + str(num_net)):
+	with tf.device('/job:localhost/replica:0/task:0/device:GPU:' + str(num_net)):
 		print("Building network with structure: ")
 		print(layer_info)
 		tf.reset_default_graph()
