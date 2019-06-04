@@ -45,4 +45,8 @@ def load_masks(stamps, input_dir):
 # 	correct = load_masks(batch, TYPICAL_DATA_DIR)
 
 model = build_model()
-model.compile(optimizer='adam', loss={'Accuracy': None, 'CrossEntropy': 'categorical_crossentropy' }, metrics={'Accuracy': 'accuracy', 'CrossEntropy': None })
+# model.compile(optimizer='adam', loss={'Accuracy': None, 'CrossEntropy': 'categorical_crossentropy' }, metrics={'Accuracy': 'accuracy', 'CrossEntropy': None })
+model.compile(optimizer='adam', loss={'CorrectPrediction': None, 'Cast': 'categorical_crossentropy' }, metrics={'CorrectPrediction': 'accuracy', 'Cast': 'accuracy' })
+
+
+
