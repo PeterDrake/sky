@@ -58,3 +58,4 @@ accuracy = Lambda(lambda x: tf.reduce_mean(cast), name='SecondReduceMean')(cast)
 model = Model(inputs=[first_input, tsi], outputs=[cross_entropy,  accuracy])
 
 model.summary()
+plot_model(model, to_file='model_1.png')
