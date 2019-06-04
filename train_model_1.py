@@ -78,21 +78,31 @@ def create_batch_sets():
 if __name__ == '__main__':
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
+	print('Training stamps loaded.')
 	with open(TYPICAL_VALID_FILE, 'rb') as f:
 		valid_stamps = pickle.load(f)
+	print('Validation stamps loaded.')
 
 	training_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR)
+	print('Training files loaded.')
 	training_tsi_labels = load_tsi(train_stamps, TYPICAL_DATA_DIR)
+	print('Training labels loaded.')
 	validation_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR)
+	print('Validation files loaded.')
 	validation_tsi_labels = load_tsi(valid_stamps, TYPICAL_DATA_DIR)
+	print('Validation labels loaded.')
 
 	model = build_model()
+	print('Model built.')
 	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_filenames, training_tsi_labels, TRAINING_BATCH_SIZE)
+	print('Training generator initialized.')
 	validation_batch_generator = Image_Generator(validation_filenames, validation_tsi_labels, TRAINING_BATCH_SIZE)
+	print('Validation generator initialized.')
 
-	# model.fit_generator(generator=training_batch_generator,
+# model.fit_generator(generator=training_batch_generator,
 	# 					steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
 	# 					epochs=2,
 	# 					verbose=1,
