@@ -18,6 +18,6 @@ if __name__ == '__main__':
 				  loss='sparse_categorical_crossentropy',
 				  metrics=['accuracy'])
 
-	parallel_model = multi_gpu_model(model, gpus=None)
+	parallel_model = multi_gpu_model(model, gpus=4)
 	parallel_model.fit(x_train, y_train, epochs=5)
 	parallel_model.evaluate(x_test, y_test)
