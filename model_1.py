@@ -35,9 +35,9 @@ mask_layer = Lambda(lambda x: mask_layer(third_conv, b_mask), name='MaskLayer')(
 
 reshape_layer = Lambda(lambda x: tf.reshape(mask_layer, [-1, 4], name='ReshapeLayer'))(mask_layer)
 
-tsi_layer = Lambda(lambda x: tf.placeholder(tf.int64, [None]), name='TSILayer')
+tsi = tf.placeholder(tf.int64, [None])
 
-nongreen_layer = Lambda(lambda x: tf.not_equal(tsi_layer, 4), name='NonGreenLayer')(tsi_layer)
+nongreen_layer = Lambda(lambda x: tf.not_equal(tsi, 4), name='NonGreenLayer')(tsi)
 
 boolean_layer_one = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='FirstBoolean')(reshape_layer, nongreen_layer)
 
