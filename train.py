@@ -264,7 +264,8 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
 	with open(result_dir + 'output.txt', 'w') as f:
-		config = tf.ConfigProto(device_count={'GPU': num_net}, log_device_placement=True)
+		config = tf.ConfigProto(log_device_placement=True)
+		config.gpu_options.allow_growth = True
 		with tf.Session(config=config) as sess:
 			init.run()
 			print('Step\tTrain\tValid', file=f, flush=True)
