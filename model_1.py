@@ -39,7 +39,7 @@ tsi = tf.placeholder(tf.int64, [None])
 
 nongreen_layer = Lambda(lambda x: tf.not_equal(tsi, 4), name='NonGreenLayer')(tsi)
 
-boolean_layer_one = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='FirstBoolean')(reshape_layer, nongreen_layer)
+boolean_layer_one = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='FirstBoolean')([reshape_layer, nongreen_layer])
 
 model = Model(inputs=[first_input], outputs=boolean_layer_one)
 
