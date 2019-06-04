@@ -47,6 +47,10 @@ s_s_cross_entropy_w_l = Lambda(lambda x: tf.nn.softmax_cross_entropy_with_logits
 
 cross_entropy = Lambda(lambda x: tf.reduce_mean(s_s_cross_entropy_w_l), name='FirstReduceMean')(s_s_cross_entropy_w_l)
 
-model = Model(inputs=[first_input, tsi], outputs=cross_entropy)
+arg_max = Lambda(lambda x: tf.argmax(boolean_layer_one, 1), name='ArgMax')(boolean_layer_one)
+
+correct_prediction = Lambda(lambda x: tf.equal(arg_max, boolean_layer_two), name='CorrectPrediction')([arg_max, boolean_layer_two])
+
+model = Model(inputs=[first_input, tsi], outputs=[cross_entropy,  correct_prediction])
 
 model.summary()
