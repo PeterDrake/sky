@@ -35,7 +35,7 @@ mask_layer = Lambda(lambda x: mask_layer(third_conv, b_mask), name='MaskLayer')(
 
 reshape_layer = Lambda(lambda x: tf.reshape(mask_layer, [-1, 4], name='ReshapeLayer'))(mask_layer)
 
-tsi = tf.placeholder(tf.int64, [None])
+tsi = Input(shape=[None], dtype='int64')
 
 nongreen_layer = Lambda(lambda x: tf.not_equal(tsi, 4), name='NonGreenLayer')(tsi)
 
