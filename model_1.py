@@ -51,7 +51,7 @@ def build_model():
 	True values in mask. Allows us to ignore the pixels where the green lines are in both the TSI decision image and our
 	own network image.'''
 	network_boolean = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='NetworkBoolean')([reshape_layer, nongreen_layer])
-	tsi_boolean = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name='TSIBoolean')([tsi, nongreen_layer])
+	# tsi_boolean = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name='TSIBoolean')([tsi, nongreen_layer])
 
 	# ''' Performs Softmax Cross Entropy with Logits using network_boolean and tsi_boolean. '''
 	# #find out why keras wasn't happy with Sparse Softmax Cross Entropy with Logits
@@ -61,15 +61,15 @@ def build_model():
 	# cross_entropy = Lambda(lambda x: tf.reduce_mean(s_s_cross_entropy_w_l), name='CrossEntropy')(s_s_cross_entropy_w_l)
 
 	''' Returns the index with the largest value across the first axis of the network_boolean tensor. '''
-	arg_max = Lambda(lambda x: tf.math.argmax(network_boolean, 1), name='ArgMax')(network_boolean)
+	# arg_max = Lambda(lambda x: tf.math.argmax(network_boolean, 1), name='ArgMax')(network_boolean)
 
 	''' Returns the truth value of (arg_max == tsi_boolean) element-wise. Essentially evaluates which pixels where 
 	correctly classified by the network according to the TSI decision image.'''
-	correct_prediction = Lambda(lambda x: tf.equal(arg_max, tsi_boolean), name='CorrectPrediction')([arg_max, tsi_boolean])
+	# correct_prediction = Lambda(lambda x: tf.equal(arg_max, tsi_boolean), name='CorrectPrediction')([arg_max, tsi_boolean])
 
 	''' Casts the boolean tensor output of correct_prediction to float. 
 	Converts False values to 0 and True values to 1. '''
-	cast = Lambda(lambda x: tf.cast(correct_prediction, tf.float32), name='Cast')(correct_prediction)
+	# cast = Lambda(lambda x: tf.cast(correct_prediction, tf.float32), name='Cast')(correct_prediction)
 
 	# ''' Takes the average value over the float version of correct_prediction.
 	# Should return a number between 0 and 1. '''
@@ -78,7 +78,9 @@ def build_model():
 	''' Creates the model with two inputs (sky images and TSI decision images) 
 	and two outputs (cross entropy loss and accuracy)'''
 	# model = Model(inputs=[sky_images, tsi], outputs=[cross_entropy, accuracy])
-	model = Model(inputs=[sky_images, tsi], outputs=[correct_prediction, cast])
+	# model = Model(inputs=[sky_images, tsi], outputs=[correct_prediction, cast])
+	model = Model(inputs=[sky_images, tsi], outputs=network_boolean)
+
 
 
 	return model
@@ -88,4 +90,4 @@ if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	model = build_model()
 	model.summary()
-	# plot_model(model, show_shapes=True, to_file='model_1.png')
+	plot_model(model, show_shapes=True, to_file='model_1.png')
