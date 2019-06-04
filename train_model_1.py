@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # written by Anna Schall
 # started 6/4/19
+# used code from train.py at the Sky repository
+# used code from https://medium.com/datadriveninvestor/keras-training-on-large-datasets-3e9d9dbc09d4
 """
 Trains the model.
 """
@@ -84,25 +86,17 @@ if __name__ == '__main__':
 	validation_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR)
 	validation_tsi_labels = load_tsi(valid_stamps, TYPICAL_DATA_DIR)
 
-
-	# x = load_sky_images(train_stamps, TYPICAL_DATA_DIR)
-	# y = load_tsi_images()
-
 	model = build_model()
-	# model.compile(optimizer='adam', loss={'Accuracy': None, 'CrossEntropy': 'categorical_crossentropy' }, metrics={'Accuracy': 'accuracy', 'CrossEntropy': None })
-	model.compile(optimizer='adam', loss={'CorrectPrediction': None, 'Cast': 'categorical_crossentropy' }, metrics={'CorrectPrediction': 'accuracy', 'Cast': 'accuracy' })
+	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-	# for i in range(NUM_TRAINING_BATCHES):
-# 	# 	j += 1
-# 	# 	if j * TRAINING_BATCH_SIZE >= len(train_stamps):
-# 	# 		j = 1
-# 	# 	batch = train_stamps[(j - 1) * TRAINING_BATCH_SIZE: j * TRAINING_BATCH_SIZE]
-# 	# 	inputs = load_inputs(batch, TYPICAL_DATA_DIR)
-# 	# 	masks = load_masks(batch, TYPICAL_DATA_DIR)
-# 	# 	correct = format_tsi_masks(masks)
-# 	# 	model.train_on_batch(x={'SkyImages':inputs, 'TSIDecisionImages':masks}, y=correct,)
+	training_batch_generator = Image_Generator(training_filenames, training_tsi_labels, TRAINING_BATCH_SIZE)
+	validation_batch_generator = Image_Generator(validation_filenames, validation_tsi_labels, TRAINING_BATCH_SIZE)
 
-	my_training_batch_generator = Image_Generator(training_filenames, GT_training, batch_size)
-	my_validation_batch_generator = Image_Generator(validation_filenames, GT_validation, batch_size)
-
+	model.fit_generator(generator=training_batch_generator,
+						steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
+						epochs=2,
+						verbose=1,
+						validation_data=validation_batch_generator,
+						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
+						use_multiprocessing=True)
 
