@@ -33,50 +33,50 @@ import imageio
 
 def build_net(layer_info, num_net):
 	"""Builds a network given command-line layer info."""
-	with tf.device('/device:GPU:' + str(num_net)):
-		print("Building network with structure: ")
-		print(layer_info)
-		tf.reset_default_graph()
-		b_mask = color_mask(np.asarray(imageio.imread(TYPICAL_DATA_DIR + '/always_black_mask.png')), index_of(BLACK, COLORS))
-		x = tf.placeholder(tf.float32, [None, 480, 480, 3])
-		num_layers = len(layer_info)
-		table, last_name = parse_layer_info(layer_info)
-		h = {"in": x}
-		for n in range(0, num_layers - 1):
-			name, oper = get_name_oper(layer_info[n])
-			if oper == 'conv':
-				h[name] = convo_layer(table[name]["ins"],
-						table[name]["outs"],
-						table[name]["kernel"],
-						h[table[name]["prev"]],
-						table[name]["tf_name"])
-			if oper == 'maxpool':
-				h[name] = max_pool_layer(h[table[name]["prev"]],
-						table[name]["pool_width"],
-						table[name]["pool_height"],
-						name)
-			if oper == 'concat':
-				h[name] = tf.concat([h[table[name]["prev_1"]],
-					h[table[name]["prev_2"]]], 3)
-		h[last_name] = convo_layer(table[last_name]["ins"],
-				table[last_name]["outs"],
-				table[last_name]["kernel"],
-				h[table[last_name]["prev"]],
-				table[last_name]["tf_name"], False)
-		m = mask_layer(h[last_name], b_mask)
-		all_y = tf.reshape(m, [-1, 4])
-		all_y_ = tf.placeholder(tf.int64, [None])
-		non_green = tf.not_equal(all_y_, 4)
-		y = tf.boolean_mask(all_y, non_green)
-		y_ = tf.boolean_mask(all_y_, non_green)
-		cross_entropy = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y_, logits=y))
-		train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
-		correct_prediction = tf.equal(tf.argmax(y, 1), y_)
-		saver = tf.train.Saver()
-		accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-		init = tf.global_variables_initializer()
-		print("Finished building network.")
-		return train_step, accuracy, saver, init, x, all_y, all_y_, cross_entropy
+	# with tf.device('/device:GPU:' + str(num_net)):
+	print("Building network with structure: ")
+	print(layer_info)
+	tf.reset_default_graph()
+	b_mask = color_mask(np.asarray(imageio.imread(TYPICAL_DATA_DIR + '/always_black_mask.png')), index_of(BLACK, COLORS))
+	x = tf.placeholder(tf.float32, [None, 480, 480, 3])
+	num_layers = len(layer_info)
+	table, last_name = parse_layer_info(layer_info)
+	h = {"in": x}
+	for n in range(0, num_layers - 1):
+		name, oper = get_name_oper(layer_info[n])
+		if oper == 'conv':
+			h[name] = convo_layer(table[name]["ins"],
+					table[name]["outs"],
+					table[name]["kernel"],
+					h[table[name]["prev"]],
+					table[name]["tf_name"])
+		if oper == 'maxpool':
+			h[name] = max_pool_layer(h[table[name]["prev"]],
+					table[name]["pool_width"],
+					table[name]["pool_height"],
+					name)
+		if oper == 'concat':
+			h[name] = tf.concat([h[table[name]["prev_1"]],
+				h[table[name]["prev_2"]]], 3)
+	h[last_name] = convo_layer(table[last_name]["ins"],
+			table[last_name]["outs"],
+			table[last_name]["kernel"],
+			h[table[last_name]["prev"]],
+			table[last_name]["tf_name"], False)
+	m = mask_layer(h[last_name], b_mask)
+	all_y = tf.reshape(m, [-1, 4])
+	all_y_ = tf.placeholder(tf.int64, [None])
+	non_green = tf.not_equal(all_y_, 4)
+	y = tf.boolean_mask(all_y, non_green)
+	y_ = tf.boolean_mask(all_y_, non_green)
+	cross_entropy = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y_, logits=y))
+	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
+	correct_prediction = tf.equal(tf.argmax(y, 1), y_)
+	saver = tf.train.Saver()
+	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+	init = tf.global_variables_initializer()
+	print("Finished building network.")
+	return train_step, accuracy, saver, init, x, all_y, all_y_, cross_entropy
 
 
 def check_for_commit():
@@ -264,7 +264,7 @@ def train_net(train_step, accuracy, saver, init, x, y, y_, cross_entropy, valid_
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
 	with open(result_dir + 'output.txt', 'w') as f:
-		with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
+		with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
 			init.run()
 			print('Step\tTrain\tValid', file=f, flush=True)
 			print('Step\tTrain\tValid')
