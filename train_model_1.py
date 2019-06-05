@@ -42,10 +42,11 @@ class Image_Generator(Sequence):
 
 		X = [sky_images, m]
 
-		m_ = tf.convert_to_tensor(m, dtype=tf.int64)
-		non_green = tf.not_equal(m_, 4)
-		Y = tf.boolean_mask(m_, non_green)
-		return X, Y
+		# m_ = tf.convert_to_tensor(m, dtype=tf.int64)
+		# non_green = tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4)
+		Y = tf.boolean_mask(tf.convert_to_tensor(m, dtype=tf.int64), tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4))
+
+		return X, sess.run(Y)
 
 
 # def load_tsi(stamps, input_dir):
@@ -93,38 +94,40 @@ def create_batch_sets():
 # 		yield (batch_x, batch_y)
 
 if __name__ == '__main__':
-	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
-		train_stamps = pickle.load(f)
-	print('Training stamps loaded.')
-	with open(TYPICAL_VALID_FILE, 'rb') as f:
-		valid_stamps = pickle.load(f)
-	print('Validation stamps loaded.')
+	with tf.Session() as sess:
 
-	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
-	print('Training image file paths loaded.')
-	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
-	print('Training mask file paths loaded.')
-	validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
-	print('Validation image file paths loaded.')
-	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
-	print('Validation mask file paths loaded.')
+		with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
+			train_stamps = pickle.load(f)
+		print('Training stamps loaded.')
+		with open(TYPICAL_VALID_FILE, 'rb') as f:
+			valid_stamps = pickle.load(f)
+		print('Validation stamps loaded.')
 
-	model = build_model()
-	print('Model built.')
-	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-	print('Model compiled.')
+		training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
+		print('Training image file paths loaded.')
+		training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+		print('Training mask file paths loaded.')
+		validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
+		print('Validation image file paths loaded.')
+		validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
+		print('Validation mask file paths loaded.')
 
-	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
-	print('Training generator initialized.')
-	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
-	print('Validation generator initialized.')
+		model = build_model()
+		print('Model built.')
+		model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+		print('Model compiled.')
 
-	model.fit_generator(generator=training_batch_generator,
-						steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
-						epochs=2,
-						verbose=1,
-						validation_data=validation_batch_generator,
-						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
-						use_multiprocessing=False)
+		training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
+		print('Training generator initialized.')
+		validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
+		print('Validation generator initialized.')
+
+		model.fit_generator(generator=training_batch_generator,
+							steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
+							epochs=2,
+							verbose=1,
+							validation_data=validation_batch_generator,
+							validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
+							use_multiprocessing=False)
 
 	# SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
