@@ -34,17 +34,11 @@ class Image_Generator(Sequence):
 
 		sky_images = np.array([np.asarray(imageio.imread(file_name) for file_name in x_filenames)])
 		tsi = np.array([np.asarray(imageio.imread(file_name) for file_name in y_filenames)])
-		print('TSI shape:')
-		print(tsi.shape)
-		print('TSI length:')
-		print(len(tsi))
-		print('TSI Element shape:')
-		print(tsi[1].shape)
 		X = [sky_images, tsi]
 
 		masks = np.empty((self.batch_size, 480, 480))
 		for i in range(len(tsi)):
-			masks[i] = mask_to_index(tsi[i])
+			masks[i] = mask_to_index(tsi[1:i])
 		m = masks.reshape((-1))
 		m_ = tf.convert_to_tensor(m, dtype=tf.int64)
 		non_green = tf.not_equal(m_, 4)
