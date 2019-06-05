@@ -21,8 +21,8 @@ from model_1 import *
 
 class Image_Generator(Sequence):
 
-    def __init__(self, image_filenames, labels, batch_size):
-        self.image_filenames, self.labels = image_filenames, labels
+    def __init__(self, image_filenames, label_filenames, batch_size):
+        self.image_filenames, self.label_filenames = image_filenames, label_filenames
         self.batch_size = batch_size
 
     def __len__(self):
@@ -30,23 +30,27 @@ class Image_Generator(Sequence):
 
     def __getitem__(self, idx):
         batch_x = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
-        batch_y = self.labels[idx * self.batch_size:(idx + 1) * self.batch_size]
+        batch_y = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-        return np.array([imageio.imread(file_name) for file_name in batch_x]), np.array(batch_y)
-
-
-def load_tsi(stamps, input_dir):
-	masks = np.empty((len(stamps), 480, 480))
-	for i, s in enumerate(stamps):
-		masks[i] = mask_to_index(np.asarray(imageio.imread(extract_mask_path_from_time(s, input_dir))))
-	non_green = tf.not_equal(masks.reshape((-1)), 4)
-	return tf.boolean_mask(masks, non_green)
+        return np.asarray([imageio.imread(file_name) for file_name in batch_x]), np.asarray([imageio.imread(file_name) for file_name in batch_y])
 
 
-def load_filenames(stamps, input_dir):
+# def load_tsi(stamps, input_dir):
+# 	masks = np.empty((len(stamps), 480, 480))
+# 	for i, s in enumerate(stamps):
+# 		masks[i] = mask_to_index(np.asarray(imageio.imread(extract_mask_path_from_time(s, input_dir))))
+# 	non_green = tf.not_equal(masks.reshape((-1)), 4)
+# 	return tf.boolean_mask(masks, non_green)
+
+
+def load_filenames(stamps, input_dir, masks):
 	filenames = []
-	for s in stamps:
-		filenames.append(extract_img_path_from_time(s, input_dir))
+	if masks:
+		for s in stamps:
+			filenames.append(extract_mask_path_from_time(s, input_dir))
+	else:
+		for s in stamps:
+			filenames.append(extract_img_path_from_time(s, input_dir))
 	return filenames
 
 
@@ -83,23 +87,23 @@ if __name__ == '__main__':
 		valid_stamps = pickle.load(f)
 	print('Validation stamps loaded.')
 
-	training_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR)
-	print('Training files loaded.')
-	training_tsi_labels = load_tsi(train_stamps, TYPICAL_DATA_DIR)
-	print('Training labels loaded.')
-	validation_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR)
-	print('Validation files loaded.')
-	validation_tsi_labels = load_tsi(valid_stamps, TYPICAL_DATA_DIR)
-	print('Validation labels loaded.')
+	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
+	print('Training image file paths loaded.')
+	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+	print('Training mask file paths loaded.')
+	validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
+	print('Validation image file paths loaded.')
+	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
+	print('Validation mask file paths loaded.')
 
 	model = build_model()
 	print('Model built.')
 	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	print('Model compiled.')
 
-	training_batch_generator = Image_Generator(training_filenames, training_tsi_labels, TRAINING_BATCH_SIZE)
+	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Training generator initialized.')
-	validation_batch_generator = Image_Generator(validation_filenames, validation_tsi_labels, TRAINING_BATCH_SIZE)
+	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Validation generator initialized.')
 
 # model.fit_generator(generator=training_batch_generator,

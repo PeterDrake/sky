@@ -17,14 +17,18 @@ from matplotlib import pyplot as plt
 from config import *
 from train import *
 from model_1 import *
+import h5py
 
 
-def load_tsi(stamps, input_dir, sess):
+def load_tsi(stamps, input_dir, sess, name):
 	masks = np.empty((len(stamps), 480, 480))
 	for i, s in enumerate(stamps):
 		masks[i] = mask_to_index(np.asarray(imageio.imread(extract_mask_path_from_time(s, input_dir))))
 		print('TSI Progress: ' + str(i/len(stamps)))
 	# masks.shape = (60216, 480, 480)
+	f = h5py.File(name + '.h5', 'w')
+	arr = f.create_dataset('mydata', (2 ** 32,), chunks=True)
+	print(arr)
 	masks_tensor = tf.placeholder(shape=masks.shape, dtype=tf.int64)
 	non_green = tf.not_equal(masks_tensor.reshape((-1)), 4)
 	sess.run(non_green, feed_dict={masks_tensor: masks})
