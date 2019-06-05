@@ -37,7 +37,7 @@ class Image_Generator(Sequence):
 		print('TSI shape:')
 		print(tsi.shape)
 		print('TSI length:')
-		print(len(tsi[1, :]))
+		print(len(tsi))
 		print('TSI Element shape:')
 		print(tsi[1].shape)
 		X = [sky_images, tsi]
