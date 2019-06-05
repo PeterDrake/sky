@@ -30,10 +30,13 @@ class Image_Generator(Sequence):
 
 	def __getitem__(self, idx):
 		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
+		print(x_filenames)
 		y_filenames = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
+		print(y_filenames)
 
 		sky_images = np.array([np.asarray(imageio.imread(file_name) for file_name in x_filenames)])
 		tsi = np.array([np.asarray(imageio.imread(file_name) for file_name in y_filenames)])
+		print(tsi)
 		X = [sky_images, tsi]
 
 		masks = np.empty((self.batch_size, 480, 480))
