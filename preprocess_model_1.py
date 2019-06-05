@@ -41,7 +41,7 @@ def load_filenames(stamps, input_dir):
 
 if __name__ == '__main__':
 	start = time.clock()
-	os.mkdir('Keras-Data')
+	# os.mkdir('Keras-Data')
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
