@@ -36,6 +36,8 @@ class Image_Generator(Sequence):
 		tsi = np.array([np.asarray(imageio.imread(file_name) for file_name in y_filenames)])
 		print('TSI shape:')
 		print(tsi.shape)
+		print('TSI length:')
+		print(len(tsi[1, :]))
 		print('TSI Element shape:')
 		print(tsi[1].shape)
 		X = [sky_images, tsi]
