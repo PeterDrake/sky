@@ -35,12 +35,13 @@ class Image_Generator(Sequence):
 		sky_images = np.array([np.asarray(imageio.imread(file_name)) for file_name in x_filenames])
 		tsi = np.array([np.asarray(imageio.imread(file_name)) for file_name in y_filenames])
 
-		X = [sky_images, tsi]
-
 		masks = np.empty((self.batch_size, 480, 480))
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 		m = masks.reshape((-1))
+
+		X = [sky_images, m]
+
 		m_ = tf.convert_to_tensor(m, dtype=tf.int64)
 		non_green = tf.not_equal(m_, 4)
 		Y = tf.boolean_mask(m_, non_green)
