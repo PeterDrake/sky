@@ -26,7 +26,7 @@ class Image_Generator(Sequence):
 		self.batch_size = batch_size
 
 	def __len__(self):
-		return np.ceil(len(self.image_filenames) / float(self.batch_size))
+		return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
 
 	def __getitem__(self, idx):
 		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
@@ -124,3 +124,5 @@ if __name__ == '__main__':
 						validation_data=validation_batch_generator,
 						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
 						use_multiprocessing=True)
+
+	# SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
