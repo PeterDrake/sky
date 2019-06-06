@@ -6,7 +6,7 @@
 Builds the model.
 """
 
-import numpy as np
+import numpy.ma as ma
 from keras.models import Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, concatenate, Input, Lambda, Reshape
 from keras.utils import np_utils, plot_model
@@ -26,7 +26,7 @@ def build_model():
 	''' Create the inputs to the network. '''
 	sky_images = Input(shape=(480, 480, 3), name='SkyImages')
 	tsi = Input(shape=(480, 480), dtype='int64', name='TSIDecisionImages')
-	reshape_tsi = Reshape([-1])(tsi)
+	# reshape_tsi = Reshape([-1])(tsi)
 
 	''' Create the main body of the network. '''
 	first_conv = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu', name='FirstConvolution')(sky_images)
@@ -41,20 +41,20 @@ def build_model():
 	''' Add the always_black_mask to the output of the third convolutional layer. Calls mask_layer from train.py'''
 	mask = Lambda(lambda x: tf.add(black, third_conv), name='MaskLayer')(third_conv)
 
-	''' Flattens the mask layer. '''
-	reshape_layer = Lambda(lambda x: tf.reshape(mask, [-1, 4]), name='Reshape')(mask)
+	# ''' Flattens the mask layer. '''
+	# reshape_layer = Lambda(lambda x: tf.reshape(mask, [-1, 4]), name='Reshape')(mask)
 
 	''' Makes a boolean array with all the pixels that are not green set to true. 
 	Necessary because of the green lines on the TSI decision image.'''
-	nongreen_layer = Lambda(lambda x: tf.not_equal(reshape_tsi, 4), name='NonGreenLayer')(reshape_tsi)
+	nongreen_layer = Lambda(lambda x: tf.not_equal(tsi, np.full((TRAINING_BATCH_SIZE, 480, 480), 4)), name='NonGreenLayer')(tsi)
 
 	''' Takes a tensor and a boolean array (mask) and returns a tensor populated by entries in tensor corresponding to 
 	True values in mask. Allows us to ignore the pixels where the green lines are in both the TSI decision image and our
 	own network image.'''
-	network_boolean = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='NetworkBoolean')([reshape_layer, nongreen_layer])
+	network_boolean = Lambda(lambda x: ma.array(mask, mask=nongreen_layer), name='NetworkBoolean')([mask, nongreen_layer])
+	# network_boolean = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='NetworkBoolean')([reshape_layer, nongreen_layer])
 	# tsi_boolean = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name='TSIBoolean')([tsi, nongreen_layer])
 
-	reshape_network_boolean = Reshape([-1])(network_boolean)
 
 	# ''' Performs Softmax Cross Entropy with Logits using network_boolean and tsi_boolean. '''
 	# #find out why keras wasn't happy with Sparse Softmax Cross Entropy with Logits
@@ -82,7 +82,7 @@ def build_model():
 	and two outputs (cross entropy loss and accuracy)'''
 	# model = Model(inputs=[sky_images, tsi], outputs=[cross_entropy, accuracy])
 	# model = Model(inputs=[sky_images, tsi], outputs=[correct_prediction, cast])
-	model = Model(inputs=[sky_images, tsi], outputs=reshape_network_boolean)
+	model = Model(inputs=[sky_images, tsi], outputs=network_boolean)
 
 
 

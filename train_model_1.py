@@ -39,50 +39,20 @@ class Image_Generator(Sequence):
 		masks = np.empty((self.batch_size, 480, 480))
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
-		m = masks.reshape((-1))
 
 		X = [sky_images, masks]
 
-		# m_ = tf.convert_to_tensor(m, dtype=tf.int64)
-		# non_green = tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4)
 		graph = tf.Graph()
 		with graph.as_default():
 			sess = tf.Session()
-			# Y = tf.boolean_mask(tf.convert_to_tensor(m, dtype=tf.int64), tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4))
 			Y = np.empty((self.batch_size, 480, 480))
-			print('Masks shape:')
-			print(masks.shape)
-			# for mask in masks:
 			for i in range(self.batch_size):
 				mask = masks[i]
-				print('mask shape:')
-				print(mask.shape)
-
-				# non_greens = np.append(non_greens, sess.run(tf.not_equal(mask, np.full((480, 480), 4))))
 				non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
-				print('non_green shape:')
-				print(non_green.shape)
-				# boolean_mask = sess.run(tf.boolean_mask(mask, non_green))
 				boolean_mask = ma.array(mask, mask=non_green)
-				print('boolean_mask shape:')
-				print(boolean_mask.shape)
-				print('Y Before SHAPE:')
-				print(Y.shape)
 				Y[i] = boolean_mask
-				print('Y After SHAPE:')
-				print(Y.shape)
-			print('Y SHAPE:')
-			print(Y.shape)
 			sess.close()
 			return X, Y
-
-
-# def load_tsi(stamps, input_dir):
-# 	masks = np.empty((len(stamps), 480, 480))
-# 	for i, s in enumerate(stamps):
-# 		masks[i] = mask_to_index(np.asarray(imageio.imread(extract_mask_path_from_time(s, input_dir))))
-# 	non_green = tf.not_equal(masks.reshape((-1)), 4)
-# 	return tf.boolean_mask(masks, non_green)
 
 
 def load_filenames(stamps, input_dir, masks):
@@ -95,31 +65,6 @@ def load_filenames(stamps, input_dir, masks):
 			filenames.append(extract_img_path_from_time(s, input_dir))
 	return filenames
 
-
-def format_tsi_masks(masks):
-	non_green = tf.not_equal(masks, 4)
-	return tf.boolean_mask(masks, non_green)
-
-
-def create_batch_sets():
-	batches = []
-	j = 0
-	for i in range(NUM_TRAINING_BATCHES):
-		j += 1
-		if j * TRAINING_BATCH_SIZE >= len(train_stamps):
-			j = 1
-		batches.append(train_stamps[(j - 1) * TRAINING_BATCH_SIZE: j * TRAINING_BATCH_SIZE])
-	return batches
-
-
-# def image_generator(stamps):
-# 	while True:
-# 		# batch_stamps = np.random.choice(a=stamps, size=TRAINING_BATCH_SIZE)
-# 		batch_stamps = stamps
-# 		batch_x = load_inputs(batch_stamps, TYPICAL_DATA_DIR)
-# 		batch_y = format_tsi_masks(load_masks(batch_stamps, TYPICAL_DATA_DIR))
-#
-# 		yield (batch_x, batch_y)
 
 if __name__ == '__main__':
 
