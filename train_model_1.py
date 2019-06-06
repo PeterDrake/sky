@@ -17,6 +17,7 @@ from matplotlib import pyplot as plt
 from config import *
 from train import *
 from model_1 import *
+import numpy.ma as ma
 
 
 class Image_Generator(Sequence):
@@ -56,7 +57,8 @@ class Image_Generator(Sequence):
 				non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
 				print('non_green shape:')
 				print(non_green.shape)
-				boolean_mask = sess.run(tf.boolean_mask(mask, non_green))
+				# boolean_mask = sess.run(tf.boolean_mask(mask, non_green))
+				boolean_mask = ma.array(mask, mask=non_green)
 				print('boolean_mask shape:')
 				print(boolean_mask.shape)
 				Y = np.append(Y, boolean_mask)
