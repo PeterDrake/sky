@@ -53,6 +53,9 @@ class Image_Generator(Sequence):
 			print('Masks shape:')
 			print(masks.shape)
 			for mask in masks:
+				print('mask shape:')
+				print(mask.shape)
+
 				# non_greens = np.append(non_greens, sess.run(tf.not_equal(mask, np.full((480, 480), 4))))
 				non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
 				print('non_green shape:')
