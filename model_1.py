@@ -8,7 +8,7 @@ Builds the model.
 
 import numpy as np
 from keras.models import Model
-from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, MaxPooling2D, concatenate, Input, Lambda
+from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, concatenate, Input, Lambda, Reshape
 from keras.utils import np_utils, plot_model
 import tensorflow as tf
 from matplotlib import pyplot as plt
@@ -53,6 +53,8 @@ def build_model():
 	network_boolean = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='NetworkBoolean')([reshape_layer, nongreen_layer])
 	# tsi_boolean = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name='TSIBoolean')([tsi, nongreen_layer])
 
+	reshape_network_boolean = Reshape([-1])(network_boolean)
+
 	# ''' Performs Softmax Cross Entropy with Logits using network_boolean and tsi_boolean. '''
 	# #find out why keras wasn't happy with Sparse Softmax Cross Entropy with Logits
 	# s_s_cross_entropy_w_l = Lambda(lambda x: tf.nn.softmax_cross_entropy_with_logits(labels=tsi_boolean, logits=network_boolean), name='SparseSoftmaxCrossEntropy')([tsi_boolean, network_boolean])
@@ -79,7 +81,7 @@ def build_model():
 	and two outputs (cross entropy loss and accuracy)'''
 	# model = Model(inputs=[sky_images, tsi], outputs=[cross_entropy, accuracy])
 	# model = Model(inputs=[sky_images, tsi], outputs=[correct_prediction, cast])
-	model = Model(inputs=[sky_images, tsi], outputs=network_boolean)
+	model = Model(inputs=[sky_images, tsi], outputs=reshape_network_boolean)
 
 
 
