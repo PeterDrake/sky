@@ -53,7 +53,11 @@ class Image_Generator(Sequence):
 				# Y[i] = boolean_mask
 				Y[i] = boolean_mask.filled(0)
 			sess.close()
+			print('Y shape before:')
+			print(Y.shape)
 			Y = to_categorical(Y)
+			print('Y shape after:')
+			print(Y.shape)
 
 			return X, Y
 
