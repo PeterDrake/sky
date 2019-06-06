@@ -51,7 +51,7 @@ def build_model():
 	''' Takes a tensor and a boolean array (mask) and returns a tensor populated by entries in tensor corresponding to 
 	True values in mask. Allows us to ignore the pixels where the green lines are in both the TSI decision image and our
 	own network image.'''
-	network_boolean = Lambda(lambda x: ma.array(mask, mask=nongreen_layer), name='NetworkBoolean')([mask, nongreen_layer])
+	network_boolean = Lambda(lambda x: tf.convert_to_tensor(ma.array(mask, mask=np.asarray(nongreen_layer))), name='NetworkBoolean')([mask, nongreen_layer])
 	# network_boolean = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='NetworkBoolean')([reshape_layer, nongreen_layer])
 	# tsi_boolean = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name='TSIBoolean')([tsi, nongreen_layer])
 
