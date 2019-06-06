@@ -50,7 +50,8 @@ class Image_Generator(Sequence):
 			for mask in masks:
 				# non_greens = np.append(non_greens, sess.run(tf.not_equal(mask, np.full((480, 480), 4))))
 				boolean_mask = np.append(boolean_mask, sess.run(tf.boolean_mask(mask, tf.not_equal(mask, np.full((480, 480), 4)))))
-
+			print('SHAPE:')
+			print(boolean_mask.shape)
 			return X, boolean_mask
 
 
