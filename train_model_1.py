@@ -50,7 +50,8 @@ class Image_Generator(Sequence):
 				mask = masks[i]
 				non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
 				boolean_mask = ma.array(mask, mask=non_green)
-				Y[i] = boolean_mask
+				# Y[i] = boolean_mask
+				Y[i] = boolean_mask.filled(0)
 			sess.close()
 			return X, Y
 
