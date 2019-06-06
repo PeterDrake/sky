@@ -44,9 +44,10 @@ class Image_Generator(Sequence):
 
 		# m_ = tf.convert_to_tensor(m, dtype=tf.int64)
 		# non_green = tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4)
-		Y = tf.boolean_mask(tf.convert_to_tensor(m, dtype=tf.int64), tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4))
+		with graph.as_default():
+			Y = tf.boolean_mask(tf.convert_to_tensor(m, dtype=tf.int64), tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4))
 
-		return X, sess.run(Y)
+			return X, sess.run(Y)
 
 
 # def load_tsi(stamps, input_dir):
@@ -94,6 +95,9 @@ def create_batch_sets():
 # 		yield (batch_x, batch_y)
 
 if __name__ == '__main__':
+	global graph
+	graph = tf.get_default_graph()
+
 	with tf.Session() as sess:
 
 		with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
