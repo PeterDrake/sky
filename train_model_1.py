@@ -52,7 +52,9 @@ class Image_Generator(Sequence):
 			Y = np.empty((self.batch_size, 480, 480))
 			print('Masks shape:')
 			print(masks.shape)
-			for mask in masks:
+			# for mask in masks:
+			for i in range(self.batch_size):
+				mask = masks[i]
 				print('mask shape:')
 				print(mask.shape)
 
@@ -66,7 +68,7 @@ class Image_Generator(Sequence):
 				print(boolean_mask.shape)
 				print('Y Before SHAPE:')
 				print(Y.shape)
-				Y = np.append(Y, boolean_mask)
+				Y[i] = boolean_mask
 				print('Y After SHAPE:')
 				print(Y.shape)
 			print('Y SHAPE:')
