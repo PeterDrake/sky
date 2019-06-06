@@ -45,9 +45,13 @@ class Image_Generator(Sequence):
 		# m_ = tf.convert_to_tensor(m, dtype=tf.int64)
 		# non_green = tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4)
 		with graph.as_default():
-			Y = tf.boolean_mask(tf.convert_to_tensor(m, dtype=tf.int64), tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4))
+			# Y = tf.boolean_mask(tf.convert_to_tensor(m, dtype=tf.int64), tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4))
+			boolean_mask = np.empty((self.batch_size, 480, 480))
+			for mask in masks:
+				# non_greens = np.append(non_greens, sess.run(tf.not_equal(mask, np.full((480, 480), 4))))
+				boolean_mask = np.append(boolean_mask, sess.run(tf.boolean_mask(mask, tf.not_equal(mask, np.full((480, 480), 4)))))
 
-			return X, sess.run(Y)
+			return X, boolean_mask
 
 
 # def load_tsi(stamps, input_dir):
