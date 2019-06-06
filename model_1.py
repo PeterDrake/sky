@@ -50,7 +50,7 @@ def build_model():
 	''' Takes a tensor and a boolean array (mask) and returns a tensor populated by entries in tensor corresponding to 
 	True values in mask. Allows us to ignore the pixels where the green lines are in both the TSI decision image and our
 	own network image.'''
-	network_boolean = Lambda(lambda x: tf.reshape(tf.boolean_mask(reshape_layer, nongreen_layer), [-1]), name='NetworkBoolean')([reshape_layer, nongreen_layer])
+	network_boolean = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='NetworkBoolean')([reshape_layer, nongreen_layer])
 	# tsi_boolean = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name='TSIBoolean')([tsi, nongreen_layer])
 
 	# ''' Performs Softmax Cross Entropy with Logits using network_boolean and tsi_boolean. '''
@@ -90,4 +90,4 @@ if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	model = build_model()
 	model.summary()
-	plot_model(model, show_shapes=True, to_file='model_1.png')
+	plot_model(model, show_shapes=True, to_file='model_1_2.png')

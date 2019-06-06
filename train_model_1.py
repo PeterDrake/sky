@@ -126,6 +126,8 @@ if __name__ == '__main__':
 		validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
 		print('Validation generator initialized.')
 
+		model.summary()
+
 		model.fit_generator(generator=training_batch_generator,
 							steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
 							epochs=2,
