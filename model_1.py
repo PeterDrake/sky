@@ -25,7 +25,7 @@ def build_model():
 
 	''' Create the inputs to the network. '''
 	sky_images = Input(shape=(480, 480, 3), name='SkyImages')
-	tsi = Input(shape=(480, 480, 3), dtype='int64', name='TSIDecisionImages')
+	tsi = Input(shape=(480, 480), dtype='int64', name='TSIDecisionImages')
 	reshape_tsi = Reshape([-1])(tsi)
 
 	''' Create the main body of the network. '''
