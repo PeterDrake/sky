@@ -40,7 +40,7 @@ class Image_Generator(Sequence):
 			masks[i] = mask_to_index(tsi[i])
 		m = masks.reshape((-1))
 
-		X = [sky_images, m]
+		X = [sky_images, masks]
 
 		# m_ = tf.convert_to_tensor(m, dtype=tf.int64)
 		# non_green = tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4)

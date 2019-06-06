@@ -25,7 +25,8 @@ def build_model():
 
 	''' Create the inputs to the network. '''
 	sky_images = Input(shape=(480, 480, 3), name='SkyImages')
-	tsi = Input(shape=[None], dtype='int64', name='TSIDecisionImages')
+	tsi = Input(shape=(480, 480, 3), dtype='int64', name='TSIDecisionImages')
+	reshape_tsi = Reshape([-1])(tsi)
 
 	''' Create the main body of the network. '''
 	first_conv = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu', name='FirstConvolution')(sky_images)
@@ -45,7 +46,7 @@ def build_model():
 
 	''' Makes a boolean array with all the pixels that are not green set to true. 
 	Necessary because of the green lines on the TSI decision image.'''
-	nongreen_layer = Lambda(lambda x: tf.not_equal(tsi, 4), name='NonGreenLayer')(tsi)
+	nongreen_layer = Lambda(lambda x: tf.not_equal(reshape_tsi, 4), name='NonGreenLayer')(reshape_tsi)
 
 	''' Takes a tensor and a boolean array (mask) and returns a tensor populated by entries in tensor corresponding to 
 	True values in mask. Allows us to ignore the pixels where the green lines are in both the TSI decision image and our
