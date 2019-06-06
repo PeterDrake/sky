@@ -58,7 +58,7 @@ class Image_Generator(Sequence):
 			Y = to_categorical(Y)
 			print('Y shape after:')
 			print(Y.shape)
-			Y = Y[:,:,:,0:3]
+			Y = Y[:,:,:,0:4]
 			print('Y shape after slicing:')
 			print(Y.shape)
 
