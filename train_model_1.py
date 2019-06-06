@@ -44,7 +44,9 @@ class Image_Generator(Sequence):
 
 		# m_ = tf.convert_to_tensor(m, dtype=tf.int64)
 		# non_green = tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4)
+		graph = tf.Graph()
 		with graph.as_default():
+			sess = tf.Session()
 			# Y = tf.boolean_mask(tf.convert_to_tensor(m, dtype=tf.int64), tf.not_equal(tf.convert_to_tensor(m, dtype=tf.int64), 4))
 			boolean_mask = np.empty((self.batch_size, 480, 480))
 			for mask in masks:
@@ -52,6 +54,7 @@ class Image_Generator(Sequence):
 				boolean_mask = np.append(boolean_mask, sess.run(tf.boolean_mask(mask, tf.not_equal(mask, np.full((480, 480), 4)))))
 			print('SHAPE:')
 			print(boolean_mask.shape)
+			sess.close()
 			return X, boolean_mask
 
 
@@ -100,45 +103,41 @@ def create_batch_sets():
 # 		yield (batch_x, batch_y)
 
 if __name__ == '__main__':
-	global graph
-	graph = tf.get_default_graph()
 
-	with tf.Session() as sess:
+	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
+		train_stamps = pickle.load(f)
+	print('Training stamps loaded.')
+	with open(TYPICAL_VALID_FILE, 'rb') as f:
+		valid_stamps = pickle.load(f)
+	print('Validation stamps loaded.')
 
-		with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
-			train_stamps = pickle.load(f)
-		print('Training stamps loaded.')
-		with open(TYPICAL_VALID_FILE, 'rb') as f:
-			valid_stamps = pickle.load(f)
-		print('Validation stamps loaded.')
+	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
+	print('Training image file paths loaded.')
+	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+	print('Training mask file paths loaded.')
+	validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
+	print('Validation image file paths loaded.')
+	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
+	print('Validation mask file paths loaded.')
 
-		training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
-		print('Training image file paths loaded.')
-		training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
-		print('Training mask file paths loaded.')
-		validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
-		print('Validation image file paths loaded.')
-		validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
-		print('Validation mask file paths loaded.')
+	model = build_model()
+	print('Model built.')
+	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+	print('Model compiled.')
 
-		model = build_model()
-		print('Model built.')
-		model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-		print('Model compiled.')
+	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
+	print('Training generator initialized.')
+	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
+	print('Validation generator initialized.')
 
-		training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
-		print('Training generator initialized.')
-		validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
-		print('Validation generator initialized.')
+	model.summary()
 
-		model.summary()
+	model.fit_generator(generator=training_batch_generator,
+						steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
+						epochs=2,
+						verbose=1,
+						validation_data=validation_batch_generator,
+						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
+						use_multiprocessing=False)
 
-		model.fit_generator(generator=training_batch_generator,
-							steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
-							epochs=2,
-							verbose=1,
-							validation_data=validation_batch_generator,
-							validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
-							use_multiprocessing=False)
-
-	# SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
+# SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
