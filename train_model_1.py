@@ -11,7 +11,7 @@ Trains the model.
 import numpy as np
 from keras.models import Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, MaxPooling2D, concatenate, Input, Lambda
-from keras.utils import np_utils, plot_model, Sequence
+from keras.utils import np_utils, plot_model, Sequence, to_categorical
 import tensorflow as tf
 from matplotlib import pyplot as plt
 from config import *
@@ -53,6 +53,8 @@ class Image_Generator(Sequence):
 				# Y[i] = boolean_mask
 				Y[i] = boolean_mask.filled(0)
 			sess.close()
+			Y = to_categorical(Y)
+
 			return X, Y
 
 
