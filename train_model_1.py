@@ -16,6 +16,7 @@ from matplotlib import pyplot as plt
 from model_1 import build_model
 from utils import *
 from config import *
+from train import mask_to_index
 import pickle
 import numpy.ma as ma
 import tensorflow as tf
