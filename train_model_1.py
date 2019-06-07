@@ -42,6 +42,8 @@ class Image_Generator(Sequence):
 
 		X = [sky_images, masks]
 
+		import tensorflow as tf
+
 		graph = tf.Graph()
 		with graph.as_default():
 			sess = tf.Session()
