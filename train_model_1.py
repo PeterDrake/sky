@@ -47,7 +47,7 @@ class Image_Generator(Sequence):
 		print(sky_images.shape)
 		print('MASKS SHAPE: ')
 		print(masks.shape)
-		print('Test: ' + len(self.image_filenames)/len(self.batch_size))
+		print('Test: ' + len(self.image_filenames)/float(self.batch_size))
 		X = [sky_images, masks]
 
 		graph = tf.Graph()
