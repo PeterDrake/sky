@@ -115,8 +115,7 @@ if __name__ == '__main__':
 						epochs=1,
 						verbose=1,
 						validation_data=validation_batch_generator,
-						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
-						use_multiprocessing=False)
+						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE))
 
 	model.save('model_1.h5')
 
