@@ -42,6 +42,10 @@ class Image_Generator(Sequence):
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 
+		print('SKY IMAGES SHAPE: ')
+		print(sky_images.shape)
+		print('MASKS SHAPE: ')
+		print(masks.shape)
 		X = [sky_images, masks]
 
 		graph = tf.Graph()
