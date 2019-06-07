@@ -12,12 +12,10 @@ import numpy as np
 from keras.models import Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, MaxPooling2D, concatenate, Input, Lambda
 from keras.utils import np_utils, plot_model, Sequence, to_categorical
-import tensorflow as tf
 from matplotlib import pyplot as plt
-from config import *
-from train import *
-from model_1 import *
+from model_1 import build_model
 import numpy.ma as ma
+import tensorflow as tf
 
 
 class Image_Generator(Sequence):
@@ -41,8 +39,6 @@ class Image_Generator(Sequence):
 			masks[i] = mask_to_index(tsi[i])
 
 		X = [sky_images, masks]
-
-		import tensorflow as tf
 
 		graph = tf.Graph()
 		with graph.as_default():
