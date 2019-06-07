@@ -32,6 +32,7 @@ class Image_Generator(Sequence):
 		return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
 
 	def __getitem__(self, idx):
+		print('idx' + str(idx))
 		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 		y_filenames = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
