@@ -85,7 +85,7 @@ def build_model():
 	# model = Model(inputs=[sky_images, tsi], outputs=[correct_prediction, cast])
 	model = Model(inputs=[sky_images, tsi], outputs=network_boolean)
 
-	# model = multi_gpu_model(model, gpus=4)
+	model = multi_gpu_model(model, gpus=4)
 
 
 	return model
