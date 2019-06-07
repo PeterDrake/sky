@@ -11,7 +11,7 @@ Trains the model.
 import numpy as np
 from keras.models import Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, MaxPooling2D, concatenate, Input, Lambda
-from keras.utils import np_utils, plot_model, Sequence, to_categorical
+from keras.utils import np_utils, plot_model, Sequence, to_categorical, multi_gpu_model
 from matplotlib import pyplot as plt
 from model_1 import build_model
 from utils import *
@@ -99,6 +99,7 @@ if __name__ == '__main__':
 
 	model = build_model()
 	print('Model built.')
+	model = multi_gpu_model(model, gpus=4)
 	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	print('Model compiled.')
 

@@ -9,7 +9,7 @@ Builds the model.
 import numpy.ma as ma
 from keras.models import Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, concatenate, Input, Lambda, Reshape
-from keras.utils import np_utils, plot_model, multi_gpu_model
+from keras.utils import np_utils, plot_model
 import tensorflow as tf
 from matplotlib import pyplot as plt
 from config import *
@@ -84,9 +84,6 @@ def build_model():
 	# model = Model(inputs=[sky_images, tsi], outputs=[cross_entropy, accuracy])
 	# model = Model(inputs=[sky_images, tsi], outputs=[correct_prediction, cast])
 	model = Model(inputs=[sky_images, tsi], outputs=network_boolean)
-
-	model = multi_gpu_model(model, gpus=4)
-
 
 	return model
 
