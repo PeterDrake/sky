@@ -99,8 +99,9 @@ if __name__ == '__main__':
 
 	model = build_model()
 	print('Model built.')
-	model = multi_gpu_model(model, gpus=4)
-	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+	parallel_model = multi_gpu_model(model, gpus=4)
+
+	parallel_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
@@ -108,15 +109,16 @@ if __name__ == '__main__':
 	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Validation generator initialized.')
 
-	model.summary()
+	parallel_model.summary()
 
-	model.fit_generator(generator=training_batch_generator,
+	parallel_model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
 						epochs=1,
 						verbose=1,
 						validation_data=validation_batch_generator,
-						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE))
+						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
+						use_multiprocessing=False)
 
-	model.save('model_1.h5')
+	parallel_model.save('model_1.h5')
 
 # SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
