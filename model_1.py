@@ -42,9 +42,10 @@ def build_model():
 	Necessary because of the green lines on the TSI decision image.'''
 	nongreen_layer = Lambda(lambda x: tf.not_equal(tsi, np.full((TRAINING_BATCH_SIZE, 480, 480), 4)), name='NonGreenLayer')(tsi)
 
-	''' Takes a tensor and a boolean array (mask) and returns a tensor populated by entries in tensor corresponding to 
-	True values in mask. Allows us to ignore the pixels where the green lines are in both the TSI decision image and our
-	own network image.'''
+	''' Takes a condition and two arrays of the same shape. The condition is an boolean array with the same shape as the
+	other two arrays. For each element in condition,  if the value is True, the corresponding value from the first array
+	is kept. If the value is False, the corresponding value from the second array is kept. 
+	Returns a tensor of the same size as the arrays populated with the chosen elements.'''
 	network_boolean = Lambda(lambda x: tf.where(tf.stack([nongreen_layer, nongreen_layer, nongreen_layer, nongreen_layer], axis=3), mask, tf.zeros_like(mask, dtype='float32')), name='NetworkBoolean')([nongreen_layer, mask])
 
 	model = Model(inputs=[sky_images, tsi], outputs=network_boolean)
