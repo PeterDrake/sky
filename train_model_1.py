@@ -8,11 +8,7 @@
 Trains the model.
 """
 
-import numpy as np
-from keras.models import Model
-from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, MaxPooling2D, concatenate, Input, Lambda
-from keras.utils import np_utils, plot_model, Sequence, to_categorical
-from matplotlib import pyplot as plt
+from keras.utils import Sequence, to_categorical
 from model_1 import build_model
 from utils import *
 from config import *
