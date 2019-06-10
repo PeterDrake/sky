@@ -6,4 +6,5 @@ import os
 from config import *
 
 if __name__ == "__main__":
-	os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u train_model_1.py" -P {}'.format('keras_train_4', JOB_PRIORITY))
+	run_name = 'keras_train_5'
+	os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u train_model_1.py {}" -P {}'.format(run_name, run_name, JOB_PRIORITY))

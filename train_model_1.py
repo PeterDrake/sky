@@ -9,11 +9,13 @@ Trains the model.
 """
 
 from keras.utils import Sequence, to_categorical
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from model_1 import build_model
 from utils import *
 from config import *
 from train import mask_to_index
 import pickle
+import sys
 
 
 class Image_Generator(Sequence):
@@ -68,6 +70,7 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
+	run_name = sys.argv[0:]
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
@@ -95,6 +98,10 @@ if __name__ == '__main__':
 	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Validation generator initialized.')
 
+	cb_1 = EarlyStopping(monitor='val_loss')
+
+	cb_2 = ModelCheckpoint(filepath='/'+run_name+'/checkpoint-{epoch:02d}-{val_loss:.2f}.hdf5')
+
 	model.summary()
 
 	model.fit_generator(generator=training_batch_generator,
@@ -103,7 +110,8 @@ if __name__ == '__main__':
 						verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
-						use_multiprocessing=False)
+						use_multiprocessing=False,
+						callbacks=[cb_1, cb_2])
 
 	model.save('model_1.h5')
 
