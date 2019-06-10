@@ -69,9 +69,11 @@ class Image_Generator(Sequence):
 		#
 		# 	return X, Y
 		Y = to_categorical(masks)
-		print('Test Y: ')
+		print('Before Y: ')
 		print(Y[1].reshape([-1]).tolist())
-		Y = Y[:, :, :, 0:4]
+		Y = Y[:, :, :, 0:3]
+		print('After Y: ')
+		print(Y[1].reshape([-1]).tolist())
 
 		return X, Y
 
