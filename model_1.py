@@ -6,12 +6,10 @@
 Builds the model.
 """
 
-import numpy.ma as ma
 from keras.models import Model
-from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, concatenate, Input, Lambda, Reshape
-from keras.utils import np_utils, plot_model, multi_gpu_model
+from keras.layers import Convolution2D, concatenate, Input, Lambda
+from keras.utils import plot_model, multi_gpu_model
 import tensorflow as tf
-from matplotlib import pyplot as plt
 from config import *
 from train import *
 
@@ -26,7 +24,6 @@ def build_model():
 	''' Create the inputs to the network. '''
 	sky_images = Input(shape=(480, 480, 3), name='SkyImages')
 	tsi = Input(shape=(480, 480), dtype='int64', name='TSIDecisionImages')
-	# reshape_tsi = Reshape([-1])(tsi)
 
 	''' Create the main body of the network. '''
 	first_conv = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu', name='FirstConvolution')(sky_images)
@@ -41,9 +38,6 @@ def build_model():
 	''' Add the always_black_mask to the output of the third convolutional layer. Calls mask_layer from train.py'''
 	mask = Lambda(lambda x: tf.add(black, third_conv), name='MaskLayer')(third_conv)
 
-	# ''' Flattens the mask layer. '''
-	# reshape_layer = Lambda(lambda x: tf.reshape(mask, [-1, 4]), name='Reshape')(mask)
-
 	''' Makes a boolean array with all the pixels that are not green set to true. 
 	Necessary because of the green lines on the TSI decision image.'''
 	nongreen_layer = Lambda(lambda x: tf.not_equal(tsi, np.full((TRAINING_BATCH_SIZE, 480, 480), 4)), name='NonGreenLayer')(tsi)
@@ -52,41 +46,10 @@ def build_model():
 	True values in mask. Allows us to ignore the pixels where the green lines are in both the TSI decision image and our
 	own network image.'''
 	network_boolean = Lambda(lambda x: tf.where(tf.stack([nongreen_layer, nongreen_layer, nongreen_layer, nongreen_layer], axis=3), mask, tf.zeros_like(mask, dtype='float32')), name='NetworkBoolean')([nongreen_layer, mask])
-	# network_boolean = Lambda(lambda x: tf.py_function(ma.array(mask, mask=np.asarray(nongreen_layer))), name='NetworkBoolean')([mask, nongreen_layer])
-	# network_boolean = Lambda(lambda x: tf.boolean_mask(reshape_layer, nongreen_layer), name='NetworkBoolean')([reshape_layer, nongreen_layer])
-	# tsi_boolean = Lambda(lambda x: tf.boolean_mask(tsi, nongreen_layer), name='TSIBoolean')([tsi, nongreen_layer])
 
-
-	# ''' Performs Softmax Cross Entropy with Logits using network_boolean and tsi_boolean. '''
-	# #find out why keras wasn't happy with Sparse Softmax Cross Entropy with Logits
-	# s_s_cross_entropy_w_l = Lambda(lambda x: tf.nn.softmax_cross_entropy_with_logits(labels=tsi_boolean, logits=network_boolean), name='SparseSoftmaxCrossEntropy')([tsi_boolean, network_boolean])
-	#
-	# ''' Takes the average loss over the batch. '''
-	# cross_entropy = Lambda(lambda x: tf.reduce_mean(s_s_cross_entropy_w_l), name='CrossEntropy')(s_s_cross_entropy_w_l)
-
-	''' Returns the index with the largest value across the first axis of the network_boolean tensor. '''
-	# arg_max = Lambda(lambda x: tf.math.argmax(network_boolean, 1), name='ArgMax')(network_boolean)
-
-	''' Returns the truth value of (arg_max == tsi_boolean) element-wise. Essentially evaluates which pixels where 
-	correctly classified by the network according to the TSI decision image.'''
-	# correct_prediction = Lambda(lambda x: tf.equal(arg_max, tsi_boolean), name='CorrectPrediction')([arg_max, tsi_boolean])
-
-	''' Casts the boolean tensor output of correct_prediction to float. 
-	Converts False values to 0 and True values to 1. '''
-	# cast = Lambda(lambda x: tf.cast(correct_prediction, tf.float32), name='Cast')(correct_prediction)
-
-	# ''' Takes the average value over the float version of correct_prediction.
-	# Should return a number between 0 and 1. '''
-	# accuracy = Lambda(lambda x: tf.reduce_mean(cast), name='Accuracy')(cast)
-
-	''' Creates the model with two inputs (sky images and TSI decision images) 
-	and two outputs (cross entropy loss and accuracy)'''
-	# model = Model(inputs=[sky_images, tsi], outputs=[cross_entropy, accuracy])
-	# model = Model(inputs=[sky_images, tsi], outputs=[correct_prediction, cast])
 	model = Model(inputs=[sky_images, tsi], outputs=network_boolean)
 
 	# model = multi_gpu_model(model, gpus=4)
-
 
 	return model
 
@@ -95,4 +58,4 @@ if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	model = build_model()
 	model.summary()
-	plot_model(model, show_shapes=True, to_file='model_1_2.png')
+	plot_model(model, show_shapes=True, to_file='model_1_3.png')
