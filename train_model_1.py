@@ -15,6 +15,7 @@ from config import *
 from train import mask_to_index
 import pickle
 import numpy.ma as ma
+import numpy as np
 import tensorflow as tf
 
 
@@ -61,6 +62,7 @@ class Image_Generator(Sequence):
 				# ''' Replaces the 'marked invalid' symbol in numpy array with 0. '''
 				# Y[i] = boolean_mask.filled(0)
 				Y[i] = boolean_mask
+				np.set_printoptions(threshold=np.inf)
 				print('Y[i]: ')
 				print(Y[i])
 			sess.close()
