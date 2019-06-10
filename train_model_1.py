@@ -14,8 +14,6 @@ from utils import *
 from config import *
 from train import mask_to_index
 import pickle
-import numpy.ma as ma
-import tensorflow as tf
 
 
 class Image_Generator(Sequence):
@@ -46,34 +44,14 @@ class Image_Generator(Sequence):
 
 		X = [sky_images, masks]
 
-		# ''' Makes a tensorflow graph and session to run (evaluate) a tensor without complications.'''
-		# graph = tf.Graph()
-		# with graph.as_default():
-		# 	sess = tf.Session()
-		# 	Y = np.empty((self.batch_size, 480, 480))
-		# 	for i in range(self.batch_size):
-		# 		mask = masks[i]
-		# 		''' Makes an array where green pixels are labeled False and non-green pixels are labeled True.'''
-		# 		non_green = sess.run(tf.equal(mask, np.full((480, 480), 4)))
-		# 		# non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
-		# 		''' Makes an array where False elements are kept and True elements are 'masked' (marked invalid). '''
-		# 		boolean_mask = ma.array(mask, mask=non_green)
-		# 		# ''' Replaces the 'marked invalid' symbol in numpy array with 0. '''
-		# 		# Y[i] = boolean_mask.filled(0)
-		# 		Y[i] = boolean_mask
-		# 		print('Y[i]: ')
-		# 		print(Y[i].reshape([-1, 4]).tolist())
-		# 	sess.close()
-		# 	Y = to_categorical(Y)
-		# 	Y = Y[:,:,:,0:4]
-		#
-		# 	return X, Y
+		''' Converts each pixel label to an array where the index indicates what color and a 1 indicates that the 
+		pixel is that color. The array for each pixel should only have one 1 and the other elements should be zeros. 
+		The array is now of the size (batch_size)x480x480x5. '''
 		Y = to_categorical(masks)
-		print('Before Y: ')
-		print(Y[1].reshape([-1, 5]).tolist())
+
+		''' Slices off the final index of the final dimension which indicates the color green. 
+		The array is now of the size (batch_size)x480x480x4. '''
 		Y = Y[:, :, :, 0:4]
-		print('After Y: ')
-		print(Y[1].reshape([-1, 4]).tolist())
 
 		return X, Y
 
