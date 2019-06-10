@@ -93,9 +93,9 @@ if __name__ == '__main__':
 	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	print('Model compiled.')
 
-	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
+	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE*4)
 	print('Training generator initialized.')
-	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
+	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE*4)
 	print('Validation generator initialized.')
 
 	cb_1 = EarlyStopping(monitor='val_loss')
@@ -105,14 +105,14 @@ if __name__ == '__main__':
 	model.summary()
 
 	model.fit_generator(generator=training_batch_generator,
-						steps_per_epoch=(len(train_stamps) // TRAINING_BATCH_SIZE),
+						steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE*4)),
 						epochs=1,
 						verbose=1,
 						validation_data=validation_batch_generator,
-						validation_steps=(len(valid_stamps) // TRAINING_BATCH_SIZE),
+						validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE*4)),
 						use_multiprocessing=False,
 						callbacks=[cb_1, cb_2])
 
-	model.save('model_1.h5')
+	model.save('model_1_2.h5')
 
 # SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
