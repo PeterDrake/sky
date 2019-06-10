@@ -9,6 +9,7 @@ Trains the model.
 """
 
 from keras.utils import Sequence, to_categorical
+from tensorflow.python.keras.utils.data_utils import Sequence
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from model_1 import build_model
 from utils import *
