@@ -98,9 +98,9 @@ if __name__ == '__main__':
 	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE*4)
 	print('Validation generator initialized.')
 
-	cb_1 = EarlyStopping(monitor='val_loss')
-
-	cb_2 = ModelCheckpoint(filepath='/'+run_name+'/checkpoint-{epoch:02d}-{val_loss:.2f}.hdf5')
+	# cb_1 = EarlyStopping(monitor='val_loss')
+	#
+	# cb_2 = ModelCheckpoint(filepath='/'+run_name+'/checkpoint-{epoch:02d}-{val_loss:.2f}.hdf5')
 
 	model.summary()
 
@@ -110,8 +110,7 @@ if __name__ == '__main__':
 						verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE*4)),
-						use_multiprocessing=False,
-						callbacks=[cb_1, cb_2])
+						use_multiprocessing=False)
 
 	model.save('model_1_2.h5')
 
