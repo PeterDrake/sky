@@ -46,28 +46,34 @@ class Image_Generator(Sequence):
 
 		X = [sky_images, masks]
 
-		''' Makes a tensorflow graph and session to run (evaluate) a tensor without complications.'''
-		graph = tf.Graph()
-		with graph.as_default():
-			sess = tf.Session()
-			Y = np.empty((self.batch_size, 480, 480))
-			for i in range(self.batch_size):
-				mask = masks[i]
-				''' Makes an array where green pixels are labeled False and non-green pixels are labeled True.'''
-				non_green = sess.run(tf.equal(mask, np.full((480, 480), 4)))
-				# non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
-				''' Makes an array where False elements are kept and True elements are 'masked' (marked invalid). '''
-				boolean_mask = ma.array(mask, mask=non_green)
-				# ''' Replaces the 'marked invalid' symbol in numpy array with 0. '''
-				# Y[i] = boolean_mask.filled(0)
-				Y[i] = boolean_mask
-				print('Y[i]: ')
-				print(Y[i].reshape([-1, 4]).tolist())
-			sess.close()
-			Y = to_categorical(Y)
-			Y = Y[:,:,:,0:4]
+		# ''' Makes a tensorflow graph and session to run (evaluate) a tensor without complications.'''
+		# graph = tf.Graph()
+		# with graph.as_default():
+		# 	sess = tf.Session()
+		# 	Y = np.empty((self.batch_size, 480, 480))
+		# 	for i in range(self.batch_size):
+		# 		mask = masks[i]
+		# 		''' Makes an array where green pixels are labeled False and non-green pixels are labeled True.'''
+		# 		non_green = sess.run(tf.equal(mask, np.full((480, 480), 4)))
+		# 		# non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
+		# 		''' Makes an array where False elements are kept and True elements are 'masked' (marked invalid). '''
+		# 		boolean_mask = ma.array(mask, mask=non_green)
+		# 		# ''' Replaces the 'marked invalid' symbol in numpy array with 0. '''
+		# 		# Y[i] = boolean_mask.filled(0)
+		# 		Y[i] = boolean_mask
+		# 		print('Y[i]: ')
+		# 		print(Y[i].reshape([-1, 4]).tolist())
+		# 	sess.close()
+		# 	Y = to_categorical(Y)
+		# 	Y = Y[:,:,:,0:4]
+		#
+		# 	return X, Y
+		Y = to_categorical(masks)
+		print('Test Y: ')
+		print(Y[1].reshape([-1]).tolist())
+		Y = Y[:, :, :, 0:4]
 
-			return X, Y
+		return X, Y
 
 
 def load_filenames(stamps, input_dir, masks):
