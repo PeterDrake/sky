@@ -62,7 +62,7 @@ class Image_Generator(Sequence):
 				# Y[i] = boolean_mask.filled(0)
 				Y[i] = boolean_mask
 				print('Y[i]: ')
-				print(Y[i].reshape([-1, 4]))
+				print(Y[i].reshape([-1, 4]).tolist())
 			sess.close()
 			Y = to_categorical(Y)
 			Y = Y[:,:,:,0:4]
