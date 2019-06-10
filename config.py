@@ -83,7 +83,7 @@ SMALL_PROCESS_SIZE = None  # Full Run
 
 # The number of sky/decision image pairs to train on in a single batch. We recommend setting this as high as possible
 # during training. For our GTX 1080 ti the maximum number of images we can use in a batch is 23.
-TRAINING_BATCH_SIZE = 32  # For a run with a GTX 1080 Ti
+TRAINING_BATCH_SIZE = 26  # For a run with a GTX 1080 Ti
 # TRAINING_BATCH_SIZE = 10  # Small run
 
 # This is the number of batches to run during training. We recommend setting this so that TRAINING_BATCH_SIZE multiplied
