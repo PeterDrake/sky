@@ -14,6 +14,7 @@ from train import *
 
 def build_model():
 	"""Builds and returns the network."""
+	num_gpus = 4
 	# Create the inputs to the network.
 	sky_images = Input(shape=(480, 480, 3), name='SkyImages')
 	tsi = Input(shape=(480, 480), dtype='uint8', name='TSIDecisionImages') # TSI's decision images
@@ -32,13 +33,13 @@ def build_model():
 	always_black = tf.constant(b_mask)
 	masked = Lambda(lambda x: tf.add(always_black, conv3), name='masked')(conv3)
 	# Determine which pixels in TSI decision image are non-green
-	nongreen = Lambda(lambda x: tf.not_equal(tsi, np.full((TRAINING_BATCH_SIZE, 480, 480), 4)), name='nongreen')(tsi)
+	nongreen = Lambda(lambda x: tf.not_equal(tsi, np.full((TRAINING_BATCH_SIZE*num_gpus, 480, 480), 4)), name='nongreen')(tsi)
 	# Output of the network, where each pixel has a probability for each color, but all probabilities are zero
 	# for pixels that are green in TSI decision image
 	logits_without_green = Lambda(lambda x: tf.where(tf.stack([nongreen, nongreen, nongreen, nongreen], axis=3), masked, tf.zeros_like(masked, dtype='float32')), name='logits_without_green')([nongreen, masked])
 	# Build and return the model
 	model = Model(inputs=[sky_images, tsi], outputs=logits_without_green)
-	model = multi_gpu_model(model, gpus=4)
+	model = multi_gpu_model(model, gpus=num_gpus)
 	return model
 
 
