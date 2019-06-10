@@ -91,8 +91,7 @@ if __name__ == '__main__':
 
 	model = build_model()
 	print('Model built.')
-	# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-	model.compile(optimizer='adam', loss='categorical_crossentropy')
+	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
@@ -116,4 +115,3 @@ if __name__ == '__main__':
 
 	model.save('model_1_2.h5')
 
-# SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
