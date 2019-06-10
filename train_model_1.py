@@ -19,6 +19,7 @@ import tensorflow as tf
 
 
 class Image_Generator(Sequence):
+	""" Creates a generator that fetches the batches of data. """
 
 	def __init__(self, image_filenames, label_filenames, batch_size):
 		self.image_filenames, self.label_filenames = image_filenames, label_filenames
@@ -28,35 +29,40 @@ class Image_Generator(Sequence):
 		return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
 
 	def __getitem__(self, idx):
-		print('idx' + str(idx))
+		''' Grabs the correct image and label image files for the batch. '''
 		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 		y_filenames = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
+		''' Makes an array of arrays where each element is an image in numpy array format. '''
 		sky_images = np.array([np.asarray(imageio.imread(file_name)) for file_name in x_filenames])
+		''' Makes an array of arrays where each element is an label image in numpy array format.'''
 		tsi = np.array([np.asarray(imageio.imread(file_name)) for file_name in y_filenames])
 
+		''' Converts each pixel label to a number based on color; key is found in utils. WHITE is 0, BLUE is 1, 
+		GRAY is 2, BLACK is 3, and GREEN is 4.'''
 		masks = np.empty((self.batch_size, 480, 480))
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 
-		print('SKY IMAGES SHAPE: ')
-		print(sky_images.shape)
-		print('MASKS SHAPE: ')
-		print(masks.shape)
-		print('num of filenames: ' + str(len(self.image_filenames)))
-		print('Test: ' + str(len(self.image_filenames)/float(self.batch_size)))
 		X = [sky_images, masks]
 
+		''' Makes a tensorflow graph and session to run (evaluate) a tensor without complications.'''
 		graph = tf.Graph()
 		with graph.as_default():
 			sess = tf.Session()
 			Y = np.empty((self.batch_size, 480, 480))
 			for i in range(self.batch_size):
 				mask = masks[i]
-				non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
+				''' Makes an array where green pixels are labeled False and non-green pixels are labeled True.'''
+				non_green = sess.run(tf.equal(mask, np.full((480, 480), 4)))
+				# non_green = sess.run(tf.not_equal(mask, np.full((480, 480), 4)))
+				''' Makes an array where False elements are kept and True elements are 'masked' (marked invalid). '''
 				boolean_mask = ma.array(mask, mask=non_green)
-				# Y[i] = boolean_mask
-				Y[i] = boolean_mask.filled(0)
+				# ''' Replaces the 'marked invalid' symbol in numpy array with 0. '''
+				# Y[i] = boolean_mask.filled(0)
+				Y[i] = boolean_mask
+				print('Y[i]: ')
+				print(Y[i])
 			sess.close()
 			Y = to_categorical(Y)
 			Y = Y[:,:,:,0:4]
