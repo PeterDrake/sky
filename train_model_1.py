@@ -111,11 +111,11 @@ if __name__ == '__main__':
 		"logits_without_green": corrected_accuracy,
 	}
 
-	run_opts = tf.RunOptions(report_tensor_allocations_upon_oom=True)
+	# run_opts = tf.RunOptions(report_tensor_allocations_upon_oom=True)
 
 	model = build_model()
 	print('Model built.')
-	model.compile(optimizer='adam', loss=losses, metrics=metrics, options=run_opts)
+	model.compile(optimizer='adam', loss=losses, metrics=metrics)
 	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
