@@ -11,6 +11,8 @@ Trains the model.
 from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
+import tensorflow._api.v1.keras as K
+import numpy as np
 from model_1 import build_model
 from utils import *
 from config import *
@@ -57,6 +59,23 @@ class Image_Generator(Sequence):
 		Y = Y[:, :, :, 0:4]
 
 		return X, Y
+
+
+# def corrected_accuracy(y_true, y_pred):
+# 	return K.cast(K.equal(K.argmax(y_true, axis=-1), K.argmax(y_pred, axis=-1)), K.floatx())
+
+
+def corrected_accuracy(y_true, y_pred):
+	total = 0
+	correct = 0
+	for n in range(y_true.shape[0]):
+		for j in range(y_true.shape[1]):
+			for i in range(y_true.shape[2]):
+				if not np.array_equal(y_pred[n, j, i, :], np.array([0, 0, 0, 0])):
+					total = total + 1
+					if np.array_equal(np.argmax(y_pred[n, j, i, :]), np.argmax(y_true[n, j, i, :])):
+						correct = correct + 1
+	return correct/total
 
 
 def load_filenames(stamps, input_dir, masks):
