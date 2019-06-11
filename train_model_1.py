@@ -30,7 +30,9 @@ class Image_Generator(Sequence):
 		self.batch_size = batch_size
 
 	def __len__(self):
-		return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
+		# return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
+		return int(np.floor(len(self.image_filenames) / float(self.batch_size)))
+
 
 	def __getitem__(self, idx):
 		''' Grabs the correct image and label image files for the batch. '''
