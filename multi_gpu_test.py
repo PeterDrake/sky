@@ -18,7 +18,6 @@ import sys
 
 
 class Image_Generator(Sequence):
-	""" Creates a generator that fetches the batches of data. """
 
 	def __init__(self, image_filenames, label_filenames, batch_size):
 		self.image_filenames, self.label_filenames = image_filenames, label_filenames
@@ -28,30 +27,18 @@ class Image_Generator(Sequence):
 		return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
 
 	def __getitem__(self, idx):
-		''' Grabs the correct image and label image files for the batch. '''
 		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 		y_filenames = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-		''' Makes an array of arrays where each element is an image in numpy array format. '''
 		sky_images = np.array([np.asarray(imageio.imread(file_name)) for file_name in x_filenames])
-		''' Makes an array of arrays where each element is an label image in numpy array format.'''
 		tsi = np.array([np.asarray(imageio.imread(file_name)) for file_name in y_filenames])
-
-		''' Converts each pixel label to a number based on color; key is found in utils. WHITE is 0, BLUE is 1,
-		GRAY is 2, BLACK is 3, and GREEN is 4.'''
 		masks = np.empty((self.batch_size, 480, 480))
+
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 
 		X = [sky_images, masks]
-
-		''' Converts each pixel label to an array where the index indicates what color and a 1 indicates that the
-		pixel is that color. The array for each pixel should only have one 1 and the other elements should be zeros.
-		The array is now of the size (batch_size)x480x480x5. '''
 		Y = to_categorical(masks)
-
-		''' Slices off the final index of the final dimension which indicates the color green.
-		The array is now of the size (batch_size)x480x480x4. '''
 		Y = Y[:, :, :, 0:4]
 
 		return X, Y
@@ -69,7 +56,6 @@ def load_filenames(stamps, input_dir, masks):
 
 
 def build_model():
-	"""Builds and returns the network."""
 	# Create the inputs to the network.
 	sky_images = Input(shape=(480, 480, 3), name='sky_image')
 	# Main body of the network
