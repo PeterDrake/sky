@@ -38,7 +38,7 @@ def build_model():
 	logits_without_green = Lambda(lambda x: tf.where(tf.stack([nongreen, nongreen, nongreen, nongreen], axis=3), masked, tf.zeros_like(masked, dtype='float32')), name='logits_without_green')([nongreen, masked])
 	# Build and return the model
 	model = Model(inputs=[sky_images, tsi], outputs=logits_without_green)
-	model = multi_gpu_model(model, gpus=4)
+	# model = multi_gpu_model(model, gpus=4)
 	return model
 
 
@@ -46,4 +46,4 @@ if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	model = build_model()
 	model.summary()
-	plot_model(model, show_shapes=True, to_file='model_1_3.png')
+	# plot_model(model, show_shapes=True, to_file='model_1_3.png')
