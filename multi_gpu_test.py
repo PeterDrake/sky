@@ -8,20 +8,11 @@ Builds the model.
 
 from tensorflow._api.v1.keras.models import Model
 from tensorflow._api.v1.keras.layers import Convolution2D, concatenate, Input, Lambda
-from tensorflow._api.v1.keras.utils import multi_gpu_model
-from train import *
-
-
-
-"""
-Trains the model.
-"""
-
-from keras.utils import Sequence, to_categorical
+from tensorflow._api.v1.keras.utils import multi_gpu_model, to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
+from train import *
 from utils import *
 from config import *
-from train import mask_to_index
 import pickle
 import sys
 
