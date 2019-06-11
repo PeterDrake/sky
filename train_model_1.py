@@ -109,7 +109,7 @@ if __name__ == '__main__':
 
 	model = build_model()
 	print('Model built.')
-	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+	model.compile(optimizer='adam', loss=losses, metrics=metrics)
 	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
