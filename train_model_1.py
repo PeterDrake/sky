@@ -12,6 +12,7 @@ from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
 import tensorflow._api.v1.keras as K
+import tensorflow as tf
 import numpy as np
 from model_1 import build_model
 from utils import *
@@ -61,21 +62,11 @@ class Image_Generator(Sequence):
 		return X, Y
 
 
-# def corrected_accuracy(y_true, y_pred):
-# 	return K.cast(K.equal(K.argmax(y_true, axis=-1), K.argmax(y_pred, axis=-1)), K.floatx())
-
-
 def corrected_accuracy(y_true, y_pred):
-	total = 0
-	correct = 0
-	for n in range(y_true.shape[0]):
-		for j in range(y_true.shape[1]):
-			for i in range(y_true.shape[2]):
-				if not np.array_equal(y_pred[n, j, i, :], np.array([0, 0, 0, 0])):
-					total = total + 1
-					if np.array_equal(np.argmax(y_pred[n, j, i, :]), np.argmax(y_true[n, j, i, :])):
-						correct = correct + 1
-	return correct/total
+	green = tf.constant([[0 for i in range(480)] for j in range(480)])
+	mask = tf.not_equal(tf.reduce_sum(y_true, axis=-1), green)
+	correct = tf.cast(tf.equal(tf.argmax(tf.boolean_mask(y_true, mask), axis=-1), tf.argmax(tf.boolean_mask(y_pred, mask), axis=-1)), tf.float32)
+	return tf.count_nonzero(correct)/tf.size(correct, out_type=tf.dtypes.int64)
 
 
 def load_filenames(stamps, input_dir, masks):
@@ -107,6 +98,14 @@ if __name__ == '__main__':
 	print('Validation image file paths loaded.')
 	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
 	print('Validation mask file paths loaded.')
+
+	losses = {
+		"logits_without_green": "categorical_crossentropy",
+	}
+
+	metrics = {
+		"logits_without_green": corrected_accuracy,
+	}
 
 	model = build_model()
 	print('Model built.')

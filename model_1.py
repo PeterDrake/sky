@@ -8,7 +8,7 @@ Builds the model.
 
 from tensorflow._api.v1.keras.models import Model
 from tensorflow._api.v1.keras.layers import Convolution2D, concatenate, Input, Lambda
-from tensorflow._api.v1.keras.utils import plot_model, multi_gpu_model
+from tensorflow._api.v1.keras.utils import plot_model
 from train import *
 
 
@@ -36,9 +36,10 @@ def build_model():
 	# Output of the network, where each pixel has a probability for each color, but all probabilities are zero
 	# for pixels that are green in TSI decision image
 	logits_without_green = Lambda(lambda x: tf.where(tf.stack([nongreen, nongreen, nongreen, nongreen], axis=3), masked, tf.zeros_like(masked, dtype='float32')), name='logits_without_green')([nongreen, masked])
+	# Output of the network, where the maximum logit index replaces the vector for each pixel
+	decision = Lambda(lambda x: tf.argmax(masked, axis=3), name='decision')(masked)
 	# Build and return the model
-	model = Model(inputs=[sky_images, tsi], outputs=logits_without_green)
-	# model = multi_gpu_model(model, gpus=4)
+	model = Model(inputs=[sky_images, tsi], outputs=[logits_without_green, decision])
 	return model
 
 
