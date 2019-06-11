@@ -10,7 +10,6 @@ Trains the model.
 
 from keras.utils import Sequence, to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
-from keras.callbacks import EarlyStopping, ModelCheckpoint
 from multi_gpu_test import build_model
 from utils import *
 from config import *
@@ -91,7 +90,6 @@ if __name__ == '__main__':
 
 	model = build_model()
 	print('Model built.')
-	# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	model.compile(optimizer='adam', loss='categorical_crossentropy')
 	print('Model compiled.')
 
@@ -99,10 +97,6 @@ if __name__ == '__main__':
 	print('Training generator initialized.')
 	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Validation generator initialized.')
-
-	# cb_1 = EarlyStopping(monitor='val_loss')
-	#
-	# cb_2 = ModelCheckpoint(filepath='/'+run_name+'/checkpoint-{epoch:02d}-{val_loss:.2f}.hdf5')
 
 	model.summary()
 
