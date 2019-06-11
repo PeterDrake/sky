@@ -31,4 +31,4 @@ if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	model = build_model()
 	model.summary()
-	plot_model(model, show_shapes=True, to_file='model_1_3.png')
+	# plot_model(model, show_shapes=True, to_file='model_1_3.png')
