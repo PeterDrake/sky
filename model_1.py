@@ -40,7 +40,7 @@ def build_model():
 	model = Model(inputs=[sky_images, tsi], outputs=logits_without_green)
 	print('1-----------------------------------------------')
 	model.summary()
-	model = multi_gpu_model(model, gpus=4)
+	model = multi_gpu_model(model, gpus=2)
 	print('2-----------------------------------------------')
 	model.summary()
 	return model
