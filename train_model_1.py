@@ -10,7 +10,7 @@ Trains the model.
 
 from keras.utils import Sequence, to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
-from multi_gpu_test import build_model
+from model_1 import build_model
 from utils import *
 from config import *
 from train import mask_to_index
@@ -38,7 +38,7 @@ class Image_Generator(Sequence):
 		''' Makes an array of arrays where each element is an label image in numpy array format.'''
 		tsi = np.array([np.asarray(imageio.imread(file_name)) for file_name in y_filenames])
 
-		''' Converts each pixel label to a number based on color; key is found in utils. WHITE is 0, BLUE is 1, 
+		''' Converts each pixel label to a number based on color; key is found in utils. WHITE is 0, BLUE is 1,
 		GRAY is 2, BLACK is 3, and GREEN is 4.'''
 		masks = np.empty((self.batch_size, 480, 480))
 		for i in range(len(tsi)):
@@ -46,12 +46,12 @@ class Image_Generator(Sequence):
 
 		X = [sky_images, masks]
 
-		''' Converts each pixel label to an array where the index indicates what color and a 1 indicates that the 
-		pixel is that color. The array for each pixel should only have one 1 and the other elements should be zeros. 
+		''' Converts each pixel label to an array where the index indicates what color and a 1 indicates that the
+		pixel is that color. The array for each pixel should only have one 1 and the other elements should be zeros.
 		The array is now of the size (batch_size)x480x480x5. '''
 		Y = to_categorical(masks)
 
-		''' Slices off the final index of the final dimension which indicates the color green. 
+		''' Slices off the final index of the final dimension which indicates the color green.
 		The array is now of the size (batch_size)x480x480x4. '''
 		Y = Y[:, :, :, 0:4]
 
