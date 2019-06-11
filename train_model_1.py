@@ -86,16 +86,16 @@ if __name__ == '__main__':
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
 	print('Training stamps loaded.')
-	print(len(train_stamps))
 	with open(TYPICAL_VALID_FILE, 'rb') as f:
 		valid_stamps = pickle.load(f)
 	print('Validation stamps loaded.')
-	print(len(valid_stamps))
 
 	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
 	print('Training image file paths loaded.')
+	print(len(training_image_filenames))
 	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
 	print('Training mask file paths loaded.')
+	print(len(training_tsi_filenames))
 	validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
 	print('Validation image file paths loaded.')
 	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
