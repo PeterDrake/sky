@@ -25,12 +25,13 @@ def build_model():
 	masked = Lambda(lambda x: tf.add(always_black, conv3), name='masked')(conv3)
 	# Build and return the model
 	model = Model(inputs=a, outputs=masked)
-	# model = multi_gpu_model(model, gpus=4)
+	model = multi_gpu_model(model, gpus=4)
 	return model
 
 
 if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	model = build_model()
+	# model.compile(optimizer='adam', loss='categorical_crossentropy')
 	model.summary()
 	# plot_model(model, show_shapes=True, to_file='model_1_3.png')
