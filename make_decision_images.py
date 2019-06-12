@@ -24,21 +24,34 @@ import pandas as pd
 class Image_Generator(Sequence):
 	""" Creates a generator that fetches the batches of data. """
 
-	def __init__(self, image_filenames, batch_size):
-		self.image_filenames = image_filenames
+	def __init__(self, image_filenames, label_filenames, batch_size):
+		self.image_filenames, self.label_filenames = image_filenames, label_filenames
 		self.batch_size = batch_size
 
 	def __len__(self):
-		return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
+		# return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
+		return int(np.floor(len(self.image_filenames) / float(self.batch_size)))
+
 
 	def __getitem__(self, idx):
 		''' Grabs the correct image and label image files for the batch. '''
 		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
+		y_filenames = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
 		''' Makes an array of arrays where each element is an image in numpy array format. '''
-		sky_images = [np.asarray(imageio.imread(file_name)) for file_name in x_filenames]
+		sky_images = np.array([np.asarray(imageio.imread(file_name)) for file_name in x_filenames])
+		''' Makes an array of arrays where each element is an label image in numpy array format.'''
+		tsi = np.array([np.asarray(imageio.imread(file_name)) for file_name in y_filenames])
 
-		return np.array(sky_images)
+		''' Converts each pixel label to a number based on color; key is found in utils. WHITE is 0, BLUE is 1, 
+		GRAY is 2, BLACK is 3, and GREEN is 4.'''
+		masks = np.empty((self.batch_size, 480, 480))
+		for i in range(len(tsi)):
+			masks[i] = mask_to_index(tsi[i])
+
+		X = [sky_images, masks]
+
+		return X
 
 
 def load_filenames(stamps, input_dir, masks):
@@ -71,8 +84,10 @@ if __name__ == '__main__':
 
 	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
 	print('Training image file paths loaded.')
+	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+	print('Training mask file paths loaded.')
 
-	training_batch_generator = Image_Generator(training_image_filenames, TRAINING_BATCH_SIZE)
+	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Training generator initialized.')
 
 	model.summary()
