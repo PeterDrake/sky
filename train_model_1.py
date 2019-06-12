@@ -129,7 +129,7 @@ if __name__ == '__main__':
 						# steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
 						steps_per_epoch=1000,
 						epochs=1,
-						verbose=1,
+						verbose=2,
 						validation_data=validation_batch_generator,
 						# validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
 						validation_steps=300,
