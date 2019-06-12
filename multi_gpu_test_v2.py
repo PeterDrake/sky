@@ -10,30 +10,30 @@ import sys
 
 
 class Image_Generator(Sequence):
+	with tf.device('/gpu:2'):
+		def __init__(self, image_filenames, label_filenames, batch_size):
+			self.image_filenames, self.label_filenames = image_filenames, label_filenames
+			self.batch_size = batch_size
 
-	def __init__(self, image_filenames, label_filenames, batch_size):
-		self.image_filenames, self.label_filenames = image_filenames, label_filenames
-		self.batch_size = batch_size
+		def __len__(self):
+			return int(np.floor(len(self.image_filenames) / float(self.batch_size)))
 
-	def __len__(self):
-		return int(np.floor(len(self.image_filenames) / float(self.batch_size)))
+		def __getitem__(self, idx):
+			x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
+			y_filenames = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-	def __getitem__(self, idx):
-		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
-		y_filenames = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
+			sky_images = np.array([np.asarray(imageio.imread(file_name)) for file_name in x_filenames])
+			tsi = np.array([np.asarray(imageio.imread(file_name)) for file_name in y_filenames])
+			masks = np.empty((self.batch_size, 480, 480))
 
-		sky_images = np.array([np.asarray(imageio.imread(file_name)) for file_name in x_filenames])
-		tsi = np.array([np.asarray(imageio.imread(file_name)) for file_name in y_filenames])
-		masks = np.empty((self.batch_size, 480, 480))
+			for i in range(len(tsi)):
+				masks[i] = mask_to_index(tsi[i])
 
-		for i in range(len(tsi)):
-			masks[i] = mask_to_index(tsi[i])
+			X = [sky_images, masks]
+			Y = to_categorical(masks)
+			Y = Y[:, :, :, 0:4]
 
-		X = [sky_images, masks]
-		Y = to_categorical(masks)
-		Y = Y[:, :, :, 0:4]
-
-		return X, Y
+			return X, Y
 
 
 def load_filenames(stamps, input_dir, masks):
