@@ -59,7 +59,7 @@ def build_model():
 	# masked = Lambda(lambda x: tf.add(always_full, conv3), name='masked')(conv3)
 	# Build and return the model
 	model = Model(inputs=sky_images, outputs=conv1)
-	# model = multi_gpu_model(model, gpus=4)
+	model = multi_gpu_model(model, gpus=4)
 	return model
 
 
