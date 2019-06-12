@@ -59,7 +59,7 @@ def build_model():
 	# masked = Lambda(lambda x: tf.add(always_full, conv3), name='masked')(conv3)
 	# Build and return the model
 	model = Model(inputs=sky_images, outputs=conv3)
-	# model = multi_gpu_model(model, gpus=2)
+	/model = multi_gpu_model(model, gpus=2)
 	return model
 
 
@@ -67,42 +67,42 @@ if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	run_name = sys.argv[0:]
 
-	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
-		train_stamps = pickle.load(f)
-	print('Training stamps loaded.')
-	with open(TYPICAL_VALID_FILE, 'rb') as f:
-		valid_stamps = pickle.load(f)
-	print('Validation stamps loaded.')
-
-	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
-	print('Training image file paths loaded.')
-	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
-	print('Training mask file paths loaded.')
-	validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
-	print('Validation image file paths loaded.')
-	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
-	print('Validation mask file paths loaded.')
-
 	with tf.device('/gpu:1'):
+		with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
+			train_stamps = pickle.load(f)
+		print('Training stamps loaded.')
+		with open(TYPICAL_VALID_FILE, 'rb') as f:
+			valid_stamps = pickle.load(f)
+		print('Validation stamps loaded.')
+
+		training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
+		print('Training image file paths loaded.')
+		training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+		print('Training mask file paths loaded.')
+		validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
+		print('Validation image file paths loaded.')
+		validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
+		print('Validation mask file paths loaded.')
+
 		model = build_model()
-	print('Model built.')
-	model.compile(optimizer='adam', loss='categorical_crossentropy')
-	print('Model compiled.')
+		print('Model built.')
+		model.compile(optimizer='adam', loss='categorical_crossentropy')
+		print('Model compiled.')
 
-	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
-	print('Training generator initialized.')
-	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames,
-												 TRAINING_BATCH_SIZE)
-	print('Validation generator initialized.')
+		training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
+		print('Training generator initialized.')
+		validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames,
+													 TRAINING_BATCH_SIZE)
+		print('Validation generator initialized.')
 
-	model.summary()
+		model.summary()
 
-	model.fit_generator(generator=training_batch_generator,
-						steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
-						epochs=1,
-						verbose=1,
-						validation_data=validation_batch_generator,
-						validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
-						use_multiprocessing=False)
+		model.fit_generator(generator=training_batch_generator,
+							steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
+							epochs=1,
+							verbose=1,
+							validation_data=validation_batch_generator,
+							validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
+							use_multiprocessing=False)
 
 # SGE_Batch -q gpu.q -r "multi_gpu_results_2" -c "python3 multi_gpu_test_v2.py multi_gpu_results_2" -P 10
