@@ -15,8 +15,9 @@ from train import *
 
 class NotGreen(Layer):
 	def __init__(self, batch_size, **kwargs):
+		self.batch_size = batch_size
 		super().__init__(**kwargs)
-		self.green = tf.constant(np.full((batch_size, 480, 480), 4), dtype='uint8')
+		self.green = tf.constant(np.full((self.batch_size, 480, 480), 4), dtype='uint8')
 
 	def call(self, input_tensor):
 		return tf.not_equal(input_tensor, self.green)
