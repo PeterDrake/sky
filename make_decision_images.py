@@ -9,7 +9,7 @@ import tensorflow._api.v1.keras as K
 import tensorflow._api.v1.keras as K
 import tensorflow as tf
 import numpy as np
-from model_1 import build_model
+from model_1 import build_model, NotGreen, RemoveGreen, DecidePixelColors
 from utils import *
 from config import *
 from train import mask_to_index
@@ -55,7 +55,10 @@ if __name__ == '__main__':
 	# with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
 	# 	model = load_model('model_1_4.h5')
 
-	model = tf._api.v1.keras.models.load_model('model_1_5.h5')
+	# custom = {'not_green': 'NotGreen', 'remove_green': 'RemoveGreen', 'decide_pixel_colors': 'DecidePixelColors'}
+	custom = {'not_green': NotGreen, 'remove_green': RemoveGreen, 'decide_pixel_colors': DecidePixelColors}
+
+	model = tf._api.v1.keras.models.load_model('model_1_5.h5', custom_objects=custom)
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
