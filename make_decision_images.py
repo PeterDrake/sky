@@ -49,7 +49,7 @@ class Image_Generator(Sequence):
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 
-		placeholder = np.array()
+		placeholder = np.empty((self.batch_size, 480, 480, 4))
 
 		X = [sky_images, masks, placeholder]
 
