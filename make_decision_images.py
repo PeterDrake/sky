@@ -48,7 +48,7 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
-	model = load_model('model_1_2.h5')
+	model = load_model('/home/users/schall/sky/model_1_2.h5')
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
 	predictions.to_csv('predictions.csv')
 
-
+	#SGE_Batch -q gpu.q -r "predictions_1" -c "python3 -u make_decision_images.py" -P 10
 
 
 
