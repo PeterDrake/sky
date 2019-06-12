@@ -97,13 +97,21 @@ if __name__ == '__main__':
 	# images = pd.DataFrame(columns=['name', 'prediction'])
 	predictions = pd.DataFrame()
 
-	predictions['predictions'] = model.predict_generator(training_batch_generator,
-														 steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
-														 verbose=1)
+	p = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
+	p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
 
-	predictions.to_csv('predictions.csv')
+	print('Keys:')
+	print(p.keys())
+	print('Values:')
+	print(p.values())
+	print('Length:')
+	print(len(p))
+	print('Dict:')
+	print(p)
 
-	#SGE_Batch -q gpu.q -r "predictions_1" -c "python3 -u make_decision_images.py True" -P 10
+	# predictions.to_csv('predictions.csv')
+
+	#SGE_Batch -q gpu.q -r "predictions_11" -c "python3 -u make_decision_images.py True" -P 10
 
 
 
