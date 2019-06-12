@@ -68,21 +68,21 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
-	# with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
-	# 	model = load_model('model_1_4.h5')
+	short_run = sys.argv[0:]
 
-	# custom = {'not_green': 'NotGreen', 'remove_green': 'RemoveGreen', 'decide_pixel_colors': 'DecidePixelColors'}
 	custom = {'NotGreen': NotGreen,
 			  'RemoveGreen': RemoveGreen,
 			  'DecidePixelColors': DecidePixelColors,
 			  'corrected_accuracy': corrected_accuracy}
-	# custom = {'not_green': NotGreen, 'remove_green': RemoveGreen, 'decide_pixel_colors': DecidePixelColors}
 
 	model = tf._api.v1.keras.models.load_model('model_1_6.h5', custom_objects=custom)
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
 	print('Training stamps loaded.')
+
+	if short_run:
+		train_stamps = train_stamps[0:100]
 
 	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
 	print('Training image file paths loaded.')
@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
 	predictions.to_csv('predictions.csv')
 
-	#SGE_Batch -q gpu.q -r "predictions_1" -c "python3 -u make_decision_images.py" -P 10
+	#SGE_Batch -q gpu.q -r "predictions_1" -c "python3 -u make_decision_images.py True" -P 10
 
 
 
