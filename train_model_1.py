@@ -104,14 +104,12 @@ if __name__ == '__main__':
 	print('Validation mask file paths loaded.')
 
 	losses = {
-		"logits_without_green": "categorical_crossentropy",
+		"remove_green": "categorical_crossentropy",
 	}
 
 	metrics = {
-		"logits_without_green": corrected_accuracy,
+		"remove_green": corrected_accuracy,
 	}
-
-	# run_opts = tf.RunOptions(report_tensor_allocations_upon_oom=True)
 
 	model = build_model()
 	print('Model built.')
@@ -136,5 +134,5 @@ if __name__ == '__main__':
 						use_multiprocessing=False,
 						callbacks=[cb_1])
 
-	model.save('model_1_3.h5')
+	model.save('model_1_4.h5')
 
