@@ -64,10 +64,11 @@ def build_model():
 
 
 if __name__ == '__main__':
-	np.random.seed(123)  # for reproducibility
-	run_name = sys.argv[0:]
+	with tf.device('/gpu:2'):
+		np.random.seed(123)  # for reproducibility
+		run_name = sys.argv[0:]
 
-	with tf.device('/gpu:1'):
+
 		with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 			train_stamps = pickle.load(f)
 		print('Training stamps loaded.')
@@ -105,4 +106,4 @@ if __name__ == '__main__':
 							validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
 							use_multiprocessing=False)
 
-# SGE_Batch -q gpu.q -r "multi_gpu_results_2" -c "python3 multi_gpu_test_v2.py multi_gpu_results_2" -P 10
+	# SGE_Batch -q gpu.q -r "multi_gpu_results_2" -c "python3 multi_gpu_test_v2.py multi_gpu_results_2" -P 10
