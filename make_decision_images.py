@@ -59,7 +59,7 @@ if __name__ == '__main__':
 	custom = {'NotGreen': NotGreen, 'RemoveGreen': RemoveGreen, 'DecidePixelColors': DecidePixelColors}
 	# custom = {'not_green': NotGreen, 'remove_green': RemoveGreen, 'decide_pixel_colors': DecidePixelColors}
 
-	model = tf._api.v1.keras.models.load_model('model_1_5.h5', custom_objects=custom)
+	model = tf._api.v1.keras.models.load_model('model_1_6.h5', custom_objects=custom)
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
