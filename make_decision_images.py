@@ -4,7 +4,7 @@ from tensorflow._api.v1.keras.initializers import glorot_uniform
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
 # from tensorflow._api.v1.keras.models import load_model
-from keras.models import load_model
+# from keras.models import load_model
 import tensorflow._api.v1.keras as K
 import tensorflow._api.v1.keras as K
 import tensorflow as tf
@@ -52,8 +52,10 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
-	with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
-		model = load_model('model_1_4.h5')
+	# with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
+	# 	model = load_model('model_1_4.h5')
+
+	model = tf._api.v1.keras.models.load_model('model_1_4.h5')
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
