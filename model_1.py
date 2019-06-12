@@ -14,8 +14,8 @@ from train import *
 
 
 class NotGreen(Layer):
-	def __init__(self, batch_size):
-		super().__init__()
+	def __init__(self, batch_size, **kwargs):
+		super().__init__(**kwargs)
 		self.green = tf.constant(np.full((batch_size, 480, 480), 4), dtype='uint8')
 
 	def call(self, input_tensor):
@@ -27,22 +27,22 @@ class NotGreen(Layer):
 
 
 class RemoveGreen(Layer):
-	def __init__(self):
-		super().__init__()
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
 
 	def call(self, inputs):
 		nongreen_4d = tf.stack([inputs[0], inputs[0], inputs[0], inputs[0]], axis=3)
 		all_zeros = tf.zeros_like(inputs[1], dtype='float32')
 		return tf.where(nongreen_4d, inputs[1], all_zeros)
 
-	def get_config(self):
+	def get_config(self, **kwargs):
 		base_config = super().get_config()
 		return base_config
 
 
 class DecidePixelColors(Layer):
 	def __init__(self):
-		super().__init__()
+		super().__init__(**kwargs)
 
 	def call(self, input_tensor):
 		return tf.argmax(input_tensor, axis=3)
