@@ -21,6 +21,10 @@ class NotGreen(Layer):
 	def call(self, input_tensor):
 		return tf.not_equal(input_tensor, self.green)
 
+	def get_config(self):
+		base_config = super().get_config()
+		return base_config
+
 
 class RemoveGreen(Layer):
 	def __init__(self):
@@ -31,6 +35,10 @@ class RemoveGreen(Layer):
 		all_zeros = tf.zeros_like(inputs[1], dtype='float32')
 		return tf.where(nongreen_4d, inputs[1], all_zeros)
 
+	def get_config(self):
+		base_config = super().get_config()
+		return base_config
+
 
 class DecidePixelColors(Layer):
 	def __init__(self):
@@ -38,6 +46,10 @@ class DecidePixelColors(Layer):
 
 	def call(self, input_tensor):
 		return tf.argmax(input_tensor, axis=3)
+
+	def get_config(self):
+		base_config = super().get_config()
+		return base_config
 
 
 def build_model():
@@ -77,4 +89,5 @@ if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	model = build_model()
 	model.summary()
-	plot_model(model, show_shapes=True, to_file='model_1_4.png')
+	# plot_model(model, show_shapes=True, to_file='model_1_4.png')
+	# print(model.get_config())

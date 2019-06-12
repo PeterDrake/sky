@@ -55,7 +55,7 @@ if __name__ == '__main__':
 	# with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
 	# 	model = load_model('model_1_4.h5')
 
-	model = tf._api.v1.keras.models.load_model('model_1_4.h5')
+	model = tf._api.v1.keras.models.load_model('model_1_5.h5')
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)

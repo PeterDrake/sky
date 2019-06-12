@@ -127,14 +127,14 @@ if __name__ == '__main__':
 
 	model.fit_generator(generator=training_batch_generator,
 						# steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
-						steps_per_epoch=1000,
+						steps_per_epoch=100,
 						epochs=1,
 						verbose=1,
 						validation_data=validation_batch_generator,
 						# validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
-						validation_steps=300,
+						validation_steps=30,
 						use_multiprocessing=False,
 						callbacks=[cb_1])
 
-	model.save('model_1_4.h5')
+	model.save('model_1_5.h5')
 
