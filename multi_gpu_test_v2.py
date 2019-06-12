@@ -69,7 +69,6 @@ if __name__ == '__main__':
 		np.random.seed(123)  # for reproducibility
 		run_name = sys.argv[0:]
 
-
 		with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 			train_stamps = pickle.load(f)
 		print('Training stamps loaded.')
