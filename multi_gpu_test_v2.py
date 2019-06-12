@@ -9,8 +9,9 @@ import pickle
 import sys
 
 
-class Image_Generator(Sequence):
-	with tf.device('/gpu:2'):
+with tf.device('/gpu:2'):
+	class Image_Generator(Sequence):
+
 		def __init__(self, image_filenames, label_filenames, batch_size):
 			self.image_filenames, self.label_filenames = image_filenames, label_filenames
 			self.batch_size = batch_size
@@ -36,35 +37,34 @@ class Image_Generator(Sequence):
 			return X, Y
 
 
-def load_filenames(stamps, input_dir, masks):
-	filenames = []
-	if masks:
-		for s in stamps:
-			filenames.append(extract_mask_path_from_time(s, input_dir))
-	else:
-		for s in stamps:
-			filenames.append(extract_img_path_from_time(s, input_dir))
-	return filenames
+	def load_filenames(stamps, input_dir, masks):
+		filenames = []
+		if masks:
+			for s in stamps:
+				filenames.append(extract_mask_path_from_time(s, input_dir))
+		else:
+			for s in stamps:
+				filenames.append(extract_img_path_from_time(s, input_dir))
+		return filenames
 
 
-def build_model():
-	# Create the inputs to the network.
-	sky_images = Input(shape=(480, 480, 3), name='sky_image')
-	# Main body of the network
-	conv1 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(sky_images)
-	maxpool1 = Lambda(lambda x: tf.nn.max_pool(conv1, [1, 1, 100, 1], strides=[1, 1, 1, 1], padding='SAME'), name='maxpool1')(conv1)
-	concat1 = concatenate([conv1, maxpool1], axis=3)
-	conv3 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat1)
-	# always_full = tf.constant([[[0, 0, 0, 1] for i in range(480)] for j in range(480)], dtype='float32')
-	# masked = Lambda(lambda x: tf.add(always_full, conv3), name='masked')(conv3)
-	# Build and return the model
-	model = Model(inputs=sky_images, outputs=conv3)
-	# model = multi_gpu_model(model, gpus=2)
-	return model
+	def build_model():
+		# Create the inputs to the network.
+		sky_images = Input(shape=(480, 480, 3), name='sky_image')
+		# Main body of the network
+		conv1 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(sky_images)
+		maxpool1 = Lambda(lambda x: tf.nn.max_pool(conv1, [1, 1, 100, 1], strides=[1, 1, 1, 1], padding='SAME'), name='maxpool1')(conv1)
+		concat1 = concatenate([conv1, maxpool1], axis=3)
+		conv3 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat1)
+		# always_full = tf.constant([[[0, 0, 0, 1] for i in range(480)] for j in range(480)], dtype='float32')
+		# masked = Lambda(lambda x: tf.add(always_full, conv3), name='masked')(conv3)
+		# Build and return the model
+		model = Model(inputs=sky_images, outputs=conv3)
+		# model = multi_gpu_model(model, gpus=2)
+		return model
 
 
-if __name__ == '__main__':
-	with tf.device('/gpu:2'):
+	if __name__ == '__main__':
 		np.random.seed(123)  # for reproducibility
 		run_name = sys.argv[0:]
 
