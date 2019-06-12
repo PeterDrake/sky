@@ -106,7 +106,7 @@ if __name__ == '__main__':
 	print('Element: ')
 	print(list_of_decision_images[0])
 
-	os.mkdir('Network_Decision_Images_1')
+	# os.mkdir('Network_Decision_Images_1')
 
 	for i in range(len(list_of_decision_images)):
 		file = '/Network_Decision_Images_1/' + str(i) + '.png'
