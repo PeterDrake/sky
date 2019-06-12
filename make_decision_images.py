@@ -17,8 +17,7 @@ from train import mask_to_index
 import pickle
 import sys
 import pandas as pd
-# from keras.utils import CustomObjectScope
-# from keras.initializers import glorot_uniform
+import os
 
 
 class Image_Generator(Sequence):
@@ -106,6 +105,13 @@ if __name__ == '__main__':
 	print(len(list_of_decision_images))
 	print('Element: ')
 	print(list_of_decision_images[0])
+
+	os.mkdir('Network_Decision_Images_1')
+
+	for i in range(len(list_of_decision_images)):
+		file = '/Network_Decision_Images_1/' + str(i) + '.png'
+		show_skymask(list_of_decision_images[i], save_instead=True, save_path=file)
+
 
 	# predictions.to_csv('predictions.csv')
 
