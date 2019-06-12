@@ -83,7 +83,7 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
-	run_name = sys.argv[0:]
+	short_run = sys.argv[0:]
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
@@ -91,6 +91,10 @@ if __name__ == '__main__':
 	with open(TYPICAL_VALID_FILE, 'rb') as f:
 		valid_stamps = pickle.load(f)
 	print('Validation stamps loaded.')
+
+	if short_run:
+		train_stamps = train_stamps[0:1000]
+		valid_stamps = valid_stamps[0:300]
 
 	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
 	print('Training image file paths loaded.')
@@ -126,13 +130,11 @@ if __name__ == '__main__':
 	model.summary()
 
 	model.fit_generator(generator=training_batch_generator,
-						# steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
-						steps_per_epoch=100,
+						steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
 						epochs=1,
 						verbose=1,
 						validation_data=validation_batch_generator,
-						# validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
-						validation_steps=30,
+						validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
 						use_multiprocessing=False,
 						callbacks=[cb_1])
 
