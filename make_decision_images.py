@@ -109,7 +109,7 @@ if __name__ == '__main__':
 	# os.mkdir('Network_Decision_Images_1')
 
 	for i in range(len(list_of_decision_images)):
-		file = '/Network_Decision_Images_1/' + str(i) + '.png'
+		file = '/predictions_15/' + str(i) + '.png'
 		show_skymask(list_of_decision_images[i], save_instead=True, save_path=file)
 
 
