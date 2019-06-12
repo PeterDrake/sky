@@ -100,14 +100,12 @@ if __name__ == '__main__':
 	p = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
 	p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
 
-	print('Keys:')
-	print(p.keys())
-	print('Values:')
-	print(p.values())
-	print('Length:')
-	print(len(p))
-	print('Dict:')
-	print(p)
+	list_of_decision_images = p['decide_pixel_colors/ArgMax']
+
+	print('Length: ')
+	print(len(list_of_decision_images))
+	print('Element: ')
+	print(list_of_decision_images[0])
 
 	# predictions.to_csv('predictions.csv')
 
