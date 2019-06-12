@@ -127,8 +127,6 @@ if __name__ == '__main__':
 
 	cb_1 = EarlyStopping(monitor='val_loss')
 
-	model.summary()
-
 	model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
 						epochs=1,
