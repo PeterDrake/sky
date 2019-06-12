@@ -62,9 +62,13 @@ if __name__ == '__main__':
 
 	model.summary()
 
-	images = pd.DataFrame(columns=['name', 'prediction'])
+	# images = pd.DataFrame(columns=['name', 'prediction'])
+	predictions = pd.DataFrame()
 
-	predictions = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)))
+	predictions['predictions'] = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)))
+
+	predictions.to_csv('predictions.csv')
+
 
 
 
