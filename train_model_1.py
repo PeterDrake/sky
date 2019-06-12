@@ -129,7 +129,7 @@ if __name__ == '__main__':
 
 	model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
-						epochs=2,
+						epochs=1,
 						verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
