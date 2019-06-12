@@ -49,7 +49,7 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
-	model = load_model('model_1_2.h5')
+	model = load_model('model_1_4.h5')
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
