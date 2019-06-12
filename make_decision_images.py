@@ -2,7 +2,8 @@
 from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
-from tensorflow._api.v1.keras.models import load_model
+# from tensorflow._api.v1.keras.models import load_model
+from keras.models import load_model
 import tensorflow._api.v1.keras as K
 import tensorflow._api.v1.keras as K
 import tensorflow as tf
@@ -48,7 +49,7 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
-	model = load_model('/home/users/schall/sky/model_1_2.h5')
+	model = load_model('model_1_2.h5')
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
