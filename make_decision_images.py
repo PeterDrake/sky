@@ -10,6 +10,7 @@ import tensorflow._api.v1.keras as K
 import tensorflow as tf
 import numpy as np
 from model_1 import build_model, NotGreen, RemoveGreen, DecidePixelColors
+from train_model_1 import corrected_accuracy
 from utils import *
 from config import *
 from train import mask_to_index
@@ -56,7 +57,10 @@ if __name__ == '__main__':
 	# 	model = load_model('model_1_4.h5')
 
 	# custom = {'not_green': 'NotGreen', 'remove_green': 'RemoveGreen', 'decide_pixel_colors': 'DecidePixelColors'}
-	custom = {'NotGreen': NotGreen, 'RemoveGreen': RemoveGreen, 'DecidePixelColors': DecidePixelColors}
+	custom = {'NotGreen': NotGreen,
+			  'RemoveGreen': RemoveGreen,
+			  'DecidePixelColors': DecidePixelColors,
+			  'corrected_accuracy': corrected_accuracy}
 	# custom = {'not_green': NotGreen, 'remove_green': RemoveGreen, 'decide_pixel_colors': DecidePixelColors}
 
 	model = tf._api.v1.keras.models.load_model('model_1_6.h5', custom_objects=custom)
