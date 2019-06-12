@@ -1,5 +1,6 @@
 
-from tensorflow._api.v1.keras.utils import to_categorical
+from tensorflow._api.v1.keras.utils import to_categorical, CustomObjectScope
+from tensorflow._api.v1.keras.initializers import glorot_uniform
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
 # from tensorflow._api.v1.keras.models import load_model
@@ -15,6 +16,8 @@ from train import mask_to_index
 import pickle
 import sys
 import pandas as pd
+# from keras.utils import CustomObjectScope
+# from keras.initializers import glorot_uniform
 
 
 class Image_Generator(Sequence):
@@ -49,7 +52,8 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
-	model = load_model('model_1_4.h5')
+	with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
+		model = load_model('model_1_4.h5')
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
@@ -66,7 +70,9 @@ if __name__ == '__main__':
 	# images = pd.DataFrame(columns=['name', 'prediction'])
 	predictions = pd.DataFrame()
 
-	predictions['predictions'] = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)))
+	predictions['predictions'] = model.predict_generator(training_batch_generator,
+														 steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
+														 verbose=1)
 
 	predictions.to_csv('predictions.csv')
 
