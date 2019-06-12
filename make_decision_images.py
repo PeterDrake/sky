@@ -36,9 +36,11 @@ class Image_Generator(Sequence):
 		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
 		''' Makes an array of arrays where each element is an image in numpy array format. '''
-		sky_images = np.array([np.asarray(imageio.imread(file_name)) for file_name in x_filenames])
+		sky_images = [np.asarray(imageio.imread(file_name)) for file_name in x_filenames]
+		X = np.array(sky_images)
+		print(X.shape)
 
-		return sky_images
+		return X
 
 
 def load_filenames(stamps, input_dir, masks):
