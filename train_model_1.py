@@ -126,11 +126,13 @@ if __name__ == '__main__':
 	model.summary()
 
 	model.fit_generator(generator=training_batch_generator,
-						steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
+						# steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
+						steps_per_epoch=1000,
 						epochs=1,
 						verbose=1,
 						validation_data=validation_batch_generator,
-						validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
+						# validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
+						validation_steps=300,
 						use_multiprocessing=False,
 						callbacks=[cb_1])
 
