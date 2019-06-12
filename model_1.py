@@ -19,8 +19,8 @@ def build_model():
 	tsi = Input(shape=(480, 480), dtype='uint8', name='TSIDecisionImages') # TSI's decision images
 	# Main body of the network
 	conv1 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(sky_images)
-	maxpool1 = Lambda(lambda x: tf.nn.max_pool(conv1, [1, 1, 100, 1], strides=[1, 1, 1, 1], padding='SAME'), name='maxpool1')(conv1)
-	maxpool2 = Lambda(lambda x: tf.nn.max_pool(conv1, [1, 100, 1, 1], strides=[1, 1, 1, 1], padding='SAME'), name='maxpool2')(conv1)
+	maxpool1 = Lambda(lambda x: tf.nn.max_pool(x, [1, 1, 100, 1], strides=[1, 1, 1, 1], padding='SAME'), name='maxpool1')(conv1)
+	maxpool2 = Lambda(lambda x: tf.nn.max_pool(x, [1, 100, 1, 1], strides=[1, 1, 1, 1], padding='SAME'), name='maxpool2')(conv1)
 	concat1 = concatenate([conv1, maxpool1], axis=3)
 	concat2 = concatenate([maxpool2, concat1], axis=3)
 	conv2 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat2)
@@ -30,14 +30,14 @@ def build_model():
 	b_mask = color_mask(np.asarray(imageio.imread(TYPICAL_DATA_DIR + '/always_black_mask.png')),
 						index_of(BLACK, COLORS))
 	always_black = tf.constant(b_mask)
-	masked = Lambda(lambda x: tf.add(always_black, conv3), name='masked')(conv3)
+	masked = Lambda(lambda x: tf.add(always_black, x), name='masked')(conv3)
 	# Determine which pixels in TSI decision image are non-green
-	nongreen = Lambda(lambda x: tf.not_equal(tsi, np.full((TRAINING_BATCH_SIZE, 480, 480), 4)), name='nongreen')(tsi)
+	nongreen = Lambda(lambda x: tf.not_equal(x, np.full((TRAINING_BATCH_SIZE, 480, 480), 4)), name='nongreen')(tsi)
 	# Output of the network, where each pixel has a probability for each color, but all probabilities are zero
 	# for pixels that are green in TSI decision image
-	logits_without_green = Lambda(lambda x: tf.where(tf.stack([nongreen, nongreen, nongreen, nongreen], axis=3), masked, tf.zeros_like(masked, dtype='float32')), name='logits_without_green')([nongreen, masked])
+	logits_without_green = Lambda(lambda x: tf.where(tf.stack([x[0], x[0], x[0], x[0]], axis=3), x[1], tf.zeros_like(x[1], dtype='float32')), name='logits_without_green')([nongreen, masked])
 	# Output of the network, where the maximum logit index replaces the vector for each pixel
-	decision = Lambda(lambda x: tf.argmax(masked, axis=3), name='decision')(masked)
+	decision = Lambda(lambda x: tf.argmax(x, axis=3), name='decision')(masked)
 	# Build and return the model
 	model = Model(inputs=[sky_images, tsi], outputs=[logits_without_green, decision])
 	return model
