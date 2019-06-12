@@ -42,7 +42,7 @@ class RemoveGreen(Layer):
 
 
 class DecidePixelColors(Layer):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 
 	def call(self, input_tensor):
