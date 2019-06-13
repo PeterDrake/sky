@@ -18,6 +18,7 @@ import pickle
 import sys
 import pandas as pd
 import imageio
+from train import color_mask, index_of
 import os
 
 
@@ -54,9 +55,11 @@ class Image_Generator(Sequence):
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 
-		placeholder = np.empty((self.batch_size, 480, 480, 4))
+		# placeholder = np.empty((self.batch_size, 480, 480, 4))
+		b_mask = color_mask(np.asarray(imageio.imread(TYPICAL_DATA_DIR + '/always_black_mask.png')), index_of(BLACK, COLORS))
+		batch_b_mask = np.array([b_mask for i in range(self.batch_size)])
 
-		X = [sky_images, masks, placeholder]
+		X = [sky_images, masks, batch_b_mask]
 
 		return X
 
