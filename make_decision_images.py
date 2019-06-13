@@ -112,15 +112,11 @@ if __name__ == '__main__':
 
 	list_of_decision_images = p['decide_pixel_colors/ArgMax']
 
-	print('Length: ')
-	print(len(list_of_decision_images))
-	print('Element: ')
-	print(list_of_decision_images[0])
-
 	# os.mkdir('Network_Decision_Images_1')
 
-	for i in range(len(list_of_decision_images)):
-		file = '/predictions_15/' + str(i) + '.png'
+	# for i in range(len(list_of_decision_images)):
+	for i in range(5):
+		file = str(i) + '.png'
 		img = numbers_to_RGB(list_of_decision_images[i])
 		imageio.imwrite(file, img)
 
