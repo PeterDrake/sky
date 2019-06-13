@@ -131,6 +131,8 @@ if __name__ == '__main__':
 		img = numbers_to_RGB(list_of_decision_images[i])
 		imageio.imwrite(file, img)
 
+	print(list_of_sky_filenames)
+
 
 
 # SGE_Batch -q gpu.q -r "predictions_16" -c "python3 -u make_decision_images.py True" -P 10
