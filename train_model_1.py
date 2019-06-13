@@ -84,6 +84,7 @@ def load_filenames(stamps, input_dir, masks):
 
 if __name__ == '__main__':
 	short_run = sys.argv[0:]
+	print(short_run)
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
