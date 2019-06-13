@@ -38,6 +38,11 @@ class Image_Generator(Sequence):
 		x_filenames = self.image_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 		y_filenames = self.label_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
+		global list_of_sky_filenames
+		list_of_sky_filenames = list_of_sky_filenames + x_filenames
+		global list_of_tsi_filenames
+		list_of_tsi_filenames = list_of_tsi_filenames + y_filenames
+
 		''' Makes an array of arrays where each element is an image in numpy array format. '''
 		sky_images = np.array([np.asarray(imageio.imread(file_name)) for file_name in x_filenames])
 		''' Makes an array of arrays where each element is an label image in numpy array format.'''
@@ -103,6 +108,9 @@ if __name__ == '__main__':
 	print('Training generator initialized.')
 
 	model.summary()
+
+	list_of_sky_filenames = []
+	list_of_tsi_filenames = []
 
 	# images = pd.DataFrame(columns=['name', 'prediction'])
 	predictions = pd.DataFrame()
