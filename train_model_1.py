@@ -93,7 +93,7 @@ if __name__ == '__main__':
 		valid_stamps = pickle.load(f)
 	print('Validation stamps loaded.')
 
-	if short_run:
+	if short_run == 'True':
 		print('SHORT RUN SET TO TRUE.')
 		train_stamps = train_stamps[0:1000]
 		valid_stamps = valid_stamps[0:300]
