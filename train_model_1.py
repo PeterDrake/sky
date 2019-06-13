@@ -136,5 +136,5 @@ if __name__ == '__main__':
 						use_multiprocessing=False,
 						callbacks=[cb_1])
 
-	model.save('model_1_6.h5')
+	model.save('model_1_7.h5')
 

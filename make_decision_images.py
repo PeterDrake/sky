@@ -85,7 +85,7 @@ if __name__ == '__main__':
 			  'DecidePixelColors': DecidePixelColors,
 			  'corrected_accuracy': corrected_accuracy}
 
-	model = tf._api.v1.keras.models.load_model('model_1_6.h5', custom_objects=custom)
+	model = tf._api.v1.keras.models.load_model('model_1_7.h5', custom_objects=custom)
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
@@ -121,9 +121,6 @@ if __name__ == '__main__':
 		imageio.imwrite(file, img)
 
 
-	# predictions.to_csv('predictions.csv')
-
-	#SGE_Batch -q gpu.q -r "predictions_11" -c "python3 -u make_decision_images.py True" -P 10
 
 
 
