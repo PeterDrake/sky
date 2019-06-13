@@ -17,6 +17,7 @@ from train import mask_to_index
 import pickle
 import sys
 import pandas as pd
+import imageio
 import os
 
 
@@ -66,6 +67,16 @@ def load_filenames(stamps, input_dir, masks):
 	return filenames
 
 
+def numbers_to_RGB(array):
+	out = np.zeros((480, 480, 3))
+	out[(array == 0)] = WHITE
+	out[(array == 1)] = BLUE
+	out[(array == 2)] = GRAY
+	out[(array == 3)] = BLACK
+	out[(array == 4)] = GREEN
+	return out
+
+
 if __name__ == '__main__':
 	short_run = sys.argv[0:]
 
@@ -110,7 +121,8 @@ if __name__ == '__main__':
 
 	for i in range(len(list_of_decision_images)):
 		file = '/predictions_15/' + str(i) + '.png'
-		show_skymask(list_of_decision_images[i], save_instead=True, save_path=file)
+		img = numbers_to_RGB(list_of_decision_images[i])
+		imageio.imwrite(file, img)
 
 
 	# predictions.to_csv('predictions.csv')
