@@ -132,6 +132,7 @@ if __name__ == '__main__':
 		imageio.imwrite(file, img)
 
 	print(list_of_sky_filenames)
+	print(list_of_tsi_filenames)
 
 
 
