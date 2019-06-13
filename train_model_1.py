@@ -135,8 +135,8 @@ if __name__ == '__main__':
 								  validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 								  use_multiprocessing=False, callbacks=[cb_1])
 
-	model.save('model_1_7.h5')
-	
+	model.save('model_1_8.h5')
+
 	with open('/trainHistoryDict', 'wb') as file:
 		pickle.dump(history.history, file)
 
