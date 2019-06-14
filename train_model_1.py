@@ -98,8 +98,8 @@ if __name__ == '__main__':
 
 	if short_run == 'True':
 		print('SHORT RUN SET TO TRUE.')
-		train_stamps = train_stamps[0:1000]
-		valid_stamps = valid_stamps[0:300]
+		train_stamps = train_stamps[0:16000]
+		valid_stamps = valid_stamps[0:800]
 
 	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
 	print('Training image file paths loaded.')
