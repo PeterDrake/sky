@@ -8,7 +8,7 @@
 Trains the model.
 """
 
-from tensorflow._api.v1.keras.utils import to_categorical
+from tensorflow._api.v1.keras.utils import to_categorical, multi_gpu_model
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
 import tensorflow._api.v1.keras as K
@@ -118,6 +118,9 @@ if __name__ == '__main__':
 	}
 
 	model = build_model()
+
+	model = multi_gpu_model(model, gpus=4)
+
 	print('Model built.')
 	model.compile(optimizer='adam', loss=losses, metrics=metrics)
 	print('Model compiled.')
