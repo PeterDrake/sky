@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
 	model = build_model()
 
-	model = multi_gpu_model(model, gpus=4)
+	# model = multi_gpu_model(model, gpus=4)
 
 	print('Model built.')
 	model.compile(optimizer='adam', loss=losses, metrics=metrics)
@@ -139,7 +139,7 @@ if __name__ == '__main__':
 								  steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 								  validation_data=validation_batch_generator,
 								  validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
-								  use_multiprocessing=False, callbacks=[cb_1])
+								  use_multiprocessing=True, callbacks=[cb_1], workers=4)
 
 	model.save('model_1_8.h5')
 
