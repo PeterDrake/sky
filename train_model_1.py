@@ -8,8 +8,12 @@
 Trains the model.
 """
 
-from keras.utils import Sequence, to_categorical
+from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
+from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
+import tensorflow._api.v1.keras as K
+import tensorflow as tf
+import numpy as np
 from model_1 import build_model
 from utils import *
 from config import *
@@ -26,7 +30,9 @@ class Image_Generator(Sequence):
 		self.batch_size = batch_size
 
 	def __len__(self):
-		return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
+		# return int(np.ceil(len(self.image_filenames) / float(self.batch_size)))
+		return int(np.floor(len(self.image_filenames) / float(self.batch_size)))
+
 
 	def __getitem__(self, idx):
 		''' Grabs the correct image and label image files for the batch. '''
@@ -58,6 +64,13 @@ class Image_Generator(Sequence):
 		return X, Y
 
 
+def corrected_accuracy(y_true, y_pred):
+	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
+	mask = tf.not_equal(tf.reduce_sum(y_true, axis=-1), green)
+	correct = tf.cast(tf.equal(tf.argmax(tf.boolean_mask(y_true, mask), axis=-1), tf.argmax(tf.boolean_mask(y_pred, mask), axis=-1)), tf.float32)
+	return tf.count_nonzero(correct)/tf.size(correct, out_type=tf.dtypes.int64)
+
+
 def load_filenames(stamps, input_dir, masks):
 	filenames = []
 	if masks:
@@ -70,7 +83,8 @@ def load_filenames(stamps, input_dir, masks):
 
 
 if __name__ == '__main__':
-	run_name = sys.argv[0:]
+	short_run = sys.argv[1]
+	print(short_run)
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)
@@ -79,18 +93,33 @@ if __name__ == '__main__':
 		valid_stamps = pickle.load(f)
 	print('Validation stamps loaded.')
 
+	if short_run == 'True':
+		print('SHORT RUN SET TO TRUE.')
+		train_stamps = train_stamps[0:1000]
+		valid_stamps = valid_stamps[0:300]
+
 	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
 	print('Training image file paths loaded.')
+	print(len(training_image_filenames))
 	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
 	print('Training mask file paths loaded.')
+	print(len(training_tsi_filenames))
 	validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
 	print('Validation image file paths loaded.')
 	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
 	print('Validation mask file paths loaded.')
 
+	losses = {
+		"remove_green": "categorical_crossentropy",
+	}
+
+	metrics = {
+		"remove_green": corrected_accuracy,
+	}
+
 	model = build_model()
 	print('Model built.')
-	model.compile(optimizer='adam', loss='categorical_crossentropy')
+	model.compile(optimizer='adam', loss=losses, metrics=metrics)
 	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
@@ -98,16 +127,17 @@ if __name__ == '__main__':
 	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Validation generator initialized.')
 
-	model.summary()
+	cb_1 = EarlyStopping(monitor='val_loss')
 
-	model.fit_generator(generator=training_batch_generator,
-						steps_per_epoch=(len(train_stamps) // (TRAINING_BATCH_SIZE)),
-						epochs=1,
-						verbose=1,
-						validation_data=validation_batch_generator,
-						validation_steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)),
-						use_multiprocessing=False)
+	history = model.fit_generator(generator=training_batch_generator,
+								  steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
+								  validation_data=validation_batch_generator,
+								  validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
+								  use_multiprocessing=False, callbacks=[cb_1])
 
-	model.save('model_1_2.h5')
+	model.save('model_1_8.h5')
+
+	with open('/trainHistoryDict', 'wb') as file:
+		pickle.dump(history.history, file)
 
 # SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
