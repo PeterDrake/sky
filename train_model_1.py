@@ -50,6 +50,9 @@ class Image_Generator(Sequence):
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 
+		assert len(sky_images) == TRAINING_BATCH_SIZE, 'Sky images array wrong size.'
+		assert len(tsi) == TRAINING_BATCH_SIZE, 'TSI images array wrong size.'
+		assert len(masks) == TRAINING_BATCH_SIZE, 'Masks array wrong size.'
 		X = [sky_images, masks]
 
 		''' Converts each pixel label to an array where the index indicates what color and a 1 indicates that the
@@ -140,7 +143,7 @@ if __name__ == '__main__':
 
 	model.save('model_1_8.h5')
 
-	with open('/trainHistoryDict', 'wb') as file:
-		pickle.dump(history.history, file)
+	# with open('/trainHistoryDict', 'wb') as file:
+	# 	pickle.dump(history.history, file)
 
 # SGE_Batch -q gpu.q -r "keras_train_1" -c "python3 train_model_1.py" -P 10
