@@ -93,7 +93,7 @@ if __name__ == '__main__':
 			  'DecidePixelColors': DecidePixelColors,
 			  'corrected_accuracy': corrected_accuracy}
 
-	model = tf._api.v1.keras.models.load_model('model_1_8.h5', custom_objects=custom)
+	model = tf._api.v1.keras.models.load_model('model_1_9.h5', custom_objects=custom)
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 		train_stamps = pickle.load(f)

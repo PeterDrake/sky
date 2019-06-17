@@ -20,6 +20,7 @@ from config import *
 from train import mask_to_index
 import pickle
 import sys
+import json
 
 
 class Image_Generator(Sequence):
@@ -135,8 +136,8 @@ if __name__ == '__main__':
 								  validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 								  use_multiprocessing=False, callbacks=[cb_1])
 
-	model.save('model_1_8.h5')
+	model.save('model_1_9.h5')
 
-	with open('/trainHistoryDict', 'wb') as file:
-		pickle.dump(history.history, file)
+	with open('training.json', 'w') as f:
+		json.dump(history.history, f)
 
