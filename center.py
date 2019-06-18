@@ -11,9 +11,6 @@ def work_on_mask(timestamp, input_dir):
 	"""Writes simplified versions of mask to simplemask."""
 	mask_path = extract_mask_path_from_time_raw(timestamp, input_dir)
 	mask = np.asarray(imageio.imread(mask_path, pilmode="RGB"))
-	print('mask shape')
-	print(mask.shape)
-	print(mask[100][100])
 	if (mask == YELLOW).all(axis=2).any():
 		mask[(mask == YELLOW).all(axis=2)] = BLACK
 	else:
