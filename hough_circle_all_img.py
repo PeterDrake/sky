@@ -28,7 +28,7 @@ def hough_circle(timestamp, input_dir):
 	img_path = extract_img_path_from_time_raw(timestamp, input_dir)
 	img = cv.imread(img_path, 0)
 
-	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 100, param1=60, param2=90, minRadius=200, maxRadius=0)
+	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 100, param1=60, param2=90, minRadius=210, maxRadius=245)
 
 	if circles is None:
 		return 0, (0, 0)
@@ -52,6 +52,5 @@ if __name__ == "__main__":
 	hough_preprocess(TYPICAL_DATA_DIR + '/res/batch0.txt')
 	hough_centers = pd.DataFrame(data)
 	hough_centers.to_csv('hough_centers.csv')
-	print(data)
 
 # SGE_Batch -r "hough_circle" -c "python3 -u hough_circle_all_img.py" -P 1
