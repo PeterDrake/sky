@@ -1,6 +1,6 @@
 import cv2 as cv
 import numpy as np
-import os
+import matplotlib.pyplot as plt
 from config import RAW_DATA_DIR, TYPICAL_DATA_DIR
 from utils import extract_img_path_from_time_raw
 
@@ -14,7 +14,9 @@ def hough_preprocess(filename):
 		time = time.replace('\n', '')
 		time = time.replace(' ', '')
 		print('time: ' + time)
-		hough_circle(time, RAW_DATA_DIR)
+		radius, circle_center = hough_circle(time, RAW_DATA_DIR)
+		print('radius: ' + radius)
+		print('center of circle: ' + circle_center)
 	file.close()
 	print("Finished preprocessing sky and decision images in ", filename)
 
@@ -27,14 +29,18 @@ def hough_circle(timestamp, input_dir):
 	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 100, param1=60, param2=90, minRadius=200, maxRadius=0)
 
 	circles = np.uint16(np.around(circles))
-	for i in circles[0]:
-		# draw the outer circle
 
-		print(len(circles))
+	for i in circles[0]:
+
 		# center of circle
+		circle_center = (i[0], i[1])
 		print('center of circle: ' + str((i[0], i[1])))
+
 		# radius
-		print('radius: ' + str(i[2]))
+		radius = i[2]
+		print('radius: ' + str(i[2]) + '\n')
+
+	return radius, circle_center
 
 if __name__ == "__main__":
 	# batches = os.listdir(TYPICAL_DATA_DIR + '/res')
