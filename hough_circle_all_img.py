@@ -33,8 +33,9 @@ def hough_circle(timestamp, input_dir):
 		print('radius: ' + str(i[2]))
 
 if __name__ == "__main__":
-	batches = os.listdir(TYPICAL_DATA_DIR + '/res')
-	for batch in enumerate(batches):
-		hough_preprocess(TYPICAL_DATA_DIR + '/res/' + batch)
+	# batches = os.listdir(TYPICAL_DATA_DIR + '/res')
+	# for batch in enumerate(batches):
+	# 	hough_preprocess(TYPICAL_DATA_DIR + '/res/' + str(batch))
+	hough_preprocess(TYPICAL_DATA_DIR + '/res/batch0.txt')
 
-
+# SGE_Batch -r "hough_circle" -c "python3 -u hough_circle_all_img.py" -P 1
