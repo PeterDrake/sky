@@ -11,6 +11,9 @@ def hough_preprocess(filename):
 	file = open(filename)
 	print("Opened {}".format(filename))
 	for time in file:
+		time = time.replace('\n', '')
+		time = time.replace(' ', '')
+		print('time: ' + time)
 		hough_circle(time, RAW_DATA_DIR)
 	file.close()
 	print("Finished preprocessing sky and decision images in ", filename)
