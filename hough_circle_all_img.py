@@ -15,8 +15,8 @@ def hough_preprocess(filename):
 		time = time.replace(' ', '')
 		print('time: ' + time)
 		radius, circle_center = hough_circle(time, RAW_DATA_DIR)
-		print('radius: ' + radius)
-		print('center of circle: ' + circle_center)
+		print('radius: ' + str(radius))
+		print('center of circle: ' + str(circle_center))
 	file.close()
 	print("Finished preprocessing sky and decision images in ", filename)
 
