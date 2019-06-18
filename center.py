@@ -13,12 +13,7 @@ def work_on_mask(timestamp, input_dir):
 	mask = np.asarray(imageio.imread(mask_path))
 	print('mask shape')
 	print(mask.shape)
-	row = np.tile(np.array(YELLOW), (480, 1))
-	print('row shape')
-	print(row.shape)
-	yellow = np.tile(row, (640, 1))
-	print('filled yellow shape')
-	print(yellow.shape)
+	print(mask[100][100])
 	if (mask == YELLOW).all(axis=2).any():
 		mask[(mask == YELLOW).all(axis=2)] = BLACK
 	else:
