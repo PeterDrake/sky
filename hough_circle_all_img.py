@@ -32,7 +32,7 @@ def hough_circle(timestamp, input_dir):
 
 		print(len(circles))
 		# center of circle
-		print('center of circle: ' + str(1[0],i[1]))
+		print('center of circle: ' + str(i[0],i[1]))
 		# radius
 		print('radius: ' + str(i[2]))
 
