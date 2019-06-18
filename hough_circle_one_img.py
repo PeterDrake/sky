@@ -17,9 +17,9 @@ for i in circles[0,:]:
 
 print(len(circles))
 # center of circle
-print((i[0],i[1]))
+print('center of circle: ' + str((i[0],i[1])))
 # radius
-print(i[2])
+print('radius: ' + str(i[2]))
 
 cv2.imshow('detected circles',cimg)
 cv2.waitKey(0)
