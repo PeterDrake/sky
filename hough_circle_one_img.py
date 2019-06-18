@@ -6,7 +6,7 @@ cimg = cv2.medianBlur(img,5)
 cimg = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
 
 circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,100,
-                            param1=60,param2=90,minRadius=160,maxRadius=0)
+                            param1=60,param2=90,minRadius=200,maxRadius=0)
 
 circles = np.uint16(np.around(circles))
 for i in circles[0,:]:

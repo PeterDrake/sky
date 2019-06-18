@@ -24,7 +24,7 @@ def hough_circle(timestamp, input_dir):
 	print('img_path: ' + img_path)
 	img = cv.imread(img_path, 0)
 
-	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 100, param1=60, param2=90, minRadius=160, maxRadius=0)
+	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 100, param1=60, param2=90, minRadius=200, maxRadius=0)
 
 	circles = np.uint16(np.around(circles))
 	for i in circles[0]:
