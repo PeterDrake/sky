@@ -31,7 +31,7 @@ def hough_circle(timestamp, input_dir):
 	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 100, param1=60, param2=90, minRadius=200, maxRadius=0)
 
 	if circles is None:
-		return None, None;
+		return 0, (0, 0)
 
 	circles = np.uint16(np.around(circles))
 
