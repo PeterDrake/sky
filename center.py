@@ -16,6 +16,7 @@ def work_on_mask(timestamp, input_dir):
 	else:
 		mask = remove_white_sun(mask)
 	(y, x), radius = find_center(mask)
+	print('x: {}, y: {}'.format(x, y))
 	global data
 	data.append({'time': timestamp, 'y': y, 'x': x, 'radius': radius})
 	return
@@ -39,7 +40,7 @@ if __name__ == "__main__":
 	data = []
 	preprocess(f)
 	centers = pd.DataFrame(data)
-	centers.to_csv('centers.csv')
+	centers.to_csv('centers0.csv')
 
 
 # SGE_Batch -r "center0" -c "python3 -u center.py typical_data/res/batch0.txt" -P 1
