@@ -11,6 +11,10 @@ def work_on_mask(timestamp, input_dir):
 	"""Writes simplified versions of mask to simplemask."""
 	mask_path = extract_mask_path_from_time_raw(timestamp, input_dir)
 	mask = np.asarray(imageio.imread(mask_path))
+	print('mask shape')
+	print(mask.shape)
+	print('mask == yellow shape')
+	print((mask == YELLOW).shape)
 	if (mask == YELLOW).all(axis=2).any():
 		mask[(mask == YELLOW).all(axis=2)] = BLACK
 	else:
@@ -40,3 +44,6 @@ if __name__ == "__main__":
 	preprocess(f)
 	centers = pd.DataFrame(data)
 	centers.to_csv('centers.csv')
+
+
+# SGE_Batch -r "center0" -c "python3 -u center.py typical_data/res/batch0.txt" -P 1
