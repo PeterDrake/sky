@@ -13,7 +13,7 @@ def work_on_mask(timestamp, input_dir):
 	mask = np.asarray(imageio.imread(mask_path))
 	print('mask shape')
 	print(mask.shape)
-	yellow = np.empty((640, 480))
+	yellow = np.empty((640, 480), dtype=np.ndarray)
 	print('yellow shape')
 	print(yellow.shape)
 	yellow.fill(YELLOW)
