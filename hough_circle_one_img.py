@@ -8,10 +8,10 @@ dirs = os.listdir(path)
 for file in dirs:
 	print(file)
 	img = cv2.imread(path + file, 0)
-	img = cv2.medianBlur(img, 7)
+	img = cv2.medianBlur(img, 5)
 	cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 	# minRadius=210, maxRadius=245
-	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=70, param2=50, minRadius=220, maxRadius=245)
+	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=90, param2=40, minRadius=220, maxRadius=245)
 
 	circles = np.uint16(np.around(circles))
 	print(len(circles))
@@ -19,8 +19,8 @@ for file in dirs:
 		# draw the outer circle
 		cv2.circle(cimg, (i[0], i[1]), i[2], (0, 255, 0), 1)
 		# test circle
-		cv2.circle(cimg, (i[0], i[1]), 250, (255, 255, 0), 1)
-		cv2.circle(cimg, (i[0], i[1]), 225, (255, 255, 0), 1)
+		cv2.circle(cimg, (i[0], i[1]), 245, (255, 255, 0), 1)
+		cv2.circle(cimg, (i[0], i[1]), 220, (255, 255, 0), 1)
 		# draw the center of the circle
 		cv2.circle(cimg, (i[0], i[1]), 2, (0, 0, 255), 3)
 		# center of circle
