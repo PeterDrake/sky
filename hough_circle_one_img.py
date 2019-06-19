@@ -8,10 +8,10 @@ dirs = os.listdir(path)
 for file in dirs:
 	print(file)
 	img = cv2.imread(path + file, 0)
-	cimg = cv2.medianBlur(img, 5)
+	img = cv2.medianBlur(img, 5)
 	cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 	# minRadius=210, maxRadius=245
-	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 100, param1=60, param2=90, minRadius=200, maxRadius=250)
+	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=60, param2=60, minRadius=200, maxRadius=250)
 
 	circles = np.uint16(np.around(circles))
 	print(len(circles))
