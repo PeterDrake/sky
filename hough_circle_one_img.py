@@ -11,7 +11,7 @@ for file in dirs:
 	img = cv2.medianBlur(img, 5)
 	cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 	# minRadius=210, maxRadius=245
-	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=60, param2=60, minRadius=200, maxRadius=250)
+	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=70, param2=50, minRadius=200, maxRadius=250)
 
 	circles = np.uint16(np.around(circles))
 	print(len(circles))
