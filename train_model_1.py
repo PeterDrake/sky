@@ -21,6 +21,8 @@ from train import mask_to_index
 import pickle
 import sys
 import json
+from keras.callbacks import CSVLogger
+
 
 
 class Image_Generator(Sequence):
@@ -130,11 +132,13 @@ if __name__ == '__main__':
 
 	cb_1 = EarlyStopping(monitor='val_loss')
 
+	cb_2 = CSVLogger('training.log', separator=',', append=False)
+
 	history = model.fit_generator(generator=training_batch_generator,
 								  steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 								  validation_data=validation_batch_generator,
 								  validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
-								  use_multiprocessing=False, callbacks=[cb_1])
+								  use_multiprocessing=False, callbacks=[cb_1, cb_2])
 
 	model.save('model_1_9.h5')
 
