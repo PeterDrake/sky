@@ -8,7 +8,7 @@ dirs = os.listdir(path)
 for file in dirs:
 	print(file)
 	img = cv2.imread(path + file, 0)
-	img = cv2.medianBlur(img, 5)
+	# img = cv2.medianBlur(img, 5)
 	cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 	# minRadius=210, maxRadius=245
 	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=70, param2=50, minRadius=200, maxRadius=250)
