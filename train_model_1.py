@@ -8,9 +8,12 @@
 Trains the model.
 """
 
-from tensorflow._api.v1.keras.utils import to_categorical
-from tensorflow.python.keras.utils.data_utils import Sequence
-from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
+# from tensorflow._api.v1.keras.utils import to_categorical
+# from tensorflow.python.keras.utils.data_utils import Sequence
+# from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.utils import to_categorical
+from keras.utils.data_utils import Sequence
+from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 import tensorflow._api.v1.keras as K
 import tensorflow as tf
 import numpy as np
@@ -21,7 +24,6 @@ from train import mask_to_index
 import pickle
 import sys
 import json
-from keras.callbacks import TensorBoard
 
 
 
