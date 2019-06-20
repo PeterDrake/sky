@@ -117,11 +117,11 @@ if __name__ == '__main__':
 	print('Validation mask file paths loaded.')
 
 	losses = {
-		"remove_green_1": "categorical_crossentropy",
+		"remove_green": "categorical_crossentropy",
 	}
 
 	metrics = {
-		"remove_green_1": corrected_accuracy,
+		"remove_green": corrected_accuracy,
 	}
 
 	model = build_model()
@@ -136,13 +136,11 @@ if __name__ == '__main__':
 
 	cb_1 = EarlyStopping(monitor='val_loss')
 
-	cb_2 = TensorBoard(log_dir='TensorBoard16/', batch_size=TRAINING_BATCH_SIZE, write_graph=True, write_images=False)
-
 	model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
-						use_multiprocessing=False, callbacks=[cb_1, cb_2])
+						use_multiprocessing=False, callbacks=[cb_1])
 
 	model.save('model_1_10.h5')
 
