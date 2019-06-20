@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
 	cb_1 = EarlyStopping(monitor='val_loss')
 
-	cb_2 = TensorBoard(log_dir='/TB16/', batch_size=TRAINING_BATCH_SIZE, write_graph=True, write_images=False)
+	cb_2 = TensorBoard(log_dir='TensorBoard16/', batch_size=TRAINING_BATCH_SIZE, write_graph=True, write_images=False)
 
 	model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
