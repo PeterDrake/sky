@@ -134,11 +134,14 @@ if __name__ == '__main__':
 
 	cb_1 = EarlyStopping(monitor='val_loss')
 
-	model.fit_generator(generator=training_batch_generator,
+	history = model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1])
+
+	with open('/history16/history.json', 'w') as fp:
+		json.dump(history.history, fp)
 
 	model.save('model_1_10.h5')
 
