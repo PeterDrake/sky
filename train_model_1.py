@@ -70,6 +70,8 @@ class Image_Generator(Sequence):
 
 
 def corrected_accuracy(y_true, y_pred):
+	print(y_true.shape)
+	print(y_pred.shape)
 	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
 	mask = tf.not_equal(tf.reduce_sum(y_true, axis=-1), green)
 	correct = tf.cast(tf.equal(tf.argmax(tf.boolean_mask(y_true, mask), axis=-1), tf.argmax(tf.boolean_mask(y_pred, mask), axis=-1)), tf.float32)
