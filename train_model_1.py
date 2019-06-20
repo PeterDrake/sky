@@ -140,7 +140,7 @@ if __name__ == '__main__':
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1])
 
-	with open('/history16/history.json', 'w') as fp:
+	with open('history16/history.json', 'w') as fp:
 		json.dump(history.history, fp)
 
 	model.save('model_1_10.h5')
