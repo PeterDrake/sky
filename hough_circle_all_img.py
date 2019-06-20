@@ -30,7 +30,7 @@ def hough_circle(timestamp, input_dir):
 	img = cv.medianBlur(img, 11)
 
 	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 70, param1=30, param2=7,
-							  minRadius=224, maxRadius=243)
+							  minRadius=224, maxRadius=245)
 
 	if circles is None:
 		return 0, (0, 0)
