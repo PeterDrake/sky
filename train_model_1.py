@@ -145,7 +145,7 @@ if __name__ == '__main__':
 
 	train_history = {}
 
-	for key, value in history.history:
+	for key, value in history.history.items():
 		train_history[key] = []
 		for number in value:
 			train_history[key].append(float(number))
