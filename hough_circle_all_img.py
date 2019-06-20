@@ -27,19 +27,19 @@ def hough_preprocess(filename):
 def hough_circle(timestamp, input_dir):
 	img_path = extract_img_path_from_time_raw(timestamp, input_dir)
 	img = cv.imread(img_path, 0)
-	img = cv.medianBlur(img, 7)
+	img = cv.medianBlur(img, 11)
 
-	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 120, param1=30, param2=10,
-							  minRadius=220, maxRadius=245)
+	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 120, param1=30, param2=7,
+							  minRadius=224, maxRadius=243)
 
 	if circles is None:
 		return 0, (0, 0)
 
 	circles = np.uint16(np.around(circles))
 
-	closest_points_to_center = (240, 320)
-	old_distance = 50
-	radius = 0
+	closest_points_to_center = (999, 999)
+	old_distance = 100
+	radius = 999
 
 	for i in circles[0, :]:
 
