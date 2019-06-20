@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
 	cb_1 = EarlyStopping(monitor='val_loss')
 
-	cb_2 = CSVLogger('training.log', separator=',', append=False)
+	cb_2 = CSVLogger('training16.log', separator=',', append=False)
 
 	model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
@@ -140,5 +140,5 @@ if __name__ == '__main__':
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1, cb_2])
 
-	model.save('model_1_9.h5')
+	model.save('model_1_10.h5')
 
