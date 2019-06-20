@@ -117,11 +117,11 @@ if __name__ == '__main__':
 	print('Validation mask file paths loaded.')
 
 	losses = {
-		"remove_green": "categorical_crossentropy",
+		"remove_green_1": "categorical_crossentropy",
 	}
 
 	metrics = {
-		"remove_green": corrected_accuracy,
+		"remove_green_1": corrected_accuracy,
 	}
 
 	model = build_model()
