@@ -142,9 +142,18 @@ if __name__ == '__main__':
 
 
 	print(history.history)
-	
-	# with open('history16/history.json', 'w') as fp:
-	# 	json.dump(history.history, fp)
+
+	train_history = {}
+
+	for key, value in history.history:
+		train_history[key] = []
+		for number in value:
+			train_history[key].append(float(number))
+
+
+
+	with open('history16/history.json', 'w') as fp:
+		json.dump(train_history, fp)
 
 	model.save('model_1_10.h5')
 
