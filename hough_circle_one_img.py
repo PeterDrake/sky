@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os
+import math
 
 path = "typical_data/hough_circle_sample_files/"
 dirs = os.listdir(path)
@@ -8,15 +9,25 @@ dirs = os.listdir(path)
 for file in dirs:
 	print(file)
 	img = cv2.imread(path + file, 0)
-	img = cv2.medianBlur(img, 5)
+	img = cv2.medianBlur(img, 7)
 	cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 	# minRadius=210, maxRadius=245
-	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=90, param2=25,
-							   minRadius=220, maxRadius=245)
+	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=30, param2=10,
+							   minRadius=224, maxRadius=243)
 
 	circles = np.uint16(np.around(circles))
 	print(len(circles))
-	for i in circles[0]:
+	closest_to_center = (240, 320)
+	old_distance = 50
+	for i in circles[0, :]:
+
+		distance = math.sqrt(((240 - i[0]) ** 2) + ((320 - i[1]) ** 2))
+
+		if distance < old_distance:
+			old_distance = distance
+			closest_to_center = (i[0], i[1])
+			radius = i[2]
+
 		# draw the outer circle
 		cv2.circle(cimg, (i[0], i[1]), i[2], (0, 255, 0), 1)
 		# test circle
@@ -28,6 +39,10 @@ for file in dirs:
 		print('center of circle: ' + str((i[0], i[1])))
 		# radius
 		print('radius: ' + str(i[2]))
+
+	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), 2, (255, 0, 255), 3)
+	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), radius, (255, 0, 255), 1)
+	cv2.circle(cimg, (240, 320), 50, (255, 0, 255), 1)
 
 
 	cv2.imshow('detected circles', cimg)

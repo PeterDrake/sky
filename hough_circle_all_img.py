@@ -1,6 +1,6 @@
 import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
+import math
 from config import RAW_DATA_DIR, TYPICAL_DATA_DIR
 from utils import extract_img_path_from_time_raw
 import pandas as pd
@@ -27,9 +27,9 @@ def hough_preprocess(filename):
 def hough_circle(timestamp, input_dir):
 	img_path = extract_img_path_from_time_raw(timestamp, input_dir)
 	img = cv.imread(img_path, 0)
-	img = cv.medianBlur(img, 5)
+	img = cv.medianBlur(img, 7)
 
-	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 120, param1=90, param2=20,
+	circles = cv.HoughCircles(img, cv.HOUGH_GRADIENT, 1, 120, param1=30, param2=10,
 							  minRadius=220, maxRadius=245)
 
 	if circles is None:
@@ -37,12 +37,19 @@ def hough_circle(timestamp, input_dir):
 
 	circles = np.uint16(np.around(circles))
 
-	for i in circles[0]:
+	closest_to_center = (240, 320)
+	old_distance = 50
 
-		circle_center = (i[0], i[1])
-		radius = i[2]
+	for i in circles[0, :]:
 
-	return radius, circle_center
+		distance = math.sqrt(((240 - i[0]) ** 2) + ((320 - i[1]) ** 2))
+
+		if distance < old_distance:
+			old_distance = distance
+			closest_to_center = (i[0], i[1])
+			radius = i[2]
+
+	return radius, closest_to_center
 
 
 if __name__ == "__main__":
@@ -53,6 +60,6 @@ if __name__ == "__main__":
 	data = []
 	hough_preprocess(TYPICAL_DATA_DIR + '/res/batch0.txt')
 	hough_centers = pd.DataFrame(data)
-	hough_centers.to_csv('hough_centers.csv')
+	hough_centers.to_csv('hough_centers_2.csv')
 
 # SGE_Batch -r "hough_circle" -c "python3 -u hough_circle_all_img.py" -P 1
