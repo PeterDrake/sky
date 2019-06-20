@@ -12,13 +12,13 @@ for file in dirs:
 	img = cv2.medianBlur(img, 11)
 	cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 	# minRadius=210, maxRadius=245
-	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=30, param2=7,
+	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 50, param1=30, param2=7,
 							   minRadius=224, maxRadius=243)
 
 	circles = np.uint16(np.around(circles))
 	print(len(circles))
 	closest_to_center = (240, 320)
-	old_distance = 100
+	old_distance = 60
 	for i in circles[0, :]:
 
 		distance = math.sqrt(((240 - i[0]) ** 2) + ((320 - i[1]) ** 2))
@@ -42,7 +42,7 @@ for file in dirs:
 
 	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), 2, (255, 0, 255), 3)
 	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), radius, (255, 0, 255), 1)
-	cv2.circle(cimg, (240, 320), 50, (255, 0, 255), 1)
+	cv2.circle(cimg, (240, 320), 60, (255, 0, 255), 1)
 
 
 	cv2.imshow('detected circles', cimg)
