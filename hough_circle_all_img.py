@@ -37,8 +37,9 @@ def hough_circle(timestamp, input_dir):
 
 	circles = np.uint16(np.around(circles))
 
-	closest_to_center = (240, 320)
+	closest_points_to_center = (240, 320)
 	old_distance = 50
+	radius = 0
 
 	for i in circles[0, :]:
 
@@ -46,10 +47,10 @@ def hough_circle(timestamp, input_dir):
 
 		if distance < old_distance:
 			old_distance = distance
-			closest_to_center = (i[0], i[1])
+			closest_points_to_center = (i[0], i[1])
 			radius = i[2]
 
-	return radius, closest_to_center
+	return radius, closest_points_to_center
 
 
 if __name__ == "__main__":
