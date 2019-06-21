@@ -1,20 +1,40 @@
 from __future__ import absolute_import
+from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
-from tensorflow._api.v1.keras.callbacks import *
-import tensorflow._api.v1.keras as K
-
-
+import collections
+import copy
+import csv
+import io
+import json
 import os
+import time
+
+import numpy as np
+import six
+
+from tensorflow.python.data.ops import iterator_ops
+from tensorflow.python.eager import context
+from tensorflow.python.framework import dtypes
+from tensorflow.python.keras import backend as K
+from tensorflow.python.keras.utils.data_utils import Sequence
+from tensorflow.python.keras.utils.generic_utils import Progbar
+from tensorflow.python.ops import array_ops
+from tensorflow.python.ops import state_ops
+from tensorflow.python.ops import summary_ops_v2
+from tensorflow.python.ops import variables
+from tensorflow.python.platform import tf_logging as logging
+from tensorflow.python.summary import summary as tf_summary
+from tensorflow.python.training import saver
+from tensorflow.python.util.tf_export import tf_export
 
 
 try:
-    import requests
+  import requests
 except ImportError:
-    requests = None
+  requests = None
 
-from tensorflow.contrib.tensorboard.plugins import projector
+from tensorflow._api.v1.keras.callbacks import *
 
 
 class TensorBoard(Callback):
