@@ -1,10 +1,10 @@
+from __future__ import absolute_import
+from __future__ import print_function
+
 import tensorflow as tf
 from tensorflow._api.v1.keras.callbacks import *
 import tensorflow._api.v1.keras as K
 
-
-from __future__ import absolute_import
-from __future__ import print_function
 
 import os
 import csv
