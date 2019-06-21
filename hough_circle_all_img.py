@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 import math
+import os
 from config import RAW_DATA_DIR, TYPICAL_DATA_DIR
 from utils import extract_img_path_from_time_raw
 import pandas as pd
@@ -50,17 +51,24 @@ def hough_circle(timestamp, input_dir):
 			closest_points_to_center = (i[0], i[1])
 			radius = i[2]
 
+	if closest_points_to_center[0] == 999:
+		print('ERROR: No circle found in approximated center. X: {} Y: {} Radius: {}'.format(
+			closest_points_to_center[0], closest_points_to_center[1], radius))
+
 	return radius, closest_points_to_center
 
 
 if __name__ == "__main__":
-	# batches = os.listdir(TYPICAL_DATA_DIR + '/res')
-	# for batch in enumerate(batches):
-	# 	hough_preprocess(TYPICAL_DATA_DIR + '/res/' + str(batch))
 
 	data = []
-	hough_preprocess(TYPICAL_DATA_DIR + '/res/batch0.txt')
-	hough_centers = pd.DataFrame(data)
-	hough_centers.to_csv('hough_centers_2.csv')
 
-# SGE_Batch -r "hough_circle" -c "python3 -u hough_circle_all_img.py" -P 1
+	batches = os.listdir(TYPICAL_DATA_DIR + '/res')
+	for batch in enumerate(batches):
+		hough_preprocess(TYPICAL_DATA_DIR + '/res/' + str(batch))
+
+
+	# hough_preprocess(TYPICAL_DATA_DIR + '/res/batch0.txt')
+	hough_centers = pd.DataFrame(data)
+	hough_centers.to_csv('hough_centers_3.csv')
+
+# SGE_Batch -r "hough_circle_3" -c "python3 -u hough_circle_all_img.py" -P 1
