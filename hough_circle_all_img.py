@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
 	batches = os.listdir(TYPICAL_DATA_DIR + '/res')
 	for batch in enumerate(batches):
-		hough_preprocess(TYPICAL_DATA_DIR + '/res/' + str(batch))
+		hough_preprocess(TYPICAL_DATA_DIR + '/res/{}'.format(batch[1]))
 
 
 	# hough_preprocess(TYPICAL_DATA_DIR + '/res/batch0.txt')
