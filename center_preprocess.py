@@ -72,14 +72,10 @@ def center_mask(mask):
 		bottom_buffer = 640 - (y + 319)
 
 
-
-
-
-
 def simplify_image(timestamp, input_dir, output_dir):
 	"""Writes simplified versions of mask to simplemask."""
 	img_path = extract_img_path_from_time_raw(timestamp, input_dir)
-	img = np.asarray(imageio.imread(img_path))
+	img = np.asarray(imageio.imread(img_path, pilmode="RGB"))
 	img = crop_image(img) # need to crop in the exact same way as the decision image
 	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
 	return
@@ -88,7 +84,7 @@ def simplify_image(timestamp, input_dir, output_dir):
 def simplify_mask(timestamp, input_dir, output_dir):
 	"""Writes simplified versions of mask to simplemask."""
 	mask_path = extract_mask_path_from_time_raw(timestamp, input_dir)
-	mask = np.asarray(imageio.imread(mask_path))
+	mask = np.asarray(imageio.imread(mask_path, pilmode="RGB"))
 	# mask = crop_image(mask)  # need to find center and crop accordingly
 	if (mask == YELLOW).all(axis=2).any():
 		mask[(mask == YELLOW).all(axis=2)] = BLACK
