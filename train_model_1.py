@@ -10,7 +10,8 @@ Trains the model.
 
 from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
-from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorboard import TensorBoard
 # from keras.utils import to_categorical
 # from keras.utils.data_utils import Sequence
 # from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
