@@ -14,9 +14,7 @@ try:
 except ImportError:
     requests = None
 
-if K.backend() == 'tensorflow':
-    import tensorflow as tf
-    from tensorflow.contrib.tensorboard.plugins import projector
+from tensorflow.contrib.tensorboard.plugins import projector
 
 
 class TensorBoard(Callback):
