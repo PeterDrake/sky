@@ -135,7 +135,7 @@ if __name__ == '__main__':
 	cb_1 = EarlyStopping(monitor='val_loss')
 
 	tensorboard = TensorBoard(log_dir='./logs',
-							  histogram_freq=1,
+							  histogram_freq=0,
 							  write_graph=True,
 							  write_images=False)
 
