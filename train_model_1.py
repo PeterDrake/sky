@@ -138,7 +138,8 @@ if __name__ == '__main__':
 	tensorboard = TensorBoard(log_dir='./logs',
 							  histogram_freq=0,
 							  write_graph=True,
-							  write_images=False)
+							  write_images=False,
+							  write_batch_performance=True)
 
 	history = model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
