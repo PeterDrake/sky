@@ -13,6 +13,8 @@ import time
 import numpy as np
 import six
 
+import tensorflow as tf
+
 from tensorflow.python.data.ops import iterator_ops
 from tensorflow.python.eager import context
 from tensorflow.python.framework import dtypes
