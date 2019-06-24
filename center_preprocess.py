@@ -50,48 +50,77 @@ def depth_first_search(img, visited, ever_visited, stack):
 	return True
 
 
-def crop_image(img):
-	"""Expect img to be a numpy array of size 640 x 480. Returns a version of img cropped down to 480 x 480. Axis = 0
-	is the vertical axis (i.e. rows) from which the first and last 80 pixels are deleted."""
-	return np.delete(img, np.concatenate((np.arange(80), np.arange(80) + 560)), axis=0)
-
-
-def center_mask(mask):
+def center_mask(mask, img):
 	(y, x), radius = find_center(mask)
 	left_buffer = 0
 	right_buffer = 0
 	top_buffer = 0
 	bottom_buffer = 0
+	crop_right = False
+	crop_left = False
+	crop_top = False
+	crop_bottom = False
 	if x <= 239:
-		left_buffer = 239 - x
+		left_buffer = abs(239 - x)
+		crop_right = True
 	if x > 239:
-		right_buffer = 479 - (x + 239)
-	if y <= 319:
-		top_buffer = 319 - y
+		right_buffer = abs(239 - x)
+		crop_left = True
 	if y > 319:
-		bottom_buffer = 640 - (y + 319)
+		bottom_buffer = abs(319 - y)
+		crop_top = True
+	if y <= 319:
+		top_buffer = abs(319 - y)
+		crop_bottom = True
+	row = np.array([[0, 0, 0] for i in range(480)])
+	column = np.array([0, 0, 0])
+	for i in range(int(np.ceil(top_buffer))):
+		mask = np.insert(mask, 1, row, axis=0)
+		img = np.insert(img, 1, row, axis=0)
+	for i in range(int(np.ceil(bottom_buffer))):
+		mask = np.insert(mask, mask.shape[0]-1, row, axis=0)
+		img = np.insert(img, img.shape[0]-1, row, axis=0)
+	for i in range(int(np.ceil(left_buffer))):
+		mask = np.insert(mask, 1, column, axis=1)
+		img = np.insert(img, 1, column, axis=1)
+	for i in range(int(np.ceil(right_buffer))):
+		mask = np.insert(mask, mask.shape[1]-1, column, axis=1)
+		img = np.insert(img, img.shape[1]-1, column, axis=1)
+	if crop_right:
+		right_trim = int(np.ceil(mask.shape[1] - 480))
+		img = np.delete(img, slice((img.shape[1] - right_trim - 1), img.shape[1] - 1), axis=1)
+		mask = np.delete(mask, slice((mask.shape[1] - right_trim - 1), mask.shape[1] - 1), axis=1)
+	if crop_left:
+		left_trim = int(np.floor(mask.shape[1] - 480))
+		img = np.delete(img, slice(0, left_trim), axis=1)
+		mask = np.delete(mask, slice(0, left_trim), axis=1)
+	if crop_top:
+		img = np.delete(img, slice(img.shape[0] - 80 - 1, img.shape[0] - 1), axis=0)
+		mask = np.delete(mask, slice(mask.shape[0] - 80 - 1, mask.shape[0] - 1), axis=0)
+		top_trim = int(np.ceil(mask.shape[0] - 480))
+		img = np.delete(img, slice(0, top_trim), axis=0)
+		mask = np.delete(mask, slice(0, top_trim), axis=0)
+	if crop_bottom:
+		img = np.delete(img, slice(0, 80), axis=0)
+		mask = np.delete(mask, slice(0, 80), axis=0)
+		bottom_trim = int(np.floor(mask.shape[0] - 480))
+		img = np.delete(img, slice((img.shape[0] - bottom_trim - 1), img.shape[0] - 1), axis=0)
+		mask = np.delete(mask, slice((mask.shape[0] - bottom_trim - 1), mask.shape[0] - 1), axis=0)
+	return mask, img
 
 
-def simplify_image(timestamp, input_dir, output_dir):
-	"""Writes simplified versions of mask to simplemask."""
-	img_path = extract_img_path_from_time_raw(timestamp, input_dir)
-	img = np.asarray(imageio.imread(img_path, pilmode="RGB"))
-	img = crop_image(img) # need to crop in the exact same way as the decision image
-	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
-	return
-
-
-def simplify_mask(timestamp, input_dir, output_dir):
-	"""Writes simplified versions of mask to simplemask."""
+def simplify(timestamp, input_dir, output_dir):
 	mask_path = extract_mask_path_from_time_raw(timestamp, input_dir)
 	mask = np.asarray(imageio.imread(mask_path, pilmode="RGB"))
-	# mask = crop_image(mask)  # need to find center and crop accordingly
+	img_path = extract_img_path_from_time_raw(timestamp, input_dir)
+	img = np.asarray(imageio.imread(img_path, pilmode="RGB"))
 	if (mask == YELLOW).all(axis=2).any():
 		mask[(mask == YELLOW).all(axis=2)] = BLACK
 	else:
 		mask = remove_white_sun(mask)
-	mask = center_mask(mask)
+	mask, img = center_mask(mask, img)
 	Image.fromarray(mask).save(mask_save_path(timestamp, output_dir) + 'simplemask' + timestamp + '.png')
+	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
 	return
 
 
@@ -103,8 +132,7 @@ def preprocess(filename, output_dir):
 	for time in file:
 		time = time.replace('\n', '')
 		time = time.replace(' ', '')
-		simplify_mask(time, RAW_DATA_DIR, output_dir)
-		simplify_image(time, RAW_DATA_DIR, output_dir)
+		simplify(time, RAW_DATA_DIR, output_dir)
 	file.close()
 	print("Finished preprocessing sky and decision images in ", filename)
 
