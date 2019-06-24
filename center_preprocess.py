@@ -50,7 +50,7 @@ def depth_first_search(img, visited, ever_visited, stack):
 	return True
 
 
-def center_mask(mask, img):
+def center_and_add_border(mask, img):
 	(y, x), radius = find_center(mask)
 	left_buffer = 0
 	right_buffer = 0
@@ -106,7 +106,18 @@ def center_mask(mask, img):
 		bottom_trim = int(np.floor(mask.shape[0] - 480))
 		img = np.delete(img, slice((img.shape[0] - bottom_trim - 1), img.shape[0] - 1), axis=0)
 		mask = np.delete(mask, slice((mask.shape[0] - bottom_trim - 1), mask.shape[0] - 1), axis=0)
+	img = add_border(mask, img, radius)
 	return mask, img
+
+
+def add_border(mask, img, radius):
+	for i in range(mask.shape[0]):
+		for j in range(mask.shape[1]):
+			a = (i - 239) ** 2
+			b = (j - 239) ** 2
+			if np.array_equal(mask[i][j], np.array([0, 0, 0])) and a + b > (radius ** 2):
+				img[i][j] = [0, 0, 0]
+	return img
 
 
 def simplify(timestamp, input_dir, output_dir):
@@ -118,10 +129,19 @@ def simplify(timestamp, input_dir, output_dir):
 		mask[(mask == YELLOW).all(axis=2)] = BLACK
 	else:
 		mask = remove_white_sun(mask)
-	mask, img = center_mask(mask, img)
+	mask, img = center_and_add_border(mask, img)
 	Image.fromarray(mask).save(mask_save_path(timestamp, output_dir) + 'simplemask' + timestamp + '.png')
 	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
 	return
+
+
+def prac_simplify(mask, img):
+	if (mask == YELLOW).all(axis=2).any():
+		mask[(mask == YELLOW).all(axis=2)] = BLACK
+	else:
+		mask = remove_white_sun(mask)
+	mask, img = center_and_add_border(mask, img)
+	return mask, img
 
 
 def preprocess(filename, output_dir):
