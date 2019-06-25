@@ -58,15 +58,9 @@ class DecidePixelColors(Layer):
 
 def build_model():
 	"""Builds and returns the network."""
-	# Make the always black mask and convert it to a Keras constant.
-	b_mask = color_mask(np.asarray(imageio.imread(TYPICAL_DATA_DIR + '/always_black_mask.png')),
-						index_of(BLACK, COLORS))  # always black pixels for single image
-	batch_b_mask = np.array([b_mask for i in range(TRAINING_BATCH_SIZE)])  # always black pixels for batch of images
-	k_batch_b_mask = K.backend.constant(batch_b_mask)
 	# Create the inputs to the network.
 	sky_images = Input(shape=(480, 480, 3), name='SkyImages')  # sky images
 	tsi = Input(shape=(480, 480), dtype='uint8', name='TSIDecisionImages')  # TSI's decision images
-	always_black = Input(tensor=k_batch_b_mask, name='AlwaysBlack')  # always black mask
 	# Main body of the network
 	conv1 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(sky_images)
 	maxpool1 = MaxPool2D(pool_size=(1, 100), strides=(1, 1), padding='same', data_format='channels_last')(conv1)
@@ -76,16 +70,15 @@ def build_model():
 	conv2 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat2)
 	concat3 = concatenate([conv2, sky_images], axis=3)
 	conv3 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat3)
-	masked = Add()([always_black, conv3])
 	# Determine which pixels in TSI decision image are non-green
 	nongreen = NotGreen(TRAINING_BATCH_SIZE)(tsi)
 	# Output of the network, where each pixel has a probability for each color, but all probabilities are zero
 	# for pixels that are green in TSI decision image
-	logits_without_green = RemoveGreen()([nongreen, masked])
+	logits_without_green = RemoveGreen()([nongreen, conv3])
 	# Output of the network, where the maximum logit index replaces the vector for each pixel
-	decision = DecidePixelColors()(masked)
+	decision = DecidePixelColors()(conv3)
 	# Build and return the model
-	model = Model(inputs=[sky_images, tsi, always_black], outputs=[logits_without_green, decision])
+	model = Model(inputs=[sky_images, tsi], outputs=[logits_without_green, decision])
 	return model
 
 
@@ -93,5 +86,5 @@ if __name__ == '__main__':
 	np.random.seed(123)  # for reproducibility
 	model = build_model()
 	model.summary()
-	# plot_model(model, show_shapes=True, to_file='model_1_4.png')
+	plot_model(model, show_shapes=True, to_file='model_1_5.png')
 	# print(model.get_config())
