@@ -126,8 +126,7 @@ if __name__ == '__main__':
 
 	# os.mkdir('Network_Decision_Images_1')
 
-	# for i in range(len(list_of_decision_images)):
-	for i in range(5):
+	for i in range(len(list_of_decision_images)):
 		# file = str(i) + '.png'
 		img = numbers_to_RGB(list_of_decision_images[i])
 		timestamp = extract_timestamp(list_of_sky_filenames[i])
