@@ -100,7 +100,7 @@ if __name__ == '__main__':
 		train_stamps = pickle.load(f)
 	print('Training stamps loaded.')
 
-	if short_run:
+	if short_run == 'True':
 		train_stamps = train_stamps[0:100]
 
 	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
