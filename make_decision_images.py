@@ -96,20 +96,33 @@ if __name__ == '__main__':
 
 	model = tf._api.v1.keras.models.load_model('model_1_19.h5', custom_objects=custom)
 
-	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
-		train_stamps = pickle.load(f)
-	print('Training stamps loaded.')
+	# with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
+	# 	train_stamps = pickle.load(f)
+	# print('Training stamps loaded.')
+	#
+	# if short_run == 'True':
+	# 	train_stamps = train_stamps[0:100]
+	#
+	# training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
+	# print('Training image file paths loaded.')
+	# training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+	# print('Training mask file paths loaded.')
+	#
+	# training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
+	# print('Training generator initialized.')
 
-	if short_run == 'True':
-		train_stamps = train_stamps[0:100]
+	with open(TYPICAL_VALID_FILE, 'rb') as f:
+		valid_stamps = pickle.load(f)
+	print('Validation stamps loaded.')
 
-	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
-	print('Training image file paths loaded.')
-	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
-	print('Training mask file paths loaded.')
+	validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
+	print('Validation image file paths loaded.')
+	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
+	print('Validation mask file paths loaded.')
 
-	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
-	print('Training generator initialized.')
+	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
+	print('Validation generator initialized.')
+
 
 	model.summary()
 
@@ -119,7 +132,8 @@ if __name__ == '__main__':
 	# images = pd.DataFrame(columns=['name', 'prediction'])
 	predictions = pd.DataFrame()
 
-	p = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
+	# p = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
+	p = model.predict_generator(validation_batch_generator, steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
 	p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
 
 	list_of_decision_images = p['decide_pixel_colors/ArgMax']
