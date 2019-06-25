@@ -19,6 +19,7 @@ import sys
 import pandas as pd
 import imageio
 from train import color_mask, index_of
+from process import save_network_mask
 import os
 
 
@@ -127,9 +128,11 @@ if __name__ == '__main__':
 
 	# for i in range(len(list_of_decision_images)):
 	for i in range(5):
-		file = str(i) + '.png'
+		# file = str(i) + '.png'
 		img = numbers_to_RGB(list_of_decision_images[i])
-		imageio.imwrite(file, img)
+		timestamp = extract_timestamp(list_of_sky_filenames[i])
+		# imageio.imwrite(file, img)
+		save_network_mask(timestamp, EXPERIMENT_LABEL, img)
 
 	print(list_of_sky_filenames)
 	print(list_of_tsi_filenames)
