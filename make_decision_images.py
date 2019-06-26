@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
 	# poster_test.stamps  poster_valid.stamps
 
-	with open(DUBIOUS_DATA_DIR + 'poster_valid.stamps', 'rb') as f:
+	with open(DUBIOUS_DATA_DIR + '/poster_valid.stamps', 'rb') as f:
 		valid_stamps = pickle.load(f)
 	print('Dubious stamps loaded.')
 
