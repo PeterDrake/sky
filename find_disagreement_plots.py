@@ -102,11 +102,11 @@ dubious_agree_df = dubious_agree_df.dropna()
 print('no sort')
 print(typical_agree_df)
 
-sorted_typical_agree_df = typical_agree_df.sort_values(by='agreement', ascending=False)
-sorted_dubious_agree_df = sorted(dubious_agree_df, key=lambda column: column[1], reverse=True)
+typical_agree_df = typical_agree_df.sort_values(by='agreement')
+dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
 
 print('sort')
-print(sorted_typical_agree_df)
+print(typical_agree_df)
 
 # ============================================= Find # with the most disagreement" ================================================= #
 
