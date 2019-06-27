@@ -9,7 +9,6 @@ import matplotlib.image as mpimg
 def make_plots(df, data_directory, save_path, i, num_rows):
 	# Now we need to iterate over our data frame and load images into memory for plotting.
 	os.makedirs(save_path, exist_ok=True)
-	NUMBER_DISAGREEMENT_IMGS = 10
 	df = df.head(NUMBER_DISAGREEMENT_IMGS)
 	for _, row in df.iterrows():  # Note: itertuples would be slightly faster, but iterrows is easier to use.
 		# Make the timestamp usable (Without this timestamps would end in '.0').
@@ -103,12 +102,17 @@ dubious_agree_df = dubious_agree_df.dropna()
 
 # ============================================= Find # with the most disagreement" ================================================= #
 
-q1 = pd.concat([typical_agree_df, dubious_agree_df]).sort_index(axis=1)
+typical_agree_df = typical_agree_df.sort_index(axis=1)
+dubious_agree_df = dubious_agree_df.sort_index(axis=1)
+
+print(typical_agree_df)
+
+NUMBER_DISAGREEMENT_IMGS = 10
 
 
 # =========================================== Make plots for Queries ================================================= #
 
 # Make plots for Query #1: "Good"
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical', 1, len(q1.index))
-make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious', len(typical_agree_df.index) + 1, len(q1.index))
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical', 1, NUMBER_DISAGREEMENT_IMGS)
+make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious', 1, NUMBER_DISAGREEMENT_IMGS)
 
