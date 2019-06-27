@@ -9,6 +9,8 @@ import matplotlib.image as mpimg
 def make_plots(df, data_directory, save_path, i, num_rows):
 	# Now we need to iterate over our data frame and load images into memory for plotting.
 	os.makedirs(save_path, exist_ok=True)
+	NUMBER_DISAGREEMENT_IMGS = 10
+	df = df.head(NUMBER_DISAGREEMENT_IMGS)
 	for _, row in df.iterrows():  # Note: itertuples would be slightly faster, but iterrows is easier to use.
 		# Make the timestamp usable (Without this timestamps would end in '.0').
 		time = str(int(row['timestamp_utc']))
@@ -99,28 +101,14 @@ dubious_agree_df = pd.read_csv(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_
 dubious_agree_df = dubious_agree_df.join(dubious_data_df.set_index('timestamp_utc'), on='timestamp_utc')
 dubious_agree_df = dubious_agree_df.dropna()
 
-print('no sort')
-print(typical_agree_df)
-
-typical_agree_df = typical_agree_df.sort_values(by='agreement')
-dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
-
-print('sort')
-print(typical_agree_df)
-
 # ============================================= Find # with the most disagreement" ================================================= #
 
-NUMBER_DISAGREEMENT_IMGS = 10
+q1 = pd.concat([typical_agree_df, dubious_agree_df]).sort_index(axis=1)
 
-# Now we reassign typical_agree_df and dubious_agree_df so that they match our query.
-# q1_typical = (typical_agree_df['agreement'] <= AGREEMENT)]
-# q1_dubious = dubious_agree_df[(LOWER_CF <= dubious_agree_df['cf_tot']) & (dubious_agree_df['cf_tot'] <= HIGHER_CF) & (
-# 			dubious_agree_df['agreement'] <= AGREEMENT)]
-# q1 = pd.concat([q1_typical, q1_dubious]).sort_index(axis=1)
 
 # =========================================== Make plots for Queries ================================================= #
 
 # Make plots for Query #1: "Good"
-# make_plots(q1_typical, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs', 1, len(q1.index))
-# make_plots(q1_dubious, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs', len(q1_typical.index) + 1, len(q1.index))
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs', 1, len(q1.index))
+make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs', len(typical_agree_df.index) + 1, len(q1.index))
 
