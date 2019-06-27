@@ -99,11 +99,13 @@ dubious_agree_df = pd.read_csv(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_
 dubious_agree_df = dubious_agree_df.join(dubious_data_df.set_index('timestamp_utc'), on='timestamp_utc')
 dubious_agree_df = dubious_agree_df.dropna()
 
+print('no sort')
 print(typical_agree_df)
 
 sorted_typical_agree_df = sorted(typical_agree_df, key=lambda column: column[1], reverse=True)
 sorted_dubious_agree_df = sorted(dubious_agree_df, key=lambda column: column[1], reverse=True)
 
+print('sort')
 print(sorted_typical_agree_df)
 
 # ============================================= Find # with the most disagreement" ================================================= #
