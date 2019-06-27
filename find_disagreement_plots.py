@@ -102,7 +102,7 @@ dubious_agree_df = dubious_agree_df.dropna()
 print('no sort')
 print(typical_agree_df)
 
-sorted_typical_agree_df = typical_agree_df.sort(['agreement'], ascending=[1])
+sorted_typical_agree_df = typical_agree_df.sort_values(by='agreement', ascending=False)
 sorted_dubious_agree_df = sorted(dubious_agree_df, key=lambda column: column[1], reverse=True)
 
 print('sort')
