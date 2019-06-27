@@ -109,6 +109,6 @@ q1 = pd.concat([typical_agree_df, dubious_agree_df]).sort_index(axis=1)
 # =========================================== Make plots for Queries ================================================= #
 
 # Make plots for Query #1: "Good"
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs', 1, len(q1.index))
-make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs', len(typical_agree_df.index) + 1, len(q1.index))
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical', 1, len(q1.index))
+make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious', len(typical_agree_df.index) + 1, len(q1.index))
 
