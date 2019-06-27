@@ -9,7 +9,7 @@ import matplotlib.image as mpimg
 def make_plots(df, data_directory, save_path, i, num_rows):
 	# Now we need to iterate over our data frame and load images into memory for plotting.
 	os.makedirs(save_path, exist_ok=True)
-	df = df.head(NUMBER_DISAGREEMENT_IMGS)
+	df = df.head(num_rows)
 	for _, row in df.iterrows():  # Note: itertuples would be slightly faster, but iterrows is easier to use.
 		# Make the timestamp usable (Without this timestamps would end in '.0').
 		time = str(int(row['timestamp_utc']))
@@ -102,8 +102,8 @@ dubious_agree_df = dubious_agree_df.dropna()
 
 # ============================================= Find # with the most disagreement" ================================================= #
 
-typical_agree_df = typical_agree_df.sort_index(axis=1)
-dubious_agree_df = dubious_agree_df.sort_index(axis=1)
+typical_agree_df = typical_agree_df.sort_values(by='agreement')
+dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
 
 print(typical_agree_df)
 
