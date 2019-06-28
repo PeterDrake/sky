@@ -103,6 +103,7 @@ dubious_agree_df = dubious_agree_df.dropna()
 NUMBER_DISAGREEMENT_IMGS = 10
 
 typical_agree_df['cf_diff'] = (typical_agree_df['net_fsc_z'] - typical_agree_df['fsc_z']) ** 2
+dubious_agree_df['cf_diff'] = (dubious_agree_df['net_fsc_z'] - dubious_agree_df['fsc_z']) ** 2
 
 typical_agree_df = typical_agree_df.sort_values(by='agreement')
 dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
