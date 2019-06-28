@@ -113,6 +113,8 @@ test2 = (typical_data_df['net_fsc_z'] - typical_data_df['fsc_z'])
 
 print(test)
 
+print(test2)
+
 NUMBER_DISAGREEMENT_IMGS = 10
 
 
