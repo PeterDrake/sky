@@ -100,22 +100,22 @@ dubious_agree_df = pd.read_csv(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_
 dubious_agree_df = dubious_agree_df.join(dubious_data_df.set_index('timestamp_utc'), on='timestamp_utc')
 dubious_agree_df = dubious_agree_df.dropna()
 
-typical_agree_df['test'] = (typical_agree_df['net_fsc_z'] - typical_agree_df['fsc_z']) ** 2
+NUMBER_DISAGREEMENT_IMGS = 10
 
-print(typical_agree_df)
+typical_agree_df['cf_diff'] = (typical_agree_df['net_fsc_z'] - typical_agree_df['fsc_z']) ** 2
 
 typical_agree_df = typical_agree_df.sort_values(by='agreement')
 dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
 
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_agreement', 1, NUMBER_DISAGREEMENT_IMGS)
+make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious_agreement', 1, NUMBER_DISAGREEMENT_IMGS)
+
 print(typical_agree_df)
 
+typical_agree_df = typical_agree_df.sort_values(by='cf_diff')
+dubious_agree_df = dubious_agree_df.sort_values(by='cf_diff')
 
-NUMBER_DISAGREEMENT_IMGS = 10
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_cf_diff', 1, NUMBER_DISAGREEMENT_IMGS)
+make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious_cf_diff', 1, NUMBER_DISAGREEMENT_IMGS)
 
-
-# =========================================== Make plots for Queries ================================================= #
-
-# Make plots for Query #1: "Good"
-# make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical', 1, NUMBER_DISAGREEMENT_IMGS)
-# make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious', 1, NUMBER_DISAGREEMENT_IMGS)
-
+print(typical_agree_df)
