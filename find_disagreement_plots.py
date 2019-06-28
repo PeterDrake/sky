@@ -107,12 +107,16 @@ dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
 
 print(typical_agree_df)
 
+test = typical_data_df[((typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2)]
+
+print(test)
+
 NUMBER_DISAGREEMENT_IMGS = 10
 
 
 # =========================================== Make plots for Queries ================================================= #
 
 # Make plots for Query #1: "Good"
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical', 1, NUMBER_DISAGREEMENT_IMGS)
-make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious', 1, NUMBER_DISAGREEMENT_IMGS)
+# make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical', 1, NUMBER_DISAGREEMENT_IMGS)
+# make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious', 1, NUMBER_DISAGREEMENT_IMGS)
 
