@@ -107,13 +107,9 @@ dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
 
 print(typical_agree_df)
 
-test = (typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2
-
-test2 = (typical_data_df['net_fsc_z'] - typical_data_df['fsc_z'])
+test['cf_diff'] = (typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2
 
 print(test)
-
-print(test2)
 
 NUMBER_DISAGREEMENT_IMGS = 10
 
