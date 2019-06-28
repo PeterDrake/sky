@@ -100,7 +100,7 @@ dubious_agree_df = pd.read_csv(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_
 dubious_agree_df = dubious_agree_df.join(dubious_data_df.set_index('timestamp_utc'), on='timestamp_utc')
 dubious_agree_df = dubious_agree_df.dropna()
 
-typical_agree_df['test'] = (typical_data_df['net_fsc_z'] - typical_data_df['fsc_z']) ** 2
+typical_agree_df['test'] = (typical_agree_df['net_fsc_z'] - typical_agree_df['fsc_z']) ** 2
 
 print(typical_agree_df)
 
