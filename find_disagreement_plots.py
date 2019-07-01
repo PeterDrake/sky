@@ -123,8 +123,8 @@ typical_agree_df = typical_agree_df.sort_values(by='agreement')
 dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
 
 # Takes a selected amount of timestamps determined by NUMBER_DISAGREEMENT_IMGS and creates plots
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_agreement', 1, NUMBER_DISAGREEMENT_IMGS)
-make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious_agreement', 1, NUMBER_DISAGREEMENT_IMGS)
+# make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_agreement', 1, NUMBER_DISAGREEMENT_IMGS)
+# make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious_agreement', 1, NUMBER_DISAGREEMENT_IMGS)
 
 print(typical_agree_df)
 
@@ -133,7 +133,7 @@ typical_agree_df = typical_agree_df.sort_values(by='cf_diff', ascending=False)
 dubious_agree_df = dubious_agree_df.sort_values(by='cf_diff', ascending=False)
 
 # Takes a selected amount of timestamps determined by NUMBER_DISAGREEMENT_IMGS and creates plots
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_cf_diff', 1, NUMBER_DISAGREEMENT_IMGS)
-make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious_cf_diff', 1, NUMBER_DISAGREEMENT_IMGS)
+# make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_cf_diff', 1, NUMBER_DISAGREEMENT_IMGS)
+# make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious_cf_diff', 1, NUMBER_DISAGREEMENT_IMGS)
 
 print(typical_agree_df)
