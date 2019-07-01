@@ -6,9 +6,10 @@ from preprocess import *
 import PIL
 from PIL import ImageDraw
 import random
+import numpy_indexed as npi
 
 
-mask = np.asarray(imageio.imread('simplemask20170923235300.png', pilmode="RGB"))
+mask = np.asarray(imageio.imread('typical_data/green_mask_test.png', pilmode="RGB"))
 
 
 for i in range(480):
@@ -27,8 +28,10 @@ for i in range(480):
 					choices.append(mask[i + r][j])
 				if len(choices) != 0:
 					break
-			mask[i][j] = random.choice(choices)
+			np.array(choices)
+			row = npi.mode(choices)
+			mask[i][j] = row
 
 
 
-imageio.imwrite('simplemask20170923235300_after_green.png', mask)
+imageio.imwrite('i_like_waffels.png', mask)
