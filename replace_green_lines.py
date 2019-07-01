@@ -30,4 +30,5 @@ for i in range(480):
 			mask[i][j] = random.choice(choices)
 
 
+
 imageio.imwrite('simplemask20170923235300_after_green.png', mask)
