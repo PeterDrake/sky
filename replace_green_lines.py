@@ -66,22 +66,23 @@ def new_remove_green(mask):
 				while True:
 
 					window = (mask[i - radius:i + radius + 1, j - radius:j + radius + 1])
-					choices = Counter()
+					counts = Counter()
 					for x in range(radius * 2 + 1):
 						for y in range(radius * 2 + 1):
-							if np.array_equal(window[x][y], BLUE):
-								choices['BLUE'] += 1
+							if np.array_equal(window[x][y], WHITE):
+								counts[0] += 1
+							elif np.array_equal(window[x][y], BLUE):
+								counts[1] += 1
 							elif np.array_equal(window[x][y], GRAY):
-								choices['GRAY'] += 1
-							elif np.array_equal(window[x][y], WHITE):
-								choices['WHITE'] += 1
-					if choices:
+								counts[2] += 1
+
+					if counts:
 						break
 					else:
 						radius += 1
 
-				color, _ = choices.most_common(1)[0]
-				new_mask[i][j] = eval(color)
+				color, _ = counts.most_common(1)[0]
+				new_mask[i][j] = COLORS[color]
 
 	return new_mask
 
