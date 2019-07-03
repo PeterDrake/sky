@@ -3,9 +3,9 @@ from collections import Counter
 import numpy_indexed as npi
 
 
-def remove_green():
+def remove_green(mask):
 
-	mask = np.asarray(imageio.imread('', pilmode="RGB"))
+	new_mask = np.copy(mask)
 
 	for i in range(480):
 		for j in range(480):
@@ -24,14 +24,14 @@ def remove_green():
 						break
 				np.array(choices)
 				row = npi.mode(choices)
-				mask[i][j] = row
+				new_mask[i][j] = row
 
-	imageio.imwrite('typical_data/green_mask_results.png', mask)
+	return new_mask
 
 
 def new_remove_green(mask):
 
-	new_mask = np.zeros((mask.shape[0], mask.shape[0], 3), dtype=np.uint8)
+	new_mask = np.copy(mask)
 
 	for i in range(mask.shape[0]):
 		for j in range(mask.shape[0]):
@@ -59,13 +59,10 @@ def new_remove_green(mask):
 				color, _ = choices.most_common(1)[0]
 				new_mask[i][j] = eval(color)
 
-			else:
-				new_mask[i][j] = mask[i][j]
-
 	return new_mask
 
 
 if __name__ == '__main__':
-	# remove_green()
 	m = np.asarray(imageio.imread('typical_data/green_mask_test.png', pilmode="RGB"))
-	imageio.imwrite('typical_data/green_mask_results_new.png', new_remove_green(m))
+	imageio.imwrite('typical_data/green_mask_results.png', remove_green(m))
+	# imageio.imwrite('typical_data/green_mask_results_new.png', new_remove_green(m))
