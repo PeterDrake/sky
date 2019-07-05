@@ -1,6 +1,5 @@
 from preprocess import *
 from collections import Counter
-import numpy_indexed as npi
 
 
 def remove_green(mask):
@@ -21,8 +20,8 @@ def remove_green(mask):
 					if len(choices) != 0:
 						break
 				np.array(choices)
-				row = npi.mode(choices)
-				mask[i][j] = row
+				# row = npi.mode(choices)
+				# mask[i][j] = row
 
 	return mask
 
@@ -47,8 +46,8 @@ def remove_green_v2(mask):
 					if len(choices) != 0:
 						break
 				np.array(choices)
-				row = npi.mode(choices)
-				new_mask[i][j] = row
+				# row = npi.mode(choices)
+				# new_mask[i][j] = row
 
 	return new_mask
 
