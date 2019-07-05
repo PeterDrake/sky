@@ -16,32 +16,32 @@ from tensorflow._api.v1.keras.utils import plot_model
 from train import *
 
 
-class NotGreen(Layer):
-	def __init__(self, batch_size=TRAINING_BATCH_SIZE, **kwargs):
-		self.batch_size = batch_size
-		super().__init__(**kwargs)
-		self.green = tf.constant(np.full((self.batch_size, 480, 480), 4), dtype='uint8')
-
-	def call(self, input_tensor):
-		return tf.not_equal(input_tensor, self.green)
-
-	def get_config(self):
-		base_config = super().get_config()
-		return base_config
-
-
-class RemoveGreen(Layer):
-	def __init__(self, **kwargs):
-		super().__init__(**kwargs)
-
-	def call(self, inputs):
-		nongreen_4d = tf.stack([inputs[0], inputs[0], inputs[0], inputs[0]], axis=3)
-		all_zeros = tf.zeros_like(inputs[1], dtype='float32')
-		return tf.where(nongreen_4d, inputs[1], all_zeros)
-
-	def get_config(self, **kwargs):
-		base_config = super().get_config()
-		return base_config
+# class NotGreen(Layer):
+# 	def __init__(self, batch_size=TRAINING_BATCH_SIZE, **kwargs):
+# 		self.batch_size = batch_size
+# 		super().__init__(**kwargs)
+# 		self.green = tf.constant(np.full((self.batch_size, 480, 480), 4), dtype='uint8')
+#
+# 	def call(self, input_tensor):
+# 		return tf.not_equal(input_tensor, self.green)
+#
+# 	def get_config(self):
+# 		base_config = super().get_config()
+# 		return base_config
+#
+#
+# class RemoveGreen(Layer):
+# 	def __init__(self, **kwargs):
+# 		super().__init__(**kwargs)
+#
+# 	def call(self, inputs):
+# 		nongreen_4d = tf.stack([inputs[0], inputs[0], inputs[0], inputs[0]], axis=3)
+# 		all_zeros = tf.zeros_like(inputs[1], dtype='float32')
+# 		return tf.where(nongreen_4d, inputs[1], all_zeros)
+#
+# 	def get_config(self, **kwargs):
+# 		base_config = super().get_config()
+# 		return base_config
 
 
 class DecidePixelColors(Layer):
@@ -71,14 +71,14 @@ def build_model():
 	concat3 = concatenate([conv2, sky_images], axis=3)
 	conv3 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat3)
 	# Determine which pixels in TSI decision image are non-green
-	nongreen = NotGreen(TRAINING_BATCH_SIZE)(tsi)
+	# nongreen = NotGreen(TRAINING_BATCH_SIZE)(tsi)
 	# Output of the network, where each pixel has a probability for each color, but all probabilities are zero
 	# for pixels that are green in TSI decision image
-	logits_without_green = RemoveGreen()([nongreen, conv3])
+	# logits_without_green = RemoveGreen()([nongreen, conv3])
 	# Output of the network, where the maximum logit index replaces the vector for each pixel
 	decision = DecidePixelColors()(conv3)
 	# Build and return the model
-	model = Model(inputs=[sky_images, tsi], outputs=[logits_without_green, decision])
+	model = Model(inputs=[sky_images, tsi], outputs=[conv3, decision])
 	return model
 
 

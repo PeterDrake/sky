@@ -166,8 +166,6 @@ def simplify(timestamp, input_dir, output_dir):
 		mask = remove_white_sun(mask)
 	mask, img = center_and_add_border(mask, img)
 	mask = remove_green(mask)
-	# change name of pre
-	# remove green from train
 	Image.fromarray(mask).save(mask_save_path(timestamp, output_dir) + 'simplemask' + timestamp + '.png')
 	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
 	return
