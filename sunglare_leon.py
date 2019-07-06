@@ -17,11 +17,11 @@ def format_img(mask_path, img_path):
 
 def sun_glare(path):
 	img = cv2.imread(path, 0)
-	edges = cv2.Canny(img, 0, 950, 2000, 3, True)
+	edges = cv2.Canny(img, 0, 150, 2000, 3)
 
 	laplacian = cv2.Laplacian(img, cv2.CV_64F)
-	sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=5)
-	sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=5)
+	sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=3)
+	sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=3)
 
 	plt.subplot(121), plt.imshow(img, cmap='gray')
 	plt.title('Original Image'), plt.xticks([]), plt.yticks([])
@@ -42,7 +42,6 @@ def sun_glare(path):
 	plt.savefig('typical_data/sunglare/gradient.{}.png'.format(extract_timestamp(path)))
 
 
-
 if __name__ == '__main__':
 	# files = glob.glob("typical_data/sunglare/sgptsi*")
 	# files.sort(key=lambda x: x[-18:])
@@ -50,7 +49,7 @@ if __name__ == '__main__':
 	# for f in range(0, len(files), 2):
 	# 	format_img(str(files[f + 1]), str(files[f]))
 
-	files = glob.glob("typical_data/sunglare/formatted_mask*")
+	files = glob.glob("typical_data/sunglare/formatted_img*")
 
 	for f in files:
 		sun_glare(f)
