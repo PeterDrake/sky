@@ -115,9 +115,9 @@ if __name__ == '__main__':
 	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
 	print('Validation mask file paths loaded.')
 
-	losses = {
-		"remove_green": "categorical_crossentropy",
-	}
+	# losses = {
+	# 	"remove_green": "categorical_crossentropy",
+	# }
 
 	# metrics = {
 	# 	"remove_green": corrected_accuracy,
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
 	model = build_model()
 	print('Model built.')
-	model.compile(optimizer='adam', loss=losses)
+	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics='accuracy')
 	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
