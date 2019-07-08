@@ -88,7 +88,7 @@ def build_model():
 	print(tf.keras.backend.dtype(conv3))
 	print('DECISION')
 	print(tf.keras.backend.dtype(decision))
-	print(tf.keras.backend.cast(decision))
+	print(tf.keras.backend.cast(decision, dtype='float64'))
 	print('DECISION2')
 	print(tf.keras.backend.dtype(decision))
 
