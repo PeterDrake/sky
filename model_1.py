@@ -49,7 +49,7 @@ class DecidePixelColors(Layer):
 		super().__init__(**kwargs)
 
 	def call(self, input_tensor):
-		return tf.argmax(input_tensor, axis=3)
+		return tf.argmax(input_tensor, axis=3, dtype='uint8')
 
 	def get_config(self):
 		base_config = super().get_config()

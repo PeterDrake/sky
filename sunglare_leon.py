@@ -17,7 +17,8 @@ def format_img(mask_path, img_path):
 
 def sun_glare(path):
 	img = cv2.imread(path, 0)
-	edges = cv2.Canny(img, 0, 150, 2000, 3)
+	img = cv2.GaussianBlur(img, (3, 3), 0)
+	edges = cv2.Canny(img, 0, 100, 5000, 3)
 
 	laplacian = cv2.Laplacian(img, cv2.CV_64F)
 	sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=3)
