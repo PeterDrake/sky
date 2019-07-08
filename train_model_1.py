@@ -162,5 +162,5 @@ if __name__ == '__main__':
 	# with open('history16/history.json', 'w') as fp:
 	# 	json.dump(train_history, fp)
 
-	model.save('model_1_19.h5')
+	model.save('model_1_20.h5')
 
