@@ -89,6 +89,7 @@ def build_model():
 	print('DECISION')
 	print(tf.keras.backend.dtype(decision))
 	print(tf.keras.backend.cast(decision, dtype='float64'))
+	decision = tf.keras.backend.cast(decision, dtype='float64')
 	print('DECISION2')
 	print(tf.keras.backend.dtype(decision))
 
