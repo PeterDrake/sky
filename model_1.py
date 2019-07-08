@@ -76,6 +76,8 @@ def build_model():
 	# for pixels that are green in TSI decision image
 	# logits_without_green = RemoveGreen()([nongreen, conv3])
 	# Output of the network, where the maximum logit index replaces the vector for each pixel
+	print('CONV3____')
+	print(tf.keras.backend.dtype(conv3))
 	decision = DecidePixelColors()(conv3)
 	# Build and return the model
 	print('SKY_IMAGES')
