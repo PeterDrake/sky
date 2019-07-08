@@ -79,11 +79,11 @@ def build_model():
 	decision = DecidePixelColors()(conv3)
 	# Build and return the model
 	print('SKY_IMAGES')
-	tf.keras.backend.dtype(sky_images)
+	print(tf.keras.backend.dtype(sky_images))
 	print('TSI')
-	tf.keras.backend.dtype(tsi)
+	print(tf.keras.backend.dtype(tsi))
 	print('CONV3')
-	tf.keras.backend.dtype(conv3)
+	print(tf.keras.backend.dtype(conv3))
 	model = Model(inputs=[sky_images, tsi], outputs=[conv3, decision])
 	return model
 
