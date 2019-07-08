@@ -84,10 +84,12 @@ def build_model():
 	print(tf.keras.backend.dtype(sky_images))
 	print('TSI')
 	print(tf.keras.backend.dtype(tsi))
-	conv3 = conv3.astype('int64')
 	print('CONV3')
 	print(tf.keras.backend.dtype(conv3))
 	print('DECISION')
+	print(tf.keras.backend.dtype(decision))
+	print(tf.keras.backend.cast(decision))
+	print('DECISION2')
 	print(tf.keras.backend.dtype(decision))
 
 	model = Model(inputs=[sky_images, tsi], outputs=[conv3, decision])
