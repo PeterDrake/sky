@@ -6,6 +6,12 @@ model = load_model('model_1_20.h5')
 # summarize model.
 model.summary()
 # load dataset
+
+training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
+print('Training generator initialized.')
+validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
+print('Validation generator initialized.')
+
 history = model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 						validation_data=validation_batch_generator,
