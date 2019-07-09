@@ -56,7 +56,7 @@ class Image_Generator(Sequence):
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 
-		X = [sky_images, masks]
+		X = [sky_images]
 
 		''' Converts each pixel label to an array where the index indicates what color and a 1 indicates that the 
 		pixel is that color. The array for each pixel should only have one 1 and the other elements should be zeros. 
