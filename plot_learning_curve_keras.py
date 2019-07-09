@@ -34,7 +34,7 @@ history = model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
-						use_multiprocessing=False, callbacks=[cb_1, tensorboard])
+						use_multiprocessing=False)
 
 # Plot training & validation accuracy values
 plt.plot(history.history['acc'])
