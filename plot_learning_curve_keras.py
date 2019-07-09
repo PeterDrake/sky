@@ -14,11 +14,6 @@ with open(TYPICAL_VALID_FILE, 'rb') as f:
 	valid_stamps = pickle.load(f)
 print('Validation stamps loaded.')
 
-if short_run == 'True':
-	print('SHORT RUN SET TO TRUE.')
-	train_stamps = train_stamps[0:1000]
-	valid_stamps = valid_stamps[0:300]
-
 training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
 print('Training image file paths loaded.')
 print(len(training_image_filenames))
