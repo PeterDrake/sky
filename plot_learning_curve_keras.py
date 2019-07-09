@@ -7,6 +7,29 @@ model = load_model('model_1_20.h5')
 model.summary()
 # load dataset
 
+with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
+	train_stamps = pickle.load(f)
+print('Training stamps loaded.')
+with open(TYPICAL_VALID_FILE, 'rb') as f:
+	valid_stamps = pickle.load(f)
+print('Validation stamps loaded.')
+
+if short_run == 'True':
+	print('SHORT RUN SET TO TRUE.')
+	train_stamps = train_stamps[0:1000]
+	valid_stamps = valid_stamps[0:300]
+
+training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
+print('Training image file paths loaded.')
+print(len(training_image_filenames))
+training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+print('Training mask file paths loaded.')
+print(len(training_tsi_filenames))
+validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
+print('Validation image file paths loaded.')
+validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
+print('Validation mask file paths loaded.')
+
 training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
 print('Training generator initialized.')
 validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
