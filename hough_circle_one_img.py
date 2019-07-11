@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import os
 import math
+from matplotlib import pyplot as plt
 
 path = "typical_data/hough_circle_sample_files/"
 dirs = os.listdir(path)
@@ -9,6 +10,8 @@ dirs = os.listdir(path)
 for file in dirs:
 	# print(file)
 	img = cv2.imread(path + file, 0)
+	img2 = cv2.imread(path + file, 0)
+	edges = cv2.Canny(img2, 100, 200)
 	img = cv2.medianBlur(img, 11)
 	cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 	# minRadius=210, maxRadius=245
@@ -27,7 +30,7 @@ for file in dirs:
 			closest_to_center = (i[0], i[1])
 			radius = i[2]
 
-		# draw the outer circle
+		# # draw the outer circle
 		# cv2.circle(cimg, (i[0], i[1]), i[2], (0, 255, 0), 1)
 		# # test circle
 		# cv2.circle(cimg, (i[0], i[1]), 245, (255, 255, 0), 1)
@@ -37,15 +40,25 @@ for file in dirs:
 		# # center of circle
 
 	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), 2, (255, 0, 255), 3)
-	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), radius, (255, 0, 255), 1)
+	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), radius, (255, 0, 255), 2)
 	cv2.circle(cimg, (240, 320), 60, (255, 0, 255), 1)
 
 	print('{} {} {} {}'.format(file, closest_to_center[0], closest_to_center[1], radius))
 	# radius
 	# print('radius: ' + str(i[2]))
 
+	# plt.subplot(121), plt.imshow(img2, cmap='gray')
+	# plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+	# plt.subplot(122), plt.imshow(edges, cmap='gray')
+	# plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
+	# plt.show()
+
 
 	cv2.imshow('detected circles', cimg)
 	cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
+
+
 
