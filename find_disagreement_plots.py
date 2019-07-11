@@ -117,6 +117,7 @@ NUMBER_DISAGREEMENT_IMGS = 10
 # Creates new column in data frame with the cloud fraction difference between tsi and network
 typical_agree_df['cf_diff'] = (typical_agree_df['net_fsc_z'] - typical_agree_df['fsc_z']) ** 2
 dubious_agree_df['cf_diff'] = (dubious_agree_df['net_fsc_z'] - dubious_agree_df['fsc_z']) ** 2
+typical_agree_df['net_better'] = ((typical_agree_df['fsc_z'] - typical_agree_df['cf_tot']) ** 2) - ((typical_agree_df['net_fsc_z'] - typical_agree_df['cf_tot']) ** 2)
 
 # Sort by column label agreement
 # typical_agree_df = typical_agree_df.sort_values(by='agreement')
@@ -126,8 +127,8 @@ dubious_agree_df['cf_diff'] = (dubious_agree_df['net_fsc_z'] - dubious_agree_df[
 # make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_agreement', 1, NUMBER_DISAGREEMENT_IMGS)
 # make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious_agreement', 1, NUMBER_DISAGREEMENT_IMGS)
 
-typical_agree_df = typical_agree_df.sort_values(by='agreement', ascending=False)
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_agreement/good', 1, NUMBER_DISAGREEMENT_IMGS)
+typical_agree_df = typical_agree_df.sort_values(by='net_better', ascending=False)
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_agreement/net_better', 1, NUMBER_DISAGREEMENT_IMGS)
 
 print(typical_agree_df)
 
@@ -139,7 +140,7 @@ print(typical_agree_df)
 # make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_cf_diff', 1, NUMBER_DISAGREEMENT_IMGS)
 # make_plots(dubious_agree_df, DUBIOUS_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/dubious_cf_diff', 1, NUMBER_DISAGREEMENT_IMGS)
 
-typical_agree_df = typical_agree_df.sort_values(by='cf_diff')
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_cf_diff/good', 1, NUMBER_DISAGREEMENT_IMGS)
+# typical_agree_df = typical_agree_df.sort_values(by='cf_diff')
+# make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_cf_diff/good', 1, NUMBER_DISAGREEMENT_IMGS)
 
 print(typical_agree_df)
