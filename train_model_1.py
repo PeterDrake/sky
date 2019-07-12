@@ -56,7 +56,7 @@ class Image_Generator(Sequence):
 		for i in range(len(tsi)):
 			masks[i] = mask_to_index(tsi[i])
 
-		X = [sky_images, masks]
+		X = [sky_images]
 
 		''' Converts each pixel label to an array where the index indicates what color and a 1 indicates that the 
 		pixel is that color. The array for each pixel should only have one 1 and the other elements should be zeros. 
@@ -70,11 +70,11 @@ class Image_Generator(Sequence):
 		return X, Y
 
 
-def corrected_accuracy(y_true, y_pred):
-	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
-	mask = tf.not_equal(tf.reduce_sum(y_true, axis=-1), green)
-	correct = tf.cast(tf.equal(tf.argmax(tf.boolean_mask(y_true, mask), axis=-1), tf.argmax(tf.boolean_mask(y_pred, mask), axis=-1)), tf.float32)
-	return tf.count_nonzero(correct)/tf.size(correct, out_type=tf.dtypes.int64)
+# def corrected_accuracy(y_true, y_pred):
+# 	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
+# 	mask = tf.not_equal(tf.reduce_sum(y_true, axis=-1), green)
+# 	correct = tf.cast(tf.equal(tf.argmax(tf.boolean_mask(y_true, mask), axis=-1), tf.argmax(tf.boolean_mask(y_pred, mask), axis=-1)), tf.float32)
+# 	return tf.count_nonzero(correct)/tf.size(correct, out_type=tf.dtypes.int64)
 
 
 def load_filenames(stamps, input_dir, masks):
@@ -115,17 +115,17 @@ if __name__ == '__main__':
 	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
 	print('Validation mask file paths loaded.')
 
-	losses = {
-		"remove_green": "categorical_crossentropy",
-	}
+	# losses = {
+	# 	"remove_green": "categorical_crossentropy",
+	# }
 
-	metrics = {
-		"remove_green": corrected_accuracy,
-	}
+	# metrics = {
+	# 	"remove_green": corrected_accuracy,
+	# }
 
 	model = build_model()
 	print('Model built.')
-	model.compile(optimizer='adam', loss=losses, metrics=metrics)
+	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
@@ -162,5 +162,5 @@ if __name__ == '__main__':
 	# with open('history16/history.json', 'w') as fp:
 	# 	json.dump(train_history, fp)
 
-	model.save('model_1_19.h5')
+	model.save('model_1_20.h5')
 

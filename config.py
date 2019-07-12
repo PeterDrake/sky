@@ -36,8 +36,8 @@ RAW_DATA_DIR = "D:\\Documents - Hard Drive\\Lewis & Clark\\Research\\Sky ML\\TSI
 # Paths for typical (training & evaluation) and dubious (evaluation) data. These directories need not exist prior to
 # running the experiment from scratch; the preprocessing scripts will create and populate these directories with
 # simplified sky and decision images from the RAW_DATA_DIR.
-TYPICAL_DATA_DIR = "typical_data"
-DUBIOUS_DATA_DIR = "dubious_data"
+TYPICAL_DATA_DIR = "typical_data_no_green"
+DUBIOUS_DATA_DIR = "dubious_data_no_green"
 
 # Path to directory in which network data will be saved. Additionally, network-processed decision images will be
 # saved to results/masks.
@@ -132,7 +132,7 @@ if BLT:
 
 # The number of networks to train simultaneously and the job's priority
 NUM_NETWORKS = 1
-JOB_PRIORITY = 10
+JOB_PRIORITY = 5
 
 # The number of processing tasks to launch for each of typical and dubious data (Per trained network)
 NUM_PROCESS_BATCHES = 1

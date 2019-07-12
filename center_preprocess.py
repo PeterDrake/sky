@@ -12,6 +12,41 @@ from config import RAW_DATA_DIR
 from utils import *
 from fsc import *
 import imageio
+from collections import Counter
+
+
+def remove_green(mask):
+
+	new_mask = np.copy(mask)
+
+	for i in range(mask.shape[0]):
+		for j in range(mask.shape[0]):
+			if np.array_equal(mask[i][j], GREEN):
+				# This is the size of the starting square size that gets voted on
+				radius = 1
+
+				while True:
+
+					window = (mask[i - radius:i + radius + 1, j - radius:j + radius + 1])
+					counts = Counter()
+					for x in range(radius * 2 + 1):
+						for y in range(radius * 2 + 1):
+							if np.array_equal(window[x][y], WHITE):
+								counts[0] += 1
+							elif np.array_equal(window[x][y], BLUE):
+								counts[1] += 1
+							elif np.array_equal(window[x][y], GRAY):
+								counts[2] += 1
+
+					if counts:
+						break
+					else:
+						radius += 1
+
+				color, _ = counts.most_common(1)[0]
+				new_mask[i][j] = COLORS[color]
+
+	return new_mask
 
 
 def remove_white_sun(img, stride=10):
@@ -130,18 +165,10 @@ def simplify(timestamp, input_dir, output_dir):
 	else:
 		mask = remove_white_sun(mask)
 	mask, img = center_and_add_border(mask, img)
+	mask = remove_green(mask)
 	Image.fromarray(mask).save(mask_save_path(timestamp, output_dir) + 'simplemask' + timestamp + '.png')
 	Image.fromarray(img).save(img_save_path(timestamp, output_dir) + 'simpleimage' + timestamp + '.jpg')
 	return
-
-
-def prac_simplify(mask, img):
-	if (mask == YELLOW).all(axis=2).any():
-		mask[(mask == YELLOW).all(axis=2)] = BLACK
-	else:
-		mask = remove_white_sun(mask)
-	mask, img = center_and_add_border(mask, img)
-	return mask, img
 
 
 def preprocess(filename, output_dir):
