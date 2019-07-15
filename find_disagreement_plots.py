@@ -43,7 +43,7 @@ def make_plots(df, data_directory, save_path, i, num_rows):
 			continue
 
 		# Display the images in a plot together
-		fig, (ax0, ax1, ax2) = plt.subplots(1, 3, figsize=(16, 10), num=i)
+		fig, (ax0, ax1, ax2) = plt.subplots(1, 3, figsize=(16, 8), num=i)
 		fig.suptitle("Timestamp: " + time + "\n" + str(i) + " of " + str(num_rows))
 		ax0.imshow(sky_image)  # ax0 is the sky image
 		ax0.set_title("Sky Image")
