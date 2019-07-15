@@ -62,6 +62,7 @@ def make_plots(df, data_directory, save_path, i, num_rows):
 		# ax3.bar('TSI\nFSC', row['fsc_z'], width=0.5)
 		# ax3.bar('NET\nFSC', row['net_fsc_z'], color='skyblue', width=0.5)
 		# ax3.set_ylim((0, 1))
+		plt.tight_layout()
 
 		# Save the figure. Close it to save memory. Increment the figure counter
 		plt.savefig(save_path + '/' + time + '.png')
