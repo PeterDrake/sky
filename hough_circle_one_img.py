@@ -41,7 +41,7 @@ for file in dirs:
 
 	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), 2, (255, 0, 255), 3)
 	cv2.circle(cimg, (closest_to_center[0], closest_to_center[1]), radius, (255, 0, 255), 2)
-	cv2.circle(cimg, (240, 320), 60, (255, 0, 255), 1)
+	# cv2.circle(cimg, (240, 320), 60, (255, 0, 255), 1)
 
 	print('{} {} {} {}'.format(file, closest_to_center[0], closest_to_center[1], radius))
 	# radius
