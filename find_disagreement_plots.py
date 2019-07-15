@@ -154,7 +154,7 @@ make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LA
 print('hello_1')
 # if dubious_agree_df.loc[dubious_agree_df['timestamp_utc'] == 20130829002600]:
 # 	print('111')
-if typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130829002600]:
+if typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130701202830]:
 	print('222')
 else:
 	print('333')
