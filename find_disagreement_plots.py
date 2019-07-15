@@ -147,15 +147,22 @@ dubious_agree_df = dubious_agree_df.dropna()
 #
 # print(typical_agree_df)
 
-
+dubious_agree_df = dubious_agree_df.loc[dubious_agree_df['timestamp_utc'] == 20130701202830]
+make_plots(dubious_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
 typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130701202830]
 make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
 
+dubious_agree_df = dubious_agree_df.loc[dubious_agree_df['timestamp_utc'] == 20130829002600]
+make_plots(dubious_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
 typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130829002600]
 make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
 
+dubious_agree_df = dubious_agree_df.loc[dubious_agree_df['timestamp_utc'] == 20150705192030]
+make_plots(dubious_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
 typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20150705192030]
 make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
 
+dubious_agree_df = dubious_agree_df.loc[dubious_agree_df['timestamp_utc'] == 20150703183030]
+make_plots(dubious_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
 typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20150703183030]
 make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
