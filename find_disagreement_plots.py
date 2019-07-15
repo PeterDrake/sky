@@ -43,7 +43,7 @@ def make_plots(df, data_directory, save_path, i, num_rows):
 			continue
 
 		# Display the images in a plot together
-		fig, (ax0, ax1, ax2) = plt.subplots(1, 3, figsize=(16, 6), num=i)
+		fig, (ax0, ax1, ax2) = plt.subplots(1, 3, figsize=(16, 10), num=i)
 		fig.suptitle("Timestamp: " + time + "\n" + str(i) + " of " + str(num_rows))
 		ax0.imshow(sky_image)  # ax0 is the sky image
 		ax0.set_title("Sky Image")
@@ -146,3 +146,7 @@ typical_agree_df = typical_agree_df.sort_values(by='cf_diff')
 make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_cf_diff/good', 1, NUMBER_DISAGREEMENT_IMGS)
 
 print(typical_agree_df)
+
+
+typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130701202830]
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
