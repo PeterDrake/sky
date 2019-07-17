@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
 	json_log = open('loss_log.json', mode='wt', buffering=1)
 	json_logging_callback = LambdaCallback(
-		on_batch_begin=lambda batch, logs: print(logs),
+		on_batch_begin=lambda batch, logs: print('test' + logs),
 		on_batch_end=lambda epoch, logs: json_log.write(
 			json.dumps({'epoch': float(epoch), 'loss': float(logs['loss']), 'acc': float(logs['acc'])}) + '\n'),
 		on_train_end=lambda logs: json_log.close()
