@@ -24,6 +24,7 @@ from config import *
 from train import mask_to_index
 import pickle
 import sys
+import matplotlib.pyplot as plt
 import json
 
 
@@ -147,6 +148,22 @@ if __name__ == '__main__':
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1, tensorboard])
 
+	plt.plot(history.history['acc'])
+	plt.plot(history.history['val_acc'])
+	plt.title('Model accuracy')
+	plt.ylabel('Accuracy')
+	plt.xlabel('Epoch')
+	plt.legend(['Train', 'Test'], loc='upper left')
+	plt.savefig('acc_model20.png')
+
+	# Plot training & validation loss values
+	plt.plot(history.history['loss'])
+	plt.plot(history.history['val_loss'])
+	plt.title('Model loss')
+	plt.ylabel('Loss')
+	plt.xlabel('Epoch')
+	plt.legend(['Train', 'Test'], loc='upper left')
+	plt.savefig('loss_model20.png')
 
 	# print(history.history)
 	#
@@ -162,5 +179,5 @@ if __name__ == '__main__':
 	# with open('history16/history.json', 'w') as fp:
 	# 	json.dump(train_history, fp)
 
-	model.save('model_1_21.h5')
+	model.save('model_1_22.h5')
 
