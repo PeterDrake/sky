@@ -10,7 +10,7 @@ Trains the model.
 
 from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
-from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint, LambdaCallback
 from tensorboard import TensorBoard
 # from keras.utils import to_categorical
 # from keras.utils.data_utils import Sequence
@@ -142,29 +142,18 @@ if __name__ == '__main__':
 							  write_images=False,
 							  write_batch_performance=True)
 
+	json_log = open('loss_log.json', mode='wt', buffering=1)
+	json_logging_callback = LambdaCallback(
+		on_batch_end=lambda epoch, logs: json_log.write(
+			json.dumps({'epoch': epoch, 'loss': logs['loss']}) + '\n'),
+		on_train_end=lambda logs: json_log.close()
+	)
+
 	history = model.fit_generator(generator=training_batch_generator,
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
-						use_multiprocessing=False, callbacks=[cb_1, tensorboard])
-
-	plt.plot(history.history['acc'])
-	plt.plot(history.history['val_acc'])
-	plt.title('Model accuracy')
-	plt.ylabel('Accuracy')
-	plt.xlabel('Epoch')
-	plt.legend(['Train', 'Test'], loc='upper left')
-	plt.savefig('acc_model20.png')
-
-	# Plot training & validation loss values
-	plt.plot(history.history['loss'])
-	plt.plot(history.history['val_loss'])
-	plt.title('Model loss')
-	plt.ylabel('Loss')
-	plt.xlabel('Epoch')
-	plt.legend(['Train', 'Test'], loc='upper left')
-	plt.savefig('loss_model20.png')
-
+						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_log])
 	# print(history.history)
 	#
 	# train_history = {}
