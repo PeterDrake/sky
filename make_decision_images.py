@@ -89,9 +89,7 @@ def numbers_to_RGB(array):
 if __name__ == '__main__':
 	short_run = sys.argv[0:]
 
-	custom = {'NotGreen': NotGreen,
-			  'RemoveGreen': RemoveGreen,
-			  'DecidePixelColors': DecidePixelColors,
+	custom = {'DecidePixelColors': DecidePixelColors,
 			  'corrected_accuracy': corrected_accuracy}
 
 	model = tf._api.v1.keras.models.load_model('model_1_19.h5', custom_objects=custom)
