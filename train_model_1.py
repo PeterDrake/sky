@@ -10,7 +10,7 @@ Trains the model.
 
 from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
-from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint, LambdaCallback
+from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint, LambdaCallback, Callback
 from tensorboard import TensorBoard
 # from keras.utils import to_categorical
 # from keras.utils.data_utils import Sequence
@@ -69,6 +69,22 @@ class Image_Generator(Sequence):
 		Y = Y[:, :, :, 0:4]
 
 		return X, Y
+
+
+class LossHistory(Callback):
+	def __init__(self):
+		super(Callback, self).__init__()
+		self.losses = []
+		self.val_losses = []
+
+	def on_train_begin(self, logs=None):
+		self.losses = []
+		self.val_losses = []
+
+	def on_batch_end(self, batch, logs=None):
+		self.losses.append(logs.get('loss'))
+		self.val_losses.append(logs.get('val_loss'))
+		print(self.val_losses)
 
 
 # def corrected_accuracy(y_true, y_pred):
@@ -154,7 +170,7 @@ if __name__ == '__main__':
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
-						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_logging_callback])
+						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_logging_callback, LossHistory])
 	# print(history.history)
 	#
 	# train_history = {}
