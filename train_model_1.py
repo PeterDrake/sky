@@ -80,7 +80,6 @@ class LossHistory(Callback):
 			json_log.write(json.dumps({"acc": [], "loss": [], "val_acc": [], "val_loss": []}))
 
 	def on_batch_end(self, batch, logs=None):
-		print(self.val_losses)
 		with open('loss_log.json', 'r+') as json_log:
 			obj = json.load(json_log)
 		obj['acc'].append(logs.get('acc'))
