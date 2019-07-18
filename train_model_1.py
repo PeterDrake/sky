@@ -92,6 +92,10 @@ class NBatchLogger(Callback):
 	A Logger that log average performance per `display` steps.
 	"""
 
+	def __init__(self, display):
+		self.seen = 0
+		self.display = display
+
 	def on_batch_end(self, batch, logs={}):
 		self.seen += logs.get('size', 0)
 		if self.seen % self.display == 0:
@@ -99,7 +103,7 @@ class NBatchLogger(Callback):
 			print('\n{}/{} - loss ....\n'.format(self.seen, self.params['nb_sample']))
 
 
-# def corrected_accuracy(y_true, y_pred):
+		# def corrected_accuracy(y_true, y_pred):
 # 	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
 # 	mask = tf.not_equal(tf.reduce_sum(y_true, axis=-1), green)
 # 	correct = tf.cast(tf.equal(tf.argmax(tf.boolean_mask(y_true, mask), axis=-1), tf.argmax(tf.boolean_mask(y_pred, mask), axis=-1)), tf.float32)
@@ -182,7 +186,7 @@ if __name__ == '__main__':
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=0,
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
-						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_logging_callback, NBatchLogger()])
+						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_logging_callback, NBatchLogger(1)])
 	# print(history.history)
 	#
 	# train_history = {}
