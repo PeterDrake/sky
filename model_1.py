@@ -92,7 +92,7 @@ def build_model():
 	# print('DECISION2')
 	# print(tf.keras.backend.dtype(decision))
 
-	model = Model(inputs=[sky_images], outputs=[conv3]) # in outputs, , decision
+	model = Model(inputs=[sky_images], outputs=[decision]) # in outputs, , decision
 	return model
 
 
