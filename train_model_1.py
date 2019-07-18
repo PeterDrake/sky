@@ -191,9 +191,9 @@ if __name__ == '__main__':
 	json_logging_callback = LambdaCallback(
 		on_batch_begin=lambda batch, logs: print(logs),
 		on_batch_end=lambda epoch, logs: json_log.write(
-			json.dumps({'batch': float(epoch), 'loss': float(logs['loss']), 'acc': float(logs['acc'])}) + '\n'),
+			json.dumps({'batch': float(epoch), 'loss': float(logs['conv2d_2_loss']), 'acc': float(logs['conv2d_2_acc'])}) + '\n'),
 		on_epoch_end=lambda epoch, logs: json_log.write(
-			json.dumps({'epoch': float(epoch), 'val_acc': float(logs['val_acc']), 'val_loss': float(logs['val_loss'])}) + '\n'),
+			json.dumps({'epoch': float(epoch), 'val_loss': float(logs['val_conv2d_2_loss']), 'val_acc': float(logs['val_conv2d_2_acc'])}) + '\n'),
 		on_train_end=lambda logs: json_log.close()
 	)
 
@@ -202,24 +202,6 @@ if __name__ == '__main__':
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1, tensorboard])
-
-
-	plt.plot(history.history['acc'])
-	plt.plot(history.history['val_acc'])
-	plt.title('Model accuracy')
-	plt.ylabel('Accuracy')
-	plt.xlabel('Epoch')
-	plt.legend(['Train', 'Test'], loc='upper left')
-	plt.show()
-
-	# Plot training & validation loss values
-	plt.plot(history.history['loss'])
-	plt.plot(history.history['val_loss'])
-	plt.title('Model loss')
-	plt.ylabel('Loss')
-	plt.xlabel('Epoch')
-	plt.legend(['Train', 'Test'], loc='upper left')
-	plt.show()
 
 	# print(history.history)
 	#
