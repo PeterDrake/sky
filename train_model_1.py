@@ -85,9 +85,9 @@ class LossHistory(Callback):
 			obj = json.load(json_log)
 		obj['acc'].append(logs.get('acc'))
 		obj['loss'].append(logs.get('loss'))
-		if logs.get('val_acc') is not None and logs.get('val_loss') is not None:
-			obj['val_acc'].append(logs.get('val_acc'))
-			obj['val_loss'].append(logs.get('val_loss'))
+		if logs.get('val_conv2d_2_acc') is not None and logs.get('val_conv2d_2_loss') is not None:
+			obj['val_acc'].append(logs.get('val_conv2d_2_acc'))
+			obj['val_loss'].append(logs.get('val_conv2d_2_loss'))
 
 		with open('loss_log.json', 'r+') as json_log:
 			print(obj)
