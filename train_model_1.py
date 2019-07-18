@@ -74,48 +74,28 @@ class Image_Generator(Sequence):
 class LossHistory(Callback):
 	def __init__(self):
 		super(Callback, self).__init__()
-		self.losses = []
-		self.val_losses = []
 
 	def on_train_begin(self, logs=None):
-		self.losses = []
-		self.val_losses = []
+		with open('loss_log.json', 'r+') as json_log:
+			json_log.write(json.dumps({"acc": [], "loss": [], "val_acc": [], "val_loss": []}))
 
 	def on_batch_end(self, batch, logs=None):
-		self.losses.append(logs.get('loss'))
-		self.val_losses.append(logs.get('val_loss'))
 		print(self.val_losses)
+		with open('loss_log.json', 'r+') as json_log:
+			obj = json.load(json_log)
+		obj['acc'].append(logs.get('acc'))
+		obj['loss'].append(logs.get('loss'))
+		if logs.get('val_acc') is not None and logs.get('val_loss') is not None:
+			obj['val_acc'].append(logs.get('val_acc'))
+			obj['val_loss'].append(logs.get('val_loss'))
+
+		with open('loss_log.json', 'r+') as json_log:
+			print(obj)
+			json.dump(obj, json_log)
 
 
-class NBatchLogger(Callback):
-    """
-    A Logger that log average performance per `display` steps.
-    """
-    def __init__(self, display):
-        self.step = 0
-        self.display = display
-        self.metric_cache = {}
 
-    def on_batch_end(self, batch, logs={}):
-        self.step += 1
-        for k in self.params['metrics']:
-            if k in logs:
-                self.metric_cache[k] = self.metric_cache.get(k, 0) + logs[k]
-        if self.step % self.display == 0:
-            metrics_log = ''
-            for (k, v) in self.metric_cache.items():
-                val = v / self.display
-                if abs(val) > 1e-3:
-                    metrics_log += ' - %s: %.4f' % (k, val)
-                else:
-                    metrics_log += ' - %s: %.4e' % (k, val)
-            print('step: {}/{} ... {}'.format(self.step,
-                                          self.params['steps'],
-                                          metrics_log))
-            self.metric_cache.clear()
-
-
-		# def corrected_accuracy(y_true, y_pred):
+# def corrected_accuracy(y_true, y_pred):
 # 	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
 # 	mask = tf.not_equal(tf.reduce_sum(y_true, axis=-1), green)
 # 	correct = tf.cast(tf.equal(tf.argmax(tf.boolean_mask(y_true, mask), axis=-1), tf.argmax(tf.boolean_mask(y_pred, mask), axis=-1)), tf.float32)
@@ -191,9 +171,9 @@ if __name__ == '__main__':
 	json_logging_callback = LambdaCallback(
 		on_batch_begin=lambda batch, logs: print(logs),
 		on_batch_end=lambda epoch, logs: json_log.write(
-			json.dumps({['batch']: float(epoch), ['loss']: float(logs['conv2d_2_loss']), ['acc']: float(logs['conv2d_2_acc'])}) + '\n'),
+			json.dumps({'batch': float(epoch), 'loss': float(logs['conv2d_2_loss']), 'acc': float(logs['conv2d_2_acc'])}) + '\n'),
 		on_epoch_end=lambda epoch, logs: json_log.write(
-			json.dumps({['epoch']: float(epoch), ['val_loss']: float(logs['val_conv2d_2_loss']), ['val_acc']: float(logs['val_conv2d_2_acc'])}) + '\n'),
+			json.dumps({'epoch': float(epoch), 'val_loss': float(logs['val_conv2d_2_loss']), 'val_acc': float(logs['val_conv2d_2_acc'])}) + '\n'),
 		on_train_end=lambda logs: json_log.close()
 	)
 
@@ -201,7 +181,9 @@ if __name__ == '__main__':
 						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
-						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_logging_callback])
+						use_multiprocessing=False, callbacks=[cb_1, tensorboard, LossHistory()])
+
+
 
 
 	# print(history.history)
