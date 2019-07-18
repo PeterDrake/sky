@@ -203,6 +203,12 @@ if __name__ == '__main__':
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_logging_callback])
 
+	with open('loss_log.json') as json_file:
+		data = json.load(json_file)
+		print(data)
+
+
+
 	# print(history.history)
 	#
 	# train_history = {}
