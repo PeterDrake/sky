@@ -144,7 +144,7 @@ if __name__ == '__main__':
 							  write_images=False,
 							  write_batch_performance=True)
 
-	json_log = open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/training_history.json', mode='wt', buffering=1)
+	json_log = open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/log_acc_and_loss.json', mode='wt', buffering=1)
 	json_logging_callback = LambdaCallback(
 		on_batch_begin=lambda batch, logs: print(logs),
 		on_batch_end=lambda epoch, logs: json_log.write(
@@ -155,7 +155,7 @@ if __name__ == '__main__':
 	)
 
 	history = model.fit_generator(generator=training_batch_generator,
-						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=2, verbose=1,
+						steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=3, verbose=1,
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_logging_callback])

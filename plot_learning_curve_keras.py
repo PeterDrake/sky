@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from config import *
 
 data = []
-with open('loss_log.json') as f:
+with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/log_acc_and_loss.json') as f:
 	for line in f:
 		data.append(json.loads(line))
 
@@ -24,5 +24,5 @@ plt.plot([0, len(acc)], val_acc)
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('batches')
-plt.legend(['acc', 'val_acc'], loc='upper left')
+plt.legend(['acc', 'val_acc'], loc='lower right')
 plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/accuracy_vs_batch.png', bbox_inches='tight')
