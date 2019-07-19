@@ -71,28 +71,6 @@ class Image_Generator(Sequence):
 		return X, Y
 
 
-class LossHistory(Callback):
-	def __init__(self):
-		super(Callback, self).__init__()
-
-	def on_train_begin(self, logs=None):
-		with open('loss_log.json', 'r+') as json_log:
-			json_log.write(json.dumps({"acc": [], "loss": [], "val_acc": [], "val_loss": []}))
-
-	def on_batch_end(self, batch, logs=None):
-		with open('loss_log.json', 'r+') as json_log:
-			obj = json.load(json_log)
-		obj['acc'].append(logs.get('acc'))
-		obj['loss'].append(logs.get('loss'))
-		if logs.get('val_conv2d_2_acc') is not None and logs.get('val_conv2d_2_loss') is not None:
-			obj['val_acc'].append(logs.get('val_conv2d_2_acc'))
-			obj['val_loss'].append(logs.get('val_conv2d_2_loss'))
-
-		with open('loss_log.json', 'r+') as json_log:
-			print(obj)
-			json.dump(obj, json_log)
-
-
 
 # def corrected_accuracy(y_true, y_pred):
 # 	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
@@ -166,7 +144,7 @@ if __name__ == '__main__':
 							  write_images=False,
 							  write_batch_performance=True)
 
-	json_log = open('loss_log.json', mode='wt', buffering=1)
+	json_log = open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/training_history.json', mode='wt', buffering=1)
 	json_logging_callback = LambdaCallback(
 		on_batch_begin=lambda batch, logs: print(logs),
 		on_batch_end=lambda epoch, logs: json_log.write(
