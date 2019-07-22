@@ -13,7 +13,7 @@ val_acc = []
 val_loss = []
 epoch = []
 acc_loss_batches = []
-display = 100
+display = 1000
 for f in range(len(data)):
 	if f % display == 0:
 		if 'acc' in data[f].keys():
@@ -28,6 +28,8 @@ for f in range(len(data)):
 for i in range(int(max_epoch)):
 	epoch.append(len(acc)/max_epoch * (i + 1))
 
+print('epoch')
+print(epoch)
 plt.plot(acc_loss_batches, acc)
 plt.plot(epoch, val_acc)
 plt.title('model accuracy')
