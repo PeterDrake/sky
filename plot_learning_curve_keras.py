@@ -13,7 +13,7 @@ val_acc = []
 val_loss = []
 epoch = []
 acc_loss_batches = []
-display = 20
+display = 50
 for f in range(len(data)):
 	if f % display == 0:
 		if 'acc' in data[f].keys():
