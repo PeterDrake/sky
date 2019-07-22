@@ -12,10 +12,12 @@ loss = []
 val_acc = []
 val_loss = []
 epoch = []
+acc_loss_batches = []
 display = 100
 for f in range(len(data)):
 	if f % display == 0:
 		if 'acc' in data[f].keys():
+			acc_loss_batches.append(f)
 			acc.append(data[f]["acc"])
 			loss.append(data[f]["loss"])
 	if 'val_acc' in data[f].keys():
@@ -26,7 +28,7 @@ for f in range(len(data)):
 for i in range(int(max_epoch)):
 	epoch.append(len(acc)/max_epoch * (i + 1))
 
-plt.plot(acc)
+plt.plot(acc_loss_batches, acc)
 plt.plot(epoch, val_acc)
 plt.title('model accuracy')
 plt.ylabel('accuracy')
@@ -34,7 +36,7 @@ plt.xlabel('Display every ' + str(display) + ' batches')
 plt.legend(['acc', 'val_acc'], loc='lower right')
 plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/accuracy_vs_batch.png', bbox_inches='tight')
 
-plt.plot(loss)
+plt.plot(acc_loss_batches, loss)
 plt.plot(epoch, val_loss)
 plt.title('model accuracy')
 plt.ylabel('loss')
