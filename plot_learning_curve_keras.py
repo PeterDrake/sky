@@ -19,8 +19,8 @@ for f in range(len(data)):
 			acc.append(data[f]["acc"])
 			loss.append(data[f]["loss"])
 	if 'val_acc' in data[f].keys():
-		val_acc.append(data[f]["val_conv2d_2_acc"])
-		val_loss.append(data[f]["val_conv2d_2_loss"])
+		val_acc.append(data[f]["val_acc"])
+		val_loss.append(data[f]["val_loss"])
 		max_epoch = data[f]["epoch"] + 1
 
 for i in range(int(max_epoch)):
