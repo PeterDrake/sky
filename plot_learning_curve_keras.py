@@ -30,6 +30,7 @@ for i in range(int(max_epoch)):
 
 print('epoch')
 print(epoch)
+print(acc_loss_batches)
 plt.plot(acc_loss_batches, acc)
 plt.plot(epoch, val_acc)
 plt.title('model accuracy')
