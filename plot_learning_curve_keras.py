@@ -17,7 +17,7 @@ display = 50
 for f in range(len(data)):
 	if f % display == 0:
 		if 'acc' in data[f].keys():
-			acc_loss_batches.append(f)
+			acc_loss_batches.append(f/display)
 			acc.append(data[f]["acc"])
 			loss.append(data[f]["loss"])
 	if 'val_acc' in data[f].keys():
