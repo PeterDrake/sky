@@ -12,7 +12,7 @@ loss = []
 val_acc = []
 val_loss = []
 epoch = []
-display = 10
+display = 100
 for f in range(len(data)):
 	if f % display == 0:
 		if 'acc' in data[f].keys():
