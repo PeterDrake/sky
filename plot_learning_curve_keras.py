@@ -26,7 +26,7 @@ for f in range(len(data)):
 		max_epoch = data[f]["epoch"] + 1
 
 for i in range(int(max_epoch)):
-	epoch.append(len(data)/max_epoch * (i + 1))
+	epoch.append(len(acc)/max_epoch * (i + 1))
 
 print('epoch')
 print(epoch)
