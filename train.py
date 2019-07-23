@@ -340,4 +340,5 @@ def train(label, layer_info):
 if __name__ == '__main__':
 	experiment_label = sys.argv[2]
 	layer_string = sys.argv[3::]
-	train(experiment_label, layer_string)
+	print(layer_string)
+	# train(experiment_label, layer_string)

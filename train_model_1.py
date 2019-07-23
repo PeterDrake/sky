@@ -24,8 +24,10 @@ from config import *
 from train import mask_to_index
 import pickle
 import sys
-import matplotlib.pyplot as plt
+import subprocess
 import json
+import time
+import sys
 
 
 
@@ -90,8 +92,25 @@ def load_filenames(stamps, input_dir, masks):
 	return filenames
 
 
+def save_params(job_number, layer_info, out_dir):
+	"""Write information about this experiment to a file parameters.txt in out_dir."""
+	F = open(out_dir + 'parameters.txt', "w+")
+	F.write("Job number:\t" + str(job_number) + "\n")
+	F.write("Layer info:\t" + ' '.join(layer_info) + "\n")
+	label = subprocess.check_output(["git", "rev-parse", "HEAD"])
+	F.write("Git commit:\t" + str(label)[2:-3:] + "\n")
+	F.close()
+
+
 if __name__ == '__main__':
 	short_run = sys.argv[1]
+
+	out_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/'
+
+	save_params(EXPERIMENT_LABEL, layer_info, out_dir)
+
+	start = time.time()
+
 	print(short_run)
 
 	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
@@ -124,6 +143,7 @@ if __name__ == '__main__':
 	metrics = {
 		"conv2d_2": 'accuracy',
 	}
+
 
 	model = build_model()
 	print('Model built.')
@@ -160,22 +180,14 @@ if __name__ == '__main__':
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1, tensorboard, json_logging_callback])
 
-
-
-
-	# print(history.history)
-	#
-	# train_history = {}
-	#
-	# for key, value in history.history.items():
-	# 	train_history[key] = []
-	# 	for number in value:
-	# 		train_history[key].append(float(number))
-	#
-	#
-	#
-	# with open('history16/history.json', 'w') as fp:
-	# 	json.dump(train_history, fp)
+	stop = time.time()
+	print('Elapsed time:\t' + str(stop - start) + ' seconds')
+	F = open(out_dir + 'parameters.txt', 'a')
+	F.write('Elapsed time:\t' + str(stop - start) + ' seconds\n')
+	F.write('Training Batch Size:\t' + str(TRAINING_BATCH_SIZE) + '\n')
+	F.write('Number of Batches:\t' + str(NUM_TRAINING_BATCHES) + '\n')
+	F.write('Learning rate:\t' + str(LEARNING_RATE) + '\n')
+	F.close()
 
 	model.save('model_1_22.h5')
 

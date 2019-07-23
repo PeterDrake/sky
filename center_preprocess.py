@@ -3,6 +3,7 @@ This script is intended to be run from preprocess_launch.py, which calls this sc
 file should be a collection of timestamps separated by line.
 
 This script crops the sky photos and simplifies the decision images in the RAW_DATA_DIR. Simplification entails cropping
+This script crops the sky photos and simplifies the decision images in the RAW_DATA_DIR. Simplification entails cropping
 and removal of the sun from the sun band.
 """
 
