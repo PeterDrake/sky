@@ -107,32 +107,32 @@ if __name__ == '__main__':
 	#
 	# training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
 	# print('Training generator initialized.')
-
-	with open(TYPICAL_VALID_FILE, 'rb') as f:
-		valid_stamps = pickle.load(f)
-	print('Validation stamps loaded.')
-
-	validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
-	print('Validation image file paths loaded.')
-	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
-	print('Validation mask file paths loaded.')
-
-	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
-	print('Validation generator initialized.')
 	#
-	# # poster_test.stamps  poster_valid.stamps
-	#
-	# with open(DUBIOUS_DATA_DIR + '/poster_test.stamps', 'rb') as f:
+	# with open(TYPICAL_VALID_FILE, 'rb') as f:
 	# 	valid_stamps = pickle.load(f)
-	# print('Dubious stamps loaded.')
+	# print('Validation stamps loaded.')
 	#
-	# validation_image_filenames = load_filenames(valid_stamps, DUBIOUS_DATA_DIR, False)
+	# validation_image_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, False)
 	# print('Validation image file paths loaded.')
-	# validation_tsi_filenames = load_filenames(valid_stamps, DUBIOUS_DATA_DIR, True)
+	# validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
 	# print('Validation mask file paths loaded.')
 	#
 	# validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
 	# print('Validation generator initialized.')
+	# #
+	# # poster_test.stamps  poster_valid.stamps
+	#
+	with open(DUBIOUS_DATA_DIR + '/poster_test.stamps', 'rb') as f:
+		valid_stamps = pickle.load(f)
+	print('Dubious stamps loaded.')
+
+	validation_image_filenames = load_filenames(valid_stamps, DUBIOUS_DATA_DIR, False)
+	print('Validation image file paths loaded.')
+	validation_tsi_filenames = load_filenames(valid_stamps, DUBIOUS_DATA_DIR, True)
+	print('Validation mask file paths loaded.')
+
+	validation_batch_generator = Image_Generator(validation_image_filenames, validation_tsi_filenames, TRAINING_BATCH_SIZE)
+	print('Validation generator initialized.')
 
 
 	model.summary()
