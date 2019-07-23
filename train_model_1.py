@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
 	out_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/'
 
-	save_params(EXPERIMENT_LABEL, layer_info, out_dir)
+	save_params(EXPERIMENT_LABEL, NETWORK_STRUCTURE, out_dir)
 
 	start = time.time()
 
