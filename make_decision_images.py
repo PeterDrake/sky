@@ -9,7 +9,7 @@ import tensorflow._api.v1.keras as K
 import tensorflow._api.v1.keras as K
 import tensorflow as tf
 import numpy as np
-from model_1 import build_model, NotGreen, RemoveGreen, DecidePixelColors
+from model_1 import build_model, DecidePixelColors
 from train_model_1 import corrected_accuracy
 from utils import *
 from config import *
