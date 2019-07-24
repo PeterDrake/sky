@@ -17,7 +17,7 @@ display = 100
 for f in range(len(data)):
 	if f % display == 0:
 		if 'acc' in data[f].keys():
-			acc_loss_batches.append(f/display)
+			acc_loss_batches.append(f)
 			acc.append(data[f]["acc"])
 			loss.append(data[f]["loss"])
 	if 'val_acc' in data[f].keys():
@@ -26,7 +26,7 @@ for f in range(len(data)):
 		max_epoch = data[f]["epoch"] + 1
 
 for i in range(int(max_epoch)):
-	epoch.append(len(acc)/max_epoch * (i + 1))
+	epoch.append(len(data)/max_epoch * (i + 1))
 
 print(acc)
 print(acc_loss_batches)
