@@ -46,15 +46,15 @@ def make_plots(df, data_directory, save_path, i, num_rows):
 		fig, (ax0, ax1, ax2) = plt.subplots(1, 3, figsize=(16, 8), num=i)
 		fig.suptitle("Timestamp: " + time + "\n" + str(i) + " of " + str(num_rows))
 		ax0.imshow(sky_image)  # ax0 is the sky image
-		ax0.set_title("Sky Image", fontsize=28)
+		ax0.set_title("Sky Image", fontsize=50)
 		ax0.set_xticks([])
 		ax0.set_yticks([])
 		ax1.imshow(tsi_mask)  # ax1 is the tsi decision image
-		ax1.set_title("TSI Decision Image", fontsize=28)
+		ax1.set_title("TSI Decision Image", fontsize=50)
 		ax1.set_xticks([])
 		ax1.set_yticks([])
 		ax2.imshow(net_mask)  # ax2 is the network decision image
-		ax2.set_title("Network Decision Image", fontsize=28)
+		ax2.set_title("Network Decision Image", fontsize=50)
 		ax2.set_xticks([])
 		ax2.set_yticks([])
 		# ax3.set_title('FSC and CF Data')  # ax3 is our bar chart
