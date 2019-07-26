@@ -120,6 +120,21 @@ typical_agree_df['cf_diff'] = (typical_agree_df['net_fsc_z'] - typical_agree_df[
 dubious_agree_df['cf_diff'] = (dubious_agree_df['net_fsc_z'] - dubious_agree_df['fsc_z']) ** 2
 typical_agree_df['net_better'] = ((typical_agree_df['fsc_z'] - typical_agree_df['cf_tot']) ** 2) - ((typical_agree_df['net_fsc_z'] - typical_agree_df['cf_tot']) ** 2)
 
+
+print(typical_agree_df)
+typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130701202830]
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
+
+print(typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130701202830])
+print(typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130829002600])
+typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130829002600]
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
+print('hello_2')
+typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20160620172630]
+make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
+print('hello_3')
+
+
 # Sort by column label agreement
 typical_agree_df = typical_agree_df.sort_values(by='agreement')
 dubious_agree_df = dubious_agree_df.sort_values(by='agreement')
@@ -145,17 +160,5 @@ typical_agree_df = typical_agree_df.sort_values(by='cf_diff')
 # typical_agree_df = typical_agree_df.sort_values(by='cf_diff')
 make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/typical_cf_diff/good', 1, NUMBER_DISAGREEMENT_IMGS)
 
-print(typical_agree_df)
-typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == '20130701202830']
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
-
-print(typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130701202830])
-print(typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20130829002600])
-typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == '20130829002600']
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
-print('hello_2')
-typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == '20160620172630']
-make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
-print('hello_3')
 # typical_agree_df = typical_agree_df.loc[typical_agree_df['timestamp_utc'] == 20150703183030]
 # make_plots(typical_agree_df, TYPICAL_DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/disagreement_figs/timestamp', 1, 1)
