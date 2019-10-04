@@ -36,8 +36,8 @@ RAW_DATA_DIR = "D:\\Documents - Hard Drive\\Lewis & Clark\\Research\\Sky ML\\TSI
 # Paths for typical (training & evaluation) and dubious (evaluation) data. These directories need not exist prior to
 # running the experiment from scratch; the preprocessing scripts will create and populate these directories with
 # simplified sky and decision images from the RAW_DATA_DIR.
-TYPICAL_DATA_DIR = "typical_data_no_green"
-DUBIOUS_DATA_DIR = "dubious_data_no_green"
+TYPICAL_DATA_DIR = "typical_data"
+DUBIOUS_DATA_DIR = "dubious_data"
 
 # Path to directory in which network data will be saved. Additionally, network-processed decision images will be
 # saved to results/masks.
@@ -60,7 +60,7 @@ USE_VALID_FSC = True
 # A unique identifier for the network being trained/in use. This can be something like "e2019-001". If testing out several
 # networks, be sure to change this with each run. The training process WILL overwrite any existing saved networks
 # identified by this experiment label.
-EXPERIMENT_LABEL = "e2019-002"
+EXPERIMENT_LABEL = "e2019-003"
 
 # Paths to csv files for typical and dubious data.
 TYPICAL_DATA_CSV = "typical_data/shcu_typical_data.csv"
