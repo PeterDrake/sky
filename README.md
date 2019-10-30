@@ -41,10 +41,10 @@ Once the configuration file is set up, you should be good to go. Now you just ne
 <ol>
   <li> <strong>preprocess_setup_launch.py</strong></li>
   <li><strong>preprocess_stamps_launch.py</strong></li>
-  <li><strong>preprocess_launch.py</strong></li>
-  <li><strong>train_launch.py</strong></li>
-  <li><strong>plot_learning_curve_launch.py</strong></li>
-  <li><strong>process_launch.py</strong></li>
+  <li><strong>center_preprocess_launch.py</strong></li>
+  <li><strong>train_model_1_launch.py</strong></li>
+  <li><strong>plot_learning_curve_keras.py</strong></li>
+  <li><strong>???process_launch.py???</strong></li>
   <li><strong>fsc_launch.py</strong></li>
   <li><strong>fsc_analyze_launch.py</strong></li> 
 </ol>
