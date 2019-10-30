@@ -21,7 +21,6 @@ import numpy as np
 from model_1 import build_model
 from utils import *
 from config import *
-# from train import mask_to_index
 import pickle
 import sys
 import subprocess
@@ -29,6 +28,13 @@ import json
 import time
 import sys
 
+
+def mask_to_index(img):
+	"""Returns a new version of img with an index (in COLORS) for each pixel."""
+	result = np.ndarray(shape=[img.shape[0], img.shape[1]])
+	for i in range(len(COLORS)):
+		result[(img == COLORS[i]).all(axis=2)] = i
+	return result
 
 
 class Image_Generator(Sequence):
@@ -72,13 +78,6 @@ class Image_Generator(Sequence):
 
 		return X, Y
 
-
-def mask_to_index(img):
-	"""Returns a new version of img with an index (in COLORS) for each pixel."""
-	result = np.ndarray(shape=[img.shape[0], img.shape[1]])
-	for i in range(len(COLORS)):
-		result[(img == COLORS[i]).all(axis=2)] = i
-	return result
 
 # def corrected_accuracy(y_true, y_pred):
 # 	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
