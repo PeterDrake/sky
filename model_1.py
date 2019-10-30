@@ -13,7 +13,7 @@ from tensorflow._api.v1.keras.layers import Convolution2D, concatenate, Input, L
 # from keras.models import Model
 # from keras.layers import Convolution2D, concatenate, Input, Layer, MaxPool2D, Add
 from tensorflow._api.v1.keras.utils import plot_model
-from train import *
+# from train import *
 
 
 # class NotGreen(Layer):
