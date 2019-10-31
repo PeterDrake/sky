@@ -12,17 +12,11 @@ from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint, LambdaCallback, Callback
 from tensorboard import TensorBoard
-# from keras.utils import to_categorical
-# from keras.utils.data_utils import Sequence
-# from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
-import tensorflow._api.v1.keras as K
-import tensorflow as tf
-import numpy as np
 from model_1 import build_model
 from utils import *
+import os
 from config import *
 import pickle
-import sys
 import subprocess
 import json
 import time
@@ -79,13 +73,6 @@ class Image_Generator(Sequence):
 		return X, Y
 
 
-# def corrected_accuracy(y_true, y_pred):
-# 	green = tf.constant([[0 for i in range(480)] for j in range(480)], dtype='float32')
-# 	mask = tf.not_equal(tf.reduce_sum(y_true, axis=-1), green)
-# 	correct = tf.cast(tf.equal(tf.argmax(tf.boolean_mask(y_true, mask), axis=-1), tf.argmax(tf.boolean_mask(y_pred, mask), axis=-1)), tf.float32)
-# 	return tf.count_nonzero(correct)/tf.size(correct, out_type=tf.dtypes.int64)
-
-
 def load_filenames(stamps, input_dir, masks):
 	filenames = []
 	if masks:
@@ -111,6 +98,8 @@ if __name__ == '__main__':
 	short_run = sys.argv[1]
 
 	out_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/'
+
+	os.makedirs(out_dir, exist_ok=True)
 
 	save_params(EXPERIMENT_LABEL, NETWORK_STRUCTURE, out_dir)
 
