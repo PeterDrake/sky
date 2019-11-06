@@ -13,12 +13,11 @@ from model_1 import build_model, DecidePixelColors
 # from train_model_1 import corrected_accuracy
 from utils import *
 from config import *
-from train import mask_to_index
+from train_model_1 import mask_to_index
 import pickle
 import sys
 import pandas as pd
 import imageio
-from train import color_mask, index_of
 from process import save_network_mask
 import os
 
@@ -65,6 +64,26 @@ class Image_Generator(Sequence):
 		return X
 
 
+def color_mask(img, i):
+	"""Takes a color mask and returns an image of one-hot vectors. Each vector is all zeroes, except that the ith
+	element of pixels that are not BLUE in img is 1e7. This results in a "mask" that can be added to the output of a
+	network layer, overwhelming that layer's normal output to dominate softmax."""
+	r, c = img.shape[:-1]
+	bool_mask = np.zeros((r, c), dtype=bool)
+	bool_mask[(img != BLUE).any(axis=2)] = True
+	result = np.zeros((r, c, 4), dtype=np.float32)
+	result[bool_mask, i] = 1e7
+	return result
+
+
+def index_of(x, sequence):
+	"""Returns the index of x in sequence. We can't figure out how to do this more directly; the standard index method
+	doesn't work when x is a numpy array."""
+	for i, item in enumerate(sequence):
+		if (item == x).all():
+			return i
+
+
 def load_filenames(stamps, input_dir, masks):
 	filenames = []
 	if masks:
@@ -91,7 +110,7 @@ if __name__ == '__main__':
 
 	custom = {'DecidePixelColors': DecidePixelColors}
 
-	model = tf._api.v1.keras.models.load_model('model_1_22.h5', custom_objects=custom)
+	model = tf._api.v1.keras.models.load_model('model_1_23.h5', custom_objects=custom)
 
 	# with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
 	# 	train_stamps = pickle.load(f)
@@ -140,6 +159,7 @@ if __name__ == '__main__':
 	list_of_sky_filenames = []
 	list_of_tsi_filenames = []
 
+	# don't need ?
 	# images = pd.DataFrame(columns=['name', 'prediction'])
 	predictions = pd.DataFrame()
 
