@@ -64,6 +64,32 @@ class Image_Generator(Sequence):
 		return X
 
 
+def get_network_mask(timestamp, exp_label, input_dir):
+	"""Returns the mask of a given timestamp from the network's output."""
+	network_dir = RESULTS_DIR + '/' + exp_label + '/'
+	args = read_parameters(network_dir)
+	step_version = read_last_iteration_number(network_dir)
+	layer_info = args['Layer info'].split()
+	_, _, saver, _, x, y, _, _ = build_net(layer_info)
+	with tf.Session() as sess:
+		saver.restore(sess, network_dir + 'weights-' + str(step_version))
+		img = load_inputs([timestamp], input_dir)
+		mask = out_to_image(y.eval(feed_dict={x: img}))[0]
+	return mask
+
+
+def save_network_mask(timestamp, exp_label, mask=None):
+	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
+	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
+	if mask is None:
+		mask = get_network_mask(timestamp, exp_label)
+	path = RESULTS_DIR + '/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+		timestamp) + '/'
+	os.makedirs(path, exist_ok=True)
+	file = 'networkmask_' + exp_label + '.' + timestamp + '.png'
+	show_skymask(mask, save_instead=True, save_path=path + file)
+
+
 def color_mask(img, i):
 	"""Takes a color mask and returns an image of one-hot vectors. Each vector is all zeroes, except that the ith
 	element of pixels that are not BLUE in img is 1e7. This results in a "mask" that can be added to the output of a
