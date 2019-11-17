@@ -8,11 +8,11 @@ from tensorflow._api.v1.keras.layers import Convolution2D, concatenate, Input, L
 import tensorflow as tf
 
 LOSSES = {
-	"conv2d_2": "categorical_crossentropy",
+	"conv2d_3": "categorical_crossentropy",
 }
 
 METRICS = {
-	"conv2d_2": 'accuracy',
+	"conv2d_3": 'accuracy',
 }
 
 
