@@ -17,33 +17,13 @@ from tensorflow._api.v1.keras.utils import plot_model
 # from train import *
 
 
-# class NotGreen(Layer):
-# 	def __init__(self, batch_size=TRAINING_BATCH_SIZE, **kwargs):
-# 		self.batch_size = batch_size
-# 		super().__init__(**kwargs)
-# 		self.green = tf.constant(np.full((self.batch_size, 480, 480), 4), dtype='uint8')
-#
-# 	def call(self, input_tensor):
-# 		return tf.not_equal(input_tensor, self.green)
-#
-# 	def get_config(self):
-# 		base_config = super().get_config()
-# 		return base_config
-#
-#
-# class RemoveGreen(Layer):
-# 	def __init__(self, **kwargs):
-# 		super().__init__(**kwargs)
-#
-# 	def call(self, inputs):
-# 		nongreen_4d = tf.stack([inputs[0], inputs[0], inputs[0], inputs[0]], axis=3)
-# 		all_zeros = tf.zeros_like(inputs[1], dtype='float32')
-# 		return tf.where(nongreen_4d, inputs[1], all_zeros)
-#
-# 	def get_config(self, **kwargs):
-# 		base_config = super().get_config()
-# 		return base_config
+LOSSES = {
+	"conv2d_2": "categorical_crossentropy",
+}
 
+METRICS = {
+	"conv2d_2": 'accuracy',
+}
 
 class DecidePixelColors(Layer):
 	def __init__(self, **kwargs):

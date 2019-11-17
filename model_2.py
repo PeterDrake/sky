@@ -7,6 +7,14 @@ from tensorflow._api.v1.keras.layers import Convolution2D, concatenate, Input, L
 import tensorflow as tf
 from tensorflow._api.v1.keras.utils import plot_model
 
+LOSSES = {
+	"conv2d_1": "categorical_crossentropy",
+}
+
+METRICS = {
+	"conv2d_1": 'accuracy',
+}
+
 class DecidePixelColors(Layer):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

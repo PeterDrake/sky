@@ -131,21 +131,13 @@ if __name__ == '__main__':
 	validation_tsi_filenames = load_filenames(valid_stamps, TYPICAL_DATA_DIR, True)
 	print('Validation mask file paths loaded.')
 
-	losses = {
-		"conv2d_1": "categorical_crossentropy",
-	}
-
-	metrics = {
-		"conv2d_1": 'accuracy',
-	}
-
 	m = importlib.import_module(MODEL_TYPE)
 	print(m)
 
 	model = m.build_model()
 	print('Model built.')
 	# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-	model.compile(optimizer='adam', loss=losses, metrics=metrics)
+	model.compile(optimizer='adam', loss=m.LOSSES, metrics=m.METRICS)
 	print('Model compiled.')
 
 	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
