@@ -139,10 +139,10 @@ if __name__ == '__main__':
 		"conv2d_2": 'accuracy',
 	}
 
-	m = importlib.import_module('.build_model', package='model_1')
+	m = importlib.import_module('model.py', package=None)
 	print(m)
 
-	model = m()
+	model = m.build_model()
 	print('Model built.')
 	# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	model.compile(optimizer='adam', loss=losses, metrics=metrics)
