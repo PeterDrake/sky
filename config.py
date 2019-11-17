@@ -53,6 +53,9 @@ RESULTS_DIR = "results"
 # Variable used to run our code on BLT. To run locally set to False.
 BLT = True
 
+# Variable to indicate which network architecture (model) to use.
+MODEL_TYPE = "model_1.py"
+
 # Variable to only use validation data for computing fsc (Saves a lot of time if just making plots with validation data,
 # but you'll want to set this to false if you are planning on making plots that involve other data)
 USE_VALID_FSC = True

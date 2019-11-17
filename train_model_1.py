@@ -12,10 +12,11 @@ from tensorflow._api.v1.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint, LambdaCallback, Callback
 from tensorboard import TensorBoard
-from model_1 import build_model
 from utils import *
 import os
 from config import *
+import importlib
+# from MODEL_TYPE import build_model
 import pickle
 import subprocess
 import json
@@ -138,8 +139,10 @@ if __name__ == '__main__':
 		"conv2d_2": 'accuracy',
 	}
 
+	m = importlib.import_module(MODEL_TYPE)
+	print(m)
 
-	model = build_model()
+	model = m.build_model()
 	print('Model built.')
 	# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	model.compile(optimizer='adam', loss=losses, metrics=metrics)
