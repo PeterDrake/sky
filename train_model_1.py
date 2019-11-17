@@ -139,7 +139,7 @@ if __name__ == '__main__':
 		"conv2d_2": 'accuracy',
 	}
 
-	m = importlib.import_module('model.py', package=None)
+	m = importlib.import_module('model_1.py', package=None)
 	print(m)
 
 	model = m.build_model()
