@@ -98,7 +98,7 @@ def save_params(job_number, layer_info, out_dir):
 if __name__ == '__main__':
 	short_run = sys.argv[1]
 
-	out_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/'
+	out_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/'
 
 	os.makedirs(out_dir, exist_ok=True)
 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
 		"conv2d_2": 'accuracy',
 	}
 
-	m = importlib.import_module('model_1')
+	m = importlib.import_module(MODEL_TYPE)
 	print(m)
 
 	model = m.build_model()
@@ -186,5 +186,5 @@ if __name__ == '__main__':
 	F.write('Learning rate:\t' + str(LEARNING_RATE) + '\n')
 	F.close()
 
-	model.save('model_1_23.h5')
+	model.save(MODEL_TYPE + '.h5')
 
