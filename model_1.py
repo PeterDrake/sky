@@ -71,27 +71,8 @@ def build_model():
 	conv2 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat2)
 	concat3 = concatenate([conv2, sky_images], axis=3)
 	conv3 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat3)
-	# Determine which pixels in TSI decision image are non-green
-	# nongreen = NotGreen(TRAINING_BATCH_SIZE)(tsi)
-	# Output of the network, where each pixel has a probability for each color, but all probabilities are zero
-	# for pixels that are green in TSI decision image
-	# logits_without_green = RemoveGreen()([nongreen, conv3])
-	# Output of the network, where the maximum logit index replaces the vector for each pixel
-	# print('CONV3____')
-	# print(tf.keras.backend.dtype(conv3))
+
 	decision = DecidePixelColors()(conv3)
-	# Build and return the model
-	# print('SKY_IMAGES')
-	# print(tf.keras.backend.dtype(sky_images))
-	# print('TSI')
-	# print(tf.keras.backend.dtype(tsi))
-	# print('CONV3')
-	# print(tf.keras.backend.dtype(conv3))
-	# print('DECISION')
-	# print(tf.keras.backend.dtype(decision))
-	# decision = tf.keras.backend.cast(decision, dtype='float32')
-	# print('DECISION2')
-	# print(tf.keras.backend.dtype(decision))
 
 	model = Model(inputs=[sky_images], outputs=[conv3, decision]) # in outputs, , decision
 	return model

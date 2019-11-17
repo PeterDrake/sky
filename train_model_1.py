@@ -132,11 +132,11 @@ if __name__ == '__main__':
 	print('Validation mask file paths loaded.')
 
 	losses = {
-		"conv2d_2": "categorical_crossentropy",
+		"conv2d_1": "categorical_crossentropy",
 	}
 
 	metrics = {
-		"conv2d_2": 'accuracy',
+		"conv2d_1": 'accuracy',
 	}
 
 	m = importlib.import_module(MODEL_TYPE)
