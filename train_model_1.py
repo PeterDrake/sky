@@ -16,7 +16,7 @@ from utils import *
 import os
 from config import *
 import importlib
-# from MODEL_TYPE import build_model
+# from model_1 import build_model
 import pickle
 import subprocess
 import json
@@ -139,10 +139,10 @@ if __name__ == '__main__':
 		"conv2d_2": 'accuracy',
 	}
 
-	m = importlib.import_module(MODEL_TYPE)
+	m = importlib.import_module('.build_model', package='model_1')
 	print(m)
 
-	model = m.build_model()
+	model = m()
 	print('Model built.')
 	# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	model.compile(optimizer='adam', loss=losses, metrics=metrics)
