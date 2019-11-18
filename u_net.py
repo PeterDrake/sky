@@ -85,7 +85,7 @@ def build_model():
 	conv9 = Conv2D(2, 3, activation='relu', padding='same', data_format='channels_last', kernel_initializer='he_normal')(conv9)
 	conv10 = Conv2D(filters=4, kernel_size=1, padding='same', data_format='channels_last', activation='relu')(conv9)
 
-	# decision = DecidePixelColors()(conv10)
+	decision = DecidePixelColors()(conv10)
 
-	model = Model(inputs=[sky_images], outputs=[conv10]) # in outputs, , decision
+	model = Model(inputs=[sky_images], outputs=[conv10, decision]) # in outputs, , decision
 	return model
