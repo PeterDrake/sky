@@ -17,13 +17,9 @@ from tensorflow._api.v1.keras.optimizers import *
 from tensorflow._api.v1.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from tensorflow._api.v1.keras import backend as keras
 
-LOSSES = {
-	"conv2d_3": "categorical_crossentropy",
-}
+LOSSES = 'binary_crossentropy'
 
-METRICS = {
-	"conv2d_3": 'accuracy',
-}
+METRICS = ['accuracy']
 
 
 class DecidePixelColors(Layer):
