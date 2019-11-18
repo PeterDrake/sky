@@ -83,7 +83,7 @@ def build_model():
 	conv9 = Conv2D(64, 3, activation='relu', padding='same', data_format='channels_last', kernel_initializer='he_normal')(merge9)
 	conv9 = Conv2D(64, 3, activation='relu', padding='same', data_format='channels_last', kernel_initializer='he_normal')(conv9)
 	conv9 = Conv2D(2, 3, activation='relu', padding='same', data_format='channels_last', kernel_initializer='he_normal')(conv9)
-	conv10 = Conv2D(filters=1, kernel_size=1, padding='same', data_format='channels_last', activation='relu')(conv9)
+	conv10 = Conv2D(filters=4, kernel_size=1, padding='same', data_format='channels_last', activation='relu')(conv9)
 
 	# decision = DecidePixelColors()(conv10)
 
