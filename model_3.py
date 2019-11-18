@@ -33,7 +33,7 @@ def build_model():
 
 	# Create the inputs to the network.
 	sky_images = Input(shape=(480, 480, 3), name='SkyImages')  # sky images
-	tsi = Input(shape=(480, 480), dtype='int64', name='TSIDecisionImages')  # TSI's decision images
+	# tsi = Input(shape=(480, 480), dtype='int64', name='TSIDecisionImages')  # TSI's decision images
 
 	# Main body of the network
 	conv1 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(sky_images)
@@ -44,8 +44,8 @@ def build_model():
 	conv2 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat2)
 	concat3 = concatenate([conv2, sky_images], axis=3)
 	conv3 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat3)
-	concat4 = concatenate([conv3, sky_images], axis=3)
-	conv4 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat4)
+	# concat4 = concatenate([conv3, sky_images], axis=3)
+	conv4 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(conv3)
 
 	decision = DecidePixelColors()(conv4)
 
