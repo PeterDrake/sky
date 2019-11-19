@@ -13,7 +13,7 @@ from model_1 import build_model, DecidePixelColors
 # from train_model_1 import corrected_accuracy
 from utils import *
 from config import *
-from train_model_1 import mask_to_index
+from train_model import mask_to_index
 import pickle
 import sys
 import pandas as pd
