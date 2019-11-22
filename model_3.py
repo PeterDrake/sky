@@ -42,10 +42,9 @@ def build_model():
 	concat1 = concatenate([conv1, maxpool1], axis=3)
 	concat2 = concatenate([maxpool2, concat1], axis=3)
 	conv2 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat2)
-	concat3 = concatenate([conv2, sky_images], axis=3)
-	conv3 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat3)
-	# concat4 = concatenate([conv3, sky_images], axis=3)
-	conv4 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(conv3)
+	conv3 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(conv2)
+	concat3 = concatenate([conv3, sky_images], axis=3)
+	conv4 = Convolution2D(filters=4, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(concat3)
 
 	decision = DecidePixelColors()(conv4)
 
