@@ -16,7 +16,7 @@ from utils import *
 import os
 from config import *
 import importlib
-# from model_1 import build_model
+import matplotlib.pyplot as plt
 import pickle
 import subprocess
 import json
@@ -168,6 +168,26 @@ if __name__ == '__main__':
 						validation_data=validation_batch_generator,
 						validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
 						use_multiprocessing=False, callbacks=[cb_1, tensorboard]) #callbacks=[cb_1, tensorboard, json_logging_callback]
+
+	plt.plot(history.history['acc'])
+	plt.plot(history.history['val_acc'])
+	plt.title('Model accuracy')
+	plt.ylabel('Accuracy')
+	plt.xlabel('Epoch')
+	plt.legend(['Train', 'Test'], loc='upper left')
+	plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/model_acc.png', bbox_inches='tight')
+
+	# Plot training & validation loss values
+	plt.plot(history.history['loss'])
+	plt.plot(history.history['val_loss'])
+	plt.title('Model loss')
+	plt.ylabel('Loss')
+	plt.xlabel('Epoch')
+	plt.legend(['Train', 'Test'], loc='upper left')
+	plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/model_loss.png', bbox_inches='tight')
+
+	with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/training_history', 'wb') as file_pi:
+		pickle.dump(history.history, file_pi)
 
 	stop = time.time()
 	print('Elapsed time:\t' + str(stop - start) + ' seconds')
