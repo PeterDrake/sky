@@ -41,7 +41,7 @@ def build_model():
 	"""Builds and returns the network."""
 	# Create the inputs to the network.
 	sky_images = Input(shape=(480, 480, 3), name='SkyImages')  # sky images
-	tsi = Input(shape=(480, 480), dtype='int64', name='TSIDecisionImages')  # TSI's decision images
+	# tsi = Input(shape=(480, 480), dtype='int64', name='TSIDecisionImages')  # TSI's decision images
 	# Main body of the network
 	conv1 = Convolution2D(filters=32, kernel_size=3, padding='same', data_format='channels_last', activation='relu')(sky_images)
 	maxpool1 = MaxPool2D(pool_size=(1, 100), strides=(1, 1), padding='same', data_format='channels_last')(conv1)
