@@ -173,22 +173,22 @@ if __name__ == '__main__':
     with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/training_history.json', 'w') as f:
         json.dump(str(history.history), f)
 
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
-    plt.title('Model accuracy')
-    plt.ylabel('Accuracy')
-    plt.xlabel('Epoch')
-    plt.legend(['Train', 'Test'], loc='upper left')
-    plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/model_acc.png', bbox_inches='tight')
-
-    # Plot training & validation loss values
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title('Model loss')
-    plt.ylabel('Loss')
-    plt.xlabel('Epoch')
-    plt.legend(['Train', 'Test'], loc='upper left')
-    plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/model_loss.png', bbox_inches='tight')
+    # plt.plot(history.history['acc'])
+    # plt.plot(history.history['val_acc'])
+    # plt.title('Model accuracy')
+    # plt.ylabel('Accuracy')
+    # plt.xlabel('Epoch')
+    # plt.legend(['Train', 'Test'], loc='upper left')
+    # plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/model_acc.png', bbox_inches='tight')
+    #
+    # # Plot training & validation loss values
+    # plt.plot(history.history['loss'])
+    # plt.plot(history.history['val_loss'])
+    # plt.title('Model loss')
+    # plt.ylabel('Loss')
+    # plt.xlabel('Epoch')
+    # plt.legend(['Train', 'Test'], loc='upper left')
+    # plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/model_loss.png', bbox_inches='tight')
 
     stop = time.time()
     print('Elapsed time:\t' + str(stop - start) + ' seconds')
