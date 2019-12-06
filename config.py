@@ -54,7 +54,7 @@ RESULTS_DIR = "results"
 BLT = True
 
 # Variable to indicate which network architecture (model) to use.
-MODEL_TYPE = "model_4"
+MODEL_TYPE = "model_5"
 
 # Variable to only use validation data for computing fsc (Saves a lot of time if just making plots with validation data,
 # but you'll want to set this to false if you are planning on making plots that involve other data)
