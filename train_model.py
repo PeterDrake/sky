@@ -170,7 +170,7 @@ if __name__ == '__main__':
                                   use_multiprocessing=False,
                                   callbacks=[cb_1, tensorboard])  # callbacks=[cb_1, tensorboard, json_logging_callback]
 
-    with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/training_history', 'wb') as file_pi:
+    with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/training_history.txt', 'wb') as file_pi:
         pickle.dump(history.history, file_pi)
 
     plt.plot(history.history['acc'])
