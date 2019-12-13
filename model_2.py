@@ -1,5 +1,6 @@
 """
 Builds the model.
+1 conv -> 2 maxpool -> 1 conv
 """
 
 from tensorflow._api.v1.keras.models import Model

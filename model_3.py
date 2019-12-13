@@ -1,6 +1,6 @@
 """
 Builds the model.
-4 convolution layers
+1 conv -> 2 maxpool -> 3 conv
 """
 
 from tensorflow._api.v1.keras.models import Model

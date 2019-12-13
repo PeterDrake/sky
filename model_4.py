@@ -4,6 +4,7 @@
 # started 6/4/19
 """
 Builds the model.
+2 conv -> 2 maxpool -> 1 conv
 """
 
 import tensorflow._api.v1.keras as K
