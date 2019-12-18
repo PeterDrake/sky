@@ -17,7 +17,7 @@ If you don't have python installed on your system, you will need to download and
 
 Once you have python installed on your system, you will need an integrated development environment (IDE) to make a few code changes specific to your system. We recommend using <a href="https://www.jetbrains.com/pycharm/download/">PyCharm</a> because it has many useful features, is well-documented, and seemlessly integrates with git. 
 
-Whatever environment you decide to use, you will need have the following packages installed prior to running our code: <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), and scipy.</i>
+Whatever environment you decide to use, you will need have the following packages installed prior to running our code: <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), keras, and scipy.</i>
 
 
 ### Downloading the data
