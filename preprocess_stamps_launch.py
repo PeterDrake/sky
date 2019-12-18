@@ -3,17 +3,17 @@ import os
 import pickle
 import time
 from PIL import Image
-from scipy import misc
 from utils import extract_data_from_csv, extract_times_from_files_in_directory, separate_data, BLACK, BLUE
 from config import TYPICAL_DATA_DIR, DUBIOUS_DATA_DIR, DUBIOUS_DATA_CSV
+import imageio
 
 
-def create_constant_mask(color, filename):
+def create_constant_mask(color, filename, filepath):
 	"""Creates a mask where any pixels not always of color are BLUE. Saves it in filename."""
 	b_mask = np.full((480, 480, 3), color)
-	for dirpath, subdirs, files in os.walk(TYPICAL_DATA_DIR + '/simplemask/'):
+	for dirpath, subdirs, files in os.walk(filepath):
 		for file in files:
-			img = misc.imread(os.path.join(dirpath, file))
+			img = np.asarray(imageio.imread(os.path.join(dirpath, file)))
 			b_mask[(img != color).any(axis=2)] = BLUE
 	Image.fromarray(b_mask.astype('uint8')).save(filename)
 
@@ -21,7 +21,7 @@ def create_constant_mask(color, filename):
 def setup(train, valid, test):
 	times = extract_times_from_files_in_directory(TYPICAL_DATA_DIR + "/res")
 	separate_data(times, train, valid, test)
-	create_constant_mask(BLACK, TYPICAL_DATA_DIR + '/always_black_mask.png')
+	create_constant_mask(BLACK, TYPICAL_DATA_DIR + '/always_black_mask.png', TYPICAL_DATA_DIR + '/simplemask/')
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ If you don't have python installed on your system, you will need to download and
 
 Once you have python installed on your system, you will need an integrated development environment (IDE) to make a few code changes specific to your system. We recommend using <a href="https://www.jetbrains.com/pycharm/download/">PyCharm</a> because it has many useful features, is well-documented, and seemlessly integrates with git. 
 
-Whatever environment you decide to use, you will need have the following packages installed prior to running our code: <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), and scipy.</i>
+Whatever environment you decide to use, you will need have the following packages installed prior to running our code: <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), keras, and scipy.</i>
 
 
 ### Downloading the data
@@ -41,10 +41,10 @@ Once the configuration file is set up, you should be good to go. Now you just ne
 <ol>
   <li> <strong>preprocess_setup_launch.py</strong></li>
   <li><strong>preprocess_stamps_launch.py</strong></li>
-  <li><strong>preprocess_launch.py</strong></li>
-  <li><strong>train_launch.py</strong></li>
-  <li><strong>plot_learning_curve_launch.py</strong></li>
-  <li><strong>process_launch.py</strong></li>
+  <li><strong>center_preprocess_launch.py</strong></li>
+  <li><strong>train_model_1_launch.py</strong></li>
+  <li><strong>plot_learning_curve_keras.py</strong></li>
+  <li><strong>make_decision_images.py</strong></li>
   <li><strong>fsc_launch.py</strong></li>
   <li><strong>fsc_analyze_launch.py</strong></li> 
 </ol>

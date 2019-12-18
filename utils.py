@@ -5,9 +5,8 @@ import numpy as np
 import os
 import pandas as pd
 from PIL import Image
-from scipy import misc
-from config import RESULTS_DIR
-
+from config import RESULTS_DIR, EXPERIMENT_LABEL
+import imageio
 # Colors used in the decision image - DO NOT TOUCH
 WHITE = np.array([255, 255, 255])
 BLUE = np.array([0, 0, 255])
@@ -52,12 +51,6 @@ def extract_timestamp(filename):
 	"""Returns the timestamp within filename. Assumes filename ends in something like 20160415235930.jpg or
 	20160415235930.png."""
 	return filename[-18:-4]
-
-
-def extract_exp_label(filename):
-	"""Returns the experiment label within filename of network masks. Assumes filename ends in something like
-	e70-00.20160415235930.png"""
-	return filename[-25:-19]
 
 
 def extract_all_times(directory, subdirs=None):
@@ -334,22 +327,26 @@ def one_hot_to_mask(max_indices, output):
 
 def extract_network_mask_path_from_time(timestamp, exp_label):
 	"""Returns the save path of a network mask. The mask does not necessarily need to exist."""
-	return RESULTS_DIR + '/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
-			timestamp) + '/networkmask_' + exp_label + '.' + timestamp + '.png'
+	return RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+			timestamp) + '/networkmask_' + EXPERIMENT_LABEL + '.' + timestamp + '.png'
+
+
+def get_experiment_label(network_number):
+	return EXPERIMENT_LABEL + '-' + str(network_number)
 
 
 def get_simple_mask(timestamp, input_dir='typical_data'):
 	""" Returns the mask of a given timestamp in the input data directory. Assumes the timestamp is organized in the
 	input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the timestamp
 	20170215000000."""
-	return np.array(misc.imread(extract_mask_path_from_time(timestamp, input_dir)))
+	return np.asarray(imageio.imread(extract_mask_path_from_time(timestamp, input_dir)))
 
 
 def get_network_mask_from_time_and_label(timestamp, exp_label):
 	""" Returns the mask of a given timestamp in the results/exp_label directory. Assumes the timestamp is organized
 	in the input dir so that input_dir/simplemask/2017/0215/simplemask20170215000000.png is the filepath for the
 	timestamp 20170215000000."""
-	return np.array(misc.imread(extract_network_mask_path_from_time(timestamp, exp_label)))
+	return np.asarray(imageio.imread(extract_network_mask_path_from_time(timestamp, exp_label)))
 
 
 def write_list_to_file(data, filename):

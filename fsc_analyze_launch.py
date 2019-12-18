@@ -36,8 +36,11 @@ def extract_arscl_and_image_fsc_from_dataframes(arscl_dataframe, image_dataframe
 	be clean in the aforementioned categories. I.e. NaN values are not permitted. Please us df.dropna() or some other
 	method to handle missing values."""
 	image_times = set(extract_data_from_dataframe(image_dataframe, "timestamp_utc"))
+	print('image_times: ' + str(len(image_times)))
 	arscl_times = set(extract_data_from_dataframe(arscl_dataframe, "timestamp_utc"))
+	print('arscl_times: ' + str(len(arscl_times)))
 	times = image_times.intersection(arscl_times)  # Necessary to correct for missing times
+	print('times: ' + str(len(times)))
 	x, y, residual, residual1 = [], [], [], []
 	mse = 0
 	for t in times:
@@ -75,7 +78,11 @@ if __name__ == "__main__":
 	typical_arscl_dataframe = read_csv_file(TYPICAL_DATA_CSV)  # Contains both ARSCL and TSI Data
 	typical_arscl_dataframe = typical_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	typical_times = load_pickled_file(TYPICAL_VALID_FILE)
+	print('after unpickling')
+	print(typical_times)
 	typical_times = typical_times[0:N_SAMPLES]
+	print('after 0:N_SAMPLES')
+	print(typical_times)
 	typical_arscl_dataframe = typical_arscl_dataframe[typical_arscl_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
@@ -89,8 +96,11 @@ if __name__ == "__main__":
 
 	# Reads data from typical_fsc.csv and uses the times sample from shcu_typical_data.csv to get data for plotting
 	typical_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
+	print(typical_network_dataframe.head())
 	typical_network_dataframe = typical_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
+	print(typical_network_dataframe.head())
 	typical_network_dataframe = typical_network_dataframe[typical_network_dataframe['timestamp_utc'].isin(typical_times)]
+	print(typical_network_dataframe.head())
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)
 
 	# Reads data from dubious_fsc.csv and uses the times sample from shcu_dubious_data.csv to get data for plotting
