@@ -91,21 +91,18 @@ if __name__ == "__main__":
 	dubious_arscl_dataframe = read_csv_file(DUBIOUS_DATA_CSV)  # Contains both ARSCL and TSI Data
 	dubious_arscl_dataframe = dubious_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	dubious_times = load_pickled_file(DUBIOUS_VALID_FILE)  # Change this to TEST_FILE for final plotting.
+	print()
 	dubious_times = dubious_times[0:N_SAMPLES]
 	dubious_arscl_dataframe = dubious_arscl_dataframe[dubious_arscl_dataframe['timestamp_utc'].isin(dubious_times)]
 	dubious_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_arscl_dataframe)
 
 	# Reads data from typical_fsc.csv and uses the times sample from shcu_typical_data.csv to get data for plotting
 	typical_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
-	print(111111)
 	print(typical_network_dataframe.head())
-	print(111111)
 	typical_network_dataframe = typical_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
-	print(222222)
 	print(typical_network_dataframe.head())
-	print(222222)
 	typical_network_dataframe = typical_network_dataframe[typical_network_dataframe['timestamp_utc'].isin(typical_times)]
-	print(333333)
+	print("PROBLEM")
 	print(typical_network_dataframe.head())
 	print(333333)
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)

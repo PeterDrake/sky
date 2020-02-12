@@ -58,7 +58,7 @@ MODEL_TYPE = "model_1"
 
 # Variable to only use validation data for computing fsc (Saves a lot of time if just making plots with validation data,
 # but you'll want to set this to false if you are planning on making plots that involve other data)
-USE_VALID_FSC = True
+USE_VALID_FSC = False
 
 # A unique identifier for the network being trained/in use. This can be something like "e2019-001". If testing out several
 # networks, be sure to change this with each run. The training process WILL overwrite any existing saved networks
