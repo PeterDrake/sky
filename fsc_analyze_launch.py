@@ -83,7 +83,7 @@ if __name__ == "__main__":
 	typical_times = typical_times[0:N_SAMPLES]
 	print('after 0:N_SAMPLES')
 	# print(typical_times)
-	
+
 	typical_arscl_dataframe = typical_arscl_dataframe[typical_arscl_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
@@ -97,11 +97,17 @@ if __name__ == "__main__":
 
 	# Reads data from typical_fsc.csv and uses the times sample from shcu_typical_data.csv to get data for plotting
 	typical_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/typical_fsc.csv')  # Contains NETWORK Data
+	print(111111)
 	print(typical_network_dataframe.head())
+	print(111111)
 	typical_network_dataframe = typical_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
+	print(222222)
 	print(typical_network_dataframe.head())
+	print(222222)
 	typical_network_dataframe = typical_network_dataframe[typical_network_dataframe['timestamp_utc'].isin(typical_times)]
+	print(333333)
 	print(typical_network_dataframe.head())
+	print(333333)
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)
 
 	# Reads data from dubious_fsc.csv and uses the times sample from shcu_dubious_data.csv to get data for plotting
