@@ -83,6 +83,7 @@ if __name__ == "__main__":
 	typical_times = typical_times[0:N_SAMPLES]
 	print('after 0:N_SAMPLES')
 	# print(typical_times)
+	
 	typical_arscl_dataframe = typical_arscl_dataframe[typical_arscl_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
