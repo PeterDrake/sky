@@ -79,10 +79,10 @@ if __name__ == "__main__":
 	typical_arscl_dataframe = typical_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	typical_times = load_pickled_file(TYPICAL_VALID_FILE)
 	print('after unpickling')
-	print(typical_times)
+	# print(typical_times)
 	typical_times = typical_times[0:N_SAMPLES]
 	print('after 0:N_SAMPLES')
-	print(typical_times)
+	# print(typical_times)
 	typical_arscl_dataframe = typical_arscl_dataframe[typical_arscl_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
