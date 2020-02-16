@@ -101,11 +101,14 @@ if __name__ == "__main__":
 	print(typical_network_dataframe.head())
 	typical_network_dataframe = typical_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	print(typical_network_dataframe.head())
+
+
 	typical_network_dataframe = typical_network_dataframe[typical_network_dataframe['timestamp_utc'].isin(typical_times)]
 	print("PROBLEM")
 	print(typical_network_dataframe.head())
-	print(333333)
+	print("PROBLEM")
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)
+
 
 	# Reads data from dubious_fsc.csv and uses the times sample from shcu_dubious_data.csv to get data for plotting
 	dubious_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
