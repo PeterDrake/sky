@@ -1,6 +1,6 @@
 import os
 from config import *
-from make_decision_images import process
+# from make_decision_images import process
 
 
 def launch_process(job_name, input_dir, input_file_path):
