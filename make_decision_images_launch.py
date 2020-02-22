@@ -11,8 +11,7 @@ def launch_process(input_data_csv, job_name, input_dir):
 	if BLT:
 		os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u make_decision_images.py {} {}" -P 1'.format(name, input_dir, input_data_csv))
 	else:
-		process(int(start), int(finish), input_dir, input_data_csv)
-
+		print("")		
 
 if __name__ == "__main__":
 
