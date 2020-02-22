@@ -6,7 +6,7 @@ from config import *
 def launch_process(job_name, input_dir, input_file_path):
 	"""Starts processing tasks."""
 
-	name = job_name + EXPERIMENT_LABEL + '-{:0>2}'.format(i)
+	name = job_name + EXPERIMENT_LABEL
 	custom = {'DecidePixelColors': DecidePixelColors}
 	model = tf._api.v1.keras.models.load_model('model_1.h5', custom_objects=custom)
 
