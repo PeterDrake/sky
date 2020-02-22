@@ -132,25 +132,24 @@ def numbers_to_RGB(array):
 
 
 if __name__ == '__main__':
-	short_run = sys.argv[0:]
 
-	custom = {'DecidePixelColors': DecidePixelColors}
+	# short_run = sys.argv[0:]
+	input_dir = sys.argv[1]
+	input_file_path = sys.argv[2]
 
-	model = tf._api.v1.keras.models.load_model('model_1.h5', custom_objects=custom)
+	with open(input_dir + input_file_path, 'rb') as f:
+		input_file = pickle.load(f)
+	print('Stamps loaded from ' + input_file_path)
 
-	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
-		train_stamps = pickle.load(f)
-	print('Training stamps loaded.')
+	# if short_run == 'True':
+	# 	train_stamps = train_stamps[0:100]
 
-	if short_run == 'True':
-		train_stamps = train_stamps[0:100]
-
-	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
+	image_filenames = load_filenames(input_file, input_dir, False)
 	print('Training image file paths loaded.')
-	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+	tsi_filenames = load_filenames(input_file, input_dir, True)
 	print('Training mask file paths loaded.')
 
-	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
+	batch_generator = Image_Generator(image_filenames, tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Training generator initialized.')
 
 	# with open(TYPICAL_VALID_FILE, 'rb') as f:
@@ -189,7 +188,7 @@ if __name__ == '__main__':
 	# images = pd.DataFrame(columns=['name', 'prediction'])
 	predictions = pd.DataFrame()
 
-	p = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
+	p = model.predict_generator(batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
 	# p = model.predict_generator(validation_batch_generator, steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
 	p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
 
