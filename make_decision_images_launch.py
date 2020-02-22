@@ -7,8 +7,6 @@ def launch_process(job_name, input_dir, input_file_path):
 	"""Starts processing tasks."""
 
 	name = job_name + EXPERIMENT_LABEL
-	custom = {'DecidePixelColors': DecidePixelColors}
-	model = tf._api.v1.keras.models.load_model('model_1.h5', custom_objects=custom)
 
 	if BLT:
 		os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u make_decision_images.py {} {} {}" -P 1'.format(name, input_dir, input_file_path, model))

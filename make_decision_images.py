@@ -133,6 +133,9 @@ def numbers_to_RGB(array):
 
 if __name__ == '__main__':
 
+	custom = {'DecidePixelColors': DecidePixelColors}
+	model = tf._api.v1.keras.models.load_model(MODEL_TYPE + '.h5', custom_objects=custom)
+
 	# short_run = sys.argv[0:]
 	input_dir = sys.argv[1]
 	input_file_path = sys.argv[2]
