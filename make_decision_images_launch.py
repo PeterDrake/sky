@@ -15,7 +15,7 @@ def launch_process(job_name, input_dir, input_file_path):
 
 if __name__ == "__main__":
 
-	launch_process("process-train-stamps", TYPICAL_DATA_DIR, "/train.stamps")
-	launch_process("process-valid-stamps", TYPICAL_DATA_DIR, "/valid.stamps")
-	launch_process("process-poster-test", DUBIOUS_DATA_DIR , "/poster_test.stamps")
+	launch_process("process-train-stamps-", TYPICAL_DATA_DIR, "/train.stamps")
+	launch_process("process-valid-stamps-", TYPICAL_DATA_DIR, "/valid.stamps")
+	launch_process("process-poster-test-", DUBIOUS_DATA_DIR , "/poster_test.stamps")
 	
