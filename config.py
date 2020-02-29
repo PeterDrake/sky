@@ -51,7 +51,7 @@ RESULTS_DIR = "results"
 
 
 # Variable used to run our code on BLT. To run locally set to False.
-BLT = True
+BLT = False
 
 # Variable to indicate which network architecture (model) to use.
 MODEL_TYPE = "model_1"
