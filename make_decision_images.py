@@ -1,4 +1,3 @@
-
 from tensorflow._api.v1.keras.utils import to_categorical, CustomObjectScope
 from tensorflow._api.v1.keras.initializers import glorot_uniform
 from tensorflow.python.keras.utils.data_utils import Sequence
