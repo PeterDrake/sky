@@ -7,7 +7,7 @@ def launch_process(job_name, input_dir, input_file_path):
 	"""Starts processing tasks."""
 
 	name = job_name + EXPERIMENT_LABEL
-	GPU = False
+	GPU = True
 
 	if BLT:
 		if GPU:
