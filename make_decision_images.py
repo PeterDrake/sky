@@ -139,15 +139,15 @@ if __name__ == '__main__':
 	input_file_path = sys.argv[2]
 
 	with open(input_dir + input_file_path, 'rb') as f:
-		input_file = pickle.load(f)
+		input_stamps = pickle.load(f)
 	print('Stamps loaded from ' + input_file_path)
 
 	# if short_run == 'True':
 	# 	train_stamps = train_stamps[0:100]
 
-	image_filenames = load_filenames(input_file, input_dir, False)
+	image_filenames = load_filenames(input_stamps, input_dir, False)
 	print('Training image file paths loaded.')
-	tsi_filenames = load_filenames(input_file, input_dir, True)
+	tsi_filenames = load_filenames(input_stamps, input_dir, True)
 	print('Training mask file paths loaded.')
 
 	batch_generator = Image_Generator(image_filenames, tsi_filenames, TRAINING_BATCH_SIZE)
@@ -189,7 +189,7 @@ if __name__ == '__main__':
 	# images = pd.DataFrame(columns=['name', 'prediction'])
 	predictions = pd.DataFrame()
 
-	p = model.predict_generator(batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
+	p = model.predict_generator(batch_generator, steps=(len(input_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
 	# p = model.predict_generator(validation_batch_generator, steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
 	p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
 
