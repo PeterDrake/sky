@@ -65,6 +65,7 @@ class Image_Generator(Sequence):
 def save_network_mask(timestamp, img):
     """Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
 	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
+    #add error for no img
     path = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
         timestamp) + '/'
     os.makedirs(path, exist_ok=True)
