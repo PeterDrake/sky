@@ -159,9 +159,7 @@ def process_network_masks(timestamps, input_dir):
     list_of_decision_images = p['decide_pixel_colors/ArgMax']
 
     for i in range(len(list_of_decision_images)):
-        file = str(i) + '.png'
         img = numbers_to_RGB(list_of_decision_images[i])
-        imageio.imwrite(file, img)
         save_network_mask(timestamps, img)
 
 # return masks
