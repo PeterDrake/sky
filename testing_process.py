@@ -62,30 +62,14 @@ class Image_Generator(Sequence):
         return X
 
 
-def get_network_mask(timestamp, input_dir):
-    """Returns the mask of a given timestamp from the network's output."""
-    network_dir = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/'
-    args = read_parameters(network_dir)
-    step_version = read_last_iteration_number(network_dir)
-    layer_info = args['Layer info'].split()
-    _, _, saver, _, x, y, _, _ = build_net(layer_info)
-    with tf.Session() as sess:
-        saver.restore(sess, network_dir + 'weights-' + str(step_version))
-        img = load_inputs([timestamp], input_dir)
-        mask = out_to_image(y.eval(feed_dict={x: img}))[0]
-    return mask
-
-
-def save_network_mask(timestamp, mask=None):
+def save_network_mask(timestamp, img):
     """Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
 	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
-    if mask is None:
-        mask = get_network_mask(timestamp, EXPERIMENT_LABEL)
     path = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
         timestamp) + '/'
     os.makedirs(path, exist_ok=True)
     file = 'networkmask_' + EXPERIMENT_LABEL + '.' + timestamp + '.png'
-    show_skymask(mask, save_instead=True, save_path=path + file)
+    show_skymask(img, save_instead=True, save_path=path + file)
 
 
 def color_mask(img, i):
@@ -160,9 +144,7 @@ def process_network_masks(timestamps, input_dir):
 
     for i in range(len(list_of_decision_images)):
         img = numbers_to_RGB(list_of_decision_images[i])
-        save_network_mask(timestamps, img)
-
-# return masks
+        save_network_mask(timestamps[i], img)
 
 
 def process(start, finish, input_dir, input_csv):
@@ -177,13 +159,8 @@ def process(start, finish, input_dir, input_csv):
 
 
 if __name__ == '__main__':
-
     s = int(sys.argv[1])  # Starting index of the timestamp in the typical_data/shcu_typical_data.csv file
     f = int(sys.argv[2])  # Final timestamp to consider
     input_dir = sys.argv[3]
     input_data_csv = sys.argv[4]
     process(s, f, input_dir, input_data_csv)
-
-
-
-
