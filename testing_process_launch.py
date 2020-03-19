@@ -23,7 +23,7 @@ def launch_process(input_data_csv, job_name, input_dir):
         start = batch_length * i
         finish = batch_length * (i + 1) if batch_length * (i + 1) < total_length else total_length
         if BLT:
-            os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u testing_process.py {} {} {} {}" -P 1'.format(name,
+            os.system('SGE_Batch -q gpu.q -r "{}" -c "python3 -u testing_process.py {} {} {} {}" -P 40'.format(name,
                                                                                                       int(start),
                                                                                                       int(finish),
                                                                                                       input_dir,
