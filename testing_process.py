@@ -139,11 +139,11 @@ def process_network_masks(timestamps, input_dir):
     print('Training generator initialized.')
 
     p = model.predict_generator(img_generator, steps=(len(timestamps) // (TRAINING_BATCH_SIZE)), verbose=1)
-    print("P1:")
-    print(p)
+    # print("P1:")
+    # print(p)
     p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
-    print("P2: ")
-    print(p)
+    # print("P2: ")
+    # print(p)
 
     list_of_decision_images = p['decide_pixel_colors/ArgMax']
 
@@ -160,6 +160,7 @@ def process(start, finish, input_dir, input_csv):
             if os.path.isfile(extract_img_path_from_time(t, input_dir)):
                 if os.path.getsize(extract_img_path_from_time(t, input_dir)) != 0:
                     times.append(t)
+    print(times)
     process_network_masks(times, input_dir)
 
 
