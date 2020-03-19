@@ -139,9 +139,11 @@ def process_network_masks(timestamps, input_dir):
     print('Training generator initialized.')
 
     p = model.predict_generator(img_generator, steps=(len(timestamps) // (TRAINING_BATCH_SIZE)), verbose=1)
-    print("P1: " + p)
+    print("P1:")
+    print(p)
     p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
-    print("P2: " + p)
+    print("P2: ")
+    print(p)
 
     list_of_decision_images = p['decide_pixel_colors/ArgMax']
 

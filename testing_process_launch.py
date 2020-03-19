@@ -13,7 +13,7 @@ from process import process
 
 def launch_process(input_data_csv, job_name, input_dir):
     """Starts processing tasks."""
-    
+
     total_length = -1  # This file has a header
     for _ in open(input_data_csv):
         total_length += 1
