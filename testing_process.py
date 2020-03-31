@@ -128,15 +128,17 @@ def process_network_masks(timestamps, input_dir):
     custom = {'DecidePixelColors': DecidePixelColors}
     model = tf._api.v1.keras.models.load_model(MODEL_TYPE + '.h5', custom_objects=custom)
 
-    model.summary()
-
     path_img = load_filenames(timestamps, input_dir, False)
     print('Image file paths loaded.')
+    print('path_img len: ' + len(path_img))
     path_mask = load_filenames(timestamps, input_dir, True)
     print('Mask file paths loaded.')
+    print('path_img len: ' + len(path_img))
 
     img_generator = Image_Generator(path_img, path_mask, TRAINING_BATCH_SIZE)
     print('Training generator initialized.')
+
+    model.summary()
 
     p = model.predict_generator(img_generator, steps=(len(timestamps) // (TRAINING_BATCH_SIZE)), verbose=1)
     # print("P1:")
@@ -146,6 +148,7 @@ def process_network_masks(timestamps, input_dir):
     # print(p)
 
     list_of_decision_images = p['decide_pixel_colors/ArgMax']
+    print('list_of_decision_images: ' + len(list_of_decision_images))
 
     for i in range(len(list_of_decision_images)):
         img = numbers_to_RGB(list_of_decision_images[i])
@@ -160,7 +163,7 @@ def process(start, finish, input_dir, input_csv):
             if os.path.isfile(extract_img_path_from_time(t, input_dir)):
                 if os.path.getsize(extract_img_path_from_time(t, input_dir)) != 0:
                     times.append(t)
-    print(times)
+    print('times len: ' + len(times))
     process_network_masks(times, input_dir)
 
 
