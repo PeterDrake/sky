@@ -1,5 +1,5 @@
-# from keras.utils import to_categorical, CustomObjectScope
-# from keras.initializers import glorot_uniform
+from keras.utils import to_categorical, CustomObjectScope
+from keras.initializers import glorot_uniform
 from tensorflow.python.keras.utils.data_utils import Sequence
 # from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.models import load_model
