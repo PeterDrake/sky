@@ -7,7 +7,7 @@ Builds the model.
 1 conv -> 2 maxpool -> 2conv
 """
 
-import tensorflow._api.v1.keras as K
+import keras as K
 from keras.models import Model
 from keras.layers import Convolution2D, concatenate, Input, Lambda, Layer, MaxPool2D, Add
 # import keras as K
