@@ -8,7 +8,7 @@ set to False in the config file then processing is sequential.
 
 import os
 from config import *
-from process import process
+# from process import process
 
 
 def launch_process(input_data_csv, job_name, input_dir):
