@@ -3,7 +3,7 @@
 from tensorflow.python.keras.utils.data_utils import Sequence
 # from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.models import load_model
-import tensorflow._api.v1.keras as K
+import keras as K
 import tensorflow as tf
 import numpy as np
 from model_1 import build_model, DecidePixelColors
