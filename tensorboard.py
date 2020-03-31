@@ -36,7 +36,7 @@ try:
 except ImportError:
   requests = None
 
-from tensorflow._api.v1.keras.callbacks import *
+from keras.callbacks import *
 
 
 class TensorBoard(Callback):
