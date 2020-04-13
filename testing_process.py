@@ -2,7 +2,7 @@
 # from keras.initializers import glorot_uniform
 # from tensorflow.python.keras.utils.data_utils import Sequence
 # from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.models import load_model
+from tf.keras.models import load_model
 import keras as K
 import tensorflow as tf
 import numpy as np
