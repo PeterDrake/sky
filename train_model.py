@@ -146,12 +146,6 @@ if __name__ == '__main__':
 
     cb_1 = EarlyStopping(monitor='val_loss')
 
-    tensorboard = TensorBoard(log_dir='./logs',
-                              histogram_freq=0,
-                              write_graph=True,
-                              write_images=False,
-                              write_batch_performance=True)
-
     # json_log = open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/log_acc_and_loss.json', mode='wt', buffering=1)
     # json_logging_callback = LambdaCallback(
     # 	on_batch_begin=lambda batch, logs: print(logs),
@@ -167,7 +161,7 @@ if __name__ == '__main__':
                                   validation_data=validation_batch_generator,
                                   validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
                                   use_multiprocessing=False,
-                                  callbacks=[cb_1, tensorboard])  # callbacks=[cb_1, tensorboard, json_logging_callback]
+                                  callbacks=[cb_1])  # callbacks=[cb_1, tensorboard, json_logging_callback]
 
     with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/training_history.json', 'w') as f:
         json.dump(str(history.history), f)
