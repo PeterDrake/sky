@@ -8,10 +8,10 @@ Builds the model.
 """
 
 import keras as K
-from keras.models import Model
-from keras.layers import Convolution2D, concatenate, Input, Lambda, Layer, MaxPool2D, Add
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Convolution2D, concatenate, Input, Lambda, Layer, MaxPool2D, Add
 import tensorflow as tf
-from keras.utils import plot_model
+from tensorflow.keras.utils import plot_model
 # from train import *
 
 

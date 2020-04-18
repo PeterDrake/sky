@@ -8,9 +8,9 @@
 Trains the model.
 """
 
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
-from keras.callbacks import EarlyStopping, ModelCheckpoint, LambdaCallback, Callback
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, LambdaCallback, Callback
 from utils import *
 import os
 from config import *
