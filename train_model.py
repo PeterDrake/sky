@@ -11,7 +11,6 @@ Trains the model.
 from keras.utils import to_categorical
 from tensorflow.python.keras.utils.data_utils import Sequence
 from keras.callbacks import EarlyStopping, ModelCheckpoint, LambdaCallback, Callback
-from tensorboard import TensorBoard
 from utils import *
 import os
 from config import *
