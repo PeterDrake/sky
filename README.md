@@ -44,7 +44,7 @@ Once the configuration file is set up, you should be good to go. Now you just ne
   <li><strong>center_preprocess_launch.py</strong></li>
   <li><strong>train_model_launch.py</strong></li>
   <li><strong>plot_learning_curve_keras.py</strong></li>
-  <li><strong>make_decision_images.py</strong></li>
+  <li><strong>testing_process_launch.py</strong></li>
   <li><strong>fsc_launch.py</strong></li>
   <li><strong>fsc_analyze_launch.py</strong></li> 
 </ol>

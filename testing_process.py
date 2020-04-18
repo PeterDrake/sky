@@ -1,12 +1,12 @@
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
-#import tensorflow as tf
+# import tensorflow.compat.v1 as tf
+# tf.disable_v2_behavior()
+import tensorflow as tf
 import keras as K
 # from keras.utils import to_categorical, CustomObjectScope
 from keras.initializers import glorot_uniform
 from tensorflow.python.keras.utils.data_utils import Sequence
 # from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.models import load_model
+from tf.keras.models import load_model
 import numpy as np
 from model_1 import build_model, DecidePixelColors
 # from train_model_1 import corrected_accuracy
