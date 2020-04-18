@@ -1,5 +1,3 @@
-# import tensorflow.compat.v1 as tf
-# tf.disable_v2_behavior()
 import tensorflow as tf
 from tensorflow import keras
 # import tensorflow.keras as K
@@ -132,10 +130,10 @@ def process_network_masks(timestamps, input_dir):
 
     path_img = load_filenames(timestamps, input_dir, False)
     print('Image file paths loaded.')
-    print('path_img len: ' + len(path_img))
+    print('path_img len: ' + str(len(path_img)))
     path_mask = load_filenames(timestamps, input_dir, True)
     print('Mask file paths loaded.')
-    print('path_img len: ' + len(path_img))
+    print('path_img len: ' + str(len(path_img)))
 
     img_generator = Image_Generator(path_img, path_mask, TRAINING_BATCH_SIZE)
     print('Training generator initialized.')
