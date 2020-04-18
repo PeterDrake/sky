@@ -15,7 +15,7 @@ import pickle
 import sys
 import pandas as pd
 import imageio
-from process import save_network_mask
+# from process import save_network_mask
 import os
 
 
