@@ -162,7 +162,7 @@ def process(start, finish, input_dir, input_csv):
             if os.path.isfile(extract_img_path_from_time(t, input_dir)):
                 if os.path.getsize(extract_img_path_from_time(t, input_dir)) != 0:
                     times.append(t)
-    print('times len: ' + len(times))
+    print('times len: ' + str(len(times)))
     process_network_masks(times, input_dir)
 
 
