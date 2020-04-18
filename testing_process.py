@@ -1,7 +1,8 @@
 # import tensorflow.compat.v1 as tf
 # tf.disable_v2_behavior()
 import tensorflow as tf
-import keras as K
+from tensorflow import keras
+# import keras as K
 # from keras.utils import to_categorical, CustomObjectScope
 from keras.initializers import glorot_uniform
 from tensorflow.python.keras.utils.data_utils import Sequence
@@ -127,7 +128,7 @@ def process_network_masks(timestamps, input_dir):
 	check to make sure that the image exists. This must be done by the user before calling this method."""
 
     custom = {'DecidePixelColors': DecidePixelColors}
-    model = tf.keras.models.load_model(MODEL_TYPE + '.h5', custom_objects=custom)
+    model = keras.models.load_model(MODEL_TYPE + '.h5', custom_objects=custom)
 
     path_img = load_filenames(timestamps, input_dir, False)
     print('Image file paths loaded.')
