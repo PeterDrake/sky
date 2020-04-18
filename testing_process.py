@@ -1,4 +1,6 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+#import tensorflow as tf
 import keras as K
 # from keras.utils import to_categorical, CustomObjectScope
 from keras.initializers import glorot_uniform
