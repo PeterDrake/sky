@@ -79,10 +79,11 @@ if __name__ == "__main__":
 	typical_arscl_dataframe = typical_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	typical_times = load_pickled_file(TYPICAL_VALID_FILE)
 	print('after unpickling')
-	print(typical_times)
+	# print(typical_times)
 	typical_times = typical_times[0:N_SAMPLES]
 	print('after 0:N_SAMPLES')
-	print(typical_times)
+	# print(typical_times)
+
 	typical_arscl_dataframe = typical_arscl_dataframe[typical_arscl_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
@@ -90,6 +91,7 @@ if __name__ == "__main__":
 	dubious_arscl_dataframe = read_csv_file(DUBIOUS_DATA_CSV)  # Contains both ARSCL and TSI Data
 	dubious_arscl_dataframe = dubious_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	dubious_times = load_pickled_file(DUBIOUS_VALID_FILE)  # Change this to TEST_FILE for final plotting.
+	print()
 	dubious_times = dubious_times[0:N_SAMPLES]
 	dubious_arscl_dataframe = dubious_arscl_dataframe[dubious_arscl_dataframe['timestamp_utc'].isin(dubious_times)]
 	dubious_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(dubious_arscl_dataframe, dubious_arscl_dataframe)
@@ -99,9 +101,14 @@ if __name__ == "__main__":
 	print(typical_network_dataframe.head())
 	typical_network_dataframe = typical_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	print(typical_network_dataframe.head())
+
+
 	typical_network_dataframe = typical_network_dataframe[typical_network_dataframe['timestamp_utc'].isin(typical_times)]
+	print("PROBLEM")
 	print(typical_network_dataframe.head())
+	print("PROBLEM")
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)
+
 
 	# Reads data from dubious_fsc.csv and uses the times sample from shcu_dubious_data.csv to get data for plotting
 	dubious_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data

@@ -1,11 +1,9 @@
-
 from tensorflow._api.v1.keras.utils import to_categorical, CustomObjectScope
 from tensorflow._api.v1.keras.initializers import glorot_uniform
 from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow._api.v1.keras.callbacks import EarlyStopping, ModelCheckpoint
-# from tensorflow._api.v1.keras.models import load_model
+from tensorflow._api.v1.keras.models import load_model
 # from keras.models import load_model
-import tensorflow._api.v1.keras as K
 import tensorflow._api.v1.keras as K
 import tensorflow as tf
 import numpy as np
@@ -63,31 +61,14 @@ class Image_Generator(Sequence):
 
 		return X
 
-
-def get_network_mask(timestamp, exp_label, input_dir):
-	"""Returns the mask of a given timestamp from the network's output."""
-	network_dir = RESULTS_DIR + '/' + exp_label + '/'
-	args = read_parameters(network_dir)
-	step_version = read_last_iteration_number(network_dir)
-	layer_info = args['Layer info'].split()
-	_, _, saver, _, x, y, _, _ = build_net(layer_info)
-	with tf.Session() as sess:
-		saver.restore(sess, network_dir + 'weights-' + str(step_version))
-		img = load_inputs([timestamp], input_dir)
-		mask = out_to_image(y.eval(feed_dict={x: img}))[0]
-	return mask
-
-
-def save_network_mask(timestamp, exp_label, mask=None):
+def save_network_mask(timestamp, img):
 	"""Saves the skymasks created by the neural network in results/experiment_label/masks/year/monthday/
 	eg. results/e70-00/masks/2016/0904/ and creates filename eg. networkmask_e70-00.20160904233000.png"""
-	if mask is None:
-		mask = get_network_mask(timestamp, exp_label)
-	path = RESULTS_DIR + '/' + exp_label + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
+	path = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
 		timestamp) + '/'
 	os.makedirs(path, exist_ok=True)
-	file = 'networkmask_' + exp_label + '.' + timestamp + '.png'
-	show_skymask(mask, save_instead=True, save_path=path + file)
+	file = 'networkmask_' + EXPERIMENT_LABEL + '.' + timestamp + '.png'
+	show_skymask(img, save_instead=True, save_path=path + file)
 
 
 def color_mask(img, i):
@@ -132,25 +113,27 @@ def numbers_to_RGB(array):
 
 
 if __name__ == '__main__':
-	short_run = sys.argv[0:]
 
 	custom = {'DecidePixelColors': DecidePixelColors}
+	model = tf._api.v1.keras.models.load_model(MODEL_TYPE + '.h5', custom_objects=custom)
 
-	model = tf._api.v1.keras.models.load_model('model_1_23.h5', custom_objects=custom)
+	# short_run = sys.argv[0:]
+	input_dir = sys.argv[1]
+	input_file_path = sys.argv[2]
 
-	with open(TYPICAL_DATA_DIR + '/train.stamps', 'rb') as f:
-		train_stamps = pickle.load(f)
-	print('Training stamps loaded.')
+	with open(input_dir + input_file_path, 'rb') as f:
+		input_stamps = pickle.load(f)
+	print('Stamps loaded from ' + input_file_path)
 
-	if short_run == 'True':
-		train_stamps = train_stamps[0:100]
+	# if short_run == 'True':
+	# 	train_stamps = train_stamps[0:100]
 
-	training_image_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, False)
+	image_filenames = load_filenames(input_stamps, input_dir, False)
 	print('Training image file paths loaded.')
-	training_tsi_filenames = load_filenames(train_stamps, TYPICAL_DATA_DIR, True)
+	tsi_filenames = load_filenames(input_stamps, input_dir, True)
 	print('Training mask file paths loaded.')
 
-	training_batch_generator = Image_Generator(training_image_filenames, training_tsi_filenames, TRAINING_BATCH_SIZE)
+	batch_generator = Image_Generator(image_filenames, tsi_filenames, TRAINING_BATCH_SIZE)
 	print('Training generator initialized.')
 
 	# with open(TYPICAL_VALID_FILE, 'rb') as f:
@@ -189,20 +172,20 @@ if __name__ == '__main__':
 	# images = pd.DataFrame(columns=['name', 'prediction'])
 	predictions = pd.DataFrame()
 
-	p = model.predict_generator(training_batch_generator, steps=(len(train_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
+	p = model.predict_generator(batch_generator, steps=(len(input_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
 	# p = model.predict_generator(validation_batch_generator, steps=(len(valid_stamps) // (TRAINING_BATCH_SIZE)), verbose=1)
 	p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
 
 	list_of_decision_images = p['decide_pixel_colors/ArgMax']
 
-	os.mkdir('Network_Decision_Images_1')
+	# os.mkdir('Network _Decision_Images_1')
 
 	for i in range(len(list_of_decision_images)):
-		# file = str(i) + '.png'
+		file = str(i) + '.png'
 		img = numbers_to_RGB(list_of_decision_images[i])
 		timestamp = extract_timestamp(list_of_sky_filenames[i])
-		# imageio.imwrite(file, img)
-		save_network_mask(timestamp, EXPERIMENT_LABEL, img)
+		imageio.imwrite(file, img)
+		save_network_mask(timestamp, img)
 
 	print(list_of_sky_filenames)
 	print(list_of_tsi_filenames)

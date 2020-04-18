@@ -40,9 +40,9 @@ Navigate to the file path you have specified in the config file as RAW_DATA_DIR.
 Once the configuration file is set up, you should be good to go. Now you just need to run the files ending in launch.py in the following order:
 <ol>
   <li> <strong>preprocess_setup_launch.py</strong></li>
-  <li><strong>preprocess_stamps_launch.py</strong></li>
+  <li><strong>preprocess_stamps_launch.py<a/strong></li>
   <li><strong>center_preprocess_launch.py</strong></li>
-  <li><strong>train_model_1_launch.py</strong></li>
+  <li><strong>train_model_launch.py</strong></li>
   <li><strong>plot_learning_curve_keras.py</strong></li>
   <li><strong>make_decision_images.py</strong></li>
   <li><strong>fsc_launch.py</strong></li>

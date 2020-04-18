@@ -98,6 +98,7 @@ def fsc(input_data_file, output_data_csv):
 	else:
 		times = sorted(list(extract_data_from_csv(input_data_file, 'timestamp_utc')))
 	spacing = int(len(times)/100)
+	# print("test: " + str(len(times)))
 	with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + output_data_csv, 'w') as f:
 		f.write("timestamp_utc,fsc_z,fsc_thn_z,fsc_opq_z" + "\n")
 		count = 0
