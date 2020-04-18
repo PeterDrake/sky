@@ -4,7 +4,7 @@ import keras as K
 # from keras.initializers import glorot_uniform
 # from tensorflow.python.keras.utils.data_utils import Sequence
 # from keras.callbacks import EarlyStopping, ModelCheckpoint
-from tf.keras.models import load_model
+from keras.models import load_model
 import numpy as np
 from model_1 import build_model, DecidePixelColors
 # from train_model_1 import corrected_accuracy
