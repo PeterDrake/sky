@@ -125,8 +125,7 @@ def process_network_masks(timestamps, input_dir):
     """Processes images corresponding to a list of timestamps. Saves each mask in the network directory. Does NOT
 	check to make sure that the image exists. This must be done by the user before calling this method."""
 
-    custom = {'DecidePixelColors': DecidePixelColors}
-    model = keras.models.load_model(MODEL_TYPE + '.h5', custom_objects=custom)
+    model = keras.models.load_model(MODEL_TYPE + '.h5', custom_objects={'DecidePixelColors': DecidePixelColors})
 
     path_img = load_filenames(timestamps, input_dir, False)
     print('Image file paths loaded.')
@@ -142,6 +141,7 @@ def process_network_masks(timestamps, input_dir):
 
     p = model.predict_generator(img_generator, steps=len(timestamps), verbose=1)
     p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
+    print(p.keys())
 
     list_of_decision_images = p['decide_pixel_colors/ArgMax']
     print('list_of_decision_images: ' + len(list_of_decision_images))
