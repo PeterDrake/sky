@@ -15,10 +15,8 @@ from utils import *
 import os
 from config import *
 import importlib
-import matplotlib.pyplot as plt
 import pickle
 import subprocess
-import json
 import time
 import sys
 
@@ -146,42 +144,12 @@ if __name__ == '__main__':
 
     cb_1 = EarlyStopping(monitor='val_loss')
 
-    # json_log = open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/log_acc_and_loss.json', mode='wt', buffering=1)
-    # json_logging_callback = LambdaCallback(
-    # 	on_batch_begin=lambda batch, logs: print(logs),
-    # 	on_batch_end=lambda epoch, logs: json_log.write(
-    # 		json.dumps({'batch': float(epoch), 'loss': float(logs['conv2d_2_loss']), 'acc': float(logs['conv2d_2_acc'])}) + '\n'),
-    # 	on_epoch_end=lambda epoch, logs: json_log.write(
-    # 		json.dumps({'epoch': float(epoch), 'val_loss': float(logs['val_conv2d_2_loss']), 'val_acc': float(logs['val_conv2d_2_acc'])}) + '\n'),
-    # 	on_train_end=lambda logs: json_log.close()
-    # )
-
     history = model.fit_generator(generator=training_batch_generator,
                                   steps_per_epoch=len(train_stamps) // TRAINING_BATCH_SIZE, epochs=10, verbose=1,
                                   validation_data=validation_batch_generator,
                                   validation_steps=len(valid_stamps) // TRAINING_BATCH_SIZE,
                                   use_multiprocessing=False,
                                   callbacks=[cb_1])  # callbacks=[cb_1, tensorboard, json_logging_callback]
-
-    with open(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/training_history.json', 'w') as f:
-        json.dump(str(history.history), f)
-
-    # plt.plot(history.history['acc'])
-    # plt.plot(history.history['val_acc'])
-    # plt.title('Model accuracy')
-    # plt.ylabel('Accuracy')
-    # plt.xlabel('Epoch')
-    # plt.legend(['Train', 'Test'], loc='upper left')
-    # plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/model_acc.png', bbox_inches='tight')
-    #
-    # # Plot training & validation loss values
-    # plt.plot(history.history['loss'])
-    # plt.plot(history.history['val_loss'])
-    # plt.title('Model loss')
-    # plt.ylabel('Loss')
-    # plt.xlabel('Epoch')
-    # plt.legend(['Train', 'Test'], loc='upper left')
-    # plt.savefig(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/' + MODEL_TYPE + '/model_loss.png', bbox_inches='tight')
 
     stop = time.time()
     print('Elapsed time:\t' + str(stop - start) + ' seconds')

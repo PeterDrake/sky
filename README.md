@@ -17,7 +17,7 @@ If you don't have python installed on your system, you will need to download and
 
 Once you have python installed on your system, you will need an integrated development environment (IDE) to make a few code changes specific to your system. We recommend using <a href="https://www.jetbrains.com/pycharm/download/">PyCharm</a> because it has many useful features, is well-documented, and seemlessly integrates with git. 
 
-Whatever environment you decide to use, you will need have the following packages installed prior to running our code: <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), keras, and scipy.</i>
+Whatever environment you decide to use, you will need have the following packages installed prior to running our code: <i>tensorflow, numpy, matplotlib, pandas, pickle, pillow (PIL), keras, time, imageio and scipy.</i>
 
 
 ### Downloading the data
@@ -37,16 +37,16 @@ After downloading our code from our repository, open the configuration file (con
 
 Navigate to the file path you have specified in the config file as RAW_DATA_DIR. Then create two new directories named SkyImage and CloudMask and put the skyimage and cldmask tar files in their respective directories. Once the files are organized, running unpack_tars.py will unpack all of the tarred files into their appropriate subdirectories in CloudMask and SkyImage.
 
-Once the configuration file is set up, you should be good to go. Now you just need to run the files ending in launch.py in the following order:
+Once the configuration file is set up, you should be good to go. Now you just need to run the files in the order below:
 <ol>
-  <li> <strong>preprocess_setup_launch.py</strong></li>
-  <li><strong>preprocess_stamps_launch.py<a/strong></li>
-  <li><strong>center_preprocess_launch.py</strong></li>
+  <li> <strong>preprocess_setup.py</strong> (Creates directories)</li>
+  <li><strong>preprocess_stamps.py</strong> (Separates timestamps into different files)</li>
+  <li><strong>center_preprocess_launch.py</strong> (Centers all )</li>
   <li><strong>train_model_launch.py</strong></li>
   <li><strong>plot_learning_curve_keras.py</strong></li>
   <li><strong>testing_process_launch.py</strong></li>
   <li><strong>fsc_launch.py</strong></li>
-  <li><strong>fsc_analyze_launch.py</strong></li> 
+  <li><strong>fsc_analyze.py</strong></li> 
 </ol>
 
 Note that you can change various training-specific parameters in config.py and run train_launch.py several times without needing to run the preprocessesing tasks again. For example - once the preprocessing tasks are done and you've trained the network once, you may wish to try out a different learning rate or train for a different number of batches. You can do this simply by modifying EXPERIMENT_LABEL in config.py so that your existing network is not overwritten, and then change LEARNING_RATE and NUM_TRAINING_BATCHES to your desired values. Once these changes have been made, running train_launch.py will begin training a new network with your new configurations.
