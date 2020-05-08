@@ -19,6 +19,8 @@ import pickle
 import subprocess
 import time
 import sys
+import tensorflow as tf
+tf.compat.v1.disable_v2_behavior()
 
 
 def mask_to_index(img):
@@ -128,7 +130,7 @@ if __name__ == '__main__':
     print('Validation mask file paths loaded.')
 
     m = importlib.import_module(MODEL_TYPE)
-    print(m)
+    print("Model Type: " + MODEL_TYPE)
 
     model = m.build_model()
     print('Model built.')
