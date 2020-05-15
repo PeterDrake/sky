@@ -20,7 +20,7 @@ import subprocess
 import time
 import sys
 import tensorflow as tf
-tf.compat.v1.disable_v2_behavior()
+# tf.compat.v1.disable_v2_behavior() # needs to be enabled to make the current version of model work
 
 
 def mask_to_index(img):
