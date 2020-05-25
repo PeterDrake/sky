@@ -16,11 +16,14 @@ from tensorflow.keras.utils import plot_model
 
 
 LOSSES = {
-	"conv2d_2": "categorical_crossentropy",
+	# "conv2d_2": "categorical_crossentropy",
+	"decide_pixel_colors": "categorical_crossentropy",
+
 }
 
 METRICS = {
-	"conv2d_2": 'accuracy',
+	# "conv2d_2": 'accuracy',
+	"decide_pixel_colors": 'accuracy',
 }
 
 class DecidePixelColors(Layer):
