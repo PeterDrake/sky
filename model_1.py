@@ -16,14 +16,11 @@ from tensorflow.keras.utils import plot_model
 
 
 LOSSES = {
-	# "conv2d_2": "categorical_crossentropy",
-	"decide_pixel_colors": "categorical_crossentropy",
-
+	"conv2d_2": "categorical_crossentropy",
 }
 
 METRICS = {
-	# "conv2d_2": 'accuracy',
-	"decide_pixel_colors": 'accuracy',
+	"conv2d_2": 'accuracy',
 }
 
 class DecidePixelColors(Layer):
@@ -55,8 +52,8 @@ def build_model():
 
 	decision = DecidePixelColors()(conv3)
 
-	# model = Model(inputs=[sky_images], outputs=[conv3, decision]) # in outputs, , decision
-	model = Model(inputs=[sky_images], outputs=[decision]) # testing only one output
+	model = Model(inputs=[sky_images], outputs=[conv3, decision]) # in outputs, , decision
+	# model = Model(inputs=[sky_images], outputs=[decision]) # testing only one output
 	return model
 
 
