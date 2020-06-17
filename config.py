@@ -54,6 +54,8 @@ RESULTS_DIR = "results"
 BLT = True
 
 # Variable to indicate which network architecture (model) to use.
+# This should be the same name
+# Ex: model_1.py = model_1
 MODEL_TYPE = "model_1"
 
 # Variable to only use validation data for computing fsc (Saves a lot of time if just making plots with validation data,

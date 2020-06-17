@@ -18,7 +18,9 @@ def create_constant_mask(color, filename, filepath):
 	Image.fromarray(b_mask.astype('uint8')).save(filename)
 
 
-def setup(train, valid, test):
+def create_stamps(train, valid, test):
+	"""Creates .stamps files which contains timestamps of the dataset. These files are
+	divided by percentages determined in the separate_data function. Also creates constant mask"""
 	times = extract_times_from_files_in_directory(TYPICAL_DATA_DIR + "/res")
 	separate_data(times, train, valid, test)
 	create_constant_mask(BLACK, TYPICAL_DATA_DIR + '/always_black_mask.png', TYPICAL_DATA_DIR + '/simplemask/')
@@ -31,7 +33,7 @@ if __name__ == "__main__":
 	train_stamp_path = TYPICAL_DATA_DIR + '/train.stamps'
 	valid_stamp_path = TYPICAL_DATA_DIR + '/valid.stamps'
 	test_stamp_path = TYPICAL_DATA_DIR + '/test.stamps'
-	setup(train_stamp_path, valid_stamp_path, test_stamp_path)
+	create_stamps(train_stamp_path, valid_stamp_path, test_stamp_path)
 	print("Finished. Stamps saved at: ", train_stamp_path, ", ", valid_stamp_path, ", ", test_stamp_path)
 
 	# For dubious data

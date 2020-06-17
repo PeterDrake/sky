@@ -8,10 +8,10 @@ Builds the model.
 """
 
 import keras as K
-from keras.models import Model
-from keras.layers import Convolution2D, concatenate, Input, Lambda, Layer, MaxPool2D, Add
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Convolution2D, concatenate, Input, Lambda, Layer, MaxPool2D, Add
 import tensorflow as tf
-from keras.utils import plot_model
+from tensorflow.keras.utils import plot_model
 # from train import *
 
 
@@ -28,7 +28,7 @@ class DecidePixelColors(Layer):
 		super().__init__(**kwargs)
 
 	def call(self, input_tensor):
-		return tf.argmax(input_tensor, axis=3)
+		return tf.math.argmax(input_tensor, axis=3)
 
 	def get_config(self):
 		base_config = super().get_config()
@@ -52,7 +52,8 @@ def build_model():
 
 	decision = DecidePixelColors()(conv3)
 
-	model = Model(inputs=[sky_images], outputs=[conv3, decision]) # in outputs, , decision
+	# model = Model(inputs=[sky_images], outputs=[conv3, decision]) # in outputs, , decision
+	model = Model(inputs=[sky_images], outputs=[conv3]) # testing only one output
 	return model
 
 
