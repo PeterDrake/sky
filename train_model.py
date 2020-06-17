@@ -83,11 +83,10 @@ def load_filenames(stamps, input_dir, masks):
     return filenames
 
 
-def save_params(job_number, layer_info, out_dir):
+def save_params(job_number, out_dir):
     """Write information about this experiment to a file parameters.txt in out_dir."""
     F = open(out_dir + 'parameters.txt', "w+")
     F.write("Job number:\t" + str(job_number) + "\n")
-    F.write("Layer info:\t" + ' '.join(layer_info) + "\n")
     label = subprocess.check_output(["git", "rev-parse", "HEAD"])
     F.write("Git commit:\t" + str(label)[2:-3:] + "\n")
     F.close()
@@ -100,7 +99,7 @@ if __name__ == '__main__':
 
     os.makedirs(out_dir, exist_ok=True)
 
-    save_params(EXPERIMENT_LABEL, NETWORK_STRUCTURE, out_dir)
+    save_params(EXPERIMENT_LABEL, out_dir)
 
     start = time.time()
 
