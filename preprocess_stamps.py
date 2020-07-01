@@ -8,6 +8,7 @@ from config import TYPICAL_DATA_DIR, DUBIOUS_DATA_DIR, DUBIOUS_DATA_CSV
 import imageio
 
 
+# TODO Find out where this will be used and move it there
 def create_constant_mask(color, filename, filepath):
 	"""
 	Creates a mask where any pixels not always of color are BLUE. This mask is used later
@@ -31,7 +32,8 @@ def create_stamps(train, valid, test):
 	divided by percentages determined in the separate_data function. Also creates constant mask."""
 	times = extract_times_from_files_in_directory(TYPICAL_DATA_DIR + "/res")
 	separate_data(times, train, valid, test)
-	create_constant_mask(BLACK, TYPICAL_DATA_DIR + '/always_black_mask.png', TYPICAL_DATA_DIR + '/simplemask/')
+	# TODO Remove this line once we figure out where it belongs.
+	# create_constant_mask(BLACK, TYPICAL_DATA_DIR + '/always_black_mask.png', TYPICAL_DATA_DIR + '/simplemask/')
 
 
 def create_typical_data_stamps():

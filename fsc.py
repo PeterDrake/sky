@@ -3,9 +3,10 @@ from utils import *
 from config import *
 
 
+# TODO This belongs in utils
 def find_center(mask):
 	"""Returns the center of the locations of the first and last non-black pixels and the difference in height
-	between them. Returns the center (y, x) and the average radius."""
+	between them. Returns the center (r, c) and the average radius."""
 	top, bottom, left, right = find_circle_boundary(mask)
 	vertical_radius = (bottom - top) / 2
 	horizontal_radius = (right - left) / 2
@@ -62,11 +63,11 @@ def get_fsc(mask, threshold=0.645):
 	cloud_pixels = 0
 	thin_pixels = 0
 	t, b, l, r = find_circle_boundary(mask)
-	center, rad = find_center(mask)
+	(y, x), rad = find_center(mask)  # TODO Should probably be center_row, center_column
 	new_r = threshold * rad
 	for i in range(t, b + 1):
 		for j in range(l, r + 1):
-			if (i - center[0]) ** 2 + (j - center[1]) ** 2 > new_r ** 2:
+			if (i - y) ** 2 + (j - x) ** 2 > new_r ** 2:
 				# mask[i, j] = [0, 0, 0] # Uncomment this to show the portion used to calculate fsc
 				continue
 			color = tuple(mask[i, j])

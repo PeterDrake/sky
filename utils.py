@@ -232,6 +232,7 @@ def extract_img_path_from_time_raw(time, input_dir):
 	return str()
 
 
+# TODO This and many other places should avoid the word "mask" in favor of "decision image"
 def extract_mask_path_from_time_raw(time, input_dir):
 	"""Extracts the path of a mask from the timestamp and input directory. This is intended to be used for finding sky
 	mask paths in the RAW_DATA_DIR."""

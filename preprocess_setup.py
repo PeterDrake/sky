@@ -74,11 +74,10 @@ def setup(output_dir, timestamp_data_csv):
     print("Batches prepared. Writing batches to file.")
     for i in range(len(batches)):
         name = res_dir + "/batch" + str(i) + ".txt"
-        f = open(name, 'w')
-        print("Writing batch {} data to {}".format(i, name))
-        for time in batches[i]:
-            f.write(time + '\n')
-        f.close()
+        with open(name, 'w') as f:
+            print("Writing batch {} data to {}".format(i, name))
+            for time in batches[i]:
+                f.write(time + '\n')
     print("Timestamp files complete.")
 
 
