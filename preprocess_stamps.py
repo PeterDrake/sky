@@ -19,14 +19,16 @@ def create_constant_mask(color, filename, filepath):
 	b_mask = np.full((480, 480, 3), color)
 	for dirpath, subdirs, files in os.walk(filepath):
 		for file in files:
+			print("Constant mask includes " + file)
 			img = np.asarray(imageio.imread(os.path.join(dirpath, file)))
+			print(img.shape)
 			b_mask[(img != color).any(axis=2)] = BLUE
 	Image.fromarray(b_mask.astype('uint8')).save(filename)
 
 
 def create_stamps(train, valid, test):
 	"""Creates .stamps files which contains timestamps of the dataset. These files are
-	divided by percentages determined in the separate_data function. Also creates constant mask"""
+	divided by percentages determined in the separate_data function. Also creates constant mask."""
 	times = extract_times_from_files_in_directory(TYPICAL_DATA_DIR + "/res")
 	separate_data(times, train, valid, test)
 	create_constant_mask(BLACK, TYPICAL_DATA_DIR + '/always_black_mask.png', TYPICAL_DATA_DIR + '/simplemask/')
