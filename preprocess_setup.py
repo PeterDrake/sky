@@ -29,7 +29,7 @@ def make_batches_by_size(timestamps, batch_size=PREPROCESS_BATCH_SIZE):
     """Returns a set of batches of timestamps for preprocessing."""
     timestamps = list(timestamps)
     num_batches = math.ceil(len(timestamps) / batch_size)
-    shuffle(timestamps)  # TODO: If this is just for preprocessing, why bother shuffling?
+    # shuffle(timestamps)  # Shuffled because we'll coarsely chop this list into training, validation, and test
     time_batches = []
     for i in range(int(num_batches) - 1):
         time_batches += [timestamps[i * batch_size:(i + 1) * batch_size]]

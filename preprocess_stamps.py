@@ -9,7 +9,13 @@ import imageio
 
 
 def create_constant_mask(color, filename, filepath):
-	"""Creates a mask where any pixels not always of color are BLUE. Saves it in filename."""
+	"""
+	Creates a mask where any pixels not always of color are BLUE. This mask is used later
+	so that the system won't have to learn to classify the pixels that are the same color in all TSI decision images.
+	:param color: Pixels not this color in all TSI decision image will be BLUE in the saved image.
+	:param filename: File (including full pathname) to write output image.
+	:param filepath: Directory containing TSI decision images (possibly in subdirectories).
+	"""
 	b_mask = np.full((480, 480, 3), color)
 	for dirpath, subdirs, files in os.walk(filepath):
 		for file in files:
@@ -26,20 +32,18 @@ def create_stamps(train, valid, test):
 	create_constant_mask(BLACK, TYPICAL_DATA_DIR + '/always_black_mask.png', TYPICAL_DATA_DIR + '/simplemask/')
 
 
-if __name__ == "__main__":
-	start = time.clock()
-	# For typical data
-	print("Creating training, validation, and test stamps for typical data")
+def create_typical_data_stamps():
+	global train_stamp_path, valid_stamp_path, test_stamp_path
 	train_stamp_path = TYPICAL_DATA_DIR + '/train.stamps'
 	valid_stamp_path = TYPICAL_DATA_DIR + '/valid.stamps'
 	test_stamp_path = TYPICAL_DATA_DIR + '/test.stamps'
 	create_stamps(train_stamp_path, valid_stamp_path, test_stamp_path)
-	print("Finished. Stamps saved at: ", train_stamp_path, ", ", valid_stamp_path, ", ", test_stamp_path)
 
-	# For dubious data
-	print("Creating validation and test stamps for dubious data")
-	valid_stamp_path = DUBIOUS_DATA_DIR + '/poster_valid.stamps'  # TODO: Rename these to valid and test .stamps
-	test_stamp_path = DUBIOUS_DATA_DIR + '/poster_test.stamps'
+
+def create_dubious_data_stamps():
+	global valid_stamp_path, test_stamp_path
+	valid_stamp_path = DUBIOUS_DATA_DIR + '/valid.stamps'
+	test_stamp_path = DUBIOUS_DATA_DIR + '/test.stamps'
 	ratio_valid_test = 0.6  # The ratio of validation to testing data for dubious data.
 	timestamps = extract_data_from_csv(DUBIOUS_DATA_CSV, "timestamp_utc")
 	timestamps = list(timestamps)
@@ -49,5 +53,14 @@ if __name__ == "__main__":
 		pickle.dump(valid_stamps, f)
 	with open(test_stamp_path, 'wb') as f:
 		pickle.dump(test_stamps, f)
+
+
+if __name__ == "__main__":
+	start = time.clock()
+	print("Creating training, validation, and test stamps for typical data")
+	create_typical_data_stamps()
+	print("Finished. Stamps saved at: ", train_stamp_path, ", ", valid_stamp_path, ", ", test_stamp_path)
+	print("Creating validation and test stamps for dubious data")
+	create_dubious_data_stamps()
 	print("Finished. Stamps saved at: ", valid_stamp_path, ", ", test_stamp_path)
 	print("Time elapsed: " + str(time.clock() - start) + " seconds.")

@@ -265,8 +265,8 @@ def separate_data(timestamps, train_stamp_path='train.stamps', valid_stamp_path=
 
 
 def separate_stamps(timestamps, test_ratio, valid_ratio, train_ratio):
-	"""Shuffles stamps and returns three lists: 20% of the stamps for
-	testing, 16% for validation, and the rest for training."""
+	"""Shuffles (a copy of) timestamps and divides it into three lists: test, valid, and train. Returns those three
+	lists."""
 	if test_ratio + valid_ratio + train_ratio == 1:
 		timestamps = list(timestamps)
 		test = timestamps[0:int(len(timestamps) * test_ratio)]
