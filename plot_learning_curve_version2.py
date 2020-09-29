@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from config import *
 from keras.models import load_model
 
-model = load_model('model.h5')
+model = load_model('model_1.h5')
 
 
 # Plot training & validation accuracy values
