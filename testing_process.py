@@ -139,14 +139,14 @@ def process_network_masks(timestamps, input_dir):
     print('Training generator initialized.')
 
     model.summary()
-
+    print("Debug A")
     p = model.predict_generator(img_generator, steps=len(timestamps), verbose=1)
     p = {out.name.split(':')[0]: p[i] for i, out in enumerate(model.outputs)}
     print(p.keys())
-
+    print("Debug B")
     list_of_decision_images = p['decide_pixel_colors/ArgMax']
     print('list_of_decision_images: ' + len(list_of_decision_images))
-
+    print("Debug C")
     for i in range(len(list_of_decision_images)):
         img = numbers_to_RGB(list_of_decision_images[i])
         save_network_mask(timestamps[i], img)
