@@ -69,6 +69,7 @@ def save_network_mask(timestamp, img):
     path = RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/masks/' + time_to_year(timestamp) + '/' + time_to_month_and_day(
         timestamp) + '/'
     os.makedirs(path, exist_ok=True)
+    print("Saving a file in " + path)
     file = 'networkmask_' + EXPERIMENT_LABEL + '.' + timestamp + '.png'
     show_skymask(img, save_instead=True, save_path=path + file)
 
