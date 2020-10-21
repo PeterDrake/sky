@@ -10,7 +10,7 @@ all pencil beams pointing straight up.
 
 ## Image Files
 
-- **Photo** The photo of the sky, taken every 30 seconds. Called "sky image" in the arm data.
+- **Photo** The photo of the sky, taken every 30 seconds. Called "sky image" in the ARM data.
 - **TSI mask** Output of the TSI segmentation algorithm, classifying pixels into clear, thin cloud, etc.
 Called "cloud mask" in the ARM data.
 - **Network mask** Corresponding output of the neural network.
