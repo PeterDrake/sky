@@ -27,7 +27,7 @@ This is typically averaged over all TSI maks in a 15-minute interval. Both thick
 
 ## Miscellaneous Terms
 
-- **stamp** A timestamp of a photo (and therefore its corresponding mask).
+- **Stamp** A timestamp of a photo (and therefore its corresponding mask).
 
 ## Data Categories
 
