@@ -26,7 +26,7 @@ Our pipeline involves the following steps.
 1. Run photos through our network to produce network masks.
 1. Use network masks to create a .csv file of network FSCs.
 
-## Produce plots
+## Produce Plots
 
 1. Plot learning curve.
 1. Analyze results (including producing plots for publication).
