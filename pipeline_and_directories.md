@@ -52,6 +52,8 @@ data (these are all generated and therefore *not* under version control)
     tsi_masks (structured like photos)
     network_masks (structured like photos)
     network_fsc.csv
+test (test source code)
+    *.py
 test_data (a couple of days of raw data from ARM for testing)
     SkyImage
 ```
