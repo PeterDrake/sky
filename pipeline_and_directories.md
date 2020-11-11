@@ -1,14 +1,13 @@
 # Pipeline
 
 We assume that all of the ARM data have been downloaded and untarred. We also assume we have the corresponding .csv
-files (listing shallow cumulus timestamps) is in each directory.
+files (listing shallow cumulus timestamps). All of these are in locations outside of this directory.
 
 Our pipeline involves the following steps.
 
 ## Preprocess the Data
 
-1. Clean .csv files to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files into
-   directories typical_data and dubious_data.
+1. Clean .csv files to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files.
 1. Subdivide timestamps into training, validation, and test sets.
 1. Create directories for all timestamps that are listed in the two .csv files.
 1. In batches, preprocess each photo and TSI mask:
@@ -34,25 +33,22 @@ Our pipeline involves the following steps.
 # Directory Structure
 
 ```
-typical_data
+README.md
+src (source code)
+    *.py
+doc (documentation)
+    *.md
+data (these are all generated and therefore *not* under version control)
+    shcu_dubious_data.csv (our cleaned up version)
     shcu_typical_data.csv (our cleaned up version)
     training_timestamps
     validation_timestamps
-    testing_timestamps
+    typical_testing_timestamps
+    dubious_testing_timestamps
     photos
         2012 (and similar years)
             0501 (and similar month/dates)
                 20120501170430_photo.jpg (preprocessed)
-    tsi_masks (structured like photos)
-    network_masks (structured like photos)
-    network_fsc.csv
-dubious_data
-    shcu_dubious_data.csv (our cleaned up version)
-    testing_timestamps
-    photos
-        2012 (and similar years)
-            0501 (and similar month/dates)
-                20120501170430_tsi_mask.png (preprocessed)
     tsi_masks (structured like photos)
     network_masks (structured like photos)
     network_fsc.csv
