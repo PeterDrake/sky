@@ -27,7 +27,8 @@ This is typically averaged over all TSI maks in a 15-minute interval. Both thick
 
 ## Miscellaneous Terms
 
-- **Timestamp** A timestamp of a photo (and therefore its corresponding mask).
+- **Timestamp** A timestamp of a photo (and therefore its corresponding mask). It is stored as a string in the format
+YYYYMMDDhhmmss.
 
 ## Data Categories
 
