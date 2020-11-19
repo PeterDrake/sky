@@ -6,7 +6,7 @@ def raw_photo_path(timestamp):
     """Returns the path of a raw photo file, or None if there is no such file."""
     result = RAW_DATA_DIR + '/SkyImage/'
     import glob
-    dirs = glob.glob(result + 'sgptsiskyimageC1.a1.' + yyyymmdd(timestamp) + '.*')
+    dirs = glob.glob(result + 'sgptsiskyimageC1.a1.' + yyyymmdd(timestamp) + '.*') # end of file name may vary.
     if not dirs:
         return None
     dir = dirs[0]
