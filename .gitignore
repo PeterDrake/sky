@@ -4,13 +4,8 @@
 *~
 venv
 data
-bigdata
-smalldata
 results
 __pycache__
 test_output
 .pytest_cache
-good_data/simpleimage
-good_data/simplemask
-bad_data/simpleimage
-bad_data/simplemask
+
