@@ -17,6 +17,12 @@ class TestCleanCsv(unittest.TestCase):
     def test_notices_missing_raw_photo_path(self):
         self.assertIsNone(self.preprocessor.raw_photo_path('19000418000330'))
 
+    def test_finds_raw_photo(self):
+        self.assertTrue(self.preprocessor.photo_exists('20180418000330'))
+
+    def test_notices_missing_raw_photo(self):
+        self.assertFalse(self.preprocessor.photo_exists('20180418000345'))
+
 
 if __name__ == '__main__':
     unittest.main()

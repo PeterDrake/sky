@@ -1,4 +1,4 @@
-from config import *
+import os
 from utils_timestamp import *
 
 
@@ -16,8 +16,9 @@ class Preprocessor:
             return None
         return dirs[0] + '/sgptsiskyimageC1.a1.' + yyyymmdd(timestamp) + '.' + hhmmss(timestamp) + '.jpg.' + timestamp + '.jpg'
 
-    def photo_exists(self, image_name):
+    def photo_exists(self, timestamp):
         """
         Returns True iff a nonempty raw photo exists with image_name.
         """
-        pass
+        # TODO What about photos of size 0?
+        return os.path.exists(self.raw_photo_path(timestamp))
