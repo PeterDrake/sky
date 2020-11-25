@@ -18,7 +18,7 @@ class Preprocessor:
 
     def photo_exists(self, timestamp):
         """
-        Returns True iff a nonempty raw photo exists with image_name.
+        Returns True iff a nonempty raw photo exists for timestamp.
         """
         path = self.raw_photo_path(timestamp)
         return os.path.exists(path) and os.path.getsize(path) > 0
