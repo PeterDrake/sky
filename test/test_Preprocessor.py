@@ -21,7 +21,11 @@ class TestCleanCsv(unittest.TestCase):
         self.assertTrue(self.preprocessor.photo_exists('20180418000330'))
 
     def test_notices_missing_raw_photo(self):
-        self.assertFalse(self.preprocessor.photo_exists('20180418000345'))
+        self.assertFalse(self.preprocessor.photo_exists('20180418000215'))
+
+    def test_notices_zero_byte_photo(self):
+        # We added this zero-byte file to the test data
+        self.assertFalse(self.preprocessor.photo_exists('20180418000245'))
 
 
 if __name__ == '__main__':

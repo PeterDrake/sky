@@ -20,5 +20,5 @@ class Preprocessor:
         """
         Returns True iff a nonempty raw photo exists with image_name.
         """
-        # TODO What about photos of size 0?
-        return os.path.exists(self.raw_photo_path(timestamp))
+        path = self.raw_photo_path(timestamp)
+        return os.path.exists(path) and os.path.getsize(path) > 0
