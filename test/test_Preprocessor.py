@@ -32,6 +32,16 @@ class TestCleanCsv(unittest.TestCase):
     def test_notices_missing_raw_tsi_mask_path(self):
         self.assertIsNone(self.preprocessor.raw_tsi_mask_path('19000418000330'))
 
+    def test_finds_raw_tsi_mask(self):
+        self.assertTrue(self.preprocessor.tsi_mask_exists('20180418000330'))
+
+    def test_notices_missing_raw_tsi_mask(self):
+        self.assertFalse(self.preprocessor.tsi_mask_exists('20180418000215'))
+
+    def test_notices_zero_byte_tsi_mask(self):
+        # We added this zero-byte file to the test data
+        self.assertFalse(self.preprocessor.tsi_mask_exists('20180418000245'))
+
 
 if __name__ == '__main__':
     unittest.main()

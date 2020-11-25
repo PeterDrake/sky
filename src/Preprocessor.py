@@ -30,3 +30,10 @@ class Preprocessor:
         if not os.path.exists(dir):
             return None
         return dir + '/sgptsicldmaskC1.a1.' + yyyymmdd(timestamp) + '.' + hhmmss(timestamp) + '.png.' + timestamp + '.png'
+
+    def tsi_mask_exists(self, timestamp):
+        """
+        Returns True iff a nonempty raw TSI mask exists for timestamp.
+        """
+        path = self.raw_tsi_mask_path(timestamp)
+        return os.path.exists(path) and os.path.getsize(path) > 0
