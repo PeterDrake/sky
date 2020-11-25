@@ -53,8 +53,10 @@ data (these are all generated and therefore *not* under version control)
     network_masks (structured like photos)
     network_fsc.csv
 raw_csv
+    readme_with_Jess_edits.pdf
     shcu_dubious_data.csv (raw version)
     shcu_typical_data.csv (raw version)
+    TSI_data_explanation.pdf
 test (test source code)
     *.py
 test_data (a couple of days of raw data from ARM for testing)
