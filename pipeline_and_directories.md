@@ -59,8 +59,11 @@ raw_csv
     TSI_data_explanation.pdf
 test (test source code)
     *.py
-test_data (a couple of days of raw data from ARM for testing)
+test_raw_csv (analogous to raw_csv)
     shcu_dubious_data.csv (simple test version in raw form)
     shcu_typical_data.csv (simple test version in raw form)
+test_raw_data (analogous to external raw data directory, but much smaller)
+    CloudMask
     SkyImage
+test_data (analogous to data)
 ```

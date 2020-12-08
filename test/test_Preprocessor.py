@@ -6,10 +6,10 @@ from Preprocessor import *
 class TestCleanCsv(unittest.TestCase):
 
     def setUp(self):
-        self.preprocessor = Preprocessor('../test_data')
+        self.preprocessor = Preprocessor('../test_raw_data', '../test_raw_csv')
 
     def test_finds_raw_photo_path(self):
-        self.assertEqual('../test_data/SkyImage/sgptsiskyimageC1.a1.20180418.000000/sgptsiskyimageC1.a1.20180418.000330.jpg.20180418000330.jpg',
+        self.assertEqual('../test_raw_data/SkyImage/sgptsiskyimageC1.a1.20180418.000000/sgptsiskyimageC1.a1.20180418.000330.jpg.20180418000330.jpg',
                          self.preprocessor.raw_photo_path('20180418000330'))
 
     def test_notices_missing_raw_photo_path(self):
@@ -26,7 +26,7 @@ class TestCleanCsv(unittest.TestCase):
         self.assertFalse(self.preprocessor.photo_exists('20180418000245'))
 
     def test_finds_raw_tsi_mask_path(self):
-        self.assertEqual('../test_data/CloudMask/sgptsicldmaskC1.a1.20180418/sgptsicldmaskC1.a1.20180418.000330.png.20180418000330.png',
+        self.assertEqual('../test_raw_data/CloudMask/sgptsicldmaskC1.a1.20180418/sgptsicldmaskC1.a1.20180418.000330.png.20180418000330.png',
                          self.preprocessor.raw_tsi_mask_path('20180418000330'))
 
     def test_notices_missing_raw_tsi_mask_path(self):

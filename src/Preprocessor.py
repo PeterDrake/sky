@@ -5,8 +5,9 @@ from utils_timestamp import *
 
 class Preprocessor:
 
-    def __init__(self, raw_data_dir):
+    def __init__(self, raw_data_dir, raw_csv_dir):
         self.raw_data_dir = raw_data_dir
+        self.raw_csv_dir = raw_csv_dir
 
     def raw_photo_path(self, timestamp):
         """Returns the path of a raw photo file, or None if there is no such file."""

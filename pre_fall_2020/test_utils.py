@@ -29,7 +29,7 @@ class TestUtil(unittest.TestCase):
 
 	def test_extracts_all_times(self):
 		timestamps = {'20170920195000', '20170920195030', '20170920195100', '20170920195130', '20170920195200'}
-		self.assertEqual(timestamps, extract_all_times('/Users/student/PycharmProjects/sky/test_data/test_simplemask'))
+		self.assertEqual(timestamps, extract_all_times('/Users/student/PycharmProjects/sky/test_raw_data/test_simplemask'))
 
 	def test_extracts_times_from_filenames(self):
 		filenames = {'simplemask20170920195000.png', 'simplemask20170920195030.png', 'simplemask20170920195100.png',
@@ -39,15 +39,15 @@ class TestUtil(unittest.TestCase):
 
 	def test_extracts_times_from_file(self):
 		timestamps = {'20170920195000\n', '20170920195030\n', '20170920195100\n', '20170920195130\n', '20170920195200'}
-		self.assertEqual(timestamps, extract_times_from_file('test_data/test_filename'))
+		self.assertEqual(timestamps, extract_times_from_file('test_raw_data/test_filename'))
 
 	def test_clean_csv(self):
-		with open("test_data/test_csv.csv", "w+") as f:
+		with open("test_raw_data/test_csv.csv", "w+") as f:
 			f.write("There are spaces and one , in this sentence.")
-		clean_csv('test_data/test_csv.csv')
-		with open("test_data/test_csv.csv", "r") as f:
+		clean_csv('test_raw_data/test_csv.csv')
+		with open("test_raw_data/test_csv.csv", "r") as f:
 			self.assertEqual("Therearespacesandone,inthissentence.", f.read())
-		os.remove('test_data/test_csv.csv')
+		os.remove('test_raw_data/test_csv.csv')
 
 	def test_is_series(self):
 		series = pd.Series()
@@ -66,21 +66,21 @@ class TestUtil(unittest.TestCase):
 		self.assertEqual(1, pick_duplicate(series))
 
 	def test_create_img_path(self):
-		dir = 'sky/test_data'
-		self.assertEqual('sky/test_data/simpleimage/2017/0814/', img_save_path('20170814092430', dir))
+		dir = 'sky/test_raw_data'
+		self.assertEqual('sky/test_raw_data/simpleimage/2017/0814/', img_save_path('20170814092430', dir))
 
 	def test_create_mask_path(self):
-		dir = 'sky/test_data'
-		self.assertEqual('sky/test_data/simplemask/2017/0814/', mask_save_path('20170814092430', dir))
+		dir = 'sky/test_raw_data'
+		self.assertEqual('sky/test_raw_data/simplemask/2017/0814/', mask_save_path('20170814092430', dir))
 
 	def test_extract_img_path_from_time(self):
-		dir = 'sky/test_data'
-		self.assertEqual('sky/test_data/simpleimage/2017/0814/simpleimage20170814092430.jpg',
+		dir = 'sky/test_raw_data'
+		self.assertEqual('sky/test_raw_data/simpleimage/2017/0814/simpleimage20170814092430.jpg',
 		extract_img_path_from_time('20170814092430', dir))
 
 	def test_extract_mask_path_from_time(self):
-		dir = 'sky/test_data'
-		self.assertEqual('sky/test_data/simplemask/2017/0814/simplemask20170814092430.png',
+		dir = 'sky/test_raw_data'
+		self.assertEqual('sky/test_raw_data/simplemask/2017/0814/simplemask20170814092430.png',
 		extract_mask_path_from_time('20170814092430', dir))
 
 	def test_extract_mask_path_from_time_raw(self):
