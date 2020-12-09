@@ -60,3 +60,9 @@ class Preprocessor:
                 self.invalid_timestamp_count += 1
         print('Valid timestamps: ' + str(self.valid_timestamp_count))
         print('Invalid timestamps: ' + str(self.invalid_timestamp_count))
+
+
+if __name__ == '__main__':
+    p = Preprocessor('/home/users/jkleiss/TSI_C1', '../raw_csv')
+    p.validate_csv('shcu_dubious_data.csv')
+    p.validate_csv('shcu_typical_data.csv')
