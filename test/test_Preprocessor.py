@@ -42,6 +42,11 @@ class TestCleanCsv(unittest.TestCase):
         # We added this zero-byte file to the test data
         self.assertFalse(self.preprocessor.tsi_mask_exists('20180418000245'))
 
+    def test_finds_correct_numbers_of_valid_and_invalid_timestamps(self):
+        self.preprocessor.validate_csv('shcu_dubious_data.csv')
+        self.assertEqual(1, self.preprocessor.valid_file_count)
+        self.assertEqual(2, self.preprocessor.invalid_file_count)
+
 
 if __name__ == '__main__':
     unittest.main()
