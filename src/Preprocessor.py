@@ -9,8 +9,8 @@ class Preprocessor:
     def __init__(self, raw_data_dir, raw_csv_dir):
         self.raw_data_dir = raw_data_dir
         self.raw_csv_dir = raw_csv_dir
-        self.valid_file_count = 0
-        self.invalid_file_count = 0
+        self.valid_timestamp_count = 0
+        self.invalid_timestamp_count = 0
 
     def raw_photo_path(self, timestamp):
         """Returns the path of a raw photo file, or None if there is no such file."""
@@ -47,12 +47,16 @@ class Preprocessor:
         Looks at all of the timestamps in filename (a .csv file) and remembers how many were valid (i.e., have
         non-empty photos and TSI masks.
         """
-        data = pd.read_csv(self.raw_csv_dir + '/' + filename, converters={'timestamp_utc': str})
+        path = self.raw_csv_dir + '/' + filename
+        print('Validating ' + path)
+        data = pd.read_csv(path, converters={'timestamp_utc': str})
         timestamps = data['timestamp_utc']
-        self.valid_file_count = 0
-        self.invalid_file_count = 0
+        self.valid_timestamp_count = 0
+        self.invalid_timestamp_count = 0
         for t in timestamps:
             if self.photo_exists(t) and self.tsi_mask_exists(t):
-                self.valid_file_count += 1
+                self.valid_timestamp_count += 1
             else:
-                self.invalid_file_count += 1
+                self.invalid_timestamp_count += 1
+        print('Valid timestamps: ' + str(self.valid_timestamp_count))
+        print('Invalid timestamps: ' + str(self.invalid_timestamp_count))

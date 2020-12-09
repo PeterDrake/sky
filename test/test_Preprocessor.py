@@ -44,8 +44,8 @@ class TestCleanCsv(unittest.TestCase):
 
     def test_finds_correct_numbers_of_valid_and_invalid_timestamps(self):
         self.preprocessor.validate_csv('shcu_dubious_data.csv')
-        self.assertEqual(1, self.preprocessor.valid_file_count)
-        self.assertEqual(2, self.preprocessor.invalid_file_count)
+        self.assertEqual(1, self.preprocessor.valid_timestamp_count)
+        self.assertEqual(2, self.preprocessor.invalid_timestamp_count)
 
 
 if __name__ == '__main__':
