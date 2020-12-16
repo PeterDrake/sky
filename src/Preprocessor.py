@@ -50,13 +50,17 @@ class Preprocessor:
         path = self.raw_csv_dir + '/' + filename
         print('Validating ' + path)
         data = pd.read_csv(path, converters={'timestamp_utc': str})
+        print('Data size before removing duplicates: {}'.format(len(data)))
+        data = data.drop_duplicates(subset='timestamp_utc')
+        print('Data size after removing duplicates: {}'.format(len(data)))
         timestamps = data['timestamp_utc']
         self.valid_timestamp_count = 0
         self.invalid_timestamp_count = 0
-        for t in timestamps:
+        for t in timestamps[:2000]:
             if self.photo_exists(t) and self.tsi_mask_exists(t):
                 self.valid_timestamp_count += 1
             else:
+                print(t)
                 self.invalid_timestamp_count += 1
         print('Valid timestamps: ' + str(self.valid_timestamp_count))
         print('Invalid timestamps: ' + str(self.invalid_timestamp_count))
