@@ -9,9 +9,9 @@ class Preprocessor:
     def __init__(self, raw_data_dir, raw_csv_dir, data_dir):
         self.raw_data_dir = raw_data_dir
         self.raw_csv_dir = raw_csv_dir
-        self.valid_timestamp_count = 0
-        self.invalid_timestamp_count = 0
         self.data_dir = data_dir
+        self.valid_timestamp_count = 'Only meaningful if validate_csv has been called'
+        self.invalid_timestamp_count = 'Only meaningful if validate_csv has been called'
 
     def raw_photo_path(self, timestamp):
         """Returns the path of a raw photo file, or None if there is no such file."""
