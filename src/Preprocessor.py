@@ -56,7 +56,7 @@ class Preprocessor:
         timestamps = data['timestamp_utc']
         self.valid_timestamp_count = 0
         self.invalid_timestamp_count = 0
-        for t in timestamps[:2000]:
+        for t in timestamps[:10000]:
             if self.photo_exists(t) and self.tsi_mask_exists(t):
                 self.valid_timestamp_count += 1
             else:
