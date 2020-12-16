@@ -74,6 +74,9 @@ class Preprocessor:
         Writes a cleaned-up version of filename. The filename is read from this Preprocessor's raw_csv_dir and the
         clean version is written to this Preprocessor's data_dir. "Cleaning" means removing duplicate timestamps and
         eliminating timestamps where either the photo or TSI mask is nonexistent or empty.
+
+        This method gets the job done quietly. To instead print more information about what's valid, call
+        validate_csv instead.
         """
         in_path = self.raw_csv_dir + '/' + filename
         print('Reading ' + in_path)
