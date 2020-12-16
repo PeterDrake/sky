@@ -6,11 +6,12 @@ from utils_timestamp import *
 
 class Preprocessor:
 
-    def __init__(self, raw_data_dir, raw_csv_dir):
+    def __init__(self, raw_data_dir, raw_csv_dir, data_dir):
         self.raw_data_dir = raw_data_dir
         self.raw_csv_dir = raw_csv_dir
         self.valid_timestamp_count = 0
         self.invalid_timestamp_count = 0
+        self.data_dir = data_dir
 
     def raw_photo_path(self, timestamp):
         """Returns the path of a raw photo file, or None if there is no such file."""
@@ -45,7 +46,8 @@ class Preprocessor:
     def validate_csv(self, filename):
         """
         Looks at all of the timestamps in filename (a .csv file) and remembers how many were valid (i.e., have
-        non-empty photos and TSI masks.
+        non-empty photos and TSI masks. Also ignores duplicate timestamps. This method is not necessary during normal
+        processing, but may be helpful for verifying that files exist, counting invalid timestamps, etc.
         """
         path = self.raw_csv_dir + '/' + filename
         print('Validating ' + path)
@@ -67,8 +69,27 @@ class Preprocessor:
         print('Valid timestamps: ' + str(self.valid_timestamp_count))
         print('Invalid timestamps: ' + str(self.invalid_timestamp_count))
 
+    def write_clean_csv(self, filename):
+        """
+        Writes a cleaned-up version of filename. The filename is read from this Preprocessor's raw_csv_dir and the
+        clean version is written to this Preprocessor's data_dir. "Cleaning" means removing duplicate timestamps and
+        eliminating timestamps where either the photo or TSI mask is nonexistent or empty.
+        """
+        in_path = self.raw_csv_dir + '/' + filename
+        print('Reading ' + in_path)
+        data = pd.read_csv(in_path, converters={'timestamp_utc': str})
+        data = data.drop_duplicates(subset='timestamp_utc')
+        valid = data['timestamp_utc'].map(lambda t: self.photo_exists(t) and self.tsi_mask_exists(t))
+        data = data[valid]
+        out_path = self.data_dir + '/' + filename
+        print('Writing ' + out_path)
+        if not os.path.exists(self.data_dir):
+            os.makedirs(self.data_dir)
+        data.to_csv(out_path, index=False)
+        print('Done')
+
 
 if __name__ == '__main__':
-    p = Preprocessor('/home/users/jkleiss/TSI_C1', '../raw_csv')
+    p = Preprocessor('/home/users/jkleiss/TSI_C1', '../raw_csv', '../data')
     p.validate_csv('shcu_dubious_data.csv')
     p.validate_csv('shcu_typical_data.csv')

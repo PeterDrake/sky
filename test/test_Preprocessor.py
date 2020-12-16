@@ -6,7 +6,7 @@ from Preprocessor import *
 class TestCleanCsv(unittest.TestCase):
 
     def setUp(self):
-        self.preprocessor = Preprocessor('../test_raw_data', '../test_raw_csv')
+        self.preprocessor = Preprocessor('../test_raw_data', '../test_raw_csv', '../test_data')
 
     def test_finds_raw_photo_path(self):
         self.assertEqual('../test_raw_data/SkyImage/sgptsiskyimageC1.a1.20180418.000000/sgptsiskyimageC1.a1.20180418.000330.jpg.20180418000330.jpg',
@@ -46,6 +46,12 @@ class TestCleanCsv(unittest.TestCase):
         self.preprocessor.validate_csv('shcu_dubious_data.csv')
         self.assertEqual(1, self.preprocessor.valid_timestamp_count)
         self.assertEqual(2, self.preprocessor.invalid_timestamp_count)
+
+    def test_writes_clean_csv(self):
+        self.preprocessor.write_clean_csv('shcu_dubious_data.csv')
+        data = pd.read_csv('../test_data/shcu_dubious_data.csv')
+        # For this file, the clean version only has one valid timestamp
+        self.assertEqual(1, len(data))
 
 
 if __name__ == '__main__':
