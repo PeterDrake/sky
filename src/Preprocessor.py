@@ -91,5 +91,5 @@ class Preprocessor:
 
 if __name__ == '__main__':
     p = Preprocessor('/home/users/jkleiss/TSI_C1', '../raw_csv', '../data')
-    p.validate_csv('shcu_dubious_data.csv')
-    p.validate_csv('shcu_typical_data.csv')
+    p.write_clean_csv('shcu_dubious_data.csv')
+    p.write_clean_csv('shcu_typical_data.csv')
