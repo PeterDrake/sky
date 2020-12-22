@@ -10,7 +10,6 @@ from fsc import *
 import imageio
 from collections import Counter
 
-
 def remove_green(decision_img):
 	"""
 	Returns a copy of decision_img with green pixels replaced with the most common nearby color.
