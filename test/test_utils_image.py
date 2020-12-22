@@ -16,8 +16,13 @@ class TestUtilsImage(unittest.TestCase):
         # plt.show()
 
     def test_finds_circle_edges(self):
-        print(circle_edges(self.tiny))
         self.assertEqual((200, 400, 100, 300), circle_edges(self.tiny))
+
+    def test_finds_center_and_radius(self):
+        (r, c), radius = center_and_radius(self.tiny)
+        self.assertEqual(300, r)
+        self.assertEqual(200, c)
+        self.assertEqual(100, radius)
 
 
 if __name__ == '__main__':
