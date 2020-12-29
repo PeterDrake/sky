@@ -60,3 +60,16 @@ def blacken_outer_ring(photo, center_and_radius):
     _, radius = center_and_radius
     circle = np.fromfunction(lambda r, c, _: (r - 240) ** 2 + (c - 240) ** 2 <= radius ** 2, (480, 480, 3))
     return np.where(circle, photo, CROPPED_BLACK_IMAGE)
+
+
+def remove_sun(mask):
+    """
+    Returns a version of mask with the sun removed. The sun is either a region of yellow pixels or a region of
+    white pixels surrounded by black pixels.
+    """
+    yellow_pixels = (mask == YELLOW).all(axis=2)
+    if yellow_pixels.any():
+        mask[yellow_pixels] = BLACK
+    return mask
+    # TODO Remove white sun
+    # TODO What about regions of thick cloud completely surrounded by black pixels?
