@@ -8,12 +8,12 @@ class TestUtilsImage(unittest.TestCase):
 
     def circle(self, r_center, c_center, radius):
         """
-        Returns a mask with a circle centered at r, c with the specified radius.
+        Returns a mask with a white circle centered at r_center, c_center with the specified radius.
         """
         circle = np.fromfunction(lambda r, c, _: (r - r_center) ** 2 + (c - c_center) ** 2 <= radius ** 2, (640, 480, 3))
-        blue = np.full((640, 480, 3), (255, 255, 255))  # TODO Colors and standard shape should be constants
-        black = np.full((640, 480, 3), (0, 0, 0))
-        return np.where(circle, blue, black)
+        white = np.full((640, 480, 3), WHITE)
+        black = np.full((640, 480, 3), BLACK)
+        return np.where(circle, white, black)
 
     def test_finds_circle_edges(self):
         tiny = self.circle(300, 200, 100)
@@ -73,7 +73,7 @@ class TestUtilsImage(unittest.TestCase):
         photo = np.random.randint(1, 255, (480, 480, 3))
         photo = crop(photo, coords)
         photo = blacken_outer_ring(photo, coords)
-        self.assertTrue(((mask == np.zeros(3)) == (photo == np.zeros(3))).all())  # TODO Define black constant
+        self.assertTrue(((mask == BLACK) == (photo == BLACK)).all())
 
 
 if __name__ == '__main__':

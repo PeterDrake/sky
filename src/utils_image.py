@@ -4,6 +4,17 @@ Utilities for dealing with images.
 
 import numpy as np
 
+# Colors used in masks - DO NOT TOUCH
+WHITE = np.array([255, 255, 255], dtype=np.uint8)
+BLUE = np.array([0, 0, 255], dtype=np.uint8)
+GRAY = np.array([192, 192, 192], dtype=np.uint8)
+BLACK = np.array([0, 0, 0], dtype=np.uint8)
+GREEN = np.array([0, 255, 0], dtype=np.uint8)
+YELLOW = np.array([255, 255, 0], dtype=np.uint8)
+COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
+
+CROPPED_BLACK_IMAGE = np.full((480, 480, 3), BLACK)
+
 
 def circle_edges(mask):
     """
@@ -31,6 +42,7 @@ def center_and_radius(mask):
 def crop(image, center_and_radius):
     """
     Returns a version of image cropped to 480x480, centered on the specified center.
+    :param image 640480x3 image
     :param center_and_radius: (r, c), radius, as returned by center_and_radius
     """
     (r, c), _ = center_and_radius
@@ -47,5 +59,4 @@ def blacken_outer_ring(photo, center_and_radius):
     """
     _, radius = center_and_radius
     circle = np.fromfunction(lambda r, c, _: (r - 240) ** 2 + (c - 240) ** 2 <= radius ** 2, (480, 480, 3))
-    black = np.full((480, 480, 3), (0, 0, 0))  # TODO This should be a constant
-    return np.where(circle, photo, black)
+    return np.where(circle, photo, CROPPED_BLACK_IMAGE)
