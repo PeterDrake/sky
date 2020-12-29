@@ -28,16 +28,24 @@ def center_and_radius(mask):
            (vertical_radius + horizontal_radius) / 2
 
 
-def crop_mask(mask, center_and_radius):
+def crop(image, center_and_radius):
     """
-    Returns a version of mask cropped to 480x480, centered on the specified center.
+    Returns a version of image cropped to 480x480, centered on the specified center.
     :param center_and_radius: (r, c), radius, as returned by center_and_radius
     """
     (r, c), _ = center_and_radius
     # Pad with zeroes (black) in case circle spills out of 480x480 region
-    padded = np.pad(mask, ((100, 100), (100, 100), (0, 0)))
+    padded = np.pad(image, ((100, 100), (100, 100), (0, 0)))
     return padded[r-140:r+340, c-140:c+340]
 
 
-def crop_photo_and_add_border(photo, center_and_radius):
-    pass
+def blacken_outer_ring(photo, center_and_radius):
+    """
+    Returns a version of photo with all pixels beyond radius away from center colored black.
+    :param photo: 480x480x3 numpy array
+    :param center_and_radius: (r, c), radius, as returned by center_and_radius
+    """
+    _, radius = center_and_radius
+    circle = np.fromfunction(lambda r, c, _: (r - 240) ** 2 + (c - 240) ** 2 <= radius ** 2, (480, 480, 3))
+    black = np.full((480, 480, 3), (0, 0, 0))  # TODO This should be a constant
+    return np.where(circle, photo, black)

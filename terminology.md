@@ -15,7 +15,9 @@ all pencil beams pointing straight up.
 Called "cloud mask" in the ARM data.
 - **Network mask** Corresponding output of the neural network.
 
-Note that neither of these are bit masks, as there are more than two categories.
+Note that neither of these are bit masks, as there are more than two categories (clear, thin cloud, thick cloud, etc.).
+
+For functions that work on both photos and masks, we'll use the generic term "image".
 
 ## Scalar Values
 
