@@ -89,7 +89,22 @@ class TestUtilsImage(unittest.TestCase):
         self.assertTrue((black_sun == after).all())
 
     def test_removes_white_sun(self):
-        pass
+        tiny = self.add_circle(300, 200, 100, WHITE)  # TODO Tiny is not the best name
+        tiny = self.add_circle(250, 150, 50, BLACK, tiny)  # Fake shadowband
+        tiny = self.add_circle(350, 250, 5, GREEN, tiny)  # Fake TSI segmentation "line"
+
+        tiny = self.add_circle(330, 250, 5, GRAY, tiny)  # Fake thin cloud
+        tiny = self.add_circle(310, 250, 5, BLUE, tiny)  # Fake clear sky
+
+
+        white_sun = self.add_circle(250, 150, 25, WHITE, tiny)
+        coords = center_and_radius(white_sun)
+        mask = crop(white_sun, coords)
+        after = remove_sun(mask)
+        # To see the image, uncomment these lines
+        # plt.imshow(after)
+        # plt.show()
+        self.assertTrue((tiny == after).all())
 
 
 if __name__ == '__main__':

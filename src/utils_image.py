@@ -3,6 +3,9 @@ Utilities for dealing with images.
 """
 
 import numpy as np
+import skimage.color
+import skimage.measure
+import matplotlib.pyplot as plt
 
 # Colors used in masks - DO NOT TOUCH
 WHITE = np.array([255, 255, 255], dtype=np.uint8)
@@ -70,6 +73,25 @@ def remove_sun(mask):
     yellow_pixels = (mask == YELLOW).all(axis=2)
     if yellow_pixels.any():
         mask[yellow_pixels] = BLACK
+    else:
+        # Make the whole sky thick cloud to reduce the number of segments
+        overcast = np.copy(mask)
+        overcast[(mask == BLUE).all(axis=2)] = WHITE
+        overcast[(mask == GRAY).all(axis=2)] = WHITE
+        # Convert the image to grayscale
+        gray = skimage.color.rgb2gray(overcast) * 255
+        print(np.unique(gray))
+        # Segment the mask
+        labels, n = skimage.measure.label(gray, connectivity=1, return_num=True)
+        print(np.unique(labels))
+        print(n)
+        # For each segment
+        for label in range(1, n + 1):
+            region = labels[labels == label]
+            print(region.shape)
+            print(region.sum())
+        #   If a point in the segment is white and the entire boundary is black (using find_boundaries)
+        #     Paint this segment black and return the revised mask
     return mask
     # TODO Remove white sun
     # TODO What about regions of thick cloud completely surrounded by black pixels?
