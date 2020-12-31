@@ -6,6 +6,7 @@ import numpy as np
 import skimage.color
 import skimage.measure
 import skimage.segmentation
+import scipy.interpolate
 import matplotlib.pyplot as plt
 
 # Colors used in masks - DO NOT TOUCH
@@ -101,3 +102,17 @@ def remove_sun(mask):
                     # This one is the sun!
                     mask[region] = BLACK
                     return mask
+
+
+def remove_green_lines(mask):
+    """
+    Removes green lines from TSI mask, replacing each green pixel with the color of the nearest non-green pixel.
+    """
+    nongreen = np.argwhere(np.invert((mask == GREEN).all(axis=2)))
+    z = mask[nongreen[:, 0], nongreen[:, 1]]
+    # Isolate non-green pixels
+    # Make a mesh grid of the entire image
+    xx, yy = np.meshgrid(np.arange(480), np.arange(480))
+    # Interpolate non-green pixels over the mesh
+    interpolate = scipy.interpolate.NearestNDInterpolator(nongreen, z)
+    return interpolate(yy, xx)

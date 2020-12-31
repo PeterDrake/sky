@@ -104,6 +104,25 @@ class TestUtilsImage(unittest.TestCase):
         # plt.show()
         self.assertTrue((black_sun == after).all())
 
+    def test_removes_green_lines(self):
+        mask = self.add_circle(300, 200, 100, BLUE)
+        mask = self.add_circle(300, 170, 30, GRAY, mask)  # Fake thin cloud
+        mask = self.add_circle(300, 230, 30, WHITE, mask)  # Fake thick cloud
+        mask = self.add_circle(330, 230, 10, WHITE, mask)  # Fake thick cloud
+        coords = center_and_radius(mask)
+        cropped_mask = crop(mask, coords)
+        green_line = cropped_mask.copy()
+        green_line[239:242, :] = GREEN
+        # To see the image, uncomment these lines
+        # plt.imshow(green_line)
+        # plt.show()
+        after = remove_green_lines(green_line)
+        # To see the image, uncomment these lines
+        # plt.imshow(after)
+        # plt.show()
+        # The interpolation might not recover the original image exactly, but it should only differ on a few pixels
+        self.assertTrue((cropped_mask != after).sum() < 3 * 10)
+
 
 if __name__ == '__main__':
     unittest.main()
