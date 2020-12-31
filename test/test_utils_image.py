@@ -16,20 +16,20 @@ class TestUtilsImage(unittest.TestCase):
         return np.where(circle, color, image)
 
     def test_finds_circle_edges(self):
-        tiny = self.add_circle(300, 200, 100)
-        self.assertEqual((200, 400, 100, 300), circle_edges(tiny))
+        mask = self.add_circle(300, 200, 100)
+        self.assertEqual((200, 400, 100, 300), circle_edges(mask))
 
     def test_finds_center_and_radius(self):
-        tiny = self.add_circle(300, 200, 100)
-        (r, c), radius = center_and_radius(tiny)
+        mask = self.add_circle(300, 200, 100)
+        (r, c), radius = center_and_radius(mask)
         self.assertEqual(300, r)
         self.assertEqual(200, c)
         self.assertEqual(100, radius)
 
     def test_crops(self):
-        tiny = self.add_circle(300, 200, 100)
-        coords = center_and_radius(tiny)
-        cropped = crop(tiny, coords)
+        mask = self.add_circle(300, 200, 100)
+        coords = center_and_radius(mask)
+        cropped = crop(mask, coords)
         # To see the image, uncomment these lines
         # plt.imshow(cropped)
         # plt.show()
@@ -40,9 +40,9 @@ class TestUtilsImage(unittest.TestCase):
         self.assertEqual(100, radius)
 
     def test_crops_offset_circle(self):
-        tiny = self.add_circle(150, 300, 149)
-        coords = center_and_radius(tiny)
-        cropped = crop(tiny, coords)
+        mask = self.add_circle(150, 300, 149)
+        coords = center_and_radius(mask)
+        cropped = crop(mask, coords)
         # To see the image, uncomment these lines
         # plt.imshow(cropped)
         # plt.show()
@@ -53,8 +53,8 @@ class TestUtilsImage(unittest.TestCase):
         self.assertEqual(149, radius)
 
     def test_blackens_outer_ring(self):
-        tiny = self.add_circle(300, 200, 100)
-        coords = center_and_radius(tiny)
+        mask = self.add_circle(300, 200, 100)
+        coords = center_and_radius(mask)
         photo = np.random.randint(0, 255, (480, 480, 3))
         # To see the image, uncomment these lines
         # plt.imshow(before)
@@ -66,45 +66,43 @@ class TestUtilsImage(unittest.TestCase):
         self.assertTrue((np.zeros(3) == after[5, 5, :]).all())
 
     def test_mask_and_photo_correspond_after_cropping_and_black_outer_ring(self):
-        tiny = self.add_circle(300, 200, 100, WHITE)
-        coords = center_and_radius(tiny)
-        mask = crop(tiny, coords)
+        mask = self.add_circle(300, 200, 100, WHITE)
+        coords = center_and_radius(mask)
+        cropped_mask = crop(mask, coords)
         # The integers start at 1 to avoid an accidental black pixels
         photo = np.random.randint(1, 255, (480, 480, 3))
         photo = crop(photo, coords)
         photo = blacken_outer_ring(photo, coords)
-        self.assertTrue(((mask == BLACK) == (photo == BLACK)).all())
+        self.assertTrue(((cropped_mask == BLACK) == (photo == BLACK)).all())
 
     def test_removes_yellow_sun(self):
-        tiny = self.add_circle(300, 200, 100, WHITE)  # TODO Tiny is not the best name
-        yellow_sun = self.add_circle(250, 150, 25, YELLOW, tiny)
-        black_sun = self.add_circle(250, 150, 25, BLACK, tiny)
+        mask = self.add_circle(300, 200, 100, WHITE)
+        yellow_sun = self.add_circle(250, 150, 25, YELLOW, mask)
+        black_sun = self.add_circle(250, 150, 25, BLACK, mask)
         coords = center_and_radius(yellow_sun)
-        mask = crop(yellow_sun, coords)
+        cropped_mask = crop(yellow_sun, coords)
         black_sun = crop(black_sun, coords)
-        after = remove_sun(mask)
-        # To see the image, uncomment these lines
-        plt.imshow(after)
-        plt.show()
-        self.assertTrue((black_sun == after).all())
-
-    def test_removes_white_sun(self):
-        tiny = self.add_circle(300, 200, 100, WHITE)  # TODO Tiny is not the best name
-        tiny = self.add_circle(250, 150, 50, BLACK, tiny)  # Fake shadowband
-        tiny = self.add_circle(350, 250, 5, GREEN, tiny)  # Fake TSI segmentation "line"
-
-        tiny = self.add_circle(330, 250, 5, GRAY, tiny)  # Fake thin cloud
-        tiny = self.add_circle(310, 250, 5, BLUE, tiny)  # Fake clear sky
-
-
-        white_sun = self.add_circle(250, 150, 25, WHITE, tiny)
-        coords = center_and_radius(white_sun)
-        mask = crop(white_sun, coords)
-        after = remove_sun(mask)
+        after = remove_sun(cropped_mask)
         # To see the image, uncomment these lines
         # plt.imshow(after)
         # plt.show()
-        self.assertTrue((tiny == after).all())
+        self.assertTrue((black_sun == after).all())
+
+    def test_removes_white_sun(self):
+        mask = self.add_circle(300, 200, 100, WHITE)
+        mask = self.add_circle(250, 150, 50, BLACK, mask)  # Fake shadowband
+        mask = self.add_circle(350, 250, 5, GREEN, mask)  # Fake TSI segmentation "line"
+        mask = self.add_circle(330, 250, 5, GRAY, mask)  # Fake thin cloud
+        mask = self.add_circle(310, 250, 5, BLUE, mask)  # Fake clear sky
+        white_sun = self.add_circle(250, 150, 25, WHITE, mask)
+        coords = center_and_radius(white_sun)
+        black_sun = crop(mask, coords)
+        cropped_mask = crop(white_sun, coords)
+        after = remove_sun(cropped_mask)
+        # To see the image, uncomment these lines
+        # plt.imshow(after)
+        # plt.show()
+        self.assertTrue((black_sun == after).all())
 
 
 if __name__ == '__main__':

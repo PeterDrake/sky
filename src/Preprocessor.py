@@ -6,13 +6,18 @@ from utils_timestamp import *
 
 class Preprocessor:
 
-    def __init__(self, raw_data_dir, raw_csv_dir, data_dir):
+    def __init__(self, raw_data_dir, raw_csv_dir, data_dir, verbose=True):
         self.raw_data_dir = raw_data_dir
         self.raw_csv_dir = raw_csv_dir
         self.data_dir = data_dir
         self.valid_timestamp_count = 'Only meaningful if validate_csv has been called'
         self.invalid_timestamp_count = 'Only meaningful if validate_csv has been called'
+        self.verbose = verbose
 
+    def log(self, message):
+        if self.verbose:
+            print(message)
+            
     def raw_photo_path(self, timestamp):
         """Returns the path of a raw photo file, or None if there is no such file."""
         result = self.raw_data_dir + '/SkyImage/'
@@ -50,24 +55,24 @@ class Preprocessor:
         processing, but may be helpful for verifying that files exist, counting invalid timestamps, etc.
         """
         path = self.raw_csv_dir + '/' + filename
-        print('Validating ' + path)
+        self.log('Validating ' + path)
         data = pd.read_csv(path, converters={'timestamp_utc': str})
-        print('Data size before removing duplicates: {}'.format(len(data)))
+        self.log('Data size before removing duplicates: {}'.format(len(data)))
         data = data.drop_duplicates(subset='timestamp_utc')
-        print('Data size after removing duplicates: {}'.format(len(data)))
+        self.log('Data size after removing duplicates: {}'.format(len(data)))
         timestamps = data['timestamp_utc']
         self.valid_timestamp_count = 0
         self.invalid_timestamp_count = 0
         for i, t in timestamps.items():
             if i % 10000 == 0:
-                print(i)
+                self.log(i)
             if self.photo_exists(t) and self.tsi_mask_exists(t):
                 self.valid_timestamp_count += 1
             else:
-                print(t)
+                self.log(t)
                 self.invalid_timestamp_count += 1
-        print('Valid timestamps: ' + str(self.valid_timestamp_count))
-        print('Invalid timestamps: ' + str(self.invalid_timestamp_count))
+        self.log('Valid timestamps: ' + str(self.valid_timestamp_count))
+        self.log('Invalid timestamps: ' + str(self.invalid_timestamp_count))
 
     def write_clean_csv(self, filename):
         """
@@ -75,21 +80,21 @@ class Preprocessor:
         clean version is written to this Preprocessor's data_dir. "Cleaning" means removing duplicate timestamps and
         eliminating timestamps where either the photo or TSI mask is nonexistent or empty.
 
-        This method gets the job done quietly. To instead print more information about what's valid, call
+        This method gets the job done quietly. To instead self.log more information about what's valid, call
         validate_csv instead.
         """
         in_path = self.raw_csv_dir + '/' + filename
-        print('Reading ' + in_path)
+        self.log('Reading ' + in_path)
         data = pd.read_csv(in_path, converters={'timestamp_utc': str})
         data = data.drop_duplicates(subset='timestamp_utc')
         valid = data['timestamp_utc'].map(lambda t: self.photo_exists(t) and self.tsi_mask_exists(t))
         data = data[valid]
         out_path = self.data_dir + '/' + filename
-        print('Writing ' + out_path)
+        self.log('Writing ' + out_path)
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
         data.to_csv(out_path, index=False)
-        print('Done')
+        self.log('Done')
 
 
 if __name__ == '__main__':

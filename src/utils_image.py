@@ -5,6 +5,7 @@ Utilities for dealing with images.
 import numpy as np
 import skimage.color
 import skimage.measure
+import skimage.segmentation
 import matplotlib.pyplot as plt
 
 # Colors used in masks - DO NOT TOUCH
@@ -17,6 +18,9 @@ YELLOW = np.array([255, 255, 0], dtype=np.uint8)
 COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 
 CROPPED_BLACK_IMAGE = np.full((480, 480, 3), BLACK)
+
+TRUES_480_480 = np.ones((480, 480), dtype=bool)
+FALSES_480_480 = np.zeros((480, 480), dtype=bool)
 
 
 def circle_edges(mask):
@@ -68,30 +72,32 @@ def blacken_outer_ring(photo, center_and_radius):
 def remove_sun(mask):
     """
     Returns a version of mask with the sun removed. The sun is either a region of yellow pixels or a region of
-    white pixels surrounded by black pixels.
+    white pixels surrounded by black pixels. NOTE: While this never happens in our data, you might have cases
+    where the camera arm and shadowband bound a small sliver of thick cloud that this algorithm will see as the
+    sun. If you are concerned about this, modify the end of this function to count the suns and report any masks
+    with more than one sun.
     """
     yellow_pixels = (mask == YELLOW).all(axis=2)
     if yellow_pixels.any():
         mask[yellow_pixels] = BLACK
+        return mask
     else:
         # Make the whole sky thick cloud to reduce the number of segments
         overcast = np.copy(mask)
         overcast[(mask == BLUE).all(axis=2)] = WHITE
         overcast[(mask == GRAY).all(axis=2)] = WHITE
         # Convert the image to grayscale
+        # TODO Once we have a function to convert RGB to mask color numbers, use that here
         gray = skimage.color.rgb2gray(overcast) * 255
-        print(np.unique(gray))
         # Segment the mask
         labels, n = skimage.measure.label(gray, connectivity=1, return_num=True)
-        print(np.unique(labels))
-        print(n)
         # For each segment
         for label in range(1, n + 1):
-            region = labels[labels == label]
-            print(region.shape)
-            print(region.sum())
-        #   If a point in the segment is white and the entire boundary is black (using find_boundaries)
-        #     Paint this segment black and return the revised mask
-    return mask
-    # TODO Remove white sun
-    # TODO What about regions of thick cloud completely surrounded by black pixels?
+            region = np.where((labels == label) & (gray == 255), TRUES_480_480, FALSES_480_480)
+            # If this region is non-white, it's now empty
+            if region.any():  # If this region is not empty ...
+                boundary = skimage.segmentation.find_boundaries(region, mode='outer')
+                if (gray[boundary] == 0).all():  # ... and it's surrounded by black
+                    # This one is the sun!
+                    mask[region] = BLACK
+                    return mask
