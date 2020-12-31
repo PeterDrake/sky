@@ -8,12 +8,12 @@ Our pipeline involves the following steps.
 ## Preprocess the Data
 
 1. Clean .csv files to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files.
-1. Subdivide timestamps into training, validation, and test sets.
 1. Create directories for all timestamps that are listed in the two .csv files.
 1. In batches, preprocess each photo and TSI mask:
    1. The photo is centered, is cropped, and has a black border.
-   1. The TSI mask has these same changes; also the sun is removed and any green pixels are replaced with the average
-      of surrounding pixels.
+   1. The TSI mask has these same changes; also the sun is removed and each green pixel is replaced with the color of
+   the nearest non-green pixel.
+1. Subdivide timestamps into training, validation, and test sets.
 
 ## Train the Model
 
