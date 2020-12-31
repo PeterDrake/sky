@@ -108,9 +108,9 @@ def remove_green_lines(mask):
     """
     Removes green lines from TSI mask, replacing each green pixel with the color of the nearest non-green pixel.
     """
+    # Isolate non-green pixels
     nongreen = np.argwhere(np.invert((mask == GREEN).all(axis=2)))
     z = mask[nongreen[:, 0], nongreen[:, 1]]
-    # Isolate non-green pixels
     # Make a mesh grid of the entire image
     xx, yy = np.meshgrid(np.arange(480), np.arange(480))
     # Interpolate non-green pixels over the mesh
