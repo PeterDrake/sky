@@ -1,4 +1,5 @@
 import unittest
+import shutil
 
 from Preprocessor import *
 
@@ -52,6 +53,19 @@ class TestPreprocessor(unittest.TestCase):
         data = pd.read_csv('../test_data/shcu_dubious_data.csv')
         # For this file, the clean version only has one valid timestamp
         self.assertEqual(2, len(data))
+
+    def test_creates_image_directories(self):
+        dirs = [self.preprocessor.data_dir + '/' + date for date in
+                ['photos/20180418', 'photos/20180419', 'tsi_masks/20180418', 'tsi_masks/20180419']]
+        # Destroy the existing directories
+        for d in dirs:
+            if os.path.isdir(d):
+                shutil.rmtree(d)
+        # Run the method
+        self.preprocessor.create_image_directories('shcu_dubious_data.csv')
+        # Assert that the directories are present
+        for d in dirs:
+            self.assertTrue(os.path.isdir(d))
 
 
 if __name__ == '__main__':

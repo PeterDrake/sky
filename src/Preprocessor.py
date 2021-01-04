@@ -96,6 +96,23 @@ class Preprocessor:
         data.to_csv(out_path, index=False)
         self.log('Done')
 
+    def create_image_directories(self, filename):
+        """
+        Creates directories within self.data_dir for each unique yyyymmdd date within filename. Filename is a cleaned
+        .csv file within self.data_dir. The created directories are photos/yyyymmdd and tsi_masks/yyyymmdd.
+        """
+        csv = self.data_dir + '/' + filename
+        self.log('Reading ' + csv)
+        data = pd.read_csv(csv, converters={'timestamp_utc': str})
+        timestamps = {yyyymmdd(t) for t in data['timestamp_utc']}
+        for prefix in [self.data_dir + '/photos', self.data_dir + '/tsi_masks']:
+            if not os.path.exists(prefix):
+                os.mkdir(prefix)
+            for t in timestamps:
+                d = prefix + '/' + t
+                if not os.path.exists(d):
+                    os.mkdir(d)
+
 
 if __name__ == '__main__':
     p = Preprocessor('/home/users/jkleiss/TSI_C1', '../raw_csv', '../data')
