@@ -46,9 +46,8 @@ data (these are all generated and therefore *not* under version control)
     typical_testing_timestamps
     dubious_testing_timestamps
     photos
-        2012 (and similar years)
-            0501 (and similar month/dates)
-                20120501170430_photo.jpg (preprocessed)
+        20120501 (and similar years/months/dates)
+            20120501170430_photo.jpg (preprocessed)
     tsi_masks (structured like photos)
     network_masks (structured like photos)
     network_fsc.csv

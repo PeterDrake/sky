@@ -44,14 +44,14 @@ class TestPreprocessor(unittest.TestCase):
 
     def test_finds_correct_numbers_of_valid_and_invalid_timestamps(self):
         self.preprocessor.validate_csv('shcu_dubious_data.csv')
-        self.assertEqual(1, self.preprocessor.valid_timestamp_count)
+        self.assertEqual(2, self.preprocessor.valid_timestamp_count)
         self.assertEqual(2, self.preprocessor.invalid_timestamp_count)
 
     def test_writes_clean_csv(self):
         self.preprocessor.write_clean_csv('shcu_dubious_data.csv')
         data = pd.read_csv('../test_data/shcu_dubious_data.csv')
         # For this file, the clean version only has one valid timestamp
-        self.assertEqual(1, len(data))
+        self.assertEqual(2, len(data))
 
 
 if __name__ == '__main__':
