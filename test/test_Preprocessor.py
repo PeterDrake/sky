@@ -67,6 +67,15 @@ class TestPreprocessor(unittest.TestCase):
         for d in dirs:
             self.assertTrue(os.path.isdir(d))
 
+    def test_preprocesses_files(self):
+        self.preprocessor.preprocess_images('shcu_dubious_data.csv')
+        files = [self.preprocessor.data_dir + '/photos/20180418/20180418000200_photo.jpg',
+                 self.preprocessor.data_dir + '/photos/20180419/20180419000200_photo.jpg',
+                 self.preprocessor.data_dir + '/tsi_masks/20180418/20180418000200_tsi_mask.png',
+                 self.preprocessor.data_dir + '/tsi_masks/20180419/20180419000200_tsi_mask.png']
+        for f in files:
+            self.assertTrue(os.path.exists(f))
+
 
 if __name__ == '__main__':
     unittest.main()
