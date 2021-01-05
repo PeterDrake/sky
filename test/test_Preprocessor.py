@@ -55,6 +55,8 @@ class TestPreprocessor(unittest.TestCase):
         self.assertEqual(2, len(data))
 
     def test_creates_image_directories(self):
+        # Ensure that the clean CSV file exists
+        self.preprocessor.write_clean_csv('shcu_dubious_data.csv')
         dirs = [self.preprocessor.data_dir + '/' + date for date in
                 ['photos/20180418', 'photos/20180419', 'tsi_masks/20180418', 'tsi_masks/20180419']]
         # Destroy the existing directories
@@ -68,6 +70,8 @@ class TestPreprocessor(unittest.TestCase):
             self.assertTrue(os.path.isdir(d))
 
     def test_preprocesses_files(self):
+        # Ensure that the clean CSV file exists
+        self.preprocessor.write_clean_csv('shcu_dubious_data.csv')
         self.preprocessor.preprocess_images('shcu_dubious_data.csv')
         files = [self.preprocessor.data_dir + '/photos/20180418/20180418000200_photo.jpg',
                  self.preprocessor.data_dir + '/photos/20180419/20180419000200_photo.jpg',
