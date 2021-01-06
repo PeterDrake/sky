@@ -1,4 +1,4 @@
-import Preprocessor
+from Preprocessor import Preprocessor
 import sys
 
 csv = sys.argv[1]
