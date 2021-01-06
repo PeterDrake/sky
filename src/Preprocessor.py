@@ -158,5 +158,13 @@ class Preprocessor:
                 self.log(i)
         self.log('Done preprocessing images')
 
-
-
+    def all_unique_dates(self, csv_filename):
+        """
+        Returns the list of unique dates (as strings in yyyymmdd format) appearing in csv_filename (which is in
+        self.data_dir).
+        """
+        csv = self.data_dir + '/' + csv_filename
+        self.log('Reading ' + csv)
+        data = pd.read_csv(csv, converters={'timestamp_utc': str})
+        dates = sorted(list(set([yyyymmdd(t) for t in data['timestamp_utc']])))
+        return dates
