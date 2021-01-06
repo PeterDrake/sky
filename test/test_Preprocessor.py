@@ -7,7 +7,7 @@ from Preprocessor import *
 class TestPreprocessor(unittest.TestCase):
 
     def setUp(self):
-        self.preprocessor = Preprocessor('../test_raw_data', '../test_raw_csv', '../test_data', verbose=False)
+        self.preprocessor = Preprocessor('../test_raw_data', '../test_raw_csv', '../test_data', verbose=True)
 
     def test_finds_raw_photo_path(self):
         self.assertEqual('../test_raw_data/SkyImage/sgptsiskyimageC1.a1.20180418.000000/sgptsiskyimageC1.a1.20180418.000330.jpg.20180418000330.jpg',

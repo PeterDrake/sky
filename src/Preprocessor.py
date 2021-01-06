@@ -72,7 +72,7 @@ class Preprocessor:
             if self.photo_exists(t) and self.tsi_mask_exists(t):
                 self.valid_timestamp_count += 1
             else:
-                self.log(t)
+                self.log(t + ' is invalid')
                 self.invalid_timestamp_count += 1
         self.log('Valid timestamps: ' + str(self.valid_timestamp_count))
         self.log('Invalid timestamps: ' + str(self.invalid_timestamp_count))
@@ -90,14 +90,20 @@ class Preprocessor:
         self.log('Reading ' + in_path)
         data = pd.read_csv(in_path, converters={'timestamp_utc': str})
         data = data.drop_duplicates(subset='timestamp_utc')
-        valid = data['timestamp_utc'].map(lambda t: self.photo_exists(t) and self.tsi_mask_exists(t))
+        valid = []
+        for i, t in data['timestamp_utc'].items():
+            valid.append(self.photo_exists(t) and self.tsi_mask_exists(t))
+            if i % 10000 == 0:
+                self.log(i)
+        # Alternate faster approach using map & lambda function with no log ability
+        # valid = data['timestamp_utc'].map(lambda t: self.photo_exists(t) and self.tsi_mask_exists(t))
         data = data[valid]
         out_path = self.data_dir + '/' + csv_filename
         self.log('Writing ' + out_path)
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
         data.to_csv(out_path, index=False)
-        self.log('Done')
+        self.log('Done writing clean csv')
 
     def create_image_directories(self, csv_filename):
         """
@@ -107,6 +113,7 @@ class Preprocessor:
         csv = self.data_dir + '/' + csv_filename
         self.log('Reading ' + csv)
         data = pd.read_csv(csv, converters={'timestamp_utc': str})
+        self.log('Creating image directories')
         timestamps = {yyyymmdd(t) for t in data['timestamp_utc']}
         for prefix in [self.data_dir + '/photos', self.data_dir + '/tsi_masks']:
             if not os.path.exists(prefix):
@@ -115,6 +122,7 @@ class Preprocessor:
                 d = prefix + '/' + t
                 if not os.path.exists(d):
                     os.mkdir(d)
+        self.log('Done creating image directories')
 
     def preprocess_timestamp(self, timestamp):
         # Read in mask and photo
@@ -143,8 +151,12 @@ class Preprocessor:
         csv = self.data_dir + '/' + csv_filename
         self.log('Reading ' + csv)
         data = pd.read_csv(csv, converters={'timestamp_utc': str})
-        for t in data['timestamp_utc']:
+        self.log('Preprocessing images')
+        for i, t in data['timestamp_utc'].items():
             self.preprocess_timestamp(t)
+            if i % 10000 == 0:
+                self.log(i)
+        self.log('Done preprocessing images')
 
 
 
