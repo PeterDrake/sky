@@ -1,6 +1,6 @@
 import unittest
 import shutil
-
+from pandas.testing import assert_frame_equal
 from Preprocessor import *
 
 
@@ -84,8 +84,8 @@ class TestPreprocessor(unittest.TestCase):
         # Ensure that the clean CSV file exists
         self.preprocessor.write_clean_csv('shcu_dubious_data.csv')
         dates = self.preprocessor.count_images_per_date('shcu_dubious_data.csv')
-        correct = {'date': ['20180418', '20180419'], 'count': [1, 1]}
-        self.assertEqual(correct, dates)
+        correct = pd.DataFrame.from_dict({'date': ['20180418', '20180419'], 'count': [1, 1]})
+        assert_frame_equal(correct, dates)
 
 
 if __name__ == '__main__':

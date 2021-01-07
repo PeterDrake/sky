@@ -161,7 +161,7 @@ class Preprocessor:
     def count_images_per_date(self, csv_filename):
         """
         Returns a DataFrame associating dates (strings in yyyymmdd format) with the numbers of timestamps within each
-        of those dates.
+        of those dates, with columns 'date' and 'count'.
         :param csv_filename: in self.data_dir
         """
         # Read the CSV file
@@ -175,5 +175,5 @@ class Preprocessor:
         # Convert the DataFrame to a dictionary
         grouped = grouped.reset_index()
         grouped.rename(columns={'timestamp_utc': 'count'}, inplace=True)
-        return grouped.to_dict(orient='list')
+        return grouped
 
