@@ -59,7 +59,7 @@ class Preprocessor:
         """
         path = self.raw_csv_dir + '/' + csv_filename
         self.log('Validating ' + path)
-        data = pd.read_csv(path, converters={'timestamp_utc': str})
+        data = pd.read_csv(path, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         self.log('Data size before removing duplicates: {}'.format(len(data)))
         data = data.drop_duplicates(subset='timestamp_utc')
         self.log('Data size after removing duplicates: {}'.format(len(data)))
@@ -88,7 +88,7 @@ class Preprocessor:
         """
         in_path = self.raw_csv_dir + '/' + csv_filename
         self.log('Reading ' + in_path)
-        data = pd.read_csv(in_path, converters={'timestamp_utc': str})
+        data = pd.read_csv(in_path, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         data = data.drop_duplicates(subset='timestamp_utc')
         valid = []
         for i, t in data['timestamp_utc'].items():
@@ -112,7 +112,7 @@ class Preprocessor:
         """
         csv = self.data_dir + '/' + csv_filename
         self.log('Reading ' + csv)
-        data = pd.read_csv(csv, converters={'timestamp_utc': str})
+        data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         self.log('Creating image directories')
         timestamps = {yyyymmdd(t) for t in data['timestamp_utc']}
         for prefix in [self.data_dir + '/photos', self.data_dir + '/tsi_masks']:
@@ -150,7 +150,7 @@ class Preprocessor:
         """
         csv = self.data_dir + '/' + csv_filename
         self.log('Reading ' + csv)
-        data = pd.read_csv(csv, converters={'timestamp_utc': str})
+        data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         self.log('Preprocessing images')
         for i, t in data['timestamp_utc'].items():
             self.preprocess_timestamp(t)
@@ -158,13 +158,22 @@ class Preprocessor:
                 self.log(i)
         self.log('Done preprocessing images')
 
-    def all_unique_dates(self, csv_filename):
+    def count_images_per_date(self, csv_filename):
         """
-        Returns the list of unique dates (as strings in yyyymmdd format) appearing in csv_filename (which is in
-        self.data_dir).
+        Returns a DataFrame associating dates (strings in yyyymmdd format) with the numbers of timestamps within each
+        of those dates.
+        :param csv_filename: in self.data_dir
         """
+        # Read the CSV file
         csv = self.data_dir + '/' + csv_filename
         self.log('Reading ' + csv)
-        data = pd.read_csv(csv, converters={'timestamp_utc': str})
-        dates = sorted(list(set([yyyymmdd(t) for t in data['timestamp_utc']])))
-        return dates
+        data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
+        # Add a date column
+        data['date'] = data['timestamp_utc'].map(yyyymmdd)
+        # Count timestamps for each date
+        grouped = data.groupby('date').count()
+        # Convert the DataFrame to a dictionary
+        grouped = grouped.reset_index()
+        grouped.rename(columns={'timestamp_utc': 'count'}, inplace=True)
+        return grouped.to_dict(orient='list')
+

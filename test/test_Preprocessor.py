@@ -80,11 +80,12 @@ class TestPreprocessor(unittest.TestCase):
         for f in files:
             self.assertTrue(os.path.exists(f))
 
-    def test_finds_all_unique_dates(self):
+    def test_counts_images_per_date(self):
         # Ensure that the clean CSV file exists
         self.preprocessor.write_clean_csv('shcu_dubious_data.csv')
-        dates = self.preprocessor.all_unique_dates('shcu_dubious_data.csv')
-        self.assertEqual(['20180418', '20180419'], dates)
+        dates = self.preprocessor.count_images_per_date('shcu_dubious_data.csv')
+        correct = {'date': ['20180418', '20180419'], 'count': [1, 1]}
+        self.assertEqual(correct, dates)
 
 
 if __name__ == '__main__':
