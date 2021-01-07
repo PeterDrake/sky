@@ -65,7 +65,7 @@ EXPERIMENT_LABEL = "e2020-001"
 
 # Paths to csv files for typical and dubious data.
 TYPICAL_DATA_CSV = TYPICAL_DATA_DIR + "/shcu_typical_data.csv"
-DUBIOUS_DATA_CSV = DUBIOUS_DATA_DIR + "/shcu_dubious_data.csv"
+DUBIOUS_DATA_CSV = DUBIOUS_DATA_DIR + "/tiny_fake_dubious_data.csv"
 
 # Paths to timestamps for typical and dubious data.
 TYPICAL_VALID_FILE = TYPICAL_DATA_DIR + "/valid.stamps"

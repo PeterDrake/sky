@@ -4,7 +4,7 @@
 	The file 'non_sky.csv' contains timestamp_utc and the percentage of the decision image which is non-sky for each
 	available timestamp from the files:
 	shcu_typical_data.csv
-	shcu_dubious_data.csv
+	tiny_fake_dubious_data.csv
 
 	Note: this script gets the timestamps from these files, but it is possible that not all of these timestamps have
 	simplified tsi sky images and masks available in the TYPICAL_DATA_DIR and DUBIOUS_DATA_DIR directories. This is

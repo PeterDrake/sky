@@ -41,8 +41,9 @@ doc (documentation)
 data (these are all generated and therefore *not* under version control)
     shcu_dubious_data.csv (our cleaned up version)
     shcu_typical_data.csv (our cleaned up version)
-    training_timestamps
-    validation_timestamps
+    typical_training_timestamps
+    typical_validation_timestamps
+    dubious_validation_timestamps
     typical_testing_timestamps
     dubious_testing_timestamps
     photos

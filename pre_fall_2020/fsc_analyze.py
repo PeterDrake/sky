@@ -4,7 +4,7 @@ the Laser Ceilometer.
 
 This script can be run after fsc_launch.py has finished.
 
-This script requires four files: 'shcu_typical_data.csv', 'shcu_dubious_data.csv', 'typical_fsc.csv', and 'dubious_fsc.csv'.
+This script requires four files: 'shcu_typical_data.csv', 'tiny_fake_dubious_data.csv', 'typical_fsc.csv', and 'dubious_fsc.csv'.
 * The 'shcu' files should be located in the typical_data/ and dubious_data/ directories.
 * The 'fsc' files should be located in the RESULTS_DIR/EXPERIMENT_LABEL/ directory. This requirement should be satisfied
 if the previous scripts have run successfully.
@@ -87,7 +87,7 @@ if __name__ == "__main__":
 	typical_arscl_dataframe = typical_arscl_dataframe[typical_arscl_dataframe['timestamp_utc'].isin(typical_times)]
 	typical_arscl_tsi = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_arscl_dataframe)
 
-	# Reads data from shcu_dubious_data.csv, takes a sample of the times, and gets data for plotting
+	# Reads data from tiny_fake_dubious_data.csv, takes a sample of the times, and gets data for plotting
 	dubious_arscl_dataframe = read_csv_file(DUBIOUS_DATA_CSV)  # Contains both ARSCL and TSI Data
 	dubious_arscl_dataframe = dubious_arscl_dataframe.dropna(subset=['fsc_z', 'cf_tot', 'timestamp_utc'])
 	dubious_times = load_pickled_file(DUBIOUS_VALID_FILE)  # Change this to TEST_FILE for final plotting.
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 	typical_arscl_network = extract_arscl_and_image_fsc_from_dataframes(typical_arscl_dataframe, typical_network_dataframe)
 
 
-	# Reads data from dubious_fsc.csv and uses the times sample from shcu_dubious_data.csv to get data for plotting
+	# Reads data from dubious_fsc.csv and uses the times sample from tiny_fake_dubious_data.csv to get data for plotting
 	dubious_network_dataframe = read_csv_file(RESULTS_DIR + '/' + EXPERIMENT_LABEL + '/dubious_fsc.csv')  # Contains NETWORK Data
 	dubious_network_dataframe = dubious_network_dataframe.dropna(subset=['fsc_z', 'timestamp_utc'])
 	dubious_network_dataframe = dubious_network_dataframe[dubious_network_dataframe['timestamp_utc'].isin(dubious_times)]

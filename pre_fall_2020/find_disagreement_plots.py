@@ -80,7 +80,7 @@ dubious_network_fsc_df = pd.read_csv(RESULTS_DIR + "/" + EXPERIMENT_LABEL + "/du
 
 # The tsi fsc and arscl cloud fraction values can be obtained from the csv files:
 # shcu_typical_data.csv
-# shcu_dubious_data.csv
+# tiny_fake_dubious_data.csv
 # Note: The paths to these files are already defined in config.py. Additionally, note that the header for TSI fsc in the
 # zenith region is 'fsc_z' and the header for arscl cloud fraction is 'cf_tot'.
 typical_arscl_fsc_cf_df = pd.read_csv(TYPICAL_DATA_CSV)
