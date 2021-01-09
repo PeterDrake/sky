@@ -22,21 +22,21 @@ def yyyymmdd(timestamp):
     return timestamp[:8]
 
 
-def allocate_dates(dates, proportions):
+def allocate_dates(date_counts, proportions):
     """
     Allocates dates randomly into multiple lists based on proportions.
-    :param dates: a dataframe produced by Preprocessor.count_images_per_date
+    :param date_counts: a dataframe produced by Preprocessor.count_images_per_date
     :param proportions: a list of the fraction of timestamps in each category, e.g., [0.6, 0.2, 0.2]
     :return a list of lists of dates
     """
     # Shuffle the rows
-    dates = dates.sample(frac=1).reset_index(drop=True)
+    date_counts = date_counts.sample(frac=1).reset_index(drop=True)
     # Add a column showing cumulative sum of counts
-    dates['cum_count'] = dates['count'].cumsum()
+    date_counts['cum_count'] = date_counts['count'].cumsum()
     # Determine cutoffs
-    total_count = dates['count'].sum()
+    total_count = date_counts['count'].sum()
     cutoffs = [c * total_count for c in accumulate(proportions)]
     # Take subsets based on those cutoffs
     paired_cutoffs = zip([0] + cutoffs[:-1], cutoffs)
-    subsets = [dates[(lower < dates['cum_count']) & (dates['cum_count'] <= upper)]['date'] for lower, upper in paired_cutoffs]
+    subsets = [date_counts[(lower < date_counts['cum_count']) & (date_counts['cum_count'] <= upper)]['date'] for lower, upper in paired_cutoffs]
     return [list(s) for s in subsets]

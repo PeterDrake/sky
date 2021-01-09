@@ -177,3 +177,21 @@ class Preprocessor:
         grouped.rename(columns={'timestamp_utc': 'count'}, inplace=True)
         return grouped
 
+    def allocate_timestamps(self, csv_filename, proportions, output_filenames):
+        """
+        Divides the timestamps in csv_filename (which is in self.data_dir) randomly according to proportions.
+        The timestamps are then written into the files specified by output_filenames.
+        :param proportions: a list of numbers summing to 1.0.
+        """
+        csv = self.data_dir + '/' + csv_filename
+        self.log('Reading ' + csv)
+        data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
+        data['date'] = data['timestamp_utc'].map(yyyymmdd)
+        self.log('Allocating timestamps')
+        date_counts = self.count_images_per_date(csv_filename)
+        date_groups = allocate_dates(date_counts, proportions)
+        self.log('Writing timestamp files')
+        for group, filename in zip(date_groups, output_filenames):
+            df = data[data['date'].isin(group)]
+            df['timestamp_utc'].to_csv(self.data_dir + '/' + filename, header=False, index=False)
+        self.log('Done')
