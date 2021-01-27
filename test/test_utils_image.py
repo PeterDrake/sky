@@ -123,6 +123,11 @@ class TestUtilsImage(unittest.TestCase):
         # The interpolation might not recover the original image exactly, but it should only differ on a few pixels
         self.assertTrue((cropped_mask != after).sum() < 3 * 10)
 
+    def test_converts_rgb_to_labeled_mask(self):
+        mask = np.array([[WHITE, BLUE], [GRAY, BLACK]])
+        correct = np.array([[[1, 0, 0, 0], [0, 1, 0, 0]], [[0, 0, 1, 0], [0, 0, 0, 1]]])
+        self.assertTrue((correct == rgb_to_one_hot_mask(mask)).all())
+
 
 if __name__ == '__main__':
     unittest.main()

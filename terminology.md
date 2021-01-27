@@ -17,6 +17,9 @@ Called "cloud mask" in the ARM data.
 
 Note that neither of these are bit masks, as there are more than two categories (clear, thin cloud, thick cloud, etc.).
 
+While masks are stored in RGB format in files, internally they are stored as **one-hot masks**, with one channel for
+each of white, blue, gray, and black.
+
 For functions that work on both photos and masks, we'll use the generic term "image".
 
 ## Scalar Values

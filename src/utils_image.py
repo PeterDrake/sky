@@ -116,3 +116,20 @@ def remove_green_lines(mask):
     # Interpolate non-green pixels over the mesh
     interpolate = scipy.interpolate.NearestNDInterpolator(nongreen, z)
     return interpolate(yy, xx)
+
+
+def rgb_to_one_hot_mask(mask):
+    """
+    Given a 480x480x3 mask in RGB form, returns a 480x480x4 mask with one channel for each of white, blue, gray, and
+    black. These four numbers therefore provide a one-hot representation of the category of each pixel.
+    """
+    mask_sums = mask.sum(axis=2)  # Sum of RGB values for each pixel; each of our colors happens to have a unique sum
+    color_sums = np.array([WHITE.sum(), BLUE.sum(), GRAY.sum(), BLACK.sum()])
+    # The slice [..., None] adds a third dimension, going from 480x480 to 480x480x1. This makes it possible to do a
+    # broadcast comparison to color_sums, giving 4 boolean values at each pixel, making the result 480x480x4.
+    return (mask_sums[..., None] == color_sums).astype(int)
+    # TODO Is int the type we want? uint8 will take less space, but maybe we want whatever comes out of the network
+
+
+def one_hot_to_rgb_mask(mask):
+    pass
