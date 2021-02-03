@@ -133,4 +133,11 @@ def rgb_to_one_hot_mask(mask):
 
 
 def one_hot_to_rgb_mask(mask):
-    pass
+    """
+    Given a 480x480x4 mask in one-hot form (with one channel for each of white, blue, gray, and black), returns a
+    480x480x2 mask in RGB form.
+    """
+    colors = np.argmax(mask, axis=2)
+    rgb_values = np.array([WHITE, BLUE, GRAY, BLACK])
+    return rgb_values[colors]
+
