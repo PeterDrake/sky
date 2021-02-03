@@ -18,11 +18,6 @@ GREEN = np.array([0, 255, 0], dtype=np.uint8)
 YELLOW = np.array([255, 255, 0], dtype=np.uint8)
 COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 
-CROPPED_BLACK_IMAGE = np.full((480, 480, 3), BLACK)
-
-TRUES_480_480 = np.ones((480, 480), dtype=bool)
-FALSES_480_480 = np.zeros((480, 480), dtype=bool)
-
 
 def circle_edges(mask):
     """
@@ -65,9 +60,11 @@ def blacken_outer_ring(photo, center_and_radius):
     :param photo: 480x480x3 numpy array
     :param center_and_radius: (r, c), radius, as returned by center_and_radius
     """
+    if not hasattr(blacken_outer_ring, "CROPPED_BLACK_IMAGE"):
+        blacken_outer_ring.CROPPED_BLACK_IMAGE = np.full((480, 480, 3), BLACK)
     _, radius = center_and_radius
     circle = np.fromfunction(lambda r, c, _: (r - 240) ** 2 + (c - 240) ** 2 <= radius ** 2, (480, 480, 3))
-    return np.where(circle, photo, CROPPED_BLACK_IMAGE)
+    return np.where(circle, photo, blacken_outer_ring.CROPPED_BLACK_IMAGE)
 
 
 def remove_sun(mask):
@@ -78,6 +75,9 @@ def remove_sun(mask):
     sun. If you are concerned about this, modify the end of this function to count the suns and report any masks
     with more than one sun.
     """
+    if not hasattr(remove_sun, "TRUES"):  # This way these aren't define each time we call this function
+        remove_sun.TRUES = np.ones((480, 480), dtype=bool)
+        remove_sun.FALSES = np.zeros((480, 480), dtype=bool)
     yellow_pixels = (mask == YELLOW).all(axis=2)
     if yellow_pixels.any():
         mask[yellow_pixels] = BLACK
@@ -94,7 +94,7 @@ def remove_sun(mask):
         labels, n = skimage.measure.label(gray, connectivity=1, return_num=True)
         # For each segment
         for label in range(1, n + 1):
-            region = np.where((labels == label) & (gray == 255), TRUES_480_480, FALSES_480_480)
+            region = np.where((labels == label) & (gray == 255), remove_sun.TRUES, remove_sun.FALSES)
             # If this region is non-white, it's now empty
             if region.any():  # If this region is not empty ...
                 boundary = skimage.segmentation.find_boundaries(region, mode='outer')
@@ -123,21 +123,21 @@ def rgb_to_one_hot_mask(mask):
     Given a 480x480x3 mask in RGB form, returns a 480x480x4 mask with one channel for each of white, blue, gray, and
     black. These four numbers therefore provide a one-hot representation of the category of each pixel.
     """
+    if not hasattr(rgb_to_one_hot_mask, "COLOR_SUMS"):
+        rgb_to_one_hot_mask.COLOR_SUMS = np.array([WHITE.sum(), BLUE.sum(), GRAY.sum(), BLACK.sum()])
     mask_sums = mask.sum(axis=2)  # Sum of RGB values for each pixel; each of our colors happens to have a unique sum
-    # TODO This should be a constant
-    color_sums = np.array([WHITE.sum(), BLUE.sum(), GRAY.sum(), BLACK.sum()])
     # The slice [:, :, np.newaxis] adds a third dimension, going from 480x480 to 480x480x1. This makes it possible to
-    # do a broadcast comparison to color_sums, giving 4 boolean values at each pixel, making the result 480x480x4.
-    return (mask_sums[:, :, np.newaxis] == color_sums).astype(int)
+    # do a broadcast comparison to COLOR_SUMS, giving 4 boolean values at each pixel, making the result 480x480x4.
+    return (mask_sums[:, :, np.newaxis] == rgb_to_one_hot_mask.COLOR_SUMS).astype(int)
     # TODO Is int the type we want? uint8 will take less space, but maybe we want whatever comes out of the network
 
 
 def one_hot_to_rgb_mask(mask):
     """
     Given a 480x480x4 mask in one-hot form (with one channel for each of white, blue, gray, and black), returns a
-    480x480x2 mask in RGB form.
+    480x480x3 mask in RGB form.
     """
-    colors = np.argmax(mask, axis=2)
-    rgb_values = np.array([WHITE, BLUE, GRAY, BLACK])
-    return rgb_values[colors]
+    if not hasattr(one_hot_to_rgb_mask, "RGB_VALUES"):
+        one_hot_to_rgb_mask.RGB_VALUES = np.array([WHITE, BLUE, GRAY, BLACK])
+    return one_hot_to_rgb_mask.RGB_VALUES[np.argmax(mask, axis=2)]
 
