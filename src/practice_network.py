@@ -37,7 +37,8 @@ def load_mask(timestamp):
     # We've returns a 480x480x4 (one channel per mask color) numpy array of dtype float32
 
 
-train_masks = [load_mask(timestamp) for timestamp in train_stamps]
+# For the moment (using a dense array), we have to flatten the training images
+train_masks = [load_mask(timestamp).flatten() for timestamp in train_stamps]
 Y_train = np.stack(train_masks)
 
 
@@ -46,30 +47,19 @@ print(X_train.dtype)
 print(Y_train.shape)
 print(Y_train.dtype)
 
-# fashion_mnist = keras.datasets.fashion_mnist
-# (X_train_full, y_train_full), (X_test, y_test) = fashion_mnist.load_data()
-#
-# # Separate validation set
-# X_valid, X_train = X_train_full[:5000] / 255.0, X_train_full[5000:] / 255.0
-# y_valid, y_train = y_train_full[:5000], y_train_full[5000:]
-# X_test = X_test / 255.0
-#
-# # Names of classes
-# class_names = ["T-shirt/top", "Trouser", "Pullover", "Dress", "Coat",
-#                "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"]
-#
-# # Define the network
-# model = keras.models.Sequential([
-#     keras.layers.Flatten(input_shape=[28, 28]),
-#     keras.layers.Dense(300, activation="relu"),
-#     keras.layers.Dense(100, activation="relu"),
-#     keras.layers.Dense(10, activation="softmax")
-# ])
-#
-# # Compile the model
-# model.compile(loss="sparse_categorical_crossentropy",
-#               optimizer="sgd",
-#               metrics=["accuracy"])
+
+# Define the network
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape=[480, 480, 3]),
+    keras.layers.Dense(100, activation="relu"),
+    keras.layers.Dense(480 * 480 * 4, activation="softmax")
+])
+
+# Compile the model
+model.compile(loss="sparse_categorical_crossentropy",
+              optimizer="sgd",
+              metrics=["accuracy"])
+
 #
 # # Train the model
 # history = model.fit(X_train, y_train, epochs=30, validation_data=(X_valid, y_valid))
