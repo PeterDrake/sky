@@ -17,11 +17,13 @@ def load_photo(timestamp):
     # TODO We'll need a method for this
     # TODO It also has some redundancy with Preprocessor.preprocess_timestamp
     photo = plt.imread('../test_data/photos/' + yyyymmdd(timestamp) + '/' + timestamp + '_photo.jpg')
-    return np.array(photo, dtype='uint8')  # TODO Do we need to divide by 255.0?
+    # photo is a 480x4x80x3 numpy array of dtype uint8
+    return photo
+    # return np.array(photo, dtype='uint8')  # TODO Do we need to divide by 255.0?
 
 
 train_stamps = ['20180418000200', '20180419000200']
-train_photos = [load_photo(timestamp) for timestamp in train_stamps]
+train_photos = [(load_photo(timestamp) / 255.0).astype('float32') for timestamp in train_stamps]
 X_train = np.stack(train_photos)
 
 
@@ -29,14 +31,20 @@ def load_mask(timestamp):
     # TODO We'll need a method for this
     # TODO It also has some redundancy with Preprocessor.preprocess_timestamp
     mask = plt.imread('../test_data/tsi_masks/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png')
-    return rgb_to_one_hot_mask(np.array(mask * 255, dtype='uint8')[:, :, :3])
+    # mask is a 480x480x4 (including the alpha channel) numpy array of dtype float32
+    # TODO Are we doing redundant type conversions? See rgb_to_one_hot_mask
+    return rgb_to_one_hot_mask(np.array(mask * 255, dtype='uint8')[:, :, :3]).astype('float32')
+    # We've returns a 480x480x4 (one channel per mask color) numpy array of dtype float32
+
 
 train_masks = [load_mask(timestamp) for timestamp in train_stamps]
-y_train = np.stack(train_masks)
+Y_train = np.stack(train_masks)
 
 
-
-print([p.shape for p in train_masks])
+print(X_train.shape)
+print(X_train.dtype)
+print(Y_train.shape)
+print(Y_train.dtype)
 
 # fashion_mnist = keras.datasets.fashion_mnist
 # (X_train_full, y_train_full), (X_test, y_test) = fashion_mnist.load_data()
