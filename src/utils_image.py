@@ -16,7 +16,8 @@ GRAY = np.array([192, 192, 192], dtype=np.uint8)
 BLACK = np.array([0, 0, 0], dtype=np.uint8)
 GREEN = np.array([0, 255, 0], dtype=np.uint8)
 YELLOW = np.array([255, 255, 0], dtype=np.uint8)
-COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
+# COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
+COLORS = (BLACK, BLUE, GRAY, WHITE, GREEN)
 
 
 def circle_edges(mask):
