@@ -148,3 +148,17 @@ def one_hot_to_rgb_mask(mask):
 
 # The RGB values for the different colors
 one_hot_to_rgb_mask.RGB_VALUES = np.array([BLACK, BLUE, GRAY, WHITE])
+
+
+def rgb_to_label(mask):
+    """
+    Given a 480x480x3 mask in RGB form, returns a 480x480 mask with integer labels for black, blue, gray, and white.
+    """
+    # The RGB values for each pixel happen to have a unique sum.
+    # Conveniently, the integer (floor) division of the summed RGB values map to our desired indexes:
+    # 0=BLACK, 1=BLUE, 2=GRAY, 3=WHITE
+    return mask.sum(axis=2) // 250
+
+
+# Sum of the RGB values for each color
+rgb_to_one_hot_mask.COLOR_SUMS = np.array([BLACK.sum(), BLUE.sum(), GRAY.sum(), WHITE.sum()])

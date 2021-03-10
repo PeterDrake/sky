@@ -133,6 +133,10 @@ class TestUtilsImage(unittest.TestCase):
         correct = np.array([[WHITE, BLUE], [GRAY, BLACK]])
         self.assertTrue((correct == one_hot_to_rgb_mask(mask)).all())
 
+    def test_converts_rgb_to_label(self):
+        mask = np.array([[WHITE, BLUE], [GRAY, BLACK]])
+        correct = np.array([[3, 1],[2, 0]])
+        self.assertTrue((correct == rgb_to_label(mask)).all())
 
 if __name__ == '__main__':
     unittest.main()
