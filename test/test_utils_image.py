@@ -125,11 +125,11 @@ class TestUtilsImage(unittest.TestCase):
 
     def test_converts_rgb_to_one_hot_mask(self):
         mask = np.array([[WHITE, BLUE], [GRAY, BLACK]])
-        correct = np.array([[[1, 0, 0, 0], [0, 1, 0, 0]], [[0, 0, 1, 0], [0, 0, 0, 1]]])
+        correct = np.array([[[0, 0, 0, 1], [0, 1, 0, 0]], [[0, 0, 1, 0], [1, 0, 0, 0]]])
         self.assertTrue((correct == rgb_to_one_hot_mask(mask)).all())
 
     def test_converts_one_hot_to_rgb_mask(self):
-        mask = np.array([[[1, 0, 0, 0], [0, 1, 0, 0]], [[0, 0, 1, 0], [0, 0, 0, 1]]])
+        mask = np.array([[[0, 0, 0, 1], [0, 1, 0, 0]], [[0, 0, 1, 0], [1, 0, 0, 0]]])
         correct = np.array([[WHITE, BLUE], [GRAY, BLACK]])
         self.assertTrue((correct == one_hot_to_rgb_mask(mask)).all())
 

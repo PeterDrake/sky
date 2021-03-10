@@ -16,7 +16,6 @@ GRAY = np.array([192, 192, 192], dtype=np.uint8)
 BLACK = np.array([0, 0, 0], dtype=np.uint8)
 GREEN = np.array([0, 255, 0], dtype=np.uint8)
 YELLOW = np.array([255, 255, 0], dtype=np.uint8)
-# COLORS = (WHITE, BLUE, GRAY, BLACK, GREEN)
 COLORS = (BLACK, BLUE, GRAY, WHITE, GREEN)
 
 
@@ -136,7 +135,7 @@ def rgb_to_one_hot_mask(mask):
 
 
 # Sum of the RGB values for each color
-rgb_to_one_hot_mask.COLOR_SUMS = np.array([WHITE.sum(), BLUE.sum(), GRAY.sum(), BLACK.sum()])
+rgb_to_one_hot_mask.COLOR_SUMS = np.array([BLACK.sum(), BLUE.sum(), GRAY.sum(), WHITE.sum()])
 
 
 def one_hot_to_rgb_mask(mask):
@@ -148,4 +147,4 @@ def one_hot_to_rgb_mask(mask):
 
 
 # The RGB values for the different colors
-one_hot_to_rgb_mask.RGB_VALUES = np.array([WHITE, BLUE, GRAY, BLACK])
+one_hot_to_rgb_mask.RGB_VALUES = np.array([BLACK, BLUE, GRAY, WHITE])
