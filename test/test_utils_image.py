@@ -123,20 +123,26 @@ class TestUtilsImage(unittest.TestCase):
         # The interpolation might not recover the original image exactly, but it should only differ on a few pixels
         self.assertTrue((cropped_mask != after).sum() < 3 * 10)
 
-    def test_converts_rgb_to_one_hot_mask(self):
+    def test_converts_rgb_mask_to_one_hot(self):
         mask = np.array([[WHITE, BLUE], [GRAY, BLACK]])
         correct = np.array([[[0, 0, 0, 1], [0, 1, 0, 0]], [[0, 0, 1, 0], [1, 0, 0, 0]]])
-        self.assertTrue((correct == rgb_to_one_hot_mask(mask)).all())
+        self.assertTrue((correct == rgb_mask_to_one_hot(mask)).all())
 
     def test_converts_one_hot_to_rgb_mask(self):
         mask = np.array([[[0, 0, 0, 1], [0, 1, 0, 0]], [[0, 0, 1, 0], [1, 0, 0, 0]]])
         correct = np.array([[WHITE, BLUE], [GRAY, BLACK]])
         self.assertTrue((correct == one_hot_to_rgb_mask(mask)).all())
 
-    def test_converts_rgb_to_label(self):
+    def test_converts_rgb_mask_to_label(self):
         mask = np.array([[WHITE, BLUE], [GRAY, BLACK]])
         correct = np.array([[3, 1],[2, 0]])
-        self.assertTrue((correct == rgb_to_label(mask)).all())
+        self.assertTrue((correct == rgb_mask_to_label(mask)).all())
+
+    def test_converts_label_to_rgb_mask(self):
+        mask = np.array([[3, 1],[2, 0]])
+        correct = np.array([[WHITE, BLUE], [GRAY, BLACK]])
+        self.assertTrue((correct == label_to_rgb_mask(mask)).all())
+
 
 if __name__ == '__main__':
     unittest.main()

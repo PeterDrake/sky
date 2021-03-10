@@ -122,7 +122,7 @@ def remove_green_lines(mask):
     return interpolate(yy, xx)
 
 
-def rgb_to_one_hot_mask(mask):
+def rgb_mask_to_one_hot(mask):
     """
     Given a 480x480x3 mask in RGB form, returns a 480x480x4 mask with one channel for each of white, blue, gray, and
     black. These four numbers therefore provide a one-hot representation of the category of each pixel.
@@ -130,12 +130,12 @@ def rgb_to_one_hot_mask(mask):
     mask_sums = mask.sum(axis=2)  # Sum of RGB values for each pixel; each of our colors happens to have a unique sum
     # The slice [:, :, np.newaxis] adds a third dimension, going from 480x480 to 480x480x1. This makes it possible to
     # do a broadcast comparison to COLOR_SUMS, giving 4 boolean values at each pixel, making the result 480x480x4.
-    return (mask_sums[:, :, np.newaxis] == rgb_to_one_hot_mask.COLOR_SUMS).astype(int)
+    return (mask_sums[:, :, np.newaxis] == rgb_mask_to_one_hot.COLOR_SUMS).astype(int)
     # TODO Is int the type we want? uint8 will take less space, but maybe we want whatever comes out of the network
 
 
 # Sum of the RGB values for each color
-rgb_to_one_hot_mask.COLOR_SUMS = np.array([BLACK.sum(), BLUE.sum(), GRAY.sum(), WHITE.sum()])
+rgb_mask_to_one_hot.COLOR_SUMS = np.array([BLACK.sum(), BLUE.sum(), GRAY.sum(), WHITE.sum()])
 
 
 def one_hot_to_rgb_mask(mask):
@@ -150,7 +150,7 @@ def one_hot_to_rgb_mask(mask):
 one_hot_to_rgb_mask.RGB_VALUES = np.array([BLACK, BLUE, GRAY, WHITE])
 
 
-def rgb_to_label(mask):
+def rgb_mask_to_label(mask):
     """
     Given a 480x480x3 mask in RGB form, returns a 480x480 mask with integer labels for black, blue, gray, and white.
     """
@@ -160,5 +160,12 @@ def rgb_to_label(mask):
     return mask.sum(axis=2) // 250
 
 
-# Sum of the RGB values for each color
-rgb_to_one_hot_mask.COLOR_SUMS = np.array([BLACK.sum(), BLUE.sum(), GRAY.sum(), WHITE.sum()])
+def label_to_rgb_mask(mask):
+    """
+    Converts a 480x480 label image to a 480x480x3 RGB image with appropriate colors (BLACK, BLUE, etc.)
+    """
+    return label_to_rgb_mask.RGB_VALUES[mask]
+
+
+# The RGB values for the different colors
+label_to_rgb_mask.RGB_VALUES = np.array([BLACK, BLUE, GRAY, WHITE])
