@@ -4,6 +4,7 @@
 *~
 venv
 data
+test_data
 results
 __pycache__
 test_output
