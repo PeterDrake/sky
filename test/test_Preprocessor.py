@@ -45,19 +45,19 @@ class TestPreprocessor(unittest.TestCase):
         self.assertFalse(self.preprocessor.tsi_mask_exists('20180418000245'))
 
     def test_finds_correct_numbers_of_valid_and_invalid_timestamps(self):
-        self.preprocessor.validate_csv('tiny_fake_dubious_data.csv')
+        self.preprocessor.validate_csv('tiny_data.csv')
         self.assertEqual(2, self.preprocessor.valid_timestamp_count)
         self.assertEqual(2, self.preprocessor.invalid_timestamp_count)
 
     def test_writes_clean_csv(self):
-        self.preprocessor.write_clean_csv('tiny_fake_dubious_data.csv')
+        self.preprocessor.write_clean_csv('tiny_data.csv')
         data = pd.read_csv('../test_data/tiny_fake_dubious_data.csv')
         # For this file, the clean version only has one valid timestamp
         self.assertEqual(2, len(data))
 
     def test_creates_image_directories(self):
         # Ensure that the clean CSV file exists
-        self.preprocessor.write_clean_csv('tiny_fake_dubious_data.csv')
+        self.preprocessor.write_clean_csv('tiny_data.csv')
         dirs = [self.preprocessor.data_dir + '/' + date for date in
                 ['photos/20180418', 'photos/20180419', 'tsi_masks/20180418', 'tsi_masks/20180419']]
         # Destroy the existing directories
@@ -65,15 +65,15 @@ class TestPreprocessor(unittest.TestCase):
             if os.path.isdir(d):
                 shutil.rmtree(d)
         # Run the method
-        self.preprocessor.create_image_directories('tiny_fake_dubious_data.csv')
+        self.preprocessor.create_image_directories('tiny_data.csv')
         # Assert that the directories are present
         for d in dirs:
             self.assertTrue(os.path.isdir(d))
 
     def test_preprocesses_files(self):
         # Ensure that the clean CSV file exists
-        self.preprocessor.write_clean_csv('tiny_fake_dubious_data.csv')
-        self.preprocessor.preprocess_images('tiny_fake_dubious_data.csv')
+        self.preprocessor.write_clean_csv('tiny_data.csv')
+        self.preprocessor.preprocess_images('tiny_data.csv')
         files = [self.preprocessor.data_dir + '/photos/20180418/20180418000200_photo.jpg',
                  self.preprocessor.data_dir + '/photos/20180419/20180419000200_photo.jpg',
                  self.preprocessor.data_dir + '/tsi_masks/20180418/20180418000200_tsi_mask.png',

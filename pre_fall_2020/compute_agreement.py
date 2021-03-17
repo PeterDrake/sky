@@ -4,7 +4,7 @@
 	The file 'mask_agreement.csv' contains timestamp_utc and agreement data for each available timestamp from the
 	files:
 	shcu_typical_data.csv
-	tiny_fake_dubious_data.csv
+	tiny_data.csv
 
 	Note: this script gets the timestamps from these files, but it is possible that not all of these timestamps have
 	simplified tsi sky images and masks available in the TYPICAL_DATA_DIR and DUBIOUS_DATA_DIR directories. This is
