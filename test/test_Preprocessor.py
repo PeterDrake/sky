@@ -54,7 +54,7 @@ class TestPreprocessor(unittest.TestCase):
     def test_writes_clean_csv(self):
         self.preprocessor.write_clean_csv('tiny_data.csv')
         data = pd.read_csv('../test_data/tiny_data.csv')
-        # For this file, the clean version only has one valid timestamp
+        # For this file, the clean version has 304 valid timestamps
         self.assertEqual(304, len(data))
 
     def test_creates_image_directories(self):
