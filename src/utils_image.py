@@ -10,10 +10,10 @@ import scipy.interpolate
 import matplotlib.pyplot as plt
 
 # Colors used in masks - DO NOT TOUCH
-WHITE = np.array([255, 255, 255], dtype=np.uint8)
+BLACK = np.array([0, 0, 0], dtype=np.uint8)
 BLUE = np.array([0, 0, 255], dtype=np.uint8)
 GRAY = np.array([192, 192, 192], dtype=np.uint8)
-BLACK = np.array([0, 0, 0], dtype=np.uint8)
+WHITE = np.array([255, 255, 255], dtype=np.uint8)
 GREEN = np.array([0, 255, 0], dtype=np.uint8)
 YELLOW = np.array([255, 255, 0], dtype=np.uint8)
 COLORS = (BLACK, BLUE, GRAY, WHITE, GREEN)

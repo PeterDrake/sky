@@ -37,7 +37,7 @@ class TimestampAllocator:
         """
         Divides the timestamps in csv_filename (which is in self.data_dir) randomly according to proportions.
         The timestamps are then written into the files specified by output_filenames.
-        :param proportions: a list of numbers summing to 1.0.
+        :param proportions: a list of numbers summing to 1.0, corresponding to output_filenames.
         """
         csv = self.data_dir + '/' + csv_filename
         self.log('Reading ' + csv)
