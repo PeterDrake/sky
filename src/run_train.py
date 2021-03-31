@@ -27,6 +27,18 @@ val_gen = BatchGenerator(val_stamps, '../test_data')
 # because our target data is integers.
 model.compile(optimizer="rmsprop", loss="sparse_categorical_crossentropy")
 
+# Update experiment log
+# TODO Should the results directory be specified in config.py?
+os.makedirs('../results', exist_ok=True)
+log_filename = '../results/experiment_log.csv'
+if os.path.isfile(log_filename):
+    log = pd.read_csv(log_filename)
+else:
+    log = pd.DataFrame(columns=['name','date','githash','netfile','notes'])
+# TODO If this experiment exists, we should overwrite instead of appending
+log.loc[len(log)] = [EXPERIMENT_NAME, 'Some date', 'Some git hash', 'Some network file name', '']
+log.to_csv(log_filename, index=False)
+
 # Create directory for this experiment
 experiment_directory = '../results/' + EXPERIMENT_NAME
 os.makedirs(experiment_directory, exist_ok=True)
