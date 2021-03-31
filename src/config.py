@@ -8,3 +8,6 @@ TYPICAL_PROPORTIONS = [0.6, 0.2, 0.2]
 TYPICAL_TIMESTAMP_FILENAMES = ['typical_' + c + '_timestamps' for c in ['training', 'validation', 'testing']]
 DUBIOUS_PROPORTIONS = [0.5, 0.5]
 DUBIOUS_TIMESTAMP_FILENAMES = ['dubious_' + c + '_timestamps' for c in ['validation', 'testing']]
+
+# Current experiment name (e.g., 'exp00001'), or 'sandbox'
+EXPERIMENT_NAME = 'sandbox'

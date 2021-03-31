@@ -17,8 +17,9 @@ Our pipeline involves the following steps.
 
 ## Train the Model
 
-1. Build the network or load a pretrained one.
-1. Train the network.
+1. Set the experiment number.
+1. Build the network.
+1. Train the network and save it in a directory for the current experiment (also updating the experiment log).
 
 ## Apply the Network
 
@@ -49,14 +50,21 @@ data (these are all generated and therefore *not* under version control)
     photos
         20120501 (and similar years/months/dates)
             20120501170430_photo.jpg (preprocessed)
-    tsi_masks (structured like photos)
-    network_masks (structured like photos)
-    network_fsc.csv
+    tsi_masks (structured like photos, but filenames end in _tsi_mask.png)
 raw_csv
     readme_with_Jess_edits.pdf
     shcu_dubious_data.csv (raw version)
     shcu_typical_data.csv (raw version)
     TSI_data_explanation.pdf
+results (these are all generated and therefore *not* under version control)
+    experiment_log.csv (running an experiment adds a line to this file)
+    exp00001 (results of experiment 00001)
+        net.h5
+        network_masks (structured like ../data/photos but filenames end in _network_mask.png)
+        network_fsc.csv
+    exp00002
+    ...
+    sandbox (similar to exp00001, but used for "junk" experiments that we don't care about saving)
 test (test source code)
     *.py
 test_raw_csv (analogous to raw_csv)

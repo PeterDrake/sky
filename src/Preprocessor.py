@@ -114,14 +114,10 @@ class Preprocessor:
         self.log('Reading ' + csv)
         data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         self.log('Creating image directories')
-        timestamps = {yyyymmdd(t) for t in data['timestamp_utc']}
+        days = {yyyymmdd(t) for t in data['timestamp_utc']}
         for prefix in [self.data_dir + '/photos', self.data_dir + '/tsi_masks']:
-            if not os.path.exists(prefix):
-                os.mkdir(prefix)
-            for t in timestamps:
-                d = prefix + '/' + t
-                if not os.path.exists(d):
-                    os.mkdir(d)
+            for day in days:
+                os.makedirs(prefix + '/' + day, exist_ok=True)
         self.log('Done creating image directories')
 
     def preprocess_timestamp(self, timestamp):
