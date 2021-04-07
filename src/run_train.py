@@ -5,6 +5,31 @@ import numpy as np
 import pandas as pd
 from BatchGenerator import *
 from config import EXPERIMENT_NAME
+from datetime import date
+import sys
+
+
+# Update experiment log
+# TODO Should the results directory be specified in config.py?
+os.makedirs('../results', exist_ok=True)
+log_filename = '../results/experiment_log.csv'
+if os.path.isfile(log_filename):
+    log = pd.read_csv(log_filename)
+else:
+    log = pd.DataFrame(columns=['name','date','githash','netfile','notes'])
+date = date.today()
+if (log['name'] == EXPERIMENT_NAME).any():
+    print(EXPERIMENT_NAME + ' is already in results/experiment_log.csv; manually delete it or change the name in config.py')
+    sys.exit()
+log.loc[len(log)] = [EXPERIMENT_NAME, date, 'Some git hash', 'Some network file name', '']
+log.to_csv(log_filename, index=False)
+
+# Create directory for this experiment
+experiment_directory = '../results/' + EXPERIMENT_NAME
+os.makedirs(experiment_directory, exist_ok=True)
+
+sys.exit()  # So we don't run the rest while we're developing this
+
 
 # Create the network
 inputs = keras.Input(shape=(480, 480, 3))
@@ -26,22 +51,6 @@ val_gen = BatchGenerator(val_stamps, '../test_data')
 # We use the "sparse" version of categorical_crossentropy
 # because our target data is integers.
 model.compile(optimizer="rmsprop", loss="sparse_categorical_crossentropy")
-
-# Update experiment log
-# TODO Should the results directory be specified in config.py?
-os.makedirs('../results', exist_ok=True)
-log_filename = '../results/experiment_log.csv'
-if os.path.isfile(log_filename):
-    log = pd.read_csv(log_filename)
-else:
-    log = pd.DataFrame(columns=['name','date','githash','netfile','notes'])
-# TODO If this experiment exists, we should overwrite instead of appending
-log.loc[len(log)] = [EXPERIMENT_NAME, 'Some date', 'Some git hash', 'Some network file name', '']
-log.to_csv(log_filename, index=False)
-
-# Create directory for this experiment
-experiment_directory = '../results/' + EXPERIMENT_NAME
-os.makedirs(experiment_directory, exist_ok=True)
 
 callbacks = [
     keras.callbacks.ModelCheckpoint(experiment_directory + '/network.h5', save_best_only=True)
