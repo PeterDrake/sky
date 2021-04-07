@@ -7,7 +7,7 @@ from BatchGenerator import *
 from config import EXPERIMENT_NAME
 from datetime import date
 import sys
-
+import git
 
 # Update experiment log
 # TODO Should the results directory be specified in config.py?
@@ -17,9 +17,13 @@ if os.path.isfile(log_filename):
     log = pd.read_csv(log_filename)
 else:
     log = pd.DataFrame(columns=['name','date','githash','netfile','notes'])
-date = date.today()
 if (log['name'] == EXPERIMENT_NAME).any():
     print(EXPERIMENT_NAME + ' is already in results/experiment_log.csv; manually delete it or change the name in config.py')
+    sys.exit()
+date = date.today()
+repo = git.Repo(search_parent_directories=True)
+if repo.is_dirty(untracked_files=True):
+    print('Not in a clean git state! Commit or revert.')
     sys.exit()
 log.loc[len(log)] = [EXPERIMENT_NAME, date, 'Some git hash', 'Some network file name', '']
 log.to_csv(log_filename, index=False)
