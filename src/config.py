@@ -2,6 +2,7 @@
 RAW_DATA_DIR = '/home/users/jkleiss/TSI_C1'
 RAW_CSV_DIR = '../raw_csv'
 DATA_DIR = '../data'
+RESULTS_DIR = '../results'
 
 # Parameters for dividing timestamps into training, validation, and testing
 TYPICAL_PROPORTIONS = [0.6, 0.2, 0.2]

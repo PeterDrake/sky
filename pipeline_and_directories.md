@@ -17,7 +17,9 @@ Our pipeline involves the following steps.
 
 ## Train the Model
 
-1. Set the experiment number.
+1. Set the experiment name and choice of network definition file in config.py. The training process won't allow
+   the user to continue if the experiment name is already in results/experiment_log.csv or the code is not in a clean
+   git state.
 1. Build the network.
 1. Train the network and save it in a directory for the current experiment (also updating the experiment log).
 
@@ -67,11 +69,12 @@ results (these are all generated and therefore *not* under version control)
     sandbox (similar to exp00001, but used for "junk" experiments that we don't care about saving)
 test (test source code)
     *.py
+test_data (analogous to data)
 test_raw_csv (analogous to raw_csv)
     shcu_dubious_data.csv (simple test version in raw form)
     shcu_typical_data.csv (simple test version in raw form)
 test_raw_data (analogous to external raw data directory, but much smaller)
     CloudMask
     SkyImage
-test_data (analogous to data)
+test_results (analogous to results)
 ```
