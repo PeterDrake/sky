@@ -1,6 +1,20 @@
 from config import *
 import os
 import pandas as pd
+from datetime import date
+import git
+import sys
+import shutil
+
+
+class GitError(Exception):
+    """Thrown if we try to run an experiment when not in a clean git state."""
+    pass
+
+
+class ExperimentNameInUseError(Exception):
+    """Thrown if we try to use an experiment name that has been used."""
+    pass
 
 
 class ExperimentLogUpdater:
@@ -15,22 +29,21 @@ class ExperimentLogUpdater:
     def update(self):
         self.log = self.load_or_create_log_dataframe()
         if self.experiment_name_in_use():
-            self.crash(EXPERIMENT_NAME + ' is already in results/experiment_log.csv; manually delete it or change the name in config.py')
-        date = date.today()
-        repo = git.Repo(search_parent_directories=True)
-        # TODO Uncomment this!
-        # if repo.is_dirty(untracked_files=True):
-        #     print('Not in a clean git state! Commit or revert.')
-        #     sys.exit()
-        git_hash = repo.head.object.hexsha
-        self.add_log_line(date, git_hash)
+            raise ExperimentNameInUseError(self.experiment_name + ' is already in results/experiment_log.csv; manually delete it or change the name in config.py')
+        self.add_log_line(date.today(), self.get_git_hash())
         self.write_log_file()
+        self.create_experiment_directory()
 
-
-        # Create directory for this experiment
-        experiment_directory = '../results/' + EXPERIMENT_NAME
-        os.makedirs(experiment_directory, exist_ok=True)
-        # TODO Destroy any existing directory for this experiment name
+    def get_git_hash(self):
+        """
+        Returns the current git state hash, or crashes if not in a clean git state (i.e., there are uncommitted changes).
+        :return:
+        """
+        repo = git.Repo(search_parent_directories=True)
+        if self.insist_on_clean_git_state and repo.is_dirty(untracked_files=True):
+            raise GitError('Not in a clean git state! Commit or revert.')
+        git_hash = repo.head.object.hexsha
+        return git_hash
 
     def load_or_create_log_dataframe(self):
         """
@@ -47,6 +60,14 @@ class ExperimentLogUpdater:
         """
         return (self.log['name'] == self.experiment_name).any()
 
+    @staticmethod
+    def crash(self, message):
+        """
+        Prints message and exits.
+        """
+        print(message)
+        sys.exit()
+
     def write_log_file(self):
         """
         Writes the log to experiment_log.csv in results_dir.
@@ -60,3 +81,13 @@ class ExperimentLogUpdater:
         """
         # TODO Also get the network filename as an argument
         self.log.loc[len(self.log)] = [self.experiment_name, date, git_hash, 'Some network file name', '']
+
+    def create_experiment_directory(self):
+        """
+        Create an empty directory for this experiment, deleting any existing one. We would only have an existing
+        directory if we had manually removed a line from the log file because, e.g., we started an experiment and
+        immediately realized it should be abandoned due to some setup error.
+        """
+        path = self.results_dir + '/' + self.experiment_name
+        shutil.rmtree(path, ignore_errors=True)
+        os.makedirs(path)

@@ -1,6 +1,5 @@
 import unittest
 from ExperimentLogUpdater import *
-import pandas as pd
 
 
 class TestExperimentLogUpdater(unittest.TestCase):
@@ -34,6 +33,21 @@ class TestExperimentLogUpdater(unittest.TestCase):
         self.updater.log = self.updater.load_or_create_log_dataframe()
         # The log should now contain the name we're trying to re-use
         self.assertTrue(self.updater.experiment_name_in_use())
+
+    def test_creates_experiment_directory_when_it_does_not_exist(self):
+        path = self.updater.results_dir + '/' + self.updater.experiment_name
+        shutil.rmtree(path, ignore_errors=True)
+        self.updater.create_experiment_directory()
+        self.assertTrue(os.path.isdir(path))
+
+    def test_replaces_experiment_directory_when_it_does_exist(self):
+        path = self.updater.results_dir + '/' + self.updater.experiment_name
+        self.updater.create_experiment_directory()
+        file = path + '/junk.txt'  # Create a junk file
+        with open(file, 'a'):
+            pass
+        self.updater.create_experiment_directory()
+        self.assertEqual([], os.listdir(path))
 
 
 if __name__ == '__main__':
