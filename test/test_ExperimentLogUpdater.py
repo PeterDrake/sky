@@ -12,7 +12,8 @@ class TestExperimentLogUpdater(unittest.TestCase):
         self.assertEqual(['name', 'date', 'githash', 'netfile', 'notes'], list(log.columns))
 
     def test_detects_experiment_name_not_in_empty_log_file(self):
-        os.remove(self.updater.log_filename)
+        if os.path.exists(self.updater.log_filename):
+            os.remove(self.updater.log_filename)
         self.updater.log = self.updater.load_or_create_log_dataframe()
         self.assertFalse(self.updater.experiment_name_in_use())
 
@@ -21,7 +22,7 @@ class TestExperimentLogUpdater(unittest.TestCase):
         self.updater.add_log_line('dummy date', 'dummy git hash')
         self.updater.write_log_file()
         # Replace the updater with one using a different experiment name
-        self.updater = ExperimentLogUpdater('../test_results', 'test_experiment2', False)
+        self.updater = ExperimentLogUpdater('../test_results', 'different_experiment_name', False)
         # That name should now NOT be in use
         self.updater.log = self.updater.load_or_create_log_dataframe()
         self.assertFalse(self.updater.experiment_name_in_use())
