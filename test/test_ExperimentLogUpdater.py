@@ -19,7 +19,7 @@ class TestExperimentLogUpdater(unittest.TestCase):
 
     def test_detects_experiment_name_not_in_use(self):
         self.updater.log = self.updater.load_or_create_log_dataframe()
-        self.updater.add_log_line('dummy date', 'dummy git hash')
+        self.updater.add_log_line()
         self.updater.write_log_file()
         # Replace the updater with one using a different experiment name
         self.updater = ExperimentLogUpdater('../test_results', 'different_experiment_name', False)
@@ -29,7 +29,7 @@ class TestExperimentLogUpdater(unittest.TestCase):
 
     def test_detects_experiment_name_in_use(self):
         self.updater.log = self.updater.load_or_create_log_dataframe()
-        self.updater.add_log_line('dummy date', 'dummy git hash')
+        self.updater.add_log_line()
         self.updater.write_log_file()
         self.updater.log = self.updater.load_or_create_log_dataframe()
         # The log should now contain the name we're trying to re-use

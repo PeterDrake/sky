@@ -19,7 +19,7 @@ class ExperimentNameInUseError(Exception):
 
 class ExperimentLogUpdater:
 
-    def __init__(self, results_dir, experiment_name, insist_on_clean_git_state):
+    def __init__(self, results_dir, experiment_name, insist_on_clean_git_state=True):
         self.results_dir = results_dir
         self.experiment_name = experiment_name
         self.log_filename = self.results_dir + '/experiment_log.csv'
@@ -30,7 +30,7 @@ class ExperimentLogUpdater:
         self.log = self.load_or_create_log_dataframe()
         if self.experiment_name_in_use():
             raise ExperimentNameInUseError(self.experiment_name + ' is already in results/experiment_log.csv; manually delete it or change the name in config.py')
-        self.add_log_line(date.today(), self.get_git_hash())
+        self.add_log_line()
         self.write_log_file()
         self.create_experiment_directory()
 
@@ -75,12 +75,11 @@ class ExperimentLogUpdater:
         os.makedirs(self.results_dir, exist_ok=True)
         self.log.to_csv(self.log_filename, index=False)
 
-    def add_log_line(self, date, git_hash):
+    def add_log_line(self):
         """
         Adds a line for the current experiment to the log. Note that write_log_file must still be called.
         """
-        # TODO Also get the network filename as an argument
-        self.log.loc[len(self.log)] = [self.experiment_name, date, git_hash, 'Some network file name', '']
+        self.log.loc[len(self.log)] = [self.experiment_name, date.today(), self.get_git_hash(), NETWORK_ARCHITECTURE, '']
 
     def create_experiment_directory(self):
         """

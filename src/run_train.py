@@ -8,42 +8,20 @@ from config import EXPERIMENT_NAME
 from datetime import date
 import sys
 import git
+from ExperimentLogUpdater import *
+import importlib
 
-# Update experiment log
-# TODO Should the results directory be specified in config.py?
-os.makedirs('../results', exist_ok=True)
-log_filename = '../results/experiment_log.csv'
-if os.path.isfile(log_filename):
-    log = pd.read_csv(log_filename)
-else:
-    log = pd.DataFrame(columns=['name','date','githash','netfile','notes'])
-# TODO Uncomment this!
-# if (log['name'] == EXPERIMENT_NAME).any():
-#     print(EXPERIMENT_NAME + ' is already in results/experiment_log.csv; manually delete it or change the name in config.py')
-#     sys.exit()
-date = date.today()
-repo = git.Repo(search_parent_directories=True)
-# TODO Uncomment this!
-# if repo.is_dirty(untracked_files=True):
-#     print('Not in a clean git state! Commit or revert.')
-#     sys.exit()
-hash = repo.head.object.hexsha
-log.loc[len(log)] = [EXPERIMENT_NAME, date, hash, 'Some network file name', '']
-log.to_csv(log_filename, index=False)
-
-# Create directory for this experiment
-experiment_directory = '../results/' + EXPERIMENT_NAME
-os.makedirs(experiment_directory, exist_ok=True)
-
-sys.exit()  # So we don't run the rest while we're developing this
-
+# Update experiment log and create empty directory for experiment results
+# TODO Change False to True to insist on a clean git state
+ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, False).update()
 
 # Create the network
-inputs = keras.Input(shape=(480, 480, 3))
-outputs = layers.Conv2D(filters=4, kernel_size=3, activation="softmax", padding="same")(inputs)
-model = keras.Model(inputs, outputs)
+module = importlib.import_module(NETWORK_ARCHITECTURE)
+model = module.model
 
-# model.summary()
+model.summary()
+
+sys.exit()
 
 # Temporary timestamps for manual testing
 stamps = pd.read_csv('../test_data/tiny_data.csv', converters={'timestamp_utc': str}, usecols=['timestamp_utc'])

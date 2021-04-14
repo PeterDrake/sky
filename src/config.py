@@ -12,3 +12,7 @@ DUBIOUS_TIMESTAMP_FILENAMES = ['dubious_' + c + '_timestamps' for c in ['validat
 
 # Current experiment name (e.g., 'exp00001'), or 'sandbox'
 EXPERIMENT_NAME = 'sandbox'
+
+# Name (minus .py) of file containing network architecture
+# TODO Put architectures in a subdirectory
+NETWORK_ARCHITECTURE = 'trivial_network'
