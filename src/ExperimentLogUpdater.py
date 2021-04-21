@@ -22,6 +22,7 @@ class ExperimentLogUpdater:
     def __init__(self, results_dir, experiment_name, insist_on_clean_git_state=True):
         self.results_dir = results_dir
         self.experiment_name = experiment_name
+        self.experiment_dir = self.results_dir + '/' + self.experiment_name
         self.log_filename = self.results_dir + '/experiment_log.csv'
         self.insist_on_clean_git_state = insist_on_clean_git_state
         self.log = 'Not yet defined'
@@ -87,6 +88,5 @@ class ExperimentLogUpdater:
         directory if we had manually removed a line from the log file because, e.g., we started an experiment and
         immediately realized it should be abandoned due to some setup error.
         """
-        path = self.results_dir + '/' + self.experiment_name
-        shutil.rmtree(path, ignore_errors=True)
-        os.makedirs(path)
+        shutil.rmtree(self.experiment_dir, ignore_errors=True)
+        os.makedirs(self.experiment_dir)

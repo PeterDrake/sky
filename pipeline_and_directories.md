@@ -17,11 +17,13 @@ Our pipeline involves the following steps.
 
 ## Train the Model
 
-1. Set the experiment name and choice of network definition file in config.py. The training process won't allow
+1. Set the experiment name in config.py. The training process won't allow
    the user to continue if the experiment name is already in results/experiment_log.csv or the code is not in a clean
    git state.
-1. Build the network.
-1. Train the network and save it in a directory for the current experiment (also updating the experiment log).
+1. Set the network architecture name in config.py. The corresponding .py file in src gives the definition of the network
+   architecture.
+1. Build and train the network. The result is saved in a directory for the current experiment (also updating the
+   experiment log).
 
 ## Apply the Network
 
