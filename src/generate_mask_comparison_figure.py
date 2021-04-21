@@ -1,4 +1,5 @@
-import os
+# This is a copy of an old version of run_process.py. In practice, this will load images from files rather than
+# doing any processing.
 
 from BatchGenerator import *
 from ExperimentLogUpdater import ExperimentLogUpdater
@@ -24,9 +25,15 @@ val_preds = model.predict(val_gen)
 # TODO Should we find a way to do this without loading ALL images into memory?
 # TODO What about parallelism?
 
-# Save the files
-for i, timestamp in enumerate(val_stamps[:4]):
+# Display one
+def display_mask(i):
+    """Quick utility to display a model's prediction."""
+    timestamp = val_stamps[i]
     network_mask = one_hot_to_rgb_mask(val_preds[i])
-    dir = log_updater.experiment_dir + '/network_masks/' + yyyymmdd(timestamp) + '/'
-    os.makedirs(dir, exist_ok=True)
-    plt.imsave(dir + timestamp + '_network_mask.png', network_mask)
+    fig, ax = plt.subplots(1, 2)
+    tsi_mask = plt.imread('../test_data' + '/tsi_masks/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png')
+    fig.suptitle(timestamp)
+    ax[0].imshow(tsi_mask)
+    ax[1].imshow(network_mask)
+
+display_mask(2)

@@ -100,8 +100,7 @@ class Preprocessor:
         data = data[valid]
         out_path = self.data_dir + '/' + csv_filename
         self.log('Writing ' + out_path)
-        if not os.path.exists(self.data_dir):
-            os.makedirs(self.data_dir)
+        os.makedirs(self.data_dir, exist_ok=True)
         data.to_csv(out_path, index=False)
         self.log('Done writing clean csv')
 
