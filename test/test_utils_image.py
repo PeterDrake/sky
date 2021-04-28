@@ -33,7 +33,7 @@ class TestUtilsImage(unittest.TestCase):
         # To see the image, uncomment these lines
         # plt.imshow(cropped)
         # plt.show()
-        self.assertEqual((480, 480, 3), cropped.shape)
+        self.assertEqual(RGB_PHOTO_SIZE, cropped.shape)
         (r, c), radius = center_and_radius(cropped)
         self.assertEqual(240, r)
         self.assertEqual(240, c)
@@ -46,7 +46,7 @@ class TestUtilsImage(unittest.TestCase):
         # To see the image, uncomment these lines
         # plt.imshow(cropped)
         # plt.show()
-        self.assertEqual((480, 480, 3), cropped.shape)
+        self.assertEqual(RGB_PHOTO_SIZE, cropped.shape)
         (r, c), radius = center_and_radius(cropped)
         self.assertEqual(240, r)
         self.assertEqual(240, c)
@@ -55,7 +55,7 @@ class TestUtilsImage(unittest.TestCase):
     def test_blackens_outer_ring(self):
         mask = self.add_circle(300, 200, 100)
         coords = center_and_radius(mask)
-        photo = np.random.randint(0, 255, (480, 480, 3))
+        photo = np.random.randint(0, 255, RGB_PHOTO_SIZE)
         # To see the image, uncomment these lines
         # plt.imshow(before)
         # plt.show()
@@ -70,7 +70,7 @@ class TestUtilsImage(unittest.TestCase):
         coords = center_and_radius(mask)
         cropped_mask = crop(mask, coords)
         # The integers start at 1 to avoid an accidental black pixels
-        photo = np.random.randint(1, 255, (480, 480, 3))
+        photo = np.random.randint(1, 255, RGB_PHOTO_SIZE)
         photo = crop(photo, coords)
         photo = blacken_outer_ring(photo, coords)
         self.assertTrue(((cropped_mask == BLACK) == (photo == BLACK)).all())

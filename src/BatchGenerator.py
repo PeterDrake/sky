@@ -30,11 +30,10 @@ class BatchGenerator(keras.utils.Sequence):
         batch_timestamps = self.timestamps[i : i + self.batch_size]  # Timestamps for this batch
         photo_paths = [timestamp_to_photo_path(self.data_dir, t) for t in batch_timestamps]
         tsi_mask_paths = [timestamp_to_tsi_mask_path(self.data_dir, t) for t in batch_timestamps]
-        # TODO We sure do say (480, 480, 3) a lot. Define a constant somewhere?
-        photo_batch = np.zeros((self.batch_size,) + (480, 480, 3), dtype="float32")  # Shape (N, 480, 480, 3)
+        photo_batch = np.zeros((self.batch_size,) + RGB_PHOTO_SIZE, dtype="float32")  # Shape (N, 480, 480, 3)
         for j, path in enumerate(photo_paths):
             photo_batch[j] = plt.imread(path)
-        tsi_mask_batch = np.zeros((self.batch_size,) + (480, 480, 1), dtype="uint8")  # Shape (N, 480, 480, 1)
+        tsi_mask_batch = np.zeros((self.batch_size,) + LABELED_MASK_SIZE, dtype="uint8")  # Shape (N, 480, 480, 1)
         for j, path in enumerate(tsi_mask_paths):
             rgb = plt.imread(path)  # Shape (480, 480, 3)
             labeled = rgb_mask_to_label(rgb)  # Shape (480, 480)

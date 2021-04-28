@@ -17,6 +17,11 @@ GREEN = np.array([0, 255, 0], dtype=np.uint8)
 YELLOW = np.array([255, 255, 0], dtype=np.uint8)
 COLORS = (BLACK, BLUE, GRAY, WHITE, GREEN)
 
+# Size of images
+RGB_PHOTO_SIZE = (480, 480, 3)
+ONE_HOT_MASK_SIZE = (480, 480, 4)
+LABELED_MASK_SIZE = (480, 480, 1)
+
 
 def circle_edges(mask):
     """
@@ -60,12 +65,12 @@ def blacken_outer_ring(photo, center_and_radius):
     :param center_and_radius: (r, c), radius, as returned by center_and_radius
     """
     _, radius = center_and_radius
-    circle = np.fromfunction(lambda r, c, _: (r - 240) ** 2 + (c - 240) ** 2 <= radius ** 2, (480, 480, 3))
+    circle = np.fromfunction(lambda r, c, _: (r - 240) ** 2 + (c - 240) ** 2 <= radius ** 2, RGB_PHOTO_SIZE)
     return np.where(circle, photo, blacken_outer_ring.CROPPED_BLACK_IMAGE)
 
 
 # An all-black image of the right size
-blacken_outer_ring.CROPPED_BLACK_IMAGE = np.full((480, 480, 3), BLACK)
+blacken_outer_ring.CROPPED_BLACK_IMAGE = np.full(RGB_PHOTO_SIZE, BLACK)
 
 
 def remove_sun(mask):
