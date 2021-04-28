@@ -40,6 +40,8 @@ Our pipeline involves the following steps.
 ```
 README.md
 src (source code)
+    model_architectures
+        *.py (files describing various network architectures)
     *.py
 doc (documentation)
     *.md

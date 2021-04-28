@@ -1,13 +1,4 @@
-import os
-from tensorflow.keras import layers
-from tensorflow import keras
-import numpy as np
-import pandas as pd
 from BatchGenerator import *
-from config import EXPERIMENT_NAME
-from datetime import date
-import sys
-import git
 from ExperimentLogUpdater import *
 import importlib
 
@@ -17,7 +8,7 @@ log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, False)
 log_updater.update()
 
 # Create the network
-module = importlib.import_module(NETWORK_ARCHITECTURE)
+module = importlib.import_module('model_architectures.' + NETWORK_ARCHITECTURE)
 model = module.model
 
 # Get timestamps for the data to use
