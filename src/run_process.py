@@ -29,4 +29,4 @@ for i, timestamp in enumerate(val_stamps[:4]):
     network_mask = one_hot_to_rgb_mask(val_preds[i])
     dir = log_updater.experiment_dir + '/network_masks/' + yyyymmdd(timestamp) + '/'
     os.makedirs(dir, exist_ok=True)
-    plt.imsave(dir + timestamp + '_network_mask.png', network_mask)
+    plt.imsave(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp))

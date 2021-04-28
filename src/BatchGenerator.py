@@ -28,9 +28,8 @@ class BatchGenerator(keras.utils.Sequence):
         """Returns tuple (photo, labeled TSI mask) correspond to batch #index."""
         i = index * self.batch_size  # Index of the beginning of the batch
         batch_timestamps = self.timestamps[i : i + self.batch_size]  # Timestamps for this batch
-        # TODO Make a function to convert timestamps to paths; it happens in several places
-        photo_paths = [self.data_dir + '/photos/' + yyyymmdd(t) + '/' + t + '_photo.jpg' for t in batch_timestamps]
-        tsi_mask_paths = [self.data_dir + '/tsi_masks/' + yyyymmdd(t) + '/' + t + '_tsi_mask.png' for t in batch_timestamps]
+        photo_paths = [timestamp_to_photo_path(self.data_dir, t) for t in batch_timestamps]
+        tsi_mask_paths = [timestamp_to_tsi_mask_path(self.data_dir, t) for t in batch_timestamps]
         # TODO We sure do say (480, 480, 3) a lot. Define a constant somewhere?
         photo_batch = np.zeros((self.batch_size,) + (480, 480, 3), dtype="float32")  # Shape (N, 480, 480, 3)
         for j, path in enumerate(photo_paths):

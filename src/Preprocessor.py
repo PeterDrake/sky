@@ -1,6 +1,5 @@
 import glob
 import os
-import pandas as pd
 from utils_timestamp import *
 from utils_image import *
 from PIL import Image
@@ -133,10 +132,8 @@ class Preprocessor:
         photo = crop(photo, coords)
         photo = blacken_outer_ring(photo, coords)
         # Write revised versions
-        Image.fromarray(mask).save(self.data_dir + '/tsi_masks/' + yyyymmdd(timestamp) + '/'
-                                   + timestamp + '_tsi_mask.png')
-        Image.fromarray(photo).save(self.data_dir + '/photos/' + yyyymmdd(timestamp) + '/'
-                                   + timestamp + '_photo.jpg')
+        Image.fromarray(mask).save(timestamp_to_tsi_mask_path(self.data_dir, timestamp))
+        Image.fromarray(photo).save(timestamp_to_photo_path(self.data_dir, timestamp))
 
     def preprocess_images(self, csv_filename):
         """

@@ -25,13 +25,14 @@ val_preds = model.predict(val_gen)
 # TODO Should we find a way to do this without loading ALL images into memory?
 # TODO What about parallelism?
 
+
 # Display one
 def display_mask(i):
     """Quick utility to display a model's prediction."""
     timestamp = val_stamps[i]
     network_mask = one_hot_to_rgb_mask(val_preds[i])
     fig, ax = plt.subplots(1, 2)
-    tsi_mask = plt.imread('../test_data' + '/tsi_masks/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png')
+    tsi_mask = plt.imread(timestamp_to_tsi_mask_path('../test_data', timestamp))
     fig.suptitle(timestamp)
     ax[0].imshow(tsi_mask)
     ax[1].imshow(network_mask)

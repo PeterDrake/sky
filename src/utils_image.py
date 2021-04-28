@@ -7,7 +7,6 @@ import skimage.color
 import skimage.measure
 import skimage.segmentation
 import scipy.interpolate
-import matplotlib.pyplot as plt
 
 # Colors used in masks - DO NOT TOUCH
 BLACK = np.array([0, 0, 0], dtype=np.uint8)

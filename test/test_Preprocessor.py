@@ -72,14 +72,14 @@ class TestPreprocessor(unittest.TestCase):
         # Ensure that the clean CSV file exists
         self.preprocessor.write_clean_csv('tiny_data.csv')
         # Only do the expensive preprocessing if it hasn't already been done
-        if not os.path.exists(self.preprocessor.data_dir + '/photos/20180418/20180418000200_photo.jpg'):
+        if not os.path.exists(timestamp_to_photo_path(self.preprocessor.data_dir, '20180418000200')):
             print('Doing expensive preprocessing of test files')
             self.preprocessor.preprocess_images('tiny_data.csv')
         # Now check if some of the files exist
-        files = [self.preprocessor.data_dir + '/photos/20180418/20180418000200_photo.jpg',
-                 self.preprocessor.data_dir + '/photos/20180419/20180419000200_photo.jpg',
-                 self.preprocessor.data_dir + '/tsi_masks/20180418/20180418000200_tsi_mask.png',
-                 self.preprocessor.data_dir + '/tsi_masks/20180419/20180419000200_tsi_mask.png']
+        files = [timestamp_to_photo_path(self.preprocessor.data_dir, '20180418000200'),
+                 timestamp_to_photo_path(self.preprocessor.data_dir, '20180419000200'),
+                 timestamp_to_tsi_mask_path(self.preprocessor.data_dir, '20180418000200'),
+                 timestamp_to_tsi_mask_path(self.preprocessor.data_dir, '20180419000200')]
         for f in files:
             self.assertTrue(os.path.exists(f))
 

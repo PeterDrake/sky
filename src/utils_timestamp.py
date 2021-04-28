@@ -40,3 +40,24 @@ def allocate_dates(date_counts, proportions):
     paired_cutoffs = zip([0] + cutoffs[:-1], cutoffs)
     subsets = [date_counts[(lower < date_counts['cum_count']) & (date_counts['cum_count'] <= upper)]['date'] for lower, upper in paired_cutoffs]
     return [list(s) for s in subsets]
+
+
+def timestamp_to_photo_path(dir, timestamp):
+    """
+    Returns the full path for the photo file for timestamp in dir.
+    """
+    return dir + '/photos/' + yyyymmdd(timestamp) + '/' + timestamp + '_photo.jpg'
+
+
+def timestamp_to_tsi_mask_path(dir, timestamp):
+    """
+    Returns the full path for the TSI mask file for timestamp in dir.
+    """
+    return dir + '/tsi_masks/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png'
+
+
+def timestamp_to_network_mask_path(dir, timestamp):
+    """
+    Returns the full path for the network mask file for timestamp in dir.
+    """
+    return dir + '/network_masks/' + yyyymmdd(timestamp) + '/' + timestamp + '_network_mask.png'

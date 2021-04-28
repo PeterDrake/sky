@@ -17,13 +17,13 @@ class MyTestCase(unittest.TestCase):
 
     def test_outputs_have_correct_dimensions(self):
         for photo_batch, tsi_mask_batch in self.generator:
-            self.assertEquals((32, 480, 480, 3), photo_batch.shape)
-            self.assertEquals((32, 480, 480, 1), tsi_mask_batch.shape)
+            self.assertEqual((32, 480, 480, 3), photo_batch.shape)
+            self.assertEqual((32, 480, 480, 1), tsi_mask_batch.shape)
 
     def test_photo_appears_in_batch(self):
         # Arbitrarily choose the timestamp with index 3
         t = self.timestamps[3]
-        photo_path = self.generator.data_dir + '/photos/' + yyyymmdd(t) + '/' + t + '_photo.jpg'
+        photo_path = timestamp_to_photo_path(self.generator.data_dir, t)
         photo = plt.imread(photo_path)
         photo_batch, _ = self.generator[0]  # Photo 3 should be in batch 0
         self.assertTrue((photo == photo_batch[3]).all())

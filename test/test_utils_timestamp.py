@@ -21,6 +21,18 @@ class TestUtilsTimestamp(unittest.TestCase):
         self.assertTrue(0.75 < train_count / total_count < 0.85)
         self.assertTrue(0.15 < test_count / total_count < 0.25)
 
+    def test_finds_photo_path(self):
+        # Note: it doesn't matter if this file actually exists; we're just verifying that the correct path is returned
+        self.assertEqual('../test_data/photos/20180419/20180419010230_photo.jpg', timestamp_to_photo_path('../test_data', '20180419010230'))
+
+    def test_finds_tsi_mask_path(self):
+        # Note: it doesn't matter if this file actually exists; we're just verifying that the correct path is returned
+        self.assertEqual('../test_data/tsi_masks/20180419/20180419010230_tsi_mask.png', timestamp_to_tsi_mask_path('../test_data', '20180419010230'))
+
+    def test_finds_network_mask_path(self):
+        # Note: it doesn't matter if this file actually exists; we're just verifying that the correct path is returned
+        self.assertEqual('../test_results/sandbox/network_masks/20180419/20180419010230_network_mask.png', timestamp_to_network_mask_path('../test_results/sandbox', '20180419010230'))
+
 
 if __name__ == '__main__':
     unittest.main()
