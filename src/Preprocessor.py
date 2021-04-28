@@ -123,7 +123,6 @@ class Preprocessor:
         mask = plt.imread(self.raw_tsi_mask_path(timestamp))
         mask = np.array(mask * 255, dtype='uint8')[:, :, :3]
         photo = plt.imread(self.raw_photo_path(timestamp))
-        photo = np.array(photo, dtype='uint8')  # TODO Is this line necessary?
         # Process them in memory
         coords = center_and_radius(mask)
         mask = crop(mask, coords)

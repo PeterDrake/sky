@@ -1,5 +1,6 @@
 import unittest
 from BatchGenerator import *
+# from test import test_Preprocessor
 
 
 class MyTestCase(unittest.TestCase):
@@ -16,11 +17,15 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(3, len(self.generator))
 
     def test_outputs_have_correct_dimensions(self):
+        print('NOTE: This will fail if test_Preprocessor has not run yet. If you are running all of the tests on a')
+        print('fresh install, just wait for them to finish and run them all again.')
         for photo_batch, tsi_mask_batch in self.generator:
             self.assertEqual((32, 480, 480, 3), photo_batch.shape)
             self.assertEqual((32, 480, 480, 1), tsi_mask_batch.shape)
 
     def test_photo_appears_in_batch(self):
+        print('NOTE: This will fail if test_Preprocessor has not run yet. If you are running all of the tests on a')
+        print('fresh install, just wait for them to finish and run them all again.')
         # Arbitrarily choose the timestamp with index 3
         t = self.timestamps[3]
         photo_path = timestamp_to_photo_path(self.generator.data_dir, t)
