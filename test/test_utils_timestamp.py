@@ -1,5 +1,6 @@
 from utils_timestamp import *
 import unittest
+import pandas as pd
 
 
 class TestUtilsTimestamp(unittest.TestCase):

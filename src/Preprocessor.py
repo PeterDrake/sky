@@ -2,8 +2,8 @@ import glob
 import os
 from utils_timestamp import *
 from utils_image import *
-from PIL import Image
-import matplotlib.pyplot as plt
+import pandas as pd
+from skimage.io import imsave, imread
 
 
 class Preprocessor:
@@ -120,9 +120,8 @@ class Preprocessor:
 
     def preprocess_timestamp(self, timestamp):
         # Read in mask and photo
-        mask = plt.imread(self.raw_tsi_mask_path(timestamp))
-        mask = np.array(mask * 255, dtype='uint8')[:, :, :3]
-        photo = plt.imread(self.raw_photo_path(timestamp))
+        mask = imread(self.raw_tsi_mask_path(timestamp))[:, :, :3]
+        photo = imread(self.raw_photo_path(timestamp))[:, :, :3]
         # Process them in memory
         coords = center_and_radius(mask)
         mask = crop(mask, coords)
@@ -131,8 +130,8 @@ class Preprocessor:
         photo = crop(photo, coords)
         photo = blacken_outer_ring(photo, coords)
         # Write revised versions
-        Image.fromarray(mask).save(timestamp_to_tsi_mask_path(self.data_dir, timestamp))
-        Image.fromarray(photo).save(timestamp_to_photo_path(self.data_dir, timestamp))
+        imsave(timestamp_to_tsi_mask_path(self.data_dir, timestamp), mask)
+        imsave(timestamp_to_photo_path(self.data_dir, timestamp), photo)
 
     def preprocess_images(self, csv_filename):
         """

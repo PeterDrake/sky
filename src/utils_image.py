@@ -91,7 +91,7 @@ def remove_sun(mask):
         overcast[(mask == BLUE).all(axis=2)] = WHITE
         overcast[(mask == GRAY).all(axis=2)] = WHITE
         # Convert the image to grayscale
-        # TODO Once we have a function to convert RGB to mask color numbers, use that here
+        # We can't use rgb_mask_to_label here because we still have green pixels
         gray = skimage.color.rgb2gray(overcast) * 255
         # Segment the mask
         labels, n = skimage.measure.label(gray, connectivity=1, return_num=True)
@@ -115,6 +115,7 @@ remove_sun.FALSES = np.zeros((480, 480), dtype=bool)
 def remove_green_lines(mask):
     """
     Removes green lines from TSI mask, replacing each green pixel with the color of the nearest non-green pixel.
+    Returns the new mask.
     """
     # Isolate non-green pixels
     nongreen = np.argwhere(np.invert((mask == GREEN).all(axis=2)))

@@ -1,5 +1,7 @@
 import unittest
 from BatchGenerator import *
+import pandas as pd
+from skimage.io import imsave, imread
 # from test import test_Preprocessor
 
 
@@ -29,7 +31,7 @@ class MyTestCase(unittest.TestCase):
         # Arbitrarily choose the timestamp with index 3
         t = self.timestamps[3]
         photo_path = timestamp_to_photo_path(self.generator.data_dir, t)
-        photo = plt.imread(photo_path)
+        photo = imread(photo_path)
         photo_batch, _ = self.generator[0]  # Photo 3 should be in batch 0
         self.assertTrue((photo == photo_batch[3]).all())
 

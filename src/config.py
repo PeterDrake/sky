@@ -1,4 +1,5 @@
 # Directories on BLT used by various run_*.py programs
+# TODO Let's put DATA_DIR and RESULTS_DIR on bread
 RAW_DATA_DIR = '/home/users/jkleiss/TSI_C1'
 RAW_CSV_DIR = '../raw_csv'
 DATA_DIR = '../data'
@@ -17,4 +18,4 @@ EXPERIMENT_NAME = 'sandbox'
 NETWORK_ARCHITECTURE = 'trivial_network'
 
 # Number of epochs to train for
-TRAIN_EPOCHS = 3
+TRAIN_EPOCHS = 10
