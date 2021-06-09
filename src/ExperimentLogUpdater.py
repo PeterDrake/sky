@@ -7,16 +7,6 @@ import sys
 import shutil
 
 
-class GitError(Exception):
-    """Thrown if we try to run an experiment when not in a clean git state."""
-    pass
-
-
-class ExperimentNameInUseError(Exception):
-    """Thrown if we try to use an experiment name that has been used."""
-    pass
-
-
 class ExperimentLogUpdater:
 
     def __init__(self, results_dir, experiment_name, insist_on_clean_git_state=True):
@@ -30,7 +20,7 @@ class ExperimentLogUpdater:
     def update(self):
         self.log = self.load_or_create_log_dataframe()
         if self.experiment_name_in_use():
-            raise ExperimentNameInUseError(self.experiment_name + ' is already in results/experiment_log.csv; manually delete it or change the name in config.py')
+            raise Exception(self.experiment_name + ' is already in results/experiment_log.csv; manually delete it or change the name in config.py')
         self.add_log_line()
         self.write_log_file()
         self.create_experiment_directory()
@@ -42,7 +32,7 @@ class ExperimentLogUpdater:
         """
         repo = git.Repo(search_parent_directories=True)
         if self.insist_on_clean_git_state and repo.is_dirty(untracked_files=True):
-            raise GitError('Not in a clean git state! Commit or revert.')
+            raise Exception('Not in a clean git state! Commit or revert.')
         git_hash = repo.head.object.hexsha
         return git_hash
 

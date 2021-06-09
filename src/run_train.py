@@ -2,6 +2,8 @@ from BatchGenerator import *
 from ExperimentLogUpdater import *
 import importlib
 
+# TODO Create launch_train.py
+
 # Update experiment log and create empty directory for experiment results
 # TODO Change False to True to insist on a clean git state
 log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, False)
@@ -12,7 +14,7 @@ module = importlib.import_module('model_architectures.' + NETWORK_ARCHITECTURE)
 model = module.model
 
 # Get timestamps for the data to use
-# Temporary timestamps for manual testing
+# TODO These are temporary timestamps for manual testing
 stamps = pd.read_csv('../test_data/tiny_data.csv', converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
 stamps = stamps['timestamp_utc'].tolist()
 train_stamps = stamps[:96]
