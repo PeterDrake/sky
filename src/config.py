@@ -1,9 +1,8 @@
 # Directories on BLT used by various run_*.py programs
-# TODO Let's put DATA_DIR and RESULTS_DIR on bread
 RAW_DATA_DIR = '/home/users/jkleiss/TSI_C1'
 RAW_CSV_DIR = '../raw_csv'
-DATA_DIR = '../data'
-RESULTS_DIR = '../results'
+DATA_DIR = '/bread/proj/drake_kleiss_sky/data'
+RESULTS_DIR = '/bread/proj/drake_kleiss_sky/results'
 
 # Parameters for dividing timestamps into training, validation, and testing
 TYPICAL_PROPORTIONS = [0.6, 0.2, 0.2]
