@@ -7,6 +7,19 @@ Our pipeline involves the following steps.
 
 ## Preprocess the Data
 
+On BLT (from `src` directory):
+
+```
+source /bread/venv/tensorflow_gpu/bin/activate
+python3 launch_preprocess.py
+```
+On another machine:
+
+```
+python3 -u run_preprocess.py shcu_dubious_data.csv
+python3 -u run_preprocess.py shcu_typical_data.csv 
+```
+
 1. Clean .csv files to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files.
 1. Create directories for all timestamps that are listed in the two .csv files.
 1. In batches, preprocess each photo and TSI mask:
