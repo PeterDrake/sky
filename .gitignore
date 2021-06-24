@@ -11,3 +11,4 @@ __pycache__
 test_output
 .pytest_cache
 *.pyc
+blt_job_output

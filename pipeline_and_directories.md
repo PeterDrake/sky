@@ -7,11 +7,11 @@ Our pipeline involves the following steps.
 
 ## Preprocess the Data
 
-On BLT (from `src` directory):
+On BLT (from the `blt_job_output` directory):
 
 ```
 source /bread/venv/tensorflow_gpu/bin/activate
-python3 launch_preprocess.py
+python3 ../src/launch_preprocess.py
 ```
 On another machine:
 
