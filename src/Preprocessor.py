@@ -141,7 +141,7 @@ class Preprocessor:
         csv = self.data_dir + '/' + csv_filename
         self.log('Reading ' + csv)
         data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
-        self.log('Preprocessing images')
+        self.log('Preprocessing ' + str(len(data)) + ' images')
         for i, t in data['timestamp_utc'].items():
             self.preprocess_timestamp(t)
             if i % 1000 == 0:
