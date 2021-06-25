@@ -144,8 +144,8 @@ class Preprocessor:
         self.log('Preprocessing images')
         for i, t in data['timestamp_utc'].items():
             self.preprocess_timestamp(t)
-            if i % 10000 == 0:
-                self.log(i)
+            if i % 1000 == 0:
+                self.log(str(i) + ' images preprocessed')
         self.log('Done preprocessing images')
 
 
