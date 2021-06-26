@@ -94,8 +94,8 @@ class Preprocessor:
         for i, t in data['timestamp_utc'].items():
             valid.append(self.photo_exists(t) and self.tsi_mask_exists(t))
             if i % 1000 == 0:
-                self.log(str(i) + ' lines validated')
-        self.log('Done validating lines')
+                self.log(str(i) + ' lines examined')
+        self.log(str(sum(valid)) + ' valid lines found')
         # Alternate faster approach using map & lambda function with no log ability
         # valid = data['timestamp_utc'].map(lambda t: self.photo_exists(t) and self.tsi_mask_exists(t))
         data = data[valid]
