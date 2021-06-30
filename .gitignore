@@ -12,3 +12,5 @@ test_output
 .pytest_cache
 *.pyc
 blt_job_output
+src/tf_ex1_jess.py
+raw_data
