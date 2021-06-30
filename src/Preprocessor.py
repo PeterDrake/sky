@@ -22,8 +22,8 @@ class Preprocessor:
             
     def raw_photo_path(self, timestamp):
         """Returns the path of a raw photo file, or None if there is no such file."""
-        result = self.raw_data_dir + '/SkyImage/'
-        dirs = glob.glob(result + 'sgptsiskyimageC1.a1.' + yyyymmdd(timestamp) + '*')
+        raw_sky_image_dir = self.raw_data_dir + '/SkyImage/'
+        dirs = glob.glob(raw_sky_image_dir + 'sgptsiskyimageC1.a1.' + yyyymmdd(timestamp) + '*')
         if not dirs:
             return None
         return dirs[0] + '/sgptsiskyimageC1.a1.' + yyyymmdd(timestamp) + '.' + hhmmss(timestamp) + '.jpg.' + timestamp + '.jpg'
