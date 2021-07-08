@@ -7,6 +7,8 @@ Our pipeline involves the following steps.
 
 ## Preprocess the Data
 
+### What You Do
+
 On BLT (from the `blt_job_output` directory),
 
 ```
@@ -29,6 +31,8 @@ python3 -u run_allocate_timestamps.py shcu_dubious_data.csv False
 python3 -u run_allocate_timestamps.py shcu_typical_data.csv True
 ```
 
+### What This Accomplishes
+
 1. Clean .csv files to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files.
 1. Create directories for all timestamps that are listed in the two .csv files.
 1. Preprocess each photo and TSI mask:
@@ -39,11 +43,34 @@ python3 -u run_allocate_timestamps.py shcu_typical_data.csv True
 
 ## Train the Model
 
-1. Set the experiment name in config.py. The training process won't allow
-   the user to continue if the experiment name is already in results/experiment_log.csv or the code is not in a clean
-   git state.
-1. Set the network architecture name in config.py. The corresponding .py file in src gives the definition of the network
-   architecture.
+### What You Do
+
+1. Set the experiment name in `config.py`. The training process won't allow
+   the user to continue if the experiment name is already in `results/experiment_log.csv` or the code is not in a
+   clean git state.
+1. Set the network architecture name in `config.py`. The corresponding .py file in `src/model_architectures` gives the
+   definition of the network architecture.
+1. Build and train the network as described below.
+
+On BLT, (from the `blt_job_output` directory):
+
+```
+source /bread/venv/tensorflow_gpu/bin/activate
+python3 ../src/launch_train.py
+```
+
+(You don't need the first line, which activates the virtual environment, if it is already active.)
+
+On a machine other than BLT (from the 'src' directory):
+
+TODO This needs to completed
+```
+python3 -u ???
+```
+
+### What This Accomplishes
+
+1. Sets the experiment name and network architecture.
 1. Build and train the network. The result is saved in a directory for the current experiment (also updating the
    experiment log).
 
