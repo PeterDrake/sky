@@ -65,7 +65,7 @@ On a machine other than BLT (from the 'src' directory):
 
 TODO This needs to completed
 ```
-python3 -u ???
+python3 -u run_train.py
 ```
 
 ### What This Accomplishes
@@ -85,6 +85,8 @@ python3 -u ???
 1. Analyze results (including producing plots for publication).
 
 # Directory Structure
+
+NOTE: On BLT, `data` and `results` are in `/bread/proj/drake_kleiss_sky`.
 
 ```
 README.md
