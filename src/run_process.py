@@ -1,17 +1,12 @@
 import os
-
 from BatchGenerator import *
 from ExperimentLogUpdater import ExperimentLogUpdater
 from config import *
-import pandas as pd
-from skimage.io import imsave, imread
+from skimage.io import imsave
 
-
-# TODO This repeats code from run_train
-stamps = pd.read_csv('../test_data/tiny_data.csv', converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
-stamps = stamps['timestamp_utc'].tolist()
-train_stamps = stamps[:96]
-val_stamps = stamps[96:192]
+# Get timestamps for the data to use
+with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[1], 'r') as f:
+    val_stamps = [line.strip() for line in f.readlines()]
 
 # Load the trained model
 # TODO Change False to True to insist on a clean git state
@@ -19,8 +14,8 @@ log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, False)
 model = keras.models.load_model(log_updater.experiment_dir + '/network.h5')
 
 # Create generator for validation data
-# TODO We'll eventually want to put testing data in here, too
-val_gen = BatchGenerator(val_stamps, '../test_data')  # TODO This should be DATA_DIR, not test_data
+# TODO We'll eventually want to put test data (as opposed to validation data) in here
+val_gen = BatchGenerator(val_stamps, DATA_DIR)
 
 # Produce network masks
 val_preds = model.predict(val_gen)
