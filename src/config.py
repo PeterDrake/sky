@@ -17,4 +17,4 @@ EXPERIMENT_NAME = 'sandbox'
 NETWORK_ARCHITECTURE = 'trivial_network'
 
 # Number of epochs to train for
-TRAIN_EPOCHS = 10
+TRAIN_EPOCHS = 2

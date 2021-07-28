@@ -1,5 +1,6 @@
 import pandas as pd
 from utils_timestamp import *
+from config import *
 
 
 class TimestampAllocator:
@@ -60,9 +61,6 @@ class TimestampAllocator:
         :param use_typical_data: True to use typical data, False to use dubious data
         """
         if use_typical_data:
-            self.allocate_timestamps_helper(csv_filename, self.typical_proportions,
-                                            ['typical_' + c + '_timestamps'
-                                             for c in ['training', 'validation', 'testing']])
+            self.allocate_timestamps_helper(csv_filename, self.typical_proportions, TYPICAL_TIMESTAMP_FILENAMES)
         else:
-            self.allocate_timestamps_helper(csv_filename, self.dubious_proportions,
-                                            ['dubious_' + c + '_timestamps' for c in ['validation', 'testing']])
+            self.allocate_timestamps_helper(csv_filename, self.dubious_proportions, DUBIOUS_TIMESTAMP_FILENAMES)
