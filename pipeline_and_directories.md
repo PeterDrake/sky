@@ -63,7 +63,6 @@ python3 ../src/launch_train.py
 
 On a machine other than BLT (from the 'src' directory):
 
-TODO This needs to completed
 ```
 python3 -u run_train.py
 ```
