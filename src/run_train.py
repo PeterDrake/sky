@@ -2,8 +2,6 @@ from BatchGenerator import *
 from ExperimentLogUpdater import *
 import importlib
 
-# TODO Create launch_train.py
-
 # Update experiment log and create empty directory for experiment results
 # TODO Change False to True to insist on a clean git state
 log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, False)
