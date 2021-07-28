@@ -13,7 +13,6 @@ module = importlib.import_module('model_architectures.' + NETWORK_ARCHITECTURE)
 model = module.model
 
 # Get timestamps for the data to use
-# TODO These are temporary timestamps for manual testing
 with open(DATA_DIR + TYPICAL_TIMESTAMP_FILENAMES[0], 'r') as f:
     lines = [line.strip() for line in f.readlines()]
 
