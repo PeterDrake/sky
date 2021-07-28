@@ -6,7 +6,6 @@ from config import *
 import pandas as pd
 from skimage.io import imsave, imread
 
-# TODO Create launch_process.py
 
 # TODO This repeats code from run_train
 stamps = pd.read_csv('../test_data/tiny_data.csv', converters={'timestamp_utc': str}, usecols=['timestamp_utc'])

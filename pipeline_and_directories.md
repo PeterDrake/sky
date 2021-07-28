@@ -73,10 +73,32 @@ python3 -u run_train.py
 1. Build and train the network. The result is saved in a directory for the current experiment (also updating the
    experiment log).
 
-## Apply the Network
+## Process Images Using the Network
 
-1. Run photos through our network to produce network masks.
-1. Use network masks to create a .csv file of network FSCs.
+### What You Do
+
+On BLT, (from the `blt_job_output` directory):
+
+```
+source /bread/venv/tensorflow_gpu/bin/activate
+python3 ../src/launch_process.py
+```
+
+(You don't need the first line, which activates the virtual environment, if it is already active.)
+
+On a machine other than BLT (from the 'src' directory):
+
+```
+python3 -u run_process.py
+```
+
+### What this Accomplishes
+
+Run photos through our network to produce and save network masks.
+   
+## Compute Fractional Sky Coverage in Network Masks
+
+Use network masks to create a .csv file of network FSCs.
 
 ## Produce Plots
 
