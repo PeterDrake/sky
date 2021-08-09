@@ -49,6 +49,7 @@ class TimestampAllocator:
         date_groups = allocate_dates(date_counts, proportions)
         self.log('Writing timestamp files')
         for group, filename in zip(date_groups, output_filenames):
+            print('Creating timestamp file ' + filename)
             df = data[data['date'].isin(group)]
             df['timestamp_utc'].to_csv(self.data_dir + '/' + filename, header=False, index=False)
         self.log('Done')
