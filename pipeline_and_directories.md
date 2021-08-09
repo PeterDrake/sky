@@ -27,8 +27,8 @@ On a machine other than BLT (from the `src` directory):
 ```
 python3 -u run_preprocess.py shcu_dubious_data.csv
 python3 -u run_preprocess.py shcu_typical_data.csv
-python3 -u run_allocate_timestamps.py shcu_dubious_data.csv False
-python3 -u run_allocate_timestamps.py shcu_typical_data.csv True
+python3 -u run_allocate_timestamps.py shcu_dubious_data.csv dubious
+python3 -u run_allocate_timestamps.py shcu_typical_data.csv typical
 ```
 
 ### What This Accomplishes

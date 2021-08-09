@@ -90,7 +90,7 @@ class Preprocessor:
         data = pd.read_csv(in_path, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         data = data.drop_duplicates(subset='timestamp_utc')
         valid = []
-        self.log('Validating ' + str(len(data) + ' lines'))
+        self.log('Validating ' + str(len(data)) + ' lines')
         for i, t in data['timestamp_utc'].items():
             valid.append(self.photo_exists(t) and self.tsi_mask_exists(t))
             if i % 1000 == 0:

@@ -54,14 +54,14 @@ class TimestampAllocator:
             df['timestamp_utc'].to_csv(self.data_dir + '/' + filename, header=False, index=False)
         self.log('Done')
 
-    def allocate_timestamps(self, csv_filename, use_typical_data):
+    def allocate_timestamps(self, csv_filename, typical_or_dubious):
         """
         Divides the timestamps in csv_filename (which is in self.data_dir) randomly into groups.
         The timestamps are then written into files. The group proportions are specified in the constructor for this
         class.
-        :param use_typical_data: True to use typical data, False to use dubious data
+        :param typical_or_dubious: True to use typical data, False to use dubious data
         """
-        if use_typical_data:
+        if typical_or_dubious == 'typical':
             self.allocate_timestamps_helper(csv_filename, self.typical_proportions, TYPICAL_TIMESTAMP_FILENAMES)
         else:
             self.allocate_timestamps_helper(csv_filename, self.dubious_proportions, DUBIOUS_TIMESTAMP_FILENAMES)

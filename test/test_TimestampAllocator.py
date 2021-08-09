@@ -22,7 +22,7 @@ class TestTimestampAllocator(unittest.TestCase):
         # Copy the real, raw typical csv file to the test data dir, pretending it's clean
         if not os.path.exists(self.allocator.data_dir + '/fake_clean_data.csv'):
             shutil.copyfile(RAW_CSV_DIR + '/shcu_typical_data.csv', self.allocator.data_dir + '/fake_clean_data.csv')
-        self.allocator.allocate_timestamps('fake_clean_data.csv', True)
+        self.allocator.allocate_timestamps('fake_clean_data.csv', 'typical')
         train = self.count_lines_in_file(self.allocator.data_dir + '/typical_training_timestamps')
         valid = self.count_lines_in_file(self.allocator.data_dir + '/typical_validation_timestamps')
         test = self.count_lines_in_file(self.allocator.data_dir + '/typical_testing_timestamps')
