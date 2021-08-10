@@ -68,3 +68,5 @@ def show_preprocessed_images(timestamp, dirs):
 show_preprocessed_images('20170524180130', test_dirs)
 # show_preprocessed_images('20170918223000', real_dirs)
 # show_preprocessed_images('20170918224500', real_dirs)
+
+# Extra line
