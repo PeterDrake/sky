@@ -10,5 +10,5 @@ class TestFscCalculator(unittest.TestCase):
         self.calculator = FscCalculator()
 
     def test_counts_pixels(self):
-        image = np.array([[WHITE, BLUE], [WHITE, BLACK]])
-        self.assertEqual(2, self.calculator.count_pixels(image, WHITE))
+        mask = np.array([[WHITE, BLUE], [WHITE, BLACK]])
+        self.assertEqual([1, 0, 2], self.calculator.count_pixels(mask))
