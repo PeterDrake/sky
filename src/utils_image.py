@@ -49,7 +49,7 @@ def center_and_radius(mask):
 def crop(image, center_and_radius):
     """
     Returns a version of image cropped to 480x480, centered on the specified center.
-    :param image 640480x3 image
+    :param image: 640480x3 image
     :param center_and_radius: (r, c), radius, as returned by center_and_radius
     """
     (r, c), _ = center_and_radius
