@@ -30,8 +30,6 @@ for i in range(0, len(val_stamps), 320):
     val_preds = model.predict(val_gen)
     print(val_preds.shape)
     print(val_preds.dtype)
-    # TODO Should we find a way to do this without loading ALL images into memory?
-    # TODO What about parallelism?
 
     # Save the files
     # If, for debugging purposes, we want to run this on just a few images, change val_stamps to val_stamps[:4]
