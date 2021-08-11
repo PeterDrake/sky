@@ -20,19 +20,21 @@ model = keras.models.load_model(log_updater.experiment_dir + '/network.h5')
 
 # Create generator for validation data
 # TODO Right before publication, we'll eventually want to put test data (as opposed to validation data) in here
-val_gen = BatchGenerator(val_stamps, DATA_DIR)
+for i in range(0, len(val_stamps), 320):
+    print('Starting chunk ' + str(i) + '-' + str(i+320))
+    chunk = val_stamps[i:i+320]
+    print(str(len(chunk)) + ' images')
+    val_gen = BatchGenerator(chunk, DATA_DIR)
 
-# Produce network masks
-val_preds = model.predict(val_gen)
-print(val_preds.shape)
-print(val_preds.dtype)
-# TODO Should we find a way to do this without loading ALL images into memory?
-# TODO What about parallelism?
+    # Produce network masks
+    val_preds = model.predict(val_gen)
+    print(val_preds.shape)
+    print(val_preds.dtype)
 
-# Save the files
-# If, for debugging purposes, we want to run this on just a few images, change val_stamps to val_stamps[:4]
-for i, timestamp in enumerate(val_stamps):
-    network_mask = one_hot_to_rgb_mask(val_preds[i])
-    dir = log_updater.experiment_dir + '/network_masks/' + yyyymmdd(timestamp) + '/'
-    os.makedirs(dir, exist_ok=True)
-    imsave(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp), network_mask)
+    # Save the files
+    # If, for debugging purposes, we want to run this on just a few images, change val_stamps to val_stamps[:4]
+    for i, timestamp in enumerate(chunk):
+        network_mask = one_hot_to_rgb_mask(val_preds[i])
+        dir = log_updater.experiment_dir + '/network_masks/' + yyyymmdd(timestamp) + '/'
+        os.makedirs(dir, exist_ok=True)
+        imsave(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp), network_mask)

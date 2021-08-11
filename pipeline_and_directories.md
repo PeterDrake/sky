@@ -154,4 +154,5 @@ test_raw_data (analogous to external raw data directory, but much smaller)
     CloudMask
     SkyImage
 test_results (analogous to results)
+test_network_masks (some network masks we can use to test FSC calculation; structuresd like results/exp00001/network_masks)
 ```
