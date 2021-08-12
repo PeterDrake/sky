@@ -24,3 +24,5 @@ class TestFscCalculator(unittest.TestCase):
         self.calculator.write_pixel_counts(timestamp_filename, output_filename)
         df = pd.read_csv(self.calculator.output_dir + '/' + output_filename)
         self.assertEqual(22295, df['20120501170030']['opaque_160'])  # The number of opaque pixels in this image
+        # TODO this fails.
+        # TODO document .md for file structure
