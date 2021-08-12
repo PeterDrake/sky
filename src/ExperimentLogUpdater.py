@@ -61,7 +61,7 @@ class ExperimentLogUpdater:
 
     def write_log_file(self):
         """
-        Writes the log to experiment_log.csv in results_dir.
+        Writes the log to experiment_log.csv in experiment_dir.
         """
         os.makedirs(self.results_dir, exist_ok=True)
         self.log.to_csv(self.log_filename, index=False)

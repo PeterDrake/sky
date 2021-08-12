@@ -10,13 +10,13 @@ from Preprocessor import Preprocessor
 real_dirs = {'raw_data_dir': '../raw_data',
              'raw_csv_dir': '../raw_csv',
              'data_dir': '../data',
-             'results_dir': '../results'}
+             'experiment_dir': '../results'}
 
 # Note - if you want to run these on the test data, use the following:
 test_dirs = {'raw_data_dir': '../test_raw_data',
              'raw_csv_dir': '../test_raw_csv',
              'data_dir': '../test_data',
-             'results_dir': '../results'}
+             'experiment_dir': '../results'}
 
 
 # Display one image: photo, tsi_mask, and network_mask.
@@ -25,7 +25,7 @@ def show_mask_comparison_figure(timestamp, dirs):
     """Quick utility to display a model's prediction."""
     photo = imread(timestamp_to_photo_path(dirs['data_dir'], timestamp))
     tsi_mask = imread(timestamp_to_tsi_mask_path(dirs['data_dir'], timestamp))
-    network_mask = imread(timestamp_to_network_mask_path(dirs['results_dir'] + '/' + EXPERIMENT_NAME, timestamp))
+    network_mask = imread(timestamp_to_network_mask_path(dirs['experiment_dir'] + '/' + EXPERIMENT_NAME, timestamp))
     fig, ax = plt.subplots(1, 3, figsize=(9, 3))
     fig.suptitle(timestamp)
     ax[0].imshow(photo)
