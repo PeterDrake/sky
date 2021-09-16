@@ -32,12 +32,11 @@ class FscCalculator:
         else:
             return self.mask_dir + '/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png'
 
-
     def count_pixels_in_all_masks(self, stamps):
         """
         Return a dataframe containing the clear/thin/opaque counts for all masks in the list of stamps.
         """
-        result = pd.DataFrame(index=stamps, columns = ('clear_160', 'thin_160', 'opaque_160'))
+        result = pd.DataFrame(index=stamps, columns=('clear_160', 'thin_160', 'opaque_160'))
         for timestamp in stamps:
             mask = imread(self.timestamp_to_mask_path(timestamp))[:, :, :3]
             counts_160 = self.count_pixels(mask) # in the full mask
