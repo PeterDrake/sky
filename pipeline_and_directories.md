@@ -121,6 +121,7 @@ doc (documentation)
 data (these are all generated and therefore *not* under version control)
     shcu_dubious_data.csv (our cleaned up version)
     shcu_typical_data.csv (our cleaned up version)
+    tsi_fsc.csv
     typical_training_timestamps
     typical_validation_timestamps
     dubious_validation_timestamps
@@ -147,6 +148,7 @@ results (these are all generated and therefore *not* under version control)
 test (test source code)
     *.py
 test_data (analogous to data)
+test_network_masks (analogous to results/test_experiment/network_masks; this is in repository for computing FSC without generating masks)
 test_raw_csv (analogous to raw_csv)
     shcu_dubious_data.csv (simple test version in raw form)
     shcu_typical_data.csv (simple test version in raw form)

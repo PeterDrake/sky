@@ -12,7 +12,6 @@ class FscCalculator:
         self.mask_dir = mask_dir
         self.output_dir = output_dir
 
-
     def count_pixels(self, mask):
         """
         Returns the number of blue, gray and white pixels in mask.

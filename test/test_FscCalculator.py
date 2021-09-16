@@ -26,4 +26,3 @@ class TestFscCalculator(unittest.TestCase):
         df = pd.read_csv(self.calculator.output_dir + '/' + output_filename, index_col=0)
         df.index = df.index.map(str)  # Converts the index values from int64 to str
         self.assertEqual(22295, df['opaque_160']['20120501170030'])  # The number of opaque pixels in this image
-        # TODO document .md for file structure
