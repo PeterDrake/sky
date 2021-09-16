@@ -23,7 +23,7 @@ class TestFscCalculator(unittest.TestCase):
         timestamp_filename = 'typical_validation_timestamps'
         output_filename = 'network_fsc.csv'
         self.calculator.write_pixel_counts(timestamp_filename, output_filename)
-        df = pd.read_csv(self.calculator.output_dir + '/' + output_filename)
+        df = pd.read_csv(self.calculator.output_dir + '/' + output_filename, index_col=0)
+        df.index = df.index.map(str)  # Converts the index values from int64 to str
         self.assertEqual(22295, df['opaque_160']['20120501170030'])  # The number of opaque pixels in this image
-        # TODO this fails.
         # TODO document .md for file structure
