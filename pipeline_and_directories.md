@@ -41,12 +41,13 @@ python3 -u run_calculate_tsi_fsc.py
 ### What This Accomplishes
 
 1. Clean .csv files to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files.
-1. Create directories for all timestamps that are listed in the two .csv files.
-1. Preprocess each photo and TSI mask:
+2. Create directories for all timestamps that are listed in the two .csv files.
+3. Preprocess each photo and TSI mask:
    1. The photo is centered, is cropped, and has a black border.
    1. The TSI mask has these same changes; also the sun is removed and each green pixel is replaced with the color of
    the nearest non-green pixel.
-1. Subdivide timestamps into training, validation, and test sets.
+4. Subdivide timestamps into training, validation, and test sets.
+5. Calculate FSC for each TSI mask.
 
 ## Train the Model
 
@@ -103,9 +104,28 @@ python3 -u run_process.py
 
 Run photos through our network to produce and save network masks.
    
-## Compute Fractional Sky Coverage in Network Masks
+## Compute Fractional Sky Coverage of Network Masks
 
-Use network masks to create a .csv file of network FSCs.
+### What You Do
+
+On BLT, (from the `blt_job_output` directory):
+
+```
+source /bread/venv/tensorflow_gpu/bin/activate
+python3 ../src/launch_calculate_network_fsc.py
+```
+
+(You don't need the first line, which activates the virtual environment, if it is already active.)
+
+On a machine other than BLT (from the 'src' directory):
+
+```
+python3 -u run_calculate_network_fsc.py
+```
+
+### What This Accomplishes
+
+Use network masks to create .csv files of network FSCs.
 
 ## Produce Plots
 
@@ -149,7 +169,8 @@ results (these are all generated and therefore *not* under version control)
     exp00001 (results of experiment 00001)
         net.h5
         network_masks (structured like ../data/photos but filenames end in _network_mask.png)
-        network_fsc.csv
+        dubious_validation_network_fsc.csv
+        typical_validation_network_fsc.csv
     exp00002
     ...
     sandbox (similar to exp00001, but used for "junk" experiments that we don't care about saving)

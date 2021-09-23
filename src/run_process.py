@@ -25,12 +25,8 @@ for i in range(0, len(val_stamps), 320):
     chunk = val_stamps[i:i+320]
     print(str(len(chunk)) + ' images')
     val_gen = BatchGenerator(chunk, DATA_DIR)
-
     # Produce network masks
     val_preds = model.predict(val_gen)
-    print(val_preds.shape)
-    print(val_preds.dtype)
-
     # Save the files
     # If, for debugging purposes, we want to run this on just a few images, change val_stamps to val_stamps[:4]
     for i, timestamp in enumerate(chunk):
