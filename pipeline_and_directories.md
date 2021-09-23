@@ -22,6 +22,12 @@ and then *after this is finished*:
 python3 ../src/launch_allocate_timestamps.py
 ```
 
+Finally, after *that* is finished:
+
+```
+python3 ../src/launch_calculate_tsi_fsc.py
+```
+
 On a machine other than BLT (from the `src` directory):
 
 ```
@@ -29,6 +35,7 @@ python3 -u run_preprocess.py shcu_dubious_data.csv
 python3 -u run_preprocess.py shcu_typical_data.csv
 python3 -u run_allocate_timestamps.py shcu_dubious_data.csv dubious
 python3 -u run_allocate_timestamps.py shcu_typical_data.csv typical
+python3 -u run_calculate_tsi_fsc.py
 ```
 
 ### What This Accomplishes
@@ -121,12 +128,13 @@ doc (documentation)
 data (these are all generated and therefore *not* under version control)
     shcu_dubious_data.csv (our cleaned up version)
     shcu_typical_data.csv (our cleaned up version)
-    tsi_fsc.csv
     typical_training_timestamps
     typical_validation_timestamps
     dubious_validation_timestamps
     typical_testing_timestamps
     dubious_testing_timestamps
+    dubious_validation_tsi_fsc.csv
+    typical_validation_tsi_fsc.csv
     photos
         20120501 (and similar years/months/dates)
             20120501170430_photo.jpg (preprocessed)
