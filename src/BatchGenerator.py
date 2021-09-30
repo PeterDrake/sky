@@ -20,20 +20,27 @@ class BatchGenerator(keras.utils.Sequence):
 
     def __len__(self):
         """
-        Returns number of batches (not number of images) in the data.
+        Returns number of batches (not number of images) in the data rounded up.
+        Since Python does not have a ceiling division function, we use floor division on negative values.
+        https://newbedev.com/is-there-a-ceiling-equivalent-of-operator-in-python
         """
-        return len(self.timestamps) // self.batch_size
+        return -(-len(self.timestamps) // self.batch_size)
 
     def __getitem__(self, index):
-        """Returns tuple (photo, labeled TSI mask) correspond to batch #index."""
+        """
+        Returns tuple (photos, labeled TSI masks) corresponding to batch #index.
+        Dimension of photo_batch is (batch_size x 480 x 480 x 3).
+        Dimension of tsi_mask_batch is (batch_size x 480 x 480 x 1).
+        """
         i = index * self.batch_size  # Index of the beginning of the batch
         batch_timestamps = self.timestamps[i : i + self.batch_size]  # Timestamps for this batch
+        n = len(batch_timestamps)
         photo_paths = [timestamp_to_photo_path(self.data_dir, t) for t in batch_timestamps]
         tsi_mask_paths = [timestamp_to_tsi_mask_path(self.data_dir, t) for t in batch_timestamps]
-        photo_batch = np.zeros((self.batch_size,) + RGB_PHOTO_SIZE, dtype="uint8")  # Shape (N, 480, 480, 3)
+        photo_batch = np.zeros((n,) + RGB_PHOTO_SIZE, dtype="uint8")  # Shape (N, 480, 480, 3)
         for j, path in enumerate(photo_paths):
             photo_batch[j] = imread(path)
-        tsi_mask_batch = np.zeros((self.batch_size,) + LABELED_MASK_SIZE, dtype="uint8")  # Shape (N, 480, 480, 1)
+        tsi_mask_batch = np.zeros((n,) + LABELED_MASK_SIZE, dtype="uint8")  # Shape (N, 480, 480, 1)
         for j, path in enumerate(tsi_mask_paths):
             rgb = imread(path)  # Shape (480, 480, 3)
             # print("Reading rgb image of tsi mask: ", rgb.shape, rgb.dtype)
