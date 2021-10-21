@@ -171,6 +171,7 @@ results (these are all generated and therefore *not* under version control)
         network_masks (structured like ../data/photos but filenames end in _network_mask.png)
         dubious_validation_network_fsc.csv
         typical_validation_network_fsc.csv
+        training_history (for producing learning curves)
     exp00002
     ...
     sandbox (similar to exp00001, but used for "junk" experiments that we don't care about saving)

@@ -20,6 +20,7 @@ model = keras.models.load_model(log_updater.experiment_dir + '/network.h5')
 
 # Create generator for validation data
 # TODO Right before publication, we'll eventually want to put test data (as opposed to validation data) in here
+print('Processing {} photos'.format(len(val_stamps)))
 for i in range(0, len(val_stamps), 320):
     print('Starting chunk ' + str(i) + '-' + str(i+320))
     chunk = val_stamps[i:i+320]
@@ -27,8 +28,6 @@ for i in range(0, len(val_stamps), 320):
     val_gen = BatchGenerator(chunk, DATA_DIR)
     # Produce network masks
     val_preds = model.predict(val_gen)
-    print('len(val_preds): ' + str(len(val_preds)))
-    print('len(chunk): ' + str(len(chunk)))
     # Save the files
     # If, for debugging purposes, we want to run this on just a few images, change val_stamps to val_stamps[:4]
     for i, timestamp in enumerate(chunk):
