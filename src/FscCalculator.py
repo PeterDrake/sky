@@ -29,6 +29,8 @@ class FscCalculator:
         if os.path.exists(mask_path):
             return mask_path
         else:
+            print('Could not find ' + mask_path)
+            exit()
             return self.mask_dir + '/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png'
 
     def count_pixels_in_all_masks(self, stamps):
