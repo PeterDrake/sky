@@ -37,6 +37,7 @@ class FscCalculator:
         """
         Return a dataframe containing the clear/thin/opaque counts for all masks in the list of stamps.
         """
+        # TODO The index should be named something like timestamp
         result = pd.DataFrame(index=stamps, columns=('clear_160', 'thin_160', 'opaque_160'))
         for timestamp in stamps:
             mask = imread(self.timestamp_to_mask_path(timestamp))[:, :, :3]

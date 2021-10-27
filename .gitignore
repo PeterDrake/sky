@@ -14,3 +14,4 @@ test_output
 blt_job_output
 src/tf_ex1_jess.py
 raw_data
+data_for_plotting
