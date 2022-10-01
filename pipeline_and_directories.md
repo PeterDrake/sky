@@ -19,7 +19,7 @@ sbatch ../src/launch_preprocess.sh
 and then *after this is finished*:
 
 ```
-python3 ../src/launch_allocate_timestamps.sh
+sbatch ../src/launch_allocate_timestamps.sh
 ```
 
 Finally, after *that* is finished:
