@@ -25,13 +25,16 @@ class FscCalculator:
         Note that self.mask_dir indicates if we desire a tsi or network mask. Use this information to obtain
         the correct filename ('*_network_* or *_tsi_*).
         """
-        mask_path = self.mask_dir + '/' + yyyymmdd(timestamp) + '/' + timestamp + '_network_mask.png'
+        if '_network_masks' in self.mask_dir:
+            suffix = '_network_mask.png'
+        else:
+            suffix = '_tsi_mask.png'
+        mask_path = self.mask_dir + '/' + yyyymmdd(timestamp) + '/' + timestamp + suffix
         if os.path.exists(mask_path):
             return mask_path
         else:
             print('Could not find ' + mask_path)
             exit()
-            return self.mask_dir + '/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png'
 
     def count_pixels_in_all_masks(self, stamps):
         """
