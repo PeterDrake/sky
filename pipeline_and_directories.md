@@ -25,7 +25,7 @@ sbatch ../src/launch_allocate_timestamps.sh
 Finally, after *that* is finished:
 
 ```
-python3 ../src/launch_calculate_tsi_fsc.py
+sbatch ../src/launch_calculate_tsi_fsc.py
 ```
 
 On a machine other than BLT (from the `src` directory):
