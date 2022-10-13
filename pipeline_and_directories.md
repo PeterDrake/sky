@@ -64,7 +64,6 @@ On BLT, (from the `blt_job_output` directory):
 
 ```
 source /home/labs/drake/tensorflow_gpu/bin/activate
-python3 ../src/launch_train.py
 sbatch ../src/launch_train.sh
 ```
 
