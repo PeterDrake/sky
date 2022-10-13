@@ -12,7 +12,7 @@ DUBIOUS_PROPORTIONS = [0.5, 0.5]
 DUBIOUS_TIMESTAMP_FILENAMES = ['dubious_' + c + '_timestamps' for c in ['validation', 'testing']]
 
 # Current experiment name (e.g., 'exp00001'), or 'sandbox'
-EXPERIMENT_NAME = 'sandbox_100_epochs'
+EXPERIMENT_NAME = 'blt_restore_001'
 
 # Name (minus .py) of file containing network architecture
 NETWORK_ARCHITECTURE = 'trivial_network'
