@@ -64,7 +64,7 @@ On BLT, (from the `blt_job_output` directory):
 
 ```
 source /home/labs/drake/tensorflow_gpu/bin/activate
-sbatch ../src/launch_train.sh
+sbatch --gres=gpu:4 ../src/launch_train.sh
 ```
 
 (You don't need the first line, which activates the virtual environment, if it is already active.)
@@ -89,7 +89,7 @@ On BLT, (from the `blt_job_output` directory):
 
 ```
 source /home/labs/drake/tensorflow_gpu/bin/activate
-sbatch ../src/launch_process.sh
+sbatch --gres=gpu:4 ../src/launch_process.sh
 ```
 
 (You don't need the first line, which activates the virtual environment, if it is already active.)
