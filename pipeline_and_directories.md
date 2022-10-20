@@ -88,8 +88,8 @@ python3 -u run_train.py
 On BLT, (from the `blt_job_output` directory):
 
 ```
-source /bread/venv/tensorflow_gpu/bin/activate
-python3 ../src/launch_process.py
+source /home/labs/drake/tensorflow_gpu/bin/activate
+sbatch ../src/launch_process.sh
 ```
 
 (You don't need the first line, which activates the virtual environment, if it is already active.)
