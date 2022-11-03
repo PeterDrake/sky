@@ -111,8 +111,8 @@ Run photos through our network to produce and save network masks.
 On BLT, (from the `blt_job_output` directory):
 
 ```
-source /bread/venv/tensorflow_gpu/bin/activate
-python3 ../src/launch_calculate_network_fsc.py
+source /home/labs/drake/tensorflow_gpu/bin/activate
+sbatch ../src/launch_calculate_network_fsc.sh
 ```
 
 (You don't need the first line, which activates the virtual environment, if it is already active.)
