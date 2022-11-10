@@ -25,7 +25,7 @@ class FscCalculator:
         Note that self.mask_dir indicates if we desire a tsi or network mask. Use this information to obtain
         the correct filename ('*_network_* or *_tsi_*).
         """
-        if '_network_masks' in self.mask_dir:
+        if 'network_masks' in self.mask_dir:
             suffix = '_network_mask.png'
         else:
             suffix = '_tsi_mask.png'
