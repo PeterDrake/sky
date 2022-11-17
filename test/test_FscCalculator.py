@@ -8,7 +8,7 @@ import pandas as pd
 class TestFscCalculator(unittest.TestCase):
 
     def setUp(self):
-        self.calculator = FscCalculator('../test_network_masks', '../test_network_masks', '../test_results/test_experiment')
+        self.calculator = FscCalculator('../test_network_masks', '../test_network_masks/network_masks', '../test_results/test_experiment')
 
     def test_counts_pixels(self):
         mask = np.array([[WHITE, BLUE], [WHITE, BLACK]])
