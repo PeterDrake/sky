@@ -12,7 +12,7 @@ Our pipeline involves the following steps.
 On BLT (from the `blt_job_output` directory),
 
 ```
-source /home/labs/drake/tensorflow_gpu/bin/activate
+source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch ../src/launch_preprocess.sh
 ```
 
@@ -63,7 +63,7 @@ python3 -u run_calculate_tsi_fsc.py
 On BLT, (from the `blt_job_output` directory):
 
 ```
-source /home/labs/drake/tensorflow_gpu/bin/activate
+source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch --gres=gpu:4 ../src/launch_train.sh
 ```
 
@@ -88,7 +88,7 @@ python3 -u run_train.py
 On BLT, (from the `blt_job_output` directory):
 
 ```
-source /home/labs/drake/tensorflow_gpu/bin/activate
+source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch --gres=gpu:4 ../src/launch_process.sh
 ```
 
@@ -111,7 +111,7 @@ Run photos through our network to produce and save network masks.
 On BLT, (from the `blt_job_output` directory):
 
 ```
-source /home/labs/drake/tensorflow_gpu/bin/activate
+source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch ../src/launch_calculate_network_fsc.sh
 ```
 
