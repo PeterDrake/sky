@@ -13,7 +13,7 @@ print(tsi_fsc_df.info())
 # Read the ceilometer CFs
 cf_df = pd.read_csv(RAW_CSV_DIR + '/shcu_typical_data.csv', usecols=['timestamp_utc', 'cf_shcu'])
 print(cf_df.info())
-cf_df.drop_duplicates()
+cf_df = cf_df.drop_duplicates()
 print(cf_df.info())
 
 # Join the dataframes
