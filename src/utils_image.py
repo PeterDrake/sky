@@ -36,7 +36,7 @@ def circle_edges(mask):
 def center_and_radius(mask):
     """
     Returns the center of the non-black region of mask as a pair (r, c) as well as the radius of the non-black
-    region (averaged between vertical and horizontal.
+    region (averaged between vertical and horizontal).
     """
     top, bottom, left, right = circle_edges(mask)
     vertical_radius = (bottom - top) / 2
@@ -58,15 +58,15 @@ def crop(image, center_and_radius):
     return padded[r-140:r+340, c-140:c+340]
 
 
-def blacken_outer_ring(photo, center_and_radius):
+def blacken_outer_ring(image, center_and_radius):
     """
-    Returns a version of photo with all pixels beyond radius away from center colored black.
-    :param photo: 480x480x3 numpy array
+    Returns a version of image with all pixels beyond radius away from center colored black.
+    :param image: 480x480x3 numpy array
     :param center_and_radius: (r, c), radius, as returned by center_and_radius
     """
     _, radius = center_and_radius
     circle = np.fromfunction(lambda r, c, _: (r - 240) ** 2 + (c - 240) ** 2 <= radius ** 2, RGB_PHOTO_SIZE)
-    return np.where(circle, photo, blacken_outer_ring.CROPPED_BLACK_IMAGE)
+    return np.where(circle, image, blacken_outer_ring.CROPPED_BLACK_IMAGE)
 
 
 # An all-black image of the right size
