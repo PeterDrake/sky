@@ -35,15 +35,15 @@ def circle_edges(mask):
 
 def center_and_radius(mask):
     """
-    Returns the center of the non-black region of mask as a pair (r, c) as well as the radius of the non-black
+    Returns the center of the non-black region of mask as a pair (row, column) as well as the radius of the non-black
     region (averaged between vertical and horizontal).
     """
     top, bottom, left, right = circle_edges(mask)
     vertical_radius = (bottom - top) / 2
     horizontal_radius = (right - left) / 2
-    return (int((top + bottom) / 2),
+    return (int((top + bottom) / 2),  # Center
             int((left + right) / 2)),\
-           (vertical_radius + horizontal_radius) / 2
+           (vertical_radius + horizontal_radius) / 2  # Radius
 
 
 def crop(image, center_and_radius):

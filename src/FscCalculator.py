@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 from utils_image import *
 import pandas as pd
 from utils_timestamp import *
@@ -40,12 +42,17 @@ class FscCalculator:
         """
         Return a dataframe containing the clear/thin/opaque counts for all masks in the list of stamps.
         """
-        result = pd.DataFrame(index=stamps, columns=('clear_160', 'thin_160', 'opaque_160'))
+        result = pd.DataFrame(index=stamps, columns=('clear_160', 'thin_160', 'opaque_160',
+                                                     'clear_100', 'thin_100', 'opaque_100'))
         result.index.name = 'timestamp_utc'
         for timestamp in stamps:
             mask = imread(self.timestamp_to_mask_path(timestamp))[:, :, :3]
             counts_160 = self.count_pixels(mask) # in the full mask
-            result.loc[timestamp] = counts_160
+            center, radius = center_and_radius(mask)
+            radius *= 5/8
+            shrunk = blacken_outer_ring(mask, (center, radius)) # only within 50 degrees of zenith
+            counts_100 = self.count_pixels(shrunk)
+            result.loc[timestamp] = counts_160 + counts_100
         return result
 
     def write_pixel_counts(self, timestamp_filename, output_filename):
