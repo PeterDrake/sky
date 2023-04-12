@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-
 from utils_image import *
 import pandas as pd
 from utils_timestamp import *
