@@ -17,7 +17,8 @@ def pixels_to_fsc(f):
     """
     Given a dataframe f with counts of each type of pixel, return a sequence of FSC values.
     """
-    return (f['opaque_160'] + f['thin_160']) / (f['opaque_160'] + f['thin_160'] + f['clear_160'])
+    # return (f['opaque_100'] + f['thin_100']) / (f['opaque_100'] + f['thin_100'] + f['clear_100'])
+    return (f['opaque_100']) / (f['opaque_100'] + f['thin_100'] + f['clear_100'])
 
 
 network_fsc = pixels_to_fsc(network)
