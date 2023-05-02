@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from bisect import *
 
 class WindowFinder:
     """
@@ -29,9 +30,17 @@ class WindowFinder:
 
     def find_initial_boundaries(self, stamp):
         """
-        Returns a timestamp that is before stamp by the amount specified by HALF_WIDTH.
+        Returns the timestamps that are before and after stamp by the amount specified by HALF_WIDTH.
         """
         dt = datetime.strptime(stamp, '%Y%m%d%H%M%S')
         delta = timedelta(minutes=WindowFinder.HALF_WIDTH)
         return (dt - delta).strftime('%Y%m%d%H%M%S'), (dt + delta).strftime('%Y%m%d%H%M%S')
 
+    def find_initial_window(self, stamp):
+        """
+        Returns the indices of the first and last timestamps that are within HALF_WIDTH of stamp.
+        """
+        start, end = self.find_initial_boundaries(stamp)
+        before = bisect_left(self.stamps, start)
+        after = bisect_left(self.stamps, end)
+        return before, after

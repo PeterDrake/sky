@@ -16,3 +16,7 @@ class TestWindowFinder(unittest.TestCase):
     def test_finds_initial_boundaries(self):
         self.assertEqual(('20150510200730', '20150510202230'),
                          self.window_finder.find_initial_boundaries('20150510201500'))
+
+    def test_finds_initial_window(self):
+        self.assertEqual((10947, 10962),
+                         self.window_finder.find_initial_window('20150510201500'))
