@@ -6,13 +6,12 @@ class WindowFinder:
     Finds 15-minute windows of timestamps centered on each TSI image timestamp.
     """
 
-    # Set the width of the window (in minutes)
-    HALF_WIDTH = 7.5
-
-    def __init__(self, timestamp_filename):
+    def __init__(self, timestamp_filename, half_width=7.5, min_stamps=25):
         # It is assumed that the timestamps in the file are sorted!
         with open(timestamp_filename, 'r') as f:
             self.stamps = [line.strip() for line in f.readlines()]
+        self.half_width = half_width  # width of the window (in minutes)
+        self.min_stamps = min_stamps  # minimum number of stamps in each window
 
     def years(self):
         """
@@ -33,7 +32,7 @@ class WindowFinder:
         Returns the timestamps that are before and after stamp by the amount specified by HALF_WIDTH.
         """
         dt = datetime.strptime(stamp, '%Y%m%d%H%M%S')
-        delta = timedelta(minutes=WindowFinder.HALF_WIDTH)
+        delta = timedelta(minutes=self.half_width)
         return (dt - delta).strftime('%Y%m%d%H%M%S'), (dt + delta).strftime('%Y%m%d%H%M%S')
 
     def find_initial_window(self, stamp):
@@ -44,3 +43,10 @@ class WindowFinder:
         before = bisect_left(self.stamps, start)
         after = bisect_left(self.stamps, end)
         return before, after
+
+    def find_windows(self, year):
+        """
+        Returns a dictionary associating valid timestamp centers with pairs of indices into self.stamps indicating
+        the boundaries of the corresponding windows.
+        """
+        pass
