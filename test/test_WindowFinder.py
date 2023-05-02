@@ -13,5 +13,6 @@ class TestWindowFinder(unittest.TestCase):
     def test_finds_first_timestamp(self):
         self.assertEqual('20150510201500', self.window_finder.first_timestamp('2015'))
 
-    def test_finds_begin_time(self):
-        self.assertEqual('20150510200730', self.window_finder.find_begin_time('20150510201500'))
+    def test_finds_initial_boundaries(self):
+        self.assertEqual(('20150510200730', '20150510202230'),
+                         self.window_finder.find_initial_boundaries('20150510201500'))

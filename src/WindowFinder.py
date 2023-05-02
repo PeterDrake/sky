@@ -27,11 +27,11 @@ class WindowFinder:
             if s.startswith(year):
                 return s
 
-    def find_begin_time(self, stamp):
+    def find_initial_boundaries(self, stamp):
         """
         Returns a timestamp that is before stamp by the amount specified by HALF_WIDTH.
         """
         dt = datetime.strptime(stamp, '%Y%m%d%H%M%S')
-        start = dt - timedelta(minutes=WindowFinder.HALF_WIDTH)
-        return start.strftime('%Y%m%d%H%M%S')
+        delta = timedelta(minutes=WindowFinder.HALF_WIDTH)
+        return (dt - delta).strftime('%Y%m%d%H%M%S'), (dt + delta).strftime('%Y%m%d%H%M%S')
 
