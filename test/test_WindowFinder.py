@@ -2,24 +2,31 @@ import unittest
 from WindowFinder import *
 
 
+def p(stamp):
+    """
+    Convenience method to turn a human-readable timestamp string into a datetime.
+    """
+    return datetime.strptime(stamp, '%Y%m%d%H%M%S')
+
+
 class TestWindowFinder(unittest.TestCase):
 
     def setUp(self):
         self.window_finder = WindowFinder('../test_data/typical_validation_timestamps')
 
     def test_finds_years(self):
-        self.assertEqual(['2012', '2013', '2014', '2015', '2016', '2017'], self.window_finder.years())
+        self.assertEqual([2012, 2013, 2014, 2015, 2016, 2017], self.window_finder.years())
 
-    def test_finds_first_and_last_timestamps(self):
-        self.assertEqual(('20150510201500', '20150928235900'), self.window_finder.first_and_last_timestamps('2015'))
+    def test_finds_first_and_last_times(self):
+        self.assertEqual((p('20150510201500'), p('20150928235900')), self.window_finder.first_and_last_times(2015))
 
     def test_finds_initial_boundaries(self):
-        self.assertEqual(('20150510200730', '20150510202230'),
-                         self.window_finder.find_initial_boundaries('20150510201500'))
+        self.assertEqual((p('20150510200730'), p('20150510202230')),
+                         self.window_finder.find_initial_boundaries(p('20150510201500')))
 
     def test_finds_initial_window(self):
         self.assertEqual((10947, 10962),
-                         self.window_finder.find_initial_window('20150510201500'))
+                         self.window_finder.find_initial_window(p('20150510201500')))
 
     def test_finds_windows(self):
         window_finder = WindowFinder('../test_raw_data/tiny_timestamps', half_width=1, min_stamps=3)

@@ -6,10 +6,13 @@ class WindowFinder:
     Finds 15-minute windows of timestamps centered on each TSI image timestamp.
     """
 
+    THIRTY_SECONDS = timedelta(minutes=0.5)
+
     def __init__(self, timestamp_filename, half_width=7.5, min_stamps=25):
         # It is assumed that the timestamps in the file are sorted!
         with open(timestamp_filename, 'r') as f:
             self.stamps = [line.strip() for line in f.readlines()]
+        self.times = [datetime.strptime(s, '%Y%m%d%H%M%S') for s in self.stamps]
         self.half_width = half_width  # width of the window (in minutes)
         self.min_stamps = min_stamps  # minimum number of stamps in each window
 
@@ -17,38 +20,36 @@ class WindowFinder:
         """
         Returns a list of the years that appear in this WindowFinder's list of timestamps.
         """
-        return sorted(list(set(s[:4] for s in self.stamps)))
+        return sorted(list(set(int(s[:4]) for s in self.stamps)))
 
-    def first_and_last_timestamps(self, year):
+    def first_and_last_times(self, year):
         """
-        Returns the first timestamp in year within this WindowFinder's list of timestamps.
+        Returns the first and last time in year within self.times.
         """
-        year = str(year)
-        for s in self.stamps:
-            if s.startswith(year):
-                first = s
+        for t in self.times:
+            if t.year == year:
+                first = t
                 break
-        for s in reversed(self.stamps):
-            if s.startswith(year):
-                last = s
+        for t in reversed(self.times):
+            if t.year == year:
+                last = t
                 break
         return first, last
 
-    def find_initial_boundaries(self, stamp):
+    def find_initial_boundaries(self, time):
         """
-        Returns the timestamps that are before and after stamp by the amount specified by self.half_width.
+        Returns the times that are before and after time by the amount specified by self.half_width.
         """
-        dt = datetime.strptime(stamp, '%Y%m%d%H%M%S')
         delta = timedelta(minutes=self.half_width)
-        return (dt - delta).strftime('%Y%m%d%H%M%S'), (dt + delta).strftime('%Y%m%d%H%M%S')
+        return (time - delta), (time + delta)
 
-    def find_initial_window(self, stamp):
+    def find_initial_window(self, time):
         """
-        Returns the indices of the first and last timestamps that are within HALF_WIDTH of stamp.
+        Returns the indices of the first and last timestamps that are within self.half_width of time.
         """
-        first_stamp, last_stamp = self.find_initial_boundaries(stamp)
-        first_index = bisect_left(self.stamps, first_stamp)
-        last_index = bisect_left(self.stamps, last_stamp)
+        first_time, last_time = self.find_initial_boundaries(time)
+        first_index = bisect_left(self.times, first_time)
+        last_index = bisect_left(self.times, last_time)
         return first_index, last_index
 
     def find_windows(self, year):
@@ -57,24 +58,18 @@ class WindowFinder:
         the boundaries of the corresponding windows.
         """
         result = {}
-        center_stamp, final_stamp = self.first_and_last_timestamps(year)
-        first_stamp, last_stamp = self.find_initial_boundaries(center_stamp)
-        first_index, last_index = self.find_initial_window(center_stamp)
-        # TODO We could avoid this if we had a list of datetimes instead of (or in addition to) self.stamps
-        center_stamp = datetime.strptime(center_stamp, '%Y%m%d%H%M%S')
-        final_stamp = datetime.strptime(final_stamp, '%Y%m%d%H%M%S')
-        first_stamp = datetime.strptime(first_stamp, '%Y%m%d%H%M%S')
-        last_stamp = datetime.strptime(last_stamp, '%Y%m%d%H%M%S')
-        while center_stamp <= final_stamp:
+        center_time, final_time = self.first_and_last_times(year)
+        first_time, last_time = self.find_initial_boundaries(center_time)
+        first_index, last_index = self.find_initial_window(center_time)
+        while center_time <= final_time:
             if (last_index - first_index + 1 >= self.min_stamps) and\
-                    (center_stamp.strftime('%Y%m%d%H%M%S') in self.stamps[first_index:last_index+1]):
-                result[center_stamp.strftime('%Y%m%d%H%M%S')] = (first_index, last_index)
-            if datetime.strptime(self.stamps[first_index], '%Y%m%d%H%M%S') == first_stamp:
+                    (center_time.strftime('%Y%m%d%H%M%S') in self.stamps[first_index:last_index+1]):
+                result[center_time.strftime('%Y%m%d%H%M%S')] = (first_index, last_index)
+            if self.times[first_index] == first_time:
                 first_index += 1
-            first_stamp += timedelta(minutes=0.5)  # TODO This should be a constant
-            last_stamp += timedelta(minutes=0.5)
-            # print("Trying to add " + )
-            if datetime.strptime(self.stamps[last_index + 1], '%Y%m%d%H%M%S') == last_stamp:
+            first_time += WindowFinder.THIRTY_SECONDS
+            last_time += WindowFinder.THIRTY_SECONDS
+            if self.times[last_index + 1] == last_time:
                 last_index += 1
-            center_stamp += timedelta(minutes=0.5)
+            center_time += WindowFinder.THIRTY_SECONDS
         return result
