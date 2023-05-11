@@ -23,6 +23,7 @@ class WindowFinder:
         """
         Returns the first timestamp in year within this WindowFinder's list of timestamps.
         """
+        year = str(year)
         for s in self.stamps:
             if s.startswith(year):
                 first = s
@@ -55,7 +56,25 @@ class WindowFinder:
         Returns a dictionary associating valid timestamp centers with pairs of indices into self.stamps indicating
         the boundaries of the corresponding windows.
         """
-        center = self.first_timestamp(year)
-        first_stamp, last_stamp = self.find_initial_boundaries(center)
-        first_index, last_index = self.find_initial_window(center)
-
+        result = {}
+        center_stamp, final_stamp = self.first_and_last_timestamps(year)
+        first_stamp, last_stamp = self.find_initial_boundaries(center_stamp)
+        first_index, last_index = self.find_initial_window(center_stamp)
+        # TODO We could avoid this if we had a list of datetimes instead of (or in addition to) self.stamps
+        center_stamp = datetime.strptime(center_stamp, '%Y%m%d%H%M%S')
+        final_stamp = datetime.strptime(final_stamp, '%Y%m%d%H%M%S')
+        first_stamp = datetime.strptime(first_stamp, '%Y%m%d%H%M%S')
+        last_stamp = datetime.strptime(last_stamp, '%Y%m%d%H%M%S')
+        while center_stamp <= final_stamp:
+            if (last_index - first_index + 1 >= self.min_stamps) and\
+                    (center_stamp.strftime('%Y%m%d%H%M%S') in self.stamps[first_index:last_index+1]):
+                result[center_stamp.strftime('%Y%m%d%H%M%S')] = (first_index, last_index)
+            if datetime.strptime(self.stamps[first_index], '%Y%m%d%H%M%S') == first_stamp:
+                first_index += 1
+            first_stamp += timedelta(minutes=0.5)  # TODO This should be a constant
+            last_stamp += timedelta(minutes=0.5)
+            # print("Trying to add " + )
+            if datetime.strptime(self.stamps[last_index + 1], '%Y%m%d%H%M%S') == last_stamp:
+                last_index += 1
+            center_stamp += timedelta(minutes=0.5)
+        return result
