@@ -19,17 +19,23 @@ class WindowFinder:
         """
         return sorted(list(set(s[:4] for s in self.stamps)))
 
-    def first_timestamp(self, year):
+    def first_and_last_timestamps(self, year):
         """
         Returns the first timestamp in year within this WindowFinder's list of timestamps.
         """
         for s in self.stamps:
             if s.startswith(year):
-                return s
+                first = s
+                break
+        for s in reversed(self.stamps):
+            if s.startswith(year):
+                last = s
+                break
+        return first, last
 
     def find_initial_boundaries(self, stamp):
         """
-        Returns the timestamps that are before and after stamp by the amount specified by HALF_WIDTH.
+        Returns the timestamps that are before and after stamp by the amount specified by self.half_width.
         """
         dt = datetime.strptime(stamp, '%Y%m%d%H%M%S')
         delta = timedelta(minutes=self.half_width)
@@ -39,14 +45,17 @@ class WindowFinder:
         """
         Returns the indices of the first and last timestamps that are within HALF_WIDTH of stamp.
         """
-        start, end = self.find_initial_boundaries(stamp)
-        before = bisect_left(self.stamps, start)
-        after = bisect_left(self.stamps, end)
-        return before, after
+        first_stamp, last_stamp = self.find_initial_boundaries(stamp)
+        first_index = bisect_left(self.stamps, first_stamp)
+        last_index = bisect_left(self.stamps, last_stamp)
+        return first_index, last_index
 
     def find_windows(self, year):
         """
         Returns a dictionary associating valid timestamp centers with pairs of indices into self.stamps indicating
         the boundaries of the corresponding windows.
         """
-        pass
+        center = self.first_timestamp(year)
+        first_stamp, last_stamp = self.find_initial_boundaries(center)
+        first_index, last_index = self.find_initial_window(center)
+
