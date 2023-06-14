@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 from bisect import *
+import pandas as pd
+
 
 class WindowFinder:
     """
@@ -8,10 +10,9 @@ class WindowFinder:
 
     THIRTY_SECONDS = timedelta(minutes=0.5)
 
-    def __init__(self, timestamp_filename, half_width=7.5, min_stamps=25):
+    def __init__(self, csv_filename, half_width=7.5, min_stamps=25):
         # It is assumed that the timestamps in the file are sorted!
-        with open(timestamp_filename, 'r') as f:
-            self.stamps = [line.strip() for line in f.readlines()]
+        self.stamps = list(pd.read_csv(csv_filename, usecols=['timestamp_utc'], dtype=str)['timestamp_utc'])
         self.times = [datetime.strptime(s, '%Y%m%d%H%M%S') for s in self.stamps]
         self.half_width = half_width  # width of the window (in minutes)
         self.min_stamps = min_stamps  # minimum number of stamps in each window
@@ -50,6 +51,10 @@ class WindowFinder:
         first_time, last_time = self.find_initial_boundaries(time)
         first_index = bisect_left(self.times, first_time)
         last_index = bisect_left(self.times, last_time)
+        # If last_time isn't present, bisect_left will find the index AFTER the window.
+        # The following line corrects for this
+        if self.times[last_index] != last_time:
+            last_index -= 1
         return first_index, last_index
 
     def find_windows(self, year):
