@@ -74,7 +74,11 @@ class WindowFinder:
                 first_index += 1
             first_time += WindowFinder.THIRTY_SECONDS
             last_time += WindowFinder.THIRTY_SECONDS
-            if self.times[last_index + 1] == last_time:
+            # Normally we would increment last_index, because the next timestamp should be appended to
+            # the end of this window as the window advances. There are two exceptions:
+            # 1) last_index is already the very last index in the dataset
+            # 2) the next timestamp is NOT 30 seconds after the old last_time
+            if (last_index < len(self.times) - 1) and (self.times[last_index + 1] == last_time):
                 last_index += 1
             center_time += WindowFinder.THIRTY_SECONDS
         return result

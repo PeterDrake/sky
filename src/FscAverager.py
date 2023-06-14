@@ -22,3 +22,11 @@ class FscAverager:
         result['fsc_thin_100'] = result['thin_100'] / result['total']
         result['fsc_opaque_100'] = result['opaque_100'] / result['total']
         return result[['timestamp_utc', 'fsc_thin_100', 'fsc_opaque_100']]
+
+    def write_averages(self, filename):
+        """
+        Write to a .csv file the average thin_100 and opaque_100 fscs for all windows across all years.
+        """
+        years = [self.compute_averages(y) for y in self.wf.years()]
+        df = pd.concat(years, axis=0)
+        df.to_csv(self.data_dir + '/' + filename, index=False)

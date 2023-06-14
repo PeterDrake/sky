@@ -17,3 +17,9 @@ class TestFscAverager(unittest.TestCase):
         thins = 4278 + 3927 + 979
         totals = 36482 + 4278 + 12053 + 33578 + 3927 + 15412 + 38843 + 979 + 436
         self.assertEqual(thins / totals, averages['fsc_thin_100'][0])
+
+    def test_saves_averages(self):
+        self.averager.write_averages('tiny_tsi_fsc_2avg.csv')
+        df = pd.read_csv('../test_raw_data/tiny_tsi_fsc_2avg.csv')
+        self.assertEqual(17, len(df))
+        self.assertEqual(20130519120200, df['timestamp_utc'][16])
