@@ -109,6 +109,6 @@ class FscAverager:
         """
         Write to a .csv file the average thin_100 and opaque_100 fscs for all windows across all years.
         """
-        years = [self.compute_averages(y) for y in self.years()]
-        df = pd.concat(years, axis=0)
+        year_dataframes = [self.compute_averages(y) for y in self.years()]
+        df = pd.concat(year_dataframes, axis=0)
         df.to_csv(self.data_dir + '/' + filename, index=False)

@@ -22,10 +22,16 @@ and then *after this is finished*:
 sbatch ../src/launch_allocate_timestamps.sh
 ```
 
-Finally, after *that* is finished:
+and then, after *that* is finished:
 
 ```
 sbatch ../src/launch_calculate_tsi_fsc.sh
+```
+
+Finally, after *that* is finished:
+
+```
+sbatch ../src/launch_average_tsi_fsc.sh
 ```
 
 On a machine other than BLT (from the `src` directory):
