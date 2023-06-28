@@ -1,11 +1,14 @@
+from bisect import bisect_left
+from datetime import datetime, timedelta
 import pandas as pd
-from WindowFinder import *
 
-# TODO Combine this with WindowFinder
 class FscAverager:
     """
-    Takes average FSCs over windows of a specified duration (e.g., 15 minutes).
+    Finds windows of a specific width (e.g., 15 minutes) centered on each TSI image timestamp.
+    Takes average FSCs over these windows.
     """
+
+    THIRTY_SECONDS = timedelta(minutes=0.5)
 
     def __init__(self, data_dir, fsc_filename, half_width=7.5, min_stamps=25):
         """
@@ -78,15 +81,15 @@ class FscAverager:
                 result[center_time.strftime('%Y%m%d%H%M%S')] = (first_index, last_index)
             if self.times[first_index] == first_time:
                 first_index += 1
-            first_time += WindowFinder.THIRTY_SECONDS
-            last_time += WindowFinder.THIRTY_SECONDS
+            first_time += FscAverager.THIRTY_SECONDS
+            last_time += FscAverager.THIRTY_SECONDS
             # Normally we would increment last_index, because the next timestamp should be appended to
             # the end of this window as the window advances. There are two exceptions:
             # 1) last_index is already the very last index in the dataset
             # 2) the next timestamp is NOT 30 seconds after the old last_time
             if (last_index < len(self.times) - 1) and (self.times[last_index + 1] == last_time):
                 last_index += 1
-            center_time += WindowFinder.THIRTY_SECONDS
+            center_time += FscAverager.THIRTY_SECONDS
         return result
 
     def compute_averages(self, year):
