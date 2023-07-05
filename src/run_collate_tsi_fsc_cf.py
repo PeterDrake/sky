@@ -13,7 +13,7 @@ def collate_tsi_fsc_cf(category):
     # Join the dataframes
     result = tsi_fsc_df.merge(cf_df, on='timestamp_utc', how='inner')
     # Export the result
-    result.to_csv(DATA_DIR + '/' + 'collate_tsi_fsc_cf_' + category + '.csv')
+    result.to_csv(DATA_DIR + '/collate_tsi_fsc_cf_' + category + '.csv')
 
 collate_tsi_fsc_cf('typical')
 collate_tsi_fsc_cf('dubious')
