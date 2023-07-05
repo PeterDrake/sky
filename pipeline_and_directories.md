@@ -11,32 +11,22 @@ Our pipeline involves the following steps.
 
 On BLT (from the `blt_job_output` directory), wait for each of the following steps to finish before doing the next one.
 
-Preprocess the photos and TSI masks:
-
 ```
 source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch ../src/launch_preprocess.sh
 ```
 
-Divide up timestamps into training, validation, and test sets:
-
 ```
 sbatch ../src/launch_allocate_timestamps.sh
 ```
-
-Count the number of opaque, thin cloud, and clear pixels in each TSI mask:
 
 ```
 sbatch ../src/launch_calculate_tsi_fsc.sh
 ```
 
-Compute 15-minute averages of fractional sky cover:
-
 ```
 sbatch ../src/launch_average_tsi_fsc.sh
 ```
-
-Collate these with ceilometer cloud fractions:
 
 ````
 sbatch ../src/launch_collate_tsi_fsc_cf.sh
@@ -63,7 +53,9 @@ python3 -u run_collate_tsi_fsc_cf.py
    1. The TSI mask has these same changes; also the sun is removed and each green pixel is replaced with the color of
    the nearest non-green pixel.
 4. Subdivide timestamps into training, validation, and test sets.
-5. Calculate FSC for each TSI mask.
+5. Count opaque, thin, and clear pixels for each TSI mask.
+6. Compute 15-minute averages of fractional sky cover.
+7. Collate these with ceilometer cloud fractions.
 
 ## Train the Model
 
