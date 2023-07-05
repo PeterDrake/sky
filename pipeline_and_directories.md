@@ -116,12 +116,20 @@ Run photos through our network to produce and save network masks.
 
 ### What You Do
 
-On BLT, (from the `blt_job_output` directory):
+On BLT, (from the `blt_job_output` directory), wait for each of the following steps to finish before doing the next one:
 
 ```
 source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch ../src/launch_calculate_network_fsc.sh
 ```
+
+````
+sbatch ../src/launch_average_network_fsc.sh
+````
+
+````
+sbatch ../src/launch_collate_network_fsc_cf.sh
+````
 
 (You don't need the first line, which activates the virtual environment, if it is already active.)
 
