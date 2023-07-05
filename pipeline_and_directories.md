@@ -9,30 +9,38 @@ Our pipeline involves the following steps.
 
 ### What You Do
 
-On BLT (from the `blt_job_output` directory),
+On BLT (from the `blt_job_output` directory), wait for each of the following steps to finish before doing the next one.
+
+Preprocess the photos and TSI masks:
 
 ```
 source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch ../src/launch_preprocess.sh
 ```
 
-and then *after this is finished*:
+Divide up timestamps into training, validation, and test sets:
 
 ```
 sbatch ../src/launch_allocate_timestamps.sh
 ```
 
-and then, after *that* is finished:
+Count the number of opaque, thin cloud, and clear pixels in each TSI mask:
 
 ```
 sbatch ../src/launch_calculate_tsi_fsc.sh
 ```
 
-Finally, after *that* is finished:
+Compute 15-minute averages of fractional sky cover:
 
 ```
 sbatch ../src/launch_average_tsi_fsc.sh
 ```
+
+Collate these with ceilometer cloud fractions:
+
+````
+sbatch ../src/launch_collate_tsi_fsc_cf.sh
+````
 
 On a machine other than BLT (from the `src` directory):
 
@@ -42,6 +50,8 @@ python3 -u run_preprocess.py shcu_typical_data.csv
 python3 -u run_allocate_timestamps.py shcu_dubious_data.csv dubious
 python3 -u run_allocate_timestamps.py shcu_typical_data.csv typical
 python3 -u run_calculate_tsi_fsc.py
+python3 -u run_average_tsi_fsc.py
+python3 -u run_collate_tsi_fsc_cf.py
 ```
 
 ### What This Accomplishes
