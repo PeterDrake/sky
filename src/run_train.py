@@ -4,8 +4,7 @@ import importlib
 from config import *
 
 # Update experiment log and create empty directory for experiment results
-# TODO Change False to True to insist on a clean git state
-log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, False)
+log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
 log_updater.update()
 
 # Create the network
