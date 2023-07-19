@@ -14,9 +14,8 @@ with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[0], 'r') as f:  # Element
         val_stamps.append(line.strip())
 
 # Load the trained model
-# TODO Change False to True to insist on a clean git state
-log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, False)
-model = keras.models.load_model(log_updater.experiment_dir + '/network.h5')
+log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
+model = keras.models.load_model(log_updater.experiment_dir + '/network.keras')
 
 # Create generator for validation data
 # TODO Right before publication, we'll eventually want to put test data (as opposed to validation data) in here

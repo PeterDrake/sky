@@ -27,7 +27,7 @@ model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy')
 # Specify callbacks to use during training
 callbacks = [
     # Save the model regularly, keeping only the best one
-    keras.callbacks.ModelCheckpoint(log_updater.experiment_dir + '/network.h5', save_best_only=True)
+    keras.callbacks.ModelCheckpoint(log_updater.experiment_dir + '/network.keras', save_best_only=True)
 ]
 
 # Train the model, doing validation at the end of each epoch
