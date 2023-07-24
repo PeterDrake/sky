@@ -22,7 +22,7 @@ train_gen = BatchGenerator(train_stamps, DATA_DIR)
 val_gen = BatchGenerator(val_stamps, DATA_DIR)
 
 # Compile the model
-model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy')
+model.compile(optimizer='adamw', loss='sparse_categorical_crossentropy')
 
 # Specify callbacks to use during training
 callbacks = [
