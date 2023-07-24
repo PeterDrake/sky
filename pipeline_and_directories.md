@@ -182,7 +182,7 @@ raw_csv
 results (these are all generated and therefore *not* under version control)
     experiment_log.csv (running an experiment adds a line to this file)
     exp00001 (results of experiment 00001)
-        network.keras
+        network.h5
         network_masks (structured like ../data/photos but filenames end in _network_mask.png)
         dubious_validation_network_fsc.csv
         typical_validation_network_fsc.csv

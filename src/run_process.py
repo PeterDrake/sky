@@ -15,7 +15,7 @@ with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[0], 'r') as f:  # Element
 
 # Load the trained model
 log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
-model = keras.models.load_model(log_updater.experiment_dir + '/network.keras')
+model = keras.models.load_model(log_updater.experiment_dir + '/network.h5')
 
 # Create generator for validation data
 # TODO Right before publication, we'll eventually want to put test data (as opposed to validation data) in here
