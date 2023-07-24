@@ -1,3 +1,5 @@
+import keras.dtensor.optimizers
+
 from BatchGenerator import *
 from ExperimentLogUpdater import *
 import importlib
@@ -22,7 +24,7 @@ train_gen = BatchGenerator(train_stamps, DATA_DIR)
 val_gen = BatchGenerator(val_stamps, DATA_DIR)
 
 # Compile the model
-model.compile(optimizer='adamw', loss='sparse_categorical_crossentropy')
+model.compile(optimizer=keras.dtensor.optimizers.AdamW, loss='sparse_categorical_crossentropy')
 
 # Specify callbacks to use during training
 callbacks = [
