@@ -137,6 +137,8 @@ On a machine other than BLT (from the 'src' directory):
 
 ```
 python3 -u run_calculate_network_fsc.py
+python3 -u run_average_network_fsc.py
+python3 -u run_collate_network_fsc_cf.py
 ```
 
 ### What This Accomplishes
