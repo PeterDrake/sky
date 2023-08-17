@@ -4,7 +4,7 @@ from utils_image import *
 from functools import partial
 
 DefaultConv2D = partial(layers.Conv2D, kernel_size=3, activation='relu', kernel_initializer='he_normal', padding='same')
-DefaultPool = partial(layers.MaxPooling2D, padding='same')
+DefaultPool = partial(layers.MaxPooling2D, strides=(1, 1), padding='same')
 
 inputs = keras.Input(shape=RGB_PHOTO_SIZE)
 c1 = DefaultConv2D(filters=64)(inputs)
