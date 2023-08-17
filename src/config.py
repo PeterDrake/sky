@@ -12,10 +12,10 @@ DUBIOUS_PROPORTIONS = [0.5, 0.5]
 DUBIOUS_TIMESTAMP_FILENAMES = ['dubious_' + c + '_timestamps' for c in ['validation', 'testing']]
 
 # Current experiment name (e.g., 'exp00001'), or 'sandbox'
-EXPERIMENT_NAME = 'su23_0007'
+EXPERIMENT_NAME = 'su23_0008'
 
 # Name (minus .py) of file containing network architecture
-NETWORK_ARCHITECTURE = 'net_c64_c64_c64'
+NETWORK_ARCHITECTURE = 'net_skinny_1'
 
 # Number of epochs to train for
 TRAIN_EPOCHS = 20
