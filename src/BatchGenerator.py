@@ -8,7 +8,7 @@ from skimage.io import imsave, imread
 class BatchGenerator(keras.utils.Sequence):
     """Loads batches of data (each batch as an Nx480x480x3 numpy array) for network training."""
 
-    def __init__(self, timestamps, data_dir, batch_size=32):
+    def __init__(self, timestamps, data_dir, batch_size=16):
         """
         :param timestamps: List of timestamps for the data to be put into batches.
         :param data_dir: Directory where the data live, containing photos and tsi_masks.

@@ -34,7 +34,7 @@ callbacks = [
 ]
 
 # Train the model, doing validation at the end of each epoch
-history = model.fit(train_gen, epochs=TRAIN_EPOCHS, validation_data=val_gen, callbacks=callbacks, verbose=2, batch_size=16)
+history = model.fit(train_gen, epochs=TRAIN_EPOCHS, validation_data=val_gen, callbacks=callbacks, verbose=2)
 
 # Save the history data for plotting learning curves
 pd.DataFrame(history.history).to_csv(RESULTS_DIR + '/' + EXPERIMENT_NAME + '/' + 'training_history', index_label='Epoch')
