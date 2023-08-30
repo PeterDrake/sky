@@ -173,3 +173,24 @@ def label_to_rgb_mask(mask):
 
 # The RGB values for the different colors
 label_to_rgb_mask.RGB_VALUES = np.array([BLACK, BLUE, GRAY, WHITE])
+
+
+def fetch_images_from_blt(timestamp):
+    """
+    Fetches the photo, TSI mask, and network mask for timestamp from BLT via sftp. The files are saved into
+    data_for_plotting.
+    """
+    from dotenv import load_dotenv
+    import os
+
+    load_dotenv()
+    user = os.environ.get('user')
+    password = os.environ.get('password')
+    import pysftp
+    from utils_timestamp import timestamp_to_photo_path
+    from config import DATA_DIR
+    with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+        connection.get(timestamp_to_photo_path(DATA_DIR, timestamp),
+                       '../data_for_plotting/' + timestamp + '_photo.jpg')
+
+fetch_images_from_blt('20160525195900')
