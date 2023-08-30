@@ -174,6 +174,9 @@ def label_to_rgb_mask(mask):
 # The RGB values for the different colors
 label_to_rgb_mask.RGB_VALUES = np.array([BLACK, BLUE, GRAY, WHITE])
 
+from utils_timestamp import *
+from config import *
+
 
 def fetch_images_from_blt(timestamp):
     """
@@ -187,10 +190,15 @@ def fetch_images_from_blt(timestamp):
     user = os.environ.get('user')
     password = os.environ.get('password')
     import pysftp
-    from utils_timestamp import timestamp_to_photo_path
-    from config import DATA_DIR
     with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
         connection.get(timestamp_to_photo_path(DATA_DIR, timestamp),
                        '../data_for_plotting/' + timestamp + '_photo.jpg')
+        connection.get(timestamp_to_tsi_mask_path(DATA_DIR, timestamp),
+                       '../data_for_plotting/' + timestamp + '_tsi_mask.png')
+        from ExperimentLogUpdater import ExperimentLogUpdater
+        log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
+        print('Looking in ' + timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp))
+        connection.get(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp),
+                       '../data_for_plotting/' + timestamp + '_network_mask.png')
 
-fetch_images_from_blt('20160525195900')
+fetch_images_from_blt('20160525195830')
