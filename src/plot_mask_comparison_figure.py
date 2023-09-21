@@ -44,7 +44,7 @@ def show_mask_comparison_figure(timestamp):
     plt.show()
 
 
-timestamp = '20160525195830'
+timestamp = '20150921162130'
 fetch_images_from_blt(timestamp)
 show_mask_comparison_figure(timestamp)
 
