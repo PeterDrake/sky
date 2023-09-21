@@ -15,7 +15,7 @@ cat1 = layers.Concatenate()((c2, p1, p2))
 c3 = DefaultConv2D(filters=32)(cat1)
 c4 = DefaultConv2D(filters=32)(c3)
 cat2 = layers.Concatenate()((c4, inputs))
-outputs = layers.Conv2D(filters=4, kernel_size=3, activation='softmax', padding='same')(cat4)
+outputs = layers.Conv2D(filters=4, kernel_size=3, activation='softmax', padding='same')(cat2)
 model = keras.Model(inputs, outputs)
 
 model.summary()
