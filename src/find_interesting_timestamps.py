@@ -34,8 +34,3 @@ for desired in desired_cfs:
         row = rows.loc[stamp]
         print(f'{stamp}  tsi: {row["cloud_tsi"]:.3f}  net: {row["cloud_net"]:.3f}  cf: {row["cf_shcu"]:.3f}')
 
-    # i = rows['tsi-net'].idxmax(axis=0)
-    # # print(f'i: {i}')
-    # row = rows.loc[i]
-    # print(f'{i}  tsi: {row["cloud_tsi"]:.3f}  net: {row["cloud_net"]:.3f}  cf: {row["cf_shcu"]:.3f}')
-
