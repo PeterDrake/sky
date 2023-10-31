@@ -147,8 +147,23 @@ Use network masks to create .csv files of network FSCs.
 
 ## Produce Plots
 
-1. Plot learning curve.
-1. Analyze results (including producing plots for publication).
+### What You Do
+
+1. Edit `src/config.py` to set EXPERIMENT_NAME to the experiment in which you're interested.
+1. Run `grab_and_display_results.py`.
+
+This is mainly for out internal use; it pulls down files from BLT
+and produces various plots and other files in a directory (named for the timestamp) within `data_for_plotting`.
+
+### What This Accomplishes
+Downloads (from BLT) various files for the current experiment and then saves into a subdirectory of `data_for_plotting`:
+
+1. Those files
+2. rmse.txt, giving the RMSE values for fsc vs cf
+3. stamps.txt, giving some 'interesting' timestamps
+4. A triptych for each of these timestamps
+5. The scatter plots of fsc vs cf
+6. The learning curve
 
 # Directory Structure
 
