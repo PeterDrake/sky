@@ -25,6 +25,11 @@ sbatch ../src/launch_calculate_tsi_fsc.sh
 ```
 
 ```
+sbatch ../src/launch_remove_glare.sh
+
+```
+
+```
 sbatch ../src/launch_average_tsi_fsc.sh
 ```
 
@@ -40,6 +45,7 @@ python3 -u run_preprocess.py shcu_typical_data.csv
 python3 -u run_allocate_timestamps.py shcu_dubious_data.csv dubious
 python3 -u run_allocate_timestamps.py shcu_typical_data.csv typical
 python3 -u run_calculate_tsi_fsc.py
+python3 -u run_remove_glare.py
 python3 -u run_average_tsi_fsc.py
 python3 -u run_collate_tsi_fsc_cf.py
 ```

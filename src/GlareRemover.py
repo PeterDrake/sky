@@ -11,6 +11,9 @@ class GlareRemover:
     Reclassifies (as clear sky) all cloud pixels in images that we think are likely to contain mostly
     sun glare (as defined in has_glare).
     """
+    def __init__(self, data_dir, verbose=True):
+        self.data_dir = data_dir
+        self.verbose = verbose
 
     def pull_files(self, timestamps):
         load_dotenv()
@@ -43,5 +46,41 @@ class GlareRemover:
         print(result['glare'].mean())
         self.pull_files(list(result[result['glare']]['timestamp_utc'])[::100])
 
-g = GlareRemover()
-g.find_glare_files('../data_for_plotting/typical_validation_tsi_fsc.csv')
+    def log(self, message):
+        if self.verbose:
+            print(message)
+
+    def preprocess_timestamp(self, timestamp):
+        # # Read in mask and photo
+        # mask = imread(self.raw_tsi_mask_path(timestamp))[:, :, :3]
+        # photo = imread(self.raw_photo_path(timestamp))[:, :, :3]
+        # # Process them in memory
+        # coords = center_and_radius(mask)
+        # mask = crop(mask, coords)
+        # mask = remove_sun(mask)
+        # mask = remove_green_lines(mask)
+        # photo = crop(photo, coords)
+        # photo = blacken_outer_ring(photo, coords)
+        # # Write revised versions
+        # imsave(timestamp_to_tsi_mask_path(self.data_dir, timestamp), mask)
+        # imsave(timestamp_to_photo_path(self.data_dir, timestamp), photo)
+        pass
+
+    def preprocess_images(self, csv_filename):
+        # """
+        # Preprocesses each image with timestamp in csv_filename (which is in self.data_dir), writing new version of
+        # the photo and tsi_mask files into self.data_dir.
+        # """
+        # csv = self.data_dir + '/' + csv_filename
+        # self.log('Reading ' + csv)
+        # data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
+        # self.log('Preprocessing ' + str(len(data)) + ' images')
+        # for i, t in data['timestamp_utc'].items():
+        #     self.preprocess_timestamp(t)
+        #     if i % 1000 == 0:
+        #         self.log(str(i) + ' images preprocessed')
+        # self.log('Done preprocessing images')
+        pass
+
+# g = GlareRemover()
+# g.find_glare_files('../data_for_plotting/typical_validation_tsi_fsc.csv')
