@@ -192,6 +192,8 @@ data (these are all generated and therefore *not* under version control)
         20120501 (and similar years/months/dates)
             20120501170430_photo.jpg (preprocessed)
     tsi_masks (structured like photos, but filenames end in _tsi_mask.png)
+    tsi_masks_no_glare (just like tsi_masks, but with clouds removed from masks likely to contain glare, as defined by
+      GlareRemove.py)
 raw_csv
     readme_with_Jess_edits.pdf
     shcu_dubious_data.csv (raw version)

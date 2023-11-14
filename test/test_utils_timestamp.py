@@ -30,6 +30,10 @@ class TestUtilsTimestamp(unittest.TestCase):
         # Note: it doesn't matter if this file actually exists; we're just verifying that the correct path is returned
         self.assertEqual('../test_data/tsi_masks/20180419/20180419010230_tsi_mask.png', timestamp_to_tsi_mask_path('../test_data', '20180419010230'))
 
+    def test_finds_tsi_mask_no_glare_path(self):
+        # Note: it doesn't matter if this file actually exists; we're just verifying that the correct path is returned
+        self.assertEqual('../test_data/tsi_masks_no_glare/20180419/20180419010230_tsi_mask.png', timestamp_to_tsi_mask_no_glare_path('../test_data', '20180419010230'))
+
     def test_finds_network_mask_path(self):
         # Note: it doesn't matter if this file actually exists; we're just verifying that the correct path is returned
         self.assertEqual('../test_results/sandbox/network_masks/20180419/20180419010230_network_mask.png', timestamp_to_network_mask_path('../test_results/sandbox', '20180419010230'))
