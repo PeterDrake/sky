@@ -126,6 +126,14 @@ def remove_green_lines(mask):
     interpolate = scipy.interpolate.NearestNDInterpolator(nongreen, z)
     return interpolate(yy, xx)
 
+def remove_all_clouds(mask):
+    """
+    Modifies and returns mask, but with all gray and white pixels changed to blue.
+    """
+    gray = (mask == GRAY).all(axis=2)
+    white = (mask == WHITE).all(axis=2)
+    mask[gray | white] = BLUE
+    return mask
 
 def rgb_mask_to_one_hot(mask):
     """

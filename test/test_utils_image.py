@@ -122,6 +122,14 @@ class TestUtilsImage(unittest.TestCase):
         # The interpolation might not recover the original image exactly, but it should only differ on a few pixels
         self.assertTrue((cropped_mask != after).sum() < 3 * 10)
 
+    def test_removes_all_clouds(self):
+        correct = self.add_circle(300, 200, 100, BLUE)
+        mask = self.add_circle(300, 170, 30, GRAY, correct)  # Fake thin cloud
+        mask = self.add_circle(300, 230, 30, WHITE, mask)  # Fake thick cloud
+        mask = self.add_circle(330, 230, 10, WHITE, mask)  # Fake thick cloud
+        after = remove_all_clouds(mask)
+        self.assertTrue((correct == after).all())
+
     def test_converts_rgb_mask_to_one_hot(self):
         mask = np.array([[WHITE, BLUE], [GRAY, BLACK]])
         correct = np.array([[[0, 0, 0, 1], [0, 1, 0, 0]], [[0, 0, 1, 0], [1, 0, 0, 0]]])

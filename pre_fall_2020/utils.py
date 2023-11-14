@@ -306,7 +306,7 @@ def extract_times_from_files_in_directory(directory=None):
 
 
 def out_to_image(output):
-	"""Modifies (and returns) the output of the network as a human-readable RGB
+	"""Returns a version of the network output of the network as a human-readable RGB
 	image."""
 	output = output.reshape([-1, 480, 480, 4])
 	# We use argmax instead of softmax so that we really will get one-hots
@@ -314,10 +314,10 @@ def out_to_image(output):
 	return one_hot_to_mask(max_indexes, output)
 
 
-def one_hot_to_mask(max_indices, output):
-	"""Modifies (and returns) img to have sensible colors in place of
+def one_hot_to_mask(max_indices, one_hot):
+	"""Returns a version of one_hot with sensible colors in place of
 	one-hot vectors."""
-	out = np.zeros([len(output), 480, 480, 3])
+	out = np.zeros([len(one_hot), 480, 480, 3])
 	out[(max_indices == 0)] = WHITE
 	out[(max_indices == 1)] = BLUE
 	out[(max_indices == 2)] = GRAY
