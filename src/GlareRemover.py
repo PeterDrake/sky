@@ -7,6 +7,10 @@ from config import *
 
 
 class GlareRemover:
+    """
+    Reclassifies (as clear sky) all cloud pixels in images that we think are likely to contain mostly
+    sun glare (as defined in has_glare).
+    """
 
     def pull_files(self, timestamps):
         load_dotenv()
@@ -20,6 +24,11 @@ class GlareRemover:
                                f'../data_for_plotting/{t}tsi_mask.png')
 
     def has_glare(self, timestamps, fscs):
+        """
+        An image is assumed to have glare if:
+        a) It has TSI FSC (total thin + opaque) < 0.1, AND
+        b) It is before 11 AM or after 5 PM Oklahoma standard time.
+        """
         hours = timestamps.map(lambda t: int(hhmmss(t)[:2]))
         # print(hours.value_counts())
         return (fscs < 0.1) & ((hours < 17) | (hours >= 23))
