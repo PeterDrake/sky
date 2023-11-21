@@ -5,26 +5,26 @@ from skimage.io import imsave, imread
 # from test import test_Preprocessor
 
 
-class MyTestCase(unittest.TestCase):
+class TestBatchGenerator(unittest.TestCase):
 
     def setUp(self):
         # Make up some timestamps
         timestamps = pd.read_csv('../test_data/tiny_data.csv', converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         timestamps = timestamps['timestamp_utc'].tolist()
-        self.timestamps = timestamps[:86]
+        self.timestamps = timestamps[:86]  # It takes 6 16-stamp batches to cover this
         # Initialize the generator
         self.generator = BatchGenerator(self.timestamps, '../test_data')
 
     def test_has_correct_length(self):
-        self.assertEqual(3, len(self.generator))
+        self.assertEqual(6, len(self.generator))
 
     def test_outputs_have_correct_dimensions(self):
         print('NOTE: test_BatchGenerator will fail if test_Preprocessor has not run yet. If you are running all of the tests on a')
         print('fresh install, just wait for them to finish and run them all again.')
         batches = list(self.generator)
         for photo_batch, tsi_mask_batch in batches[:-1]:
-            self.assertEqual((32, 480, 480, 3), photo_batch.shape)
-            self.assertEqual((32, 480, 480, 1), tsi_mask_batch.shape)
+            self.assertEqual((16, 480, 480, 3), photo_batch.shape)
+            self.assertEqual((16, 480, 480, 1), tsi_mask_batch.shape)
         # The last batch may be smaller if the number of timestamps is not a multiple of batch_size
         photo_batch, tsi_mask_batch = batches[-1]
         correct_length = len(self.timestamps) % self.generator.batch_size

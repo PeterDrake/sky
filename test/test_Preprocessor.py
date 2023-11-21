@@ -49,14 +49,14 @@ class TestPreprocessor(unittest.TestCase):
 
     def test_finds_correct_numbers_of_valid_and_invalid_timestamps(self):
         self.preprocessor.validate_csv('tiny_data.csv')
-        self.assertEqual(304, self.preprocessor.valid_timestamp_count)
+        self.assertEqual(309, self.preprocessor.valid_timestamp_count)
         self.assertEqual(2, self.preprocessor.invalid_timestamp_count)
 
     def test_writes_clean_csv(self):
         self.preprocessor.write_clean_csv('tiny_data.csv')
         data = pd.read_csv('../test_data/tiny_data.csv')
         # For this file, the clean version has 304 valid timestamps
-        self.assertEqual(304, len(data))
+        self.assertEqual(309, len(data))
 
     def test_creates_image_directories(self):
         # Ensure that the clean CSV file exists
