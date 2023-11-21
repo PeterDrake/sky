@@ -12,7 +12,7 @@ def p(stamp):
 class TestFscAverager(unittest.TestCase):
 
     def setUp(self):
-        self.averager = FscAverager('../test_raw_data', 'tiny_tsi_fsc.csv')
+        self.averager = FscAverager('../test_raw_csv', 'tiny_tsi_fsc.csv')
 
     def test_finds_years(self):
         self.assertEqual([2012, 2013], self.averager.years())
@@ -29,7 +29,7 @@ class TestFscAverager(unittest.TestCase):
                          self.averager.find_initial_window(p('20120519120000')))
 
     def test_finds_windows(self):
-        averager = FscAverager('../test_raw_data', 'tiny_tsi_fsc.csv', half_width=1, min_stamps=3)
+        averager = FscAverager('../test_raw_csv', 'tiny_tsi_fsc.csv', half_width=1, min_stamps=3)
         correct = {'20120519120000': (0, 2),
                    '20120519120030': (0, 3),
                    '20120519120100': (0, 4),
@@ -45,7 +45,7 @@ class TestFscAverager(unittest.TestCase):
         self.assertEqual(correct, averager.find_windows(2012))
 
     def test_computes_averages(self):
-        averager = FscAverager('../test_raw_data', 'tiny_tsi_fsc.csv', half_width=1, min_stamps=3)
+        averager = FscAverager('../test_raw_csv', 'tiny_tsi_fsc.csv', half_width=1, min_stamps=3)
         averages = averager.compute_averages(2012)
         self.assertEqual(12, len(averages))
         self.assertEqual('20120519120000', averages['timestamp_utc'][0])
@@ -54,8 +54,8 @@ class TestFscAverager(unittest.TestCase):
         self.assertEqual(thins / totals, averages['fsc_thin_100'][0])
 
     def test_saves_averages(self):
-        averager = FscAverager('../test_raw_data', 'tiny_tsi_fsc.csv', half_width=1, min_stamps=3)
+        averager = FscAverager('../test_raw_csv', 'tiny_tsi_fsc.csv', half_width=1, min_stamps=3)
         averager.write_averages('tiny_tsi_fsc_2avg.csv')
-        df = pd.read_csv('../test_raw_data/tiny_tsi_fsc_2avg.csv')
+        df = pd.read_csv('../test_raw_csv/tiny_tsi_fsc_2avg.csv')
         self.assertEqual(17, len(df))
         self.assertEqual(20130519120200, df['timestamp_utc'][16])

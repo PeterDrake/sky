@@ -1,3 +1,5 @@
+import shutil
+
 import pandas as pd
 from utils_timestamp import *
 from dotenv import load_dotenv
@@ -11,20 +13,22 @@ class GlareRemover:
     Reclassifies (as clear sky) all cloud pixels in images that we think are likely to contain mostly
     sun glare (as defined in has_glare).
     """
-    def __init__(self, data_dir, verbose=True):
-        self.data_dir = data_dir
+    def __init__(self, data_dir, csv_dir, verbose=True):
+        self.data_dir = data_dir  # Where deglared files will be written
+        self.csv_dir = csv_dir  # Where the FSC CSV file lives -- the same as data_dir on BLT, different in tests
         self.verbose = verbose
 
-    def pull_files(self, timestamps):
-        load_dotenv()
-        user = os.environ.get('user')
-        password = os.environ.get('password')
-        with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
-            for t in timestamps:
-                connection.get(f'{DATA_DIR}/photos/{yyyymmdd(t)}/{t}_photo.jpg',
-                               f'../data_for_plotting/{t}_photo.jpg')
-                connection.get(f'{DATA_DIR}/tsi_masks/{yyyymmdd(t)}/{t}_tsi_mask.png',
-                               f'../data_for_plotting/{t}tsi_mask.png')
+    # This was used to manually pull some specific files to examine them.
+    # def pull_files(self, timestamps):
+    #     load_dotenv()
+    #     user = os.environ.get('user')
+    #     password = os.environ.get('password')
+    #     with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+    #         for t in timestamps:
+    #             connection.get(f'{DATA_DIR}/photos/{yyyymmdd(t)}/{t}_photo.jpg',
+    #                            f'../data_for_plotting/{t}_photo.jpg')
+    #             connection.get(f'{DATA_DIR}/tsi_masks/{yyyymmdd(t)}/{t}_tsi_mask.png',
+    #                            f'../data_for_plotting/{t}tsi_mask.png')
 
     def has_glare(self, timestamps, fscs):
         """
@@ -42,9 +46,9 @@ class GlareRemover:
         result['fsc_thin_100'] = result['thin_100'] / result['total']
         result['fsc_opaque_100'] = result['opaque_100'] / result['total']
         result['glare'] = self.has_glare(result['timestamp_utc'], result['fsc_thin_100'] + result['fsc_opaque_100'])
-        # print(self.counts)
-        print(result['glare'].mean())
-        self.pull_files(list(result[result['glare']]['timestamp_utc'])[::100])
+        # print(result['glare'].mean())
+        # self.pull_files(list(result[result['glare']]['timestamp_utc'])[::100])
+        return result[result['glare']]['timestamp_utc'], result[~result['glare']]['timestamp_utc']
 
     def log(self, message):
         if self.verbose:
@@ -66,20 +70,32 @@ class GlareRemover:
         # imsave(timestamp_to_photo_path(self.data_dir, timestamp), photo)
         pass
 
-    def preprocess_images(self, csv_filename):
-        # """
-        # Preprocesses each image with timestamp in csv_filename (which is in self.data_dir), writing new version of
-        # the photo and tsi_mask files into self.data_dir.
-        # """
-        # csv = self.data_dir + '/' + csv_filename
+    def write_deglared_files(self, csv_filename):
+        """
+        Reads each TSI mask for a timestamp in csv_filename (which is in self.data_dir). Writes either a copy of the
+        TSI mask or (if glare is likely) a version with all clouds removed into the tsi_mask_no_glare subdirectory of
+        self.data_dir.
+        """
+        csv = self.csv_dir + '/' + csv_filename
         # self.log('Reading ' + csv)
         # data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
-        # self.log('Preprocessing ' + str(len(data)) + ' images')
+        # self.log('Removing glare from up to ' + str(len(data)) + ' masks')
+        self.log("Finding glare files")
+        glare, no_glare = self.find_glare_files(csv)
+        self.log(f'{len(glare)} masks with glare')
+        self.log(f'{len(no_glare)} masks without glare')
+        # Copy non-problematic files into no_glare directory
+        self.log(no_glare)
+        for t in no_glare:
+            shutil.copyfile(timestamp_to_tsi_mask_path(self.data_dir, t),
+                            timestamp_to_tsi_mask_no_glare_path(self.data_dir, t))
+        # Process problematic files and write them into no_glare directory
         # for i, t in data['timestamp_utc'].items():
+        #     if self.has_glare()
         #     self.preprocess_timestamp(t)
         #     if i % 1000 == 0:
-        #         self.log(str(i) + ' images preprocessed')
-        # self.log('Done preprocessing images')
+        #         self.log(str(i) + ' images examined')
+        # self.log('Done removing glare')
         pass
 
 # g = GlareRemover()
