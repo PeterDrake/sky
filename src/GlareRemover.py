@@ -73,10 +73,11 @@ class GlareRemover:
             shutil.copyfile(timestamp_to_tsi_mask_path(self.data_dir, t),
                             timestamp_to_tsi_mask_no_glare_path(self.data_dir, t))
         # Process problematic files and write them into no_glare directory
-        # for i, t in data['timestamp_utc'].items():
-        #     if self.has_glare()
-        #     self.preprocess_timestamp(t)
-        #     if i % 1000 == 0:
-        #         self.log(str(i) + ' images examined')
-        # self.log('Done removing glare')
+        for t in glare:
+            os.makedirs(os.path.dirname(timestamp_to_tsi_mask_no_glare_path(self.data_dir, t)), exist_ok=True)
+            # TODO
+            # Read in the file
+            # Remove the clouds
+            # Write the file
+        self.log('Done removing glare')
         pass
