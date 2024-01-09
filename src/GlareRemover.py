@@ -8,6 +8,7 @@ from config import *
 from skimage.io import imsave, imread
 from utils_image import remove_all_clouds
 
+
 class GlareRemover:
     """
     Reclassifies (as clear sky) all cloud pixels in images that we think are likely to contain mostly
@@ -45,7 +46,7 @@ class GlareRemover:
         # Process them in memory
         mask = remove_all_clouds(mask)
         # Write revised versions
-        imsave(timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp), mask)
+        imsave(timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp), mask, check_contrast=False)
 
     def write_deglared_files(self, csv_filename):
         """
