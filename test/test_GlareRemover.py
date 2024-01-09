@@ -18,9 +18,9 @@ class TestGlareRemover(unittest.TestCase):
             print('Doing expensive preprocessing of test files')
             self.glare_remover.create_image_directories('tiny_tsi_fsc.csv')
             self.glare_remover.write_deglared_files('tiny_tsi_fsc.csv')
-        # TODO Verify that some files with glare are also copied
         # Now check if some of the files exist
         files = [timestamp_to_tsi_mask_no_glare_path(self.glare_remover.data_dir, '20160525160000'),
-                 timestamp_to_tsi_mask_no_glare_path(self.glare_remover.data_dir, '20170524173100')]
+                 timestamp_to_tsi_mask_no_glare_path(self.glare_remover.data_dir, '20170524173100'),
+                 timestamp_to_tsi_mask_no_glare_path(self.glare_remover.data_dir, '20170524150200')]
         for f in files:
             self.assertTrue(os.path.exists(f))
