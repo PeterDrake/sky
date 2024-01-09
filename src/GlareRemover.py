@@ -1,10 +1,7 @@
 import shutil
 import pandas as pd
 from utils_timestamp import *
-from dotenv import load_dotenv
 import os
-import pysftp
-from config import *
 from skimage.io import imsave, imread
 from utils_image import remove_all_clouds
 
