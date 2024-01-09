@@ -132,7 +132,7 @@ class Preprocessor:
         photo = crop(photo, coords)
         photo = blacken_outer_ring(photo, coords)
         # Write revised versions
-        imsave(timestamp_to_tsi_mask_path(self.data_dir, timestamp), mask)
+        imsave(timestamp_to_tsi_mask_path(self.data_dir, timestamp), mask, check_contrast=False)
         imsave(timestamp_to_photo_path(self.data_dir, timestamp), photo)
 
     def preprocess_images(self, csv_filename):

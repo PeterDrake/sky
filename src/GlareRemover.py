@@ -53,7 +53,7 @@ class GlareRemover:
         Creates directories within self.data_dir for each unique yyyymmdd date within csv_filename. csv_filename is a
         cleaned .csv file within self.data_dir. The created directories are tsi_masks_no_glare/yyyymmdd.
         """
-        csv = self.data_dir + '/' + csv_filename
+        csv = self.csv_dir + '/' + csv_filename
         self.log('Reading ' + csv)
         data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         self.log('Creating image directories')
