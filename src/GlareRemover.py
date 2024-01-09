@@ -67,6 +67,7 @@ class GlareRemover:
         """
         csv = self.csv_dir + '/' + csv_filename
         self.log("Finding glare files")
+        self.log(csv)
         glare, no_glare = self.find_glare_files(csv)
         self.log(f'{len(glare)} masks with glare')
         self.log(f'{len(no_glare)} masks without glare')
