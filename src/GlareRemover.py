@@ -1,12 +1,12 @@
 import shutil
-
 import pandas as pd
 from utils_timestamp import *
 from dotenv import load_dotenv
 import os
 import pysftp
 from config import *
-
+from skimage.io import imsave, imread
+from utils_image import remove_all_clouds
 
 class GlareRemover:
     """
@@ -40,20 +40,12 @@ class GlareRemover:
             print(message)
 
     def preprocess_timestamp(self, timestamp):
-        # # Read in mask and photo
-        # mask = imread(self.raw_tsi_mask_path(timestamp))[:, :, :3]
-        # photo = imread(self.raw_photo_path(timestamp))[:, :, :3]
-        # # Process them in memory
-        # coords = center_and_radius(mask)
-        # mask = crop(mask, coords)
-        # mask = remove_sun(mask)
-        # mask = remove_green_lines(mask)
-        # photo = crop(photo, coords)
-        # photo = blacken_outer_ring(photo, coords)
-        # # Write revised versions
-        # imsave(timestamp_to_tsi_mask_path(self.data_dir, timestamp), mask)
-        # imsave(timestamp_to_photo_path(self.data_dir, timestamp), photo)
-        pass
+        # Read in mask and photo
+        mask = imread(timestamp_to_tsi_mask_path(self.data_dir, timestamp))[:, :, :3]
+        # Process them in memory
+        mask = remove_all_clouds(mask)
+        # Write revised versions
+        imsave(timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp), mask)
 
     def write_deglared_files(self, csv_filename):
         """
@@ -67,7 +59,6 @@ class GlareRemover:
         self.log(f'{len(glare)} masks with glare')
         self.log(f'{len(no_glare)} masks without glare')
         # Copy non-problematic files into no_glare directory
-        self.log(no_glare)
         for t in no_glare:
             os.makedirs(os.path.dirname(timestamp_to_tsi_mask_no_glare_path(self.data_dir, t)), exist_ok=True)
             shutil.copyfile(timestamp_to_tsi_mask_path(self.data_dir, t),
@@ -75,9 +66,6 @@ class GlareRemover:
         # Process problematic files and write them into no_glare directory
         for t in glare:
             os.makedirs(os.path.dirname(timestamp_to_tsi_mask_no_glare_path(self.data_dir, t)), exist_ok=True)
-            # TODO
-            # Read in the file
-            # Remove the clouds
-            # Write the file
+            self.preprocess_timestamp(t)
         self.log('Done removing glare')
         pass
