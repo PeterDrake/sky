@@ -16,6 +16,7 @@ class TestGlareRemover(unittest.TestCase):
         # Only do the expensive preprocessing if it hasn't already been done
         if not os.path.exists(timestamp_to_tsi_mask_no_glare_path(self.glare_remover.data_dir, '20180418000200')):
             print('Doing expensive preprocessing of test files')
+            self.glare_remover.create_image_directories('tiny_tsi_fsc.csv')
             self.glare_remover.write_deglared_files('tiny_tsi_fsc.csv')
         # TODO Verify that some files with glare are also copied
         # Now check if some of the files exist

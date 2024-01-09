@@ -48,6 +48,20 @@ class GlareRemover:
         # Write revised versions
         imsave(timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp), mask, check_contrast=False)
 
+    def create_image_directories(self, csv_filename):
+        """
+        Creates directories within self.data_dir for each unique yyyymmdd date within csv_filename. csv_filename is a
+        cleaned .csv file within self.data_dir. The created directories are tsi_masks_no_glare/yyyymmdd.
+        """
+        csv = self.data_dir + '/' + csv_filename
+        self.log('Reading ' + csv)
+        data = pd.read_csv(csv, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
+        self.log('Creating image directories')
+        days = {yyyymmdd(t) for t in data['timestamp_utc']}
+        for day in days:
+            os.makedirs(self.data_dir + '/tsi_masks_no_glare/' + day, exist_ok=True)
+        self.log('Done creating image directories')
+
     def write_deglared_files(self, csv_filename):
         """
         Reads each TSI mask for a timestamp in csv_filename (which is in self.data_dir). Writes either a copy of the
@@ -61,12 +75,12 @@ class GlareRemover:
         self.log(f'{len(no_glare)} masks without glare')
         # Copy non-problematic files into no_glare directory
         for t in no_glare:
-            os.makedirs(os.path.dirname(timestamp_to_tsi_mask_no_glare_path(self.data_dir, t)), exist_ok=True)
+            # os.makedirs(os.path.dirname(timestamp_to_tsi_mask_no_glare_path(self.data_dir, t)), exist_ok=True)
             shutil.copyfile(timestamp_to_tsi_mask_path(self.data_dir, t),
                             timestamp_to_tsi_mask_no_glare_path(self.data_dir, t))
         # Process problematic files and write them into no_glare directory
         for t in glare:
-            os.makedirs(os.path.dirname(timestamp_to_tsi_mask_no_glare_path(self.data_dir, t)), exist_ok=True)
+            # os.makedirs(os.path.dirname(timestamp_to_tsi_mask_no_glare_path(self.data_dir, t)), exist_ok=True)
             self.preprocess_timestamp(t)
         self.log('Done removing glare')
         pass
