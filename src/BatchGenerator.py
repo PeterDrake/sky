@@ -8,7 +8,7 @@ from skimage.io import imsave, imread
 class BatchGenerator(keras.utils.Sequence):
     """Loads batches of data (each batch as an Nx480x480x3 numpy array) for network training."""
 
-    def __init__(self, timestamps, data_dir, batch_size=16):
+    def __init__(self, timestamps, data_dir, batch_size=16, use_no_glare_masks=False):
         """
         :param timestamps: List of timestamps for the data to be put into batches.
         :param data_dir: Directory where the data live, containing photos and tsi_masks.
@@ -17,6 +17,7 @@ class BatchGenerator(keras.utils.Sequence):
         self.timestamps = timestamps
         self.data_dir = data_dir
         self.batch_size = batch_size
+        self.use_no_glare_masks = use_no_glare_masks
 
     def __len__(self):
         """
@@ -36,7 +37,11 @@ class BatchGenerator(keras.utils.Sequence):
         batch_timestamps = self.timestamps[i : i + self.batch_size]  # Timestamps for this batch
         n = len(batch_timestamps)
         photo_paths = [timestamp_to_photo_path(self.data_dir, t) for t in batch_timestamps]
-        tsi_mask_paths = [timestamp_to_tsi_mask_path(self.data_dir, t) for t in batch_timestamps]
+        if self.use_no_glare_masks:
+            tsi_mask_paths = [timestamp_to_tsi_mask_no_glare_path(self.data_dir, t) for t in batch_timestamps]
+        else:
+            tsi_mask_paths = [timestamp_to_tsi_mask_path(self.data_dir, t) for t in batch_timestamps]
+        print("Getting TSI masks from " + tsi_mask_paths)
         photo_batch = np.zeros((n,) + RGB_PHOTO_SIZE, dtype="uint8")  # Shape (N, 480, 480, 3)
         for j, path in enumerate(photo_paths):
             photo_batch[j] = imread(path)

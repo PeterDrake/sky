@@ -20,7 +20,7 @@ with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[1], 'r') as f:
     val_stamps = [line.strip() for line in f.readlines()]
 
 # Create generators for training and validation data
-train_gen = BatchGenerator(train_stamps, DATA_DIR)
+train_gen = BatchGenerator(train_stamps, DATA_DIR, use_no_glare_masks="noglare" in EXPERIMENT_NAME)
 val_gen = BatchGenerator(val_stamps, DATA_DIR)
 
 # Compile the model

@@ -69,7 +69,8 @@ python3 -u run_collate_tsi_fsc_cf.py
 
 1. Set the experiment name in `config.py`. The training process won't allow
    the user to continue if the experiment name is already in `results/experiment_log.csv` or the code is not in a
-   clean git state.
+   clean git state. **If the experiment name contains the substring `noglare`, the de-glared versions of the TSI
+   masks will be used for training.**
 1. Set the network architecture name in `config.py`. The corresponding .py file in `src/model_architectures` gives the
    definition of the network architecture.
 1. Build and train the network as described below.
