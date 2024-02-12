@@ -23,7 +23,7 @@ class GlareRemover:
         b) It is before 11 AM or after 5 PM Oklahoma standard time.
         """
         hours = timestamps.map(lambda t: int(hhmmss(t)[:2]))
-        return (fscs < 0.1) & ((hours < 17) | (hours >= 23))
+        return (fscs < 0.2) & ((hours < 17) | (hours >= 23))
 
     def find_glare_files(self, csv):
         result = pd.read_csv(csv, converters={'timestamp_utc': str})

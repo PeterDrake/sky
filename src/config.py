@@ -13,7 +13,7 @@ DUBIOUS_TIMESTAMP_FILENAMES = ['dubious_' + c + '_timestamps' for c in ['validat
 
 # Current experiment name (e.g., 'exp00001'), or 'sandbox'
 # EXPERIMENT_NAME = 'su23_0014'  # This is the last one we ran
-EXPERIMENT_NAME = 'su23_0016_noglare'
+EXPERIMENT_NAME = 'su23_0017_noglare'
 
 # Name (minus .py) of file containing network architecture
 NETWORK_ARCHITECTURE = 'net_skinny_4'

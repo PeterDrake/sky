@@ -41,7 +41,6 @@ class BatchGenerator(keras.utils.Sequence):
             tsi_mask_paths = [timestamp_to_tsi_mask_no_glare_path(self.data_dir, t) for t in batch_timestamps]
         else:
             tsi_mask_paths = [timestamp_to_tsi_mask_path(self.data_dir, t) for t in batch_timestamps]
-        print("Getting TSI masks from " + str(tsi_mask_paths))
         photo_batch = np.zeros((n,) + RGB_PHOTO_SIZE, dtype="uint8")  # Shape (N, 480, 480, 3)
         for j, path in enumerate(photo_paths):
             photo_batch[j] = imread(path)
