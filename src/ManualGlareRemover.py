@@ -21,18 +21,15 @@ class ManualGlareRemover:
         photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, timestamp)))
         photo_label = Label(self.root, image=photo)
         photo_label.image = photo  # This seems redundant with the named argument above, but both seem to be necessary
-        # photo_label.place(x=0, y=0)
         photo_label.pack(side='left')
-
         mask = ImageTk.PhotoImage(Image.open(timestamp_to_tsi_mask_path(self.data_dir, timestamp)))
         mask_label = Label(self.root, image=mask)
         mask_label.image = mask  # This seems redundant with the named argument above, but both seem to be necessary
-        # mask_label.place(x=0, y=480)
         mask_label.pack(side='right')
-        # self.root.pack()
-        # canvas.create_image(10, 10, anchor=NW, image=photo)
-        # mask = imread(timestamp_to_tsi_mask_path(self.data_dir, timestamp))
+        mask_label.bind("<Button>", self.click)
 
+    def click(self, event):
+        print(f'x={event.x}, y={event.y}')
 
 if __name__ == "__main__":
     root = Tk()
