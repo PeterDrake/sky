@@ -58,5 +58,5 @@ class ManualGlareRemover:
 
 if __name__ == "__main__":
     root = Tk()
-    app = ManualGlareRemover(root, '/home/drake/PycharmProjects/sky/test_data')
+    app = ManualGlareRemover(root, '../test_data')
     root.mainloop()
