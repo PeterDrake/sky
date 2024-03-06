@@ -2,7 +2,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 from config import *
 from utils_timestamp import *
-from skimage.io import imread
+from skimage.io import imsave, imread
 
 
 class ManualGlareRemover:
@@ -22,14 +22,16 @@ class ManualGlareRemover:
         photo_label = Label(self.root, image=photo)
         photo_label.image = photo  # This seems redundant with the named argument above, but both seem to be necessary
         photo_label.pack(side='left')
-        mask = ImageTk.PhotoImage(Image.open(timestamp_to_tsi_mask_path(self.data_dir, timestamp)))
-        mask_label = Label(self.root, image=mask)
-        mask_label.image = mask  # This seems redundant with the named argument above, but both seem to be necessary
+        mask_image = ImageTk.PhotoImage(Image.open(timestamp_to_tsi_mask_path(self.data_dir, timestamp)))
+        mask_label = Label(self.root, image=mask_image)
+        mask_label.image = mask_image  # This seems redundant with the named argument above, but both seem to be necessary
         mask_label.pack(side='right')
         mask_label.bind("<Button>", self.click)
+        self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, timestamp))[:, :, :3]
 
     def click(self, event):
         print(f'x={event.x}, y={event.y}')
+        print(self.mask[event.y, event.x, :])  # Note the inversion because the numpy array is r, c rather than x, y
 
 if __name__ == "__main__":
     root = Tk()
