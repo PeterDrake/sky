@@ -18,24 +18,41 @@ class ManualGlareRemover:
     def __init__(self, root, data_dir):
         self.root = root
         self.root.title('Glare Editor')
+        self.top_frame = Frame(root, width=960, height=480)
+        self.top_frame.grid(row=0, column=0)
+        self.bottom_frame = Frame(root, width=960, height=120)
+        self.bottom_frame.grid(row=1, column = 0)
         self.data_dir = data_dir
+        self.photo = None
         self.mask = None
         self.mask_label = None
         self.load_images()
+        self.layout()
 
     def load_images(self):
         timestamp = '20180419000200'
-        self.root.geometry('960x480')
-        photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, timestamp)))
-        photo_label = Label(self.root, image=photo)
-        photo_label.image = photo  # This seems redundant with the named argument above, but both seem to be necessary
-        photo_label.pack(side='left')
+        self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, timestamp)))
         self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, timestamp))[:, :, :3]
+
+    def layout(self):
+        # Photo
+        photo_label = Label(self.top_frame, image=self.photo)
+        photo_label.image = self.photo  # This seems redundant with the named argument above, but both seem to be necessary
+        photo_label.pack(side='left')
+        # Mask
         mask_image = ImageTk.PhotoImage(Image.fromarray(self.mask))
-        self.mask_label = Label(self.root, image=mask_image)
-        self.mask_label.image = mask_image  # This seems redundant with the named argument above, but both seem to be necessary
+        self.mask_label = Label(self.top_frame, image=mask_image)
+        self.mask_label.image = mask_image
         self.mask_label.pack(side='right')
         self.mask_label.bind("<Button>", self.click)
+        # Buttons
+        Button(self.bottom_frame, text="Undo").grid(row=0, column=0)
+        Button(self.bottom_frame, text="Save").grid(row=0, column=1)
+
+    def update_mask(self):
+        image = ImageTk.PhotoImage(Image.fromarray(self.mask))
+        self.mask_label.configure(image=image)
+        self.mask_label.image = image
 
     def click(self, event):
         label = rgb_mask_to_label(self.mask)
@@ -51,9 +68,7 @@ class ManualGlareRemover:
                        footprint=ManualGlareRemover.FOOTPRINT,
                        in_place=True)
             self.mask = label_to_rgb_mask(label)
-            image = ImageTk.PhotoImage(Image.fromarray(self.mask))
-            self.mask_label.configure(image=image)
-            self.mask_label.image = image
+            self.update_mask()
 
 
 if __name__ == "__main__":
