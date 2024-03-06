@@ -1,6 +1,6 @@
 from tkinter import *
 from PIL import ImageTk, Image
-from config import *
+import os
 from utils_timestamp import *
 from utils_image import *
 from skimage.io import imsave, imread
@@ -27,13 +27,13 @@ class ManualGlareRemover:
         self.mask = None
         self.mask_label = None
         self.history = []
+        self.timestamp = '20180419000200'
         self.load_images()
         self.layout()
 
     def load_images(self):
-        timestamp = '20180419000200'
-        self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, timestamp)))
-        self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, timestamp))[:, :, :3]
+        self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, self.timestamp)))
+        self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, self.timestamp))[:, :, :3]
 
     def layout(self):
         # Photo
@@ -48,7 +48,7 @@ class ManualGlareRemover:
         self.mask_label.bind("<Button>", self.click)
         # Buttons
         Button(self.bottom_frame, text="Undo", command=self.undo).grid(row=0, column=0)
-        Button(self.bottom_frame, text="Save").grid(row=0, column=1)
+        Button(self.bottom_frame, text="Save", command=self.save).grid(row=0, column=1)
 
     def update_mask(self):
         image = ImageTk.PhotoImage(Image.fromarray(self.mask))
@@ -75,6 +75,11 @@ class ManualGlareRemover:
         if self.history:
             self.mask = self.history.pop()
             self.update_mask()
+
+    def save(self):
+        path = os.path.expanduser(timestamp_to_tsi_mask_no_glare_path('~/Desktop', self.timestamp))
+        os.makedirs(path[:path.rfind('/')], exist_ok=True)
+        imsave(path, self.mask, check_contrast=False)
 
 
 if __name__ == "__main__":

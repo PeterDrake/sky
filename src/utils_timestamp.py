@@ -58,6 +58,7 @@ def timestamp_to_tsi_mask_no_glare_path(dir, timestamp):
     """
     return dir + '/tsi_masks_no_glare/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png'
 
+
 def timestamp_to_network_mask_path(dir, timestamp):
     """
     Returns the full path for the network mask file for timestamp in dir.
