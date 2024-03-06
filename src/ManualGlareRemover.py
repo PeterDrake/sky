@@ -26,6 +26,7 @@ class ManualGlareRemover:
         self.photo = None
         self.mask = None
         self.mask_label = None
+        self.history = []
         self.load_images()
         self.layout()
 
@@ -46,7 +47,7 @@ class ManualGlareRemover:
         self.mask_label.pack(side='right')
         self.mask_label.bind("<Button>", self.click)
         # Buttons
-        Button(self.bottom_frame, text="Undo").grid(row=0, column=0)
+        Button(self.bottom_frame, text="Undo", command=self.undo).grid(row=0, column=0)
         Button(self.bottom_frame, text="Save").grid(row=0, column=1)
 
     def update_mask(self):
@@ -55,19 +56,24 @@ class ManualGlareRemover:
         self.mask_label.image = image
 
     def click(self, event):
-        label = rgb_mask_to_label(self.mask)
+        label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
         if label[event.y, event.x] in (1, 2, 3):  # If the point is blue, gray, or white
             # Before the flood fill, set the point in question to white, so that a tolerance of 0.75 also catches gray.
             # Otherwise, clicking on a gray pixel would put blue within the tolerance, making the flood fill far too
             # large.
+            self.history.append(self.mask)
             label[event.y, event.x] = 3  # The number 3 indicates white
-            flood_fill(label,
-                       (event.y, event.x),
-                       1,  # Blue
-                       tolerance=1,
-                       footprint=ManualGlareRemover.FOOTPRINT,
-                       in_place=True)
+            label = flood_fill(label,
+                               (event.y, event.x),
+                               1,  # Blue
+                               tolerance=1,
+                               footprint=ManualGlareRemover.FOOTPRINT)
             self.mask = label_to_rgb_mask(label)
+            self.update_mask()
+
+    def undo(self):
+        if self.history:
+            self.mask = self.history.pop()
             self.update_mask()
 
 
