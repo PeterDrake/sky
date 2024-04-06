@@ -122,13 +122,10 @@ def remove_green_lines(mask):
     z = mask[nongreen[:, 0], nongreen[:, 1]]
     # Make a mesh grid of the entire image
     xx, yy = np.meshgrid(np.arange(480), np.arange(480))
-    x = xx.reshape(-1, 1)
-    y = yy.reshape(-1, 1)
-    grid = np.hstack((x, y))
     # Interpolate non-green pixels over the mesh
-    # interpolate = scipy.interpolate.NearestNDInterpolator(nongreen, z)
-    interpolate = scipy.interpolate.interpn((np.arange(480), np.arange(480)), z, grid, method='nearest')
-    return interpolate(yy, xx)
+    interpolate = scipy.interpolate.NearestNDInterpolator(nongreen, z)
+    return interpolate(yy, xx).astype('uint8')
+
 
 def remove_all_clouds(mask):
     """
