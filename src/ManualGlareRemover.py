@@ -34,7 +34,8 @@ class ManualGlareRemover:
         self.history = []
         self.timestamps_to_process = []
         self.timestamp = '20180419000200'
-        # self.choose_timestamps()
+        self.choose_timestamps()
+        self.download_images()
         self.load_images()
         self.layout()
 
@@ -42,8 +43,8 @@ class ManualGlareRemover:
         load_dotenv()
         user = os.environ.get('user')
         password = os.environ.get('password')
-        all_stamps_path = os.path.expanduser('~/Desktop/typical_training_timestamps')
-        deglared_stamps_path = os.path.expanduser('~/Desktop/typical_training_deglared_timestamps')
+        all_stamps_path = self.data_dir + '/typical_training_timestamps'
+        deglared_stamps_path = self.data_dir + '/typical_training_deglared_timestamps'
         with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
             print('Pulling typical timestamps from BLT')
             connection.get(DATA_DIR + '/typical_training_timestamps',
@@ -74,7 +75,22 @@ class ManualGlareRemover:
                 self.timestamps_to_process.append(stamp)
                 i += 1
 
+    def download_images(self):
+        user = os.environ.get('user')
+        password = os.environ.get('password')
+        with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+            for timestamp in self.timestamps_to_process:
+                print(timestamp)
+                photo_path = timestamp_to_photo_path(self.data_dir, timestamp)
+                os.makedirs(photo_path[:photo_path.rfind('/')], exist_ok=True)
+                connection.get(timestamp_to_photo_path(DATA_DIR, timestamp), photo_path)
+                tsi_mask_path = timestamp_to_tsi_mask_path(self.data_dir, timestamp)
+                os.makedirs(tsi_mask_path[:tsi_mask_path.rfind('/')], exist_ok=True)
+                connection.get(timestamp_to_tsi_mask_path(DATA_DIR, timestamp), tsi_mask_path)
+
+
     def load_images(self):
+        self.timestamp = self.timestamps_to_process.pop(0)
         self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, self.timestamp)))
         self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, self.timestamp))[:, :, :3]
 
@@ -120,13 +136,12 @@ class ManualGlareRemover:
             self.update_mask()
 
     def save(self):
-        path = os.path.expanduser(timestamp_to_tsi_mask_no_glare_path('~/Desktop', self.timestamp))
+        path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, self.timestamp)
         os.makedirs(path[:path.rfind('/')], exist_ok=True)
         imsave(path, self.mask, check_contrast=False)
 
 
 if __name__ == "__main__":
     root = Tk()
-    app = ManualGlareRemover(root, '../test_data')
-    app.choose_timestamps()
-    # root.mainloop()
+    app = ManualGlareRemover(root, os.path.expanduser('~/Desktop'))
+    root.mainloop()
