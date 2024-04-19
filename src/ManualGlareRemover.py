@@ -32,6 +32,7 @@ class ManualGlareRemover:
         self.mask = None
         self.mask_label = None
         self.history = []
+        self.timestamps_to_process = []
         self.timestamp = '20180419000200'
         # self.choose_timestamps()
         self.load_images()
@@ -52,10 +53,7 @@ class ManualGlareRemover:
                 connection.get(DATA_DIR + '/typical_training_deglared_timestamps', deglared_stamps_path)
             except FileNotFoundError:
                 print("Deglared list doesn't exist yet -- creating it")
-                with open(deglared_stamps_path, 'w') as f:
-                    pass  # To create an empty file
-                # f = os.open(deglared_stamps_path, os.O_WRONLY)
-                # os.close(f)
+                # connection.get has already created an empty file in this case
         all_stamps = []
         deglared_stamps = set()
         with open(all_stamps_path, 'r') as f:
@@ -67,7 +65,14 @@ class ManualGlareRemover:
         m = len(deglared_stamps)
         n = len(all_stamps)
         print(f'{m}/{n} images already processed, {n - m} to go')
-
+        self.timestamps_to_process = []
+        i = 0
+        for stamp in all_stamps:
+            if i == self.IMAGES_PER_SESSION:
+                break
+            if stamp not in deglared_stamps:
+                self.timestamps_to_process.append(stamp)
+                i += 1
 
     def load_images(self):
         self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, self.timestamp)))
