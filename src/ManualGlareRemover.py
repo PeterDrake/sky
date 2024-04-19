@@ -5,6 +5,9 @@ from utils_timestamp import *
 from utils_image import *
 from skimage.io import imsave, imread
 from skimage.morphology import flood_fill
+from dotenv import load_dotenv
+import pysftp
+from config import *
 
 
 class ManualGlareRemover:
@@ -28,8 +31,26 @@ class ManualGlareRemover:
         self.mask_label = None
         self.history = []
         self.timestamp = '20180419000200'
+        # self.choose_timestamps()
         self.load_images()
         self.layout()
+
+    def choose_timestamps(self):
+        load_dotenv()
+        user = os.environ.get('user')
+        password = os.environ.get('password')
+        with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+            print('Pulling typical timestamps from BLT')
+            print(DATA_DIR + '/typical_training_timestamps')
+            connection.get(DATA_DIR + '/typical_training_timestamps', os.path.expanduser('~/Desktop/typical_training_timestamps'))
+            # connection.get(timestamp_to_photo_path(DATA_DIR, timestamp),
+            #                '../data_for_plotting/' + timestamp + '_photo.jpg')
+            # connection.get(timestamp_to_tsi_mask_path(DATA_DIR, timestamp),
+            #                '../data_for_plotting/' + timestamp + '_tsi_mask.png')
+            # log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
+            # print('Looking in ' + timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp))
+            # connection.get(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp),
+            #                '../data_for_plotting/' + timestamp + '_network_mask.png')
 
     def load_images(self):
         self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, self.timestamp)))
@@ -85,4 +106,5 @@ class ManualGlareRemover:
 if __name__ == "__main__":
     root = Tk()
     app = ManualGlareRemover(root, '../test_data')
-    root.mainloop()
+    app.choose_timestamps()
+    # root.mainloop()
