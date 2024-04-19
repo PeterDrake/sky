@@ -41,8 +41,16 @@ class ManualGlareRemover:
         password = os.environ.get('password')
         with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
             print('Pulling typical timestamps from BLT')
-            print(DATA_DIR + '/typical_training_timestamps')
-            connection.get(DATA_DIR + '/typical_training_timestamps', os.path.expanduser('~/Desktop/typical_training_timestamps'))
+            connection.get(DATA_DIR + '/typical_training_timestamps',
+                           os.path.expanduser('~/Desktop/typical_training_timestamps'))
+            print('Pulling already deglared timestamps')
+            try:
+                connection.get(DATA_DIR + '/typical_training_deglared_timestamps',
+                               os.path.expanduser('~/Desktop/typical_training_deglared_timestamps'))
+            except FileNotFoundError:
+                print("Deglared list doesn't exist yet -- creating it")
+                f = os.open(os.path.expanduser('~/Desktop/typical_training_deglared_timestamps'), os.O_WRONLY)
+                os.close(f)
             # connection.get(timestamp_to_photo_path(DATA_DIR, timestamp),
             #                '../data_for_plotting/' + timestamp + '_photo.jpg')
             # connection.get(timestamp_to_tsi_mask_path(DATA_DIR, timestamp),
