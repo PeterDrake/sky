@@ -30,10 +30,14 @@ class ManualGlareRemover:
         self.data_dir = data_dir
         self.photo = None
         self.mask = None
+        self.photo_label = None
         self.mask_label = None
+        self.undo_button = None
+        self.save_next_button = None
         self.history = []
         self.timestamps_to_process = []
-        self.timestamp = '20180419000200'
+        self.timestamp_index = 0  # Index into timestamps_to_process
+        self.timestamp = None
         self.choose_timestamps()
         self.download_images()
         self.load_images()
@@ -90,15 +94,22 @@ class ManualGlareRemover:
 
 
     def load_images(self):
-        self.timestamp = self.timestamps_to_process.pop(0)
+        self.timestamp = self.timestamps_to_process[self.timestamp_index]
+        self.timestamp_index += 1
         self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, self.timestamp)))
         self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, self.timestamp))[:, :, :3]
 
     def layout(self):
+        # Clear out existing elements
+        if self.mask_label:  # Either all or none of them should exist, so checking one suffices
+            self.photo_label.destroy()
+            self.mask_label.destroy()
+            self.undo_button.destroy()
+            self.save_next_button.destroy()
         # Photo
-        photo_label = Label(self.top_frame, image=self.photo)
-        photo_label.image = self.photo  # This seems redundant with the named argument above, but both seem to be necessary
-        photo_label.pack(side='left')
+        self.photo_label = Label(self.top_frame, image=self.photo)
+        self.photo_label.image = self.photo  # This seems redundant with the named argument above, but both seem to be necessary
+        self.photo_label.pack(side='left')
         # Mask
         mask_image = ImageTk.PhotoImage(Image.fromarray(self.mask))
         self.mask_label = Label(self.top_frame, image=mask_image)
@@ -106,8 +117,10 @@ class ManualGlareRemover:
         self.mask_label.pack(side='right')
         self.mask_label.bind("<Button>", self.click)
         # Buttons
-        Button(self.bottom_frame, text="Undo", command=self.undo).grid(row=0, column=0)
-        Button(self.bottom_frame, text="Save", command=self.save).grid(row=0, column=1)
+        self.undo_button = Button(self.bottom_frame, text="Undo", command=self.undo)
+        self.undo_button.grid(row=0, column=0)
+        self.save_next_button = Button(self.bottom_frame, text="Save/Next", command=self.save)
+        self.save_next_button.grid(row=0, column=1)
 
     def update_mask(self):
         image = ImageTk.PhotoImage(Image.fromarray(self.mask))
@@ -139,6 +152,30 @@ class ManualGlareRemover:
         path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, self.timestamp)
         os.makedirs(path[:path.rfind('/')], exist_ok=True)
         imsave(path, self.mask, check_contrast=False)
+        if self.timestamp_index < len(self.timestamps_to_process):  # If there are any left, move on to the next one
+            self.load_images()
+            self.layout()
+        else:  # Done -- upload the results
+            print('Done -- just need to upload')
+            self.upload_files()
+            self.root.destroy()
+
+    def upload_files(self):
+        user = os.environ.get('user')
+        password = os.environ.get('password')
+        with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+            for timestamp in self.timestamps_to_process:
+                print("Uploading " + timestamp)
+                tsi_mask_path = timestamp_to_tsi_mask_path(self.data_dir, timestamp)
+                remote_path = timestamp_to_tsi_mask_no_glare_path(DATA_DIR, timestamp)
+                connection.makedirs(remote_path[:remote_path.rfind('/')])
+                connection.put(tsi_mask_path, remote_path)
+            print("Uploading revised list of deglared timestamps")
+            with open(self.data_dir + '/typical_training_deglared_timestamps', 'a') as f:
+                for timestamp in self.timestamps_to_process:
+                    f.write(timestamp + '\n')
+            connection.put(self.data_dir + '/typical_training_deglared_timestamps',
+                           DATA_DIR + '/typical_training_deglared_timestamps')
 
 
 if __name__ == "__main__":
