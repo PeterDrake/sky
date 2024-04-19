@@ -18,6 +18,8 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
+    IMAGES_PER_SESSION = 3
+
     def __init__(self, root, data_dir):
         self.root = root
         self.root.title('Glare Editor')
@@ -39,26 +41,33 @@ class ManualGlareRemover:
         load_dotenv()
         user = os.environ.get('user')
         password = os.environ.get('password')
+        all_stamps_path = os.path.expanduser('~/Desktop/typical_training_timestamps')
+        deglared_stamps_path = os.path.expanduser('~/Desktop/typical_training_deglared_timestamps')
         with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
             print('Pulling typical timestamps from BLT')
             connection.get(DATA_DIR + '/typical_training_timestamps',
-                           os.path.expanduser('~/Desktop/typical_training_timestamps'))
+                           all_stamps_path)
             print('Pulling already deglared timestamps')
             try:
-                connection.get(DATA_DIR + '/typical_training_deglared_timestamps',
-                               os.path.expanduser('~/Desktop/typical_training_deglared_timestamps'))
+                connection.get(DATA_DIR + '/typical_training_deglared_timestamps', deglared_stamps_path)
             except FileNotFoundError:
                 print("Deglared list doesn't exist yet -- creating it")
-                f = os.open(os.path.expanduser('~/Desktop/typical_training_deglared_timestamps'), os.O_WRONLY)
-                os.close(f)
-            # connection.get(timestamp_to_photo_path(DATA_DIR, timestamp),
-            #                '../data_for_plotting/' + timestamp + '_photo.jpg')
-            # connection.get(timestamp_to_tsi_mask_path(DATA_DIR, timestamp),
-            #                '../data_for_plotting/' + timestamp + '_tsi_mask.png')
-            # log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
-            # print('Looking in ' + timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp))
-            # connection.get(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp),
-            #                '../data_for_plotting/' + timestamp + '_network_mask.png')
+                with open(deglared_stamps_path, 'w') as f:
+                    pass  # To create an empty file
+                # f = os.open(deglared_stamps_path, os.O_WRONLY)
+                # os.close(f)
+        all_stamps = []
+        deglared_stamps = set()
+        with open(all_stamps_path, 'r') as f:
+            for line in f.readlines():
+                all_stamps.append(line.strip())
+        with open(deglared_stamps_path, 'r') as f:
+            for line in f.readlines():
+                deglared_stamps.add(line.strip())
+        m = len(deglared_stamps)
+        n = len(all_stamps)
+        print(f'{m}/{n} images already processed, {n - m} to go')
+
 
     def load_images(self):
         self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, self.timestamp)))
