@@ -18,7 +18,7 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 3
+    IMAGES_PER_SESSION = 100
 
     def __init__(self, root, data_dir):
         self.root = root
@@ -166,7 +166,7 @@ class ManualGlareRemover:
         with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
             for timestamp in self.timestamps_to_process:
                 print("Uploading " + timestamp)
-                tsi_mask_path = timestamp_to_tsi_mask_path(self.data_dir, timestamp)
+                tsi_mask_path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp)
                 remote_path = timestamp_to_tsi_mask_no_glare_path(DATA_DIR, timestamp)
                 connection.makedirs(remote_path[:remote_path.rfind('/')])
                 connection.put(tsi_mask_path, remote_path)
