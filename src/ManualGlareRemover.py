@@ -116,7 +116,7 @@ class ManualGlareRemover:
         self.mask_label.image = mask_image
         self.mask_label.pack(side='right')
         self.mask_label.bind("<Button>", self.click)
-        # self.root.bind("<Key>", self.key_pressed)
+        self.root.bind("<Key>", self.key_pressed)
         # Buttons
         self.undo_button = Button(self.bottom_frame, text="Undo\n(backspace)", command=self.undo)
         self.undo_button.grid(row=0, column=0)
