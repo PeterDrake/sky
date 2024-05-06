@@ -18,7 +18,7 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 100
+    IMAGES_PER_SESSION = 3
 
     def __init__(self, root, data_dir):
         self.root = root
@@ -116,16 +116,23 @@ class ManualGlareRemover:
         self.mask_label.image = mask_image
         self.mask_label.pack(side='right')
         self.mask_label.bind("<Button>", self.click)
+        # self.root.bind("<Key>", self.key_pressed)
         # Buttons
-        self.undo_button = Button(self.bottom_frame, text="Undo", command=self.undo)
+        self.undo_button = Button(self.bottom_frame, text="Undo\n(backspace)", command=self.undo)
         self.undo_button.grid(row=0, column=0)
-        self.save_next_button = Button(self.bottom_frame, text="Save/Next", command=self.save)
+        self.save_next_button = Button(self.bottom_frame, text="Save/Next\n(enter)", command=self.save)
         self.save_next_button.grid(row=0, column=1)
 
     def update_mask(self):
         image = ImageTk.PhotoImage(Image.fromarray(self.mask))
         self.mask_label.configure(image=image)
         self.mask_label.image = image
+
+    def key_pressed(self, event):
+        if event.keysym == 'Return':
+            self.save()
+        elif event.keysym == 'BackSpace':
+            self.undo()
 
     def click(self, event):
         label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
