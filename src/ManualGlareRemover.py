@@ -18,7 +18,7 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 3
+    IMAGES_PER_SESSION = 100
 
     def __init__(self, root, data_dir):
         self.root = root
@@ -106,6 +106,11 @@ class ManualGlareRemover:
             self.mask_label.destroy()
             self.undo_button.destroy()
             self.save_next_button.destroy()
+        # Title
+        # Note that, since load_images has been called, self.timestamp_index holds the 0-based index
+        # of the NEXT image to be edited. We display that anyway as it is also the 1-based index
+        # of the image currently being edited.
+        self.root.title(f'Glare Editor: {self.timestamp} ({self.timestamp_index}/{self.IMAGES_PER_SESSION})')
         # Photo
         self.photo_label = Label(self.top_frame, image=self.photo)
         self.photo_label.image = self.photo  # This seems redundant with the named argument above, but both seem to be necessary
