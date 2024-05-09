@@ -110,7 +110,7 @@ class ManualGlareRemover:
         # Note that, since load_images has been called, self.timestamp_index holds the 0-based index
         # of the NEXT image to be edited. We display that anyway as it is also the 1-based index
         # of the image currently being edited.
-        self.root.title(f'Glare Editor: {self.timestamp} ({self.timestamp_index}/{self.IMAGES_PER_SESSION})')
+        self.root.title(f'Glare Editor: {self.timestamp} ({self.timestamp_index}/{len(self.timestamps_to_process)})')
         # Photo
         self.photo_label = Label(self.top_frame, image=self.photo)
         self.photo_label.image = self.photo  # This seems redundant with the named argument above, but both seem to be necessary
