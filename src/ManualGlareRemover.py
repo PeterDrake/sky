@@ -32,6 +32,7 @@ class ManualGlareRemover:
         self.mask = None
         self.photo_label = None
         self.mask_label = None
+        self.remove_all_button = None
         self.undo_button = None
         self.save_next_button = None
         self.history = []
@@ -123,10 +124,12 @@ class ManualGlareRemover:
         self.mask_label.bind("<Button>", self.click)
         self.root.bind("<Key>", self.key_pressed)
         # Buttons
+        self.remove_all_button = Button(self.bottom_frame, text="Remove all clouds\n(space)", command=self.remove_all_clouds)
+        self.remove_all_button.grid(row=0, column=0)
         self.undo_button = Button(self.bottom_frame, text="Undo\n(backspace)", command=self.undo)
-        self.undo_button.grid(row=0, column=0)
+        self.undo_button.grid(row=0, column=1)
         self.save_next_button = Button(self.bottom_frame, text="Save/Next\n(enter)", command=self.save)
-        self.save_next_button.grid(row=0, column=1)
+        self.save_next_button.grid(row=0, column=2)
 
     def update_mask(self):
         image = ImageTk.PhotoImage(Image.fromarray(self.mask))
@@ -134,10 +137,14 @@ class ManualGlareRemover:
         self.mask_label.image = image
 
     def key_pressed(self, event):
-        if event.keysym == 'Return':
+        if event.keysym == 'space':
+            self.remove_all_clouds()
+        elif event.keysym == 'Return':
             self.save()
         elif event.keysym == 'BackSpace':
             self.undo()
+        else:
+            print('Unknown key pressed: <' + event.keysym + '>')
 
     def click(self, event):
         label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
@@ -154,6 +161,12 @@ class ManualGlareRemover:
                                footprint=ManualGlareRemover.FOOTPRINT)
             self.mask = label_to_rgb_mask(label)
             self.update_mask()
+
+    def remove_all_clouds(self):
+        self.history.append(self.mask)
+        self.mask = self.mask.copy()
+        remove_all_clouds(self.mask)  # This destructively modifies its arguments, hence the copy
+        self.update_mask()
 
     def undo(self):
         if self.history:
