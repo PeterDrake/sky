@@ -76,7 +76,7 @@ class ManualGlareRemover:
         for stamp in all_stamps:
             if i == self.IMAGES_PER_SESSION:
                 break
-            if stamp not in deglared_stamps:
+            if (stamp.endswith('000') or stamp.endswith('500')) and stamp not in deglared_stamps:
                 self.timestamps_to_process.append(stamp)
                 i += 1
 
