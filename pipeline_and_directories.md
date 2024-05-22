@@ -24,10 +24,6 @@ sbatch ../src/launch_allocate_timestamps.sh
 sbatch ../src/launch_calculate_tsi_fsc.sh
 ```
 
-```
-sbatch ../src/launch_remove_glare.sh
-
-```
 
 ```
 sbatch ../src/launch_average_tsi_fsc.sh
@@ -45,16 +41,16 @@ python3 -u run_preprocess.py shcu_typical_data.csv
 python3 -u run_allocate_timestamps.py shcu_dubious_data.csv dubious
 python3 -u run_allocate_timestamps.py shcu_typical_data.csv typical
 python3 -u run_calculate_tsi_fsc.py
-python3 -u run_remove_glare.py
 python3 -u run_average_tsi_fsc.py
 python3 -u run_collate_tsi_fsc_cf.py
 ```
 
 ### What This Accomplishes
 
-1. Clean .csv file to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files.
+1. Clean the .csv files (one for dubious, one for typical) to verify that we have photos and TSI masks for all
+   timestamps. Write these revised .csv files.
    The current version also only keeps timestamps ending in 000 or 500, that is, those exactly on 5-minute marks.
-2. Create directories for all timestamps that are listed in the .csv file.
+2. Create directories for all timestamps that are listed in the two .csv files.
 3. Preprocess each photo and TSI mask:
    1. The photo is centered, is cropped, and has a black border.
    1. The TSI mask has these same changes; also the sun is removed and each green pixel is replaced with the color of
