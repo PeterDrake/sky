@@ -58,6 +58,13 @@ class TestPreprocessor(unittest.TestCase):
         # For this file, the clean version has 304 valid timestamps
         self.assertEqual(309, len(data))
 
+    # This test is commented out because it writes to the same file as test_writes_clean_csv.
+    # def test_filters_five_minute_images(self):
+    #     self.preprocessor.write_clean_csv('tiny_data.csv', True)
+    #     data = pd.read_csv('../test_data/tiny_data.csv')
+    #     # For this file, the clean version has 304 valid timestamps
+    #     self.assertEqual(33, len(data))
+
     def test_creates_image_directories(self):
         # Ensure that the clean CSV file exists
         self.preprocessor.write_clean_csv('tiny_data.csv')
