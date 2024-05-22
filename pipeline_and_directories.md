@@ -52,10 +52,9 @@ python3 -u run_collate_tsi_fsc_cf.py
 
 ### What This Accomplishes
 
-TODO .csv files plural? Isn't there only one?
-1. Clean .csv files to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files.
-   The current version also only keeps timetamps ending in 000 or 500, that is, those exactly on 5-minute marks.
-2. Create directories for all timestamps that are listed in the two .csv files.
+1. Clean .csv file to verify that we have photos and TSI masks for all timestamps. Write these revised .csv files.
+   The current version also only keeps timestamps ending in 000 or 500, that is, those exactly on 5-minute marks.
+2. Create directories for all timestamps that are listed in the .csv file.
 3. Preprocess each photo and TSI mask:
    1. The photo is centered, is cropped, and has a black border.
    1. The TSI mask has these same changes; also the sun is removed and each green pixel is replaced with the color of
