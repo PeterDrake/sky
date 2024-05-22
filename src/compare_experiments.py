@@ -32,7 +32,8 @@ def download_files(timestamp, experiment_names):
         connection.get(timestamp_to_tsi_mask_path(DATA_DIR, timestamp),
                        f'{dir}/{timestamp}_tsi_mask.png')
         for e in experiment_names:
-            log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
+            log_updater = ExperimentLogUpdater(RESULTS_DIR, e)
+            print(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp))
             connection.get(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp),
                            f'{dir}/{timestamp}_{e}_network_mask.png')
 
@@ -42,11 +43,10 @@ def produce_comparison_figure(timestamp, experiment_names):
     photo = imread(f'{dir}/{timestamp}_photo.jpg')
     tsi_mask = imread(f'{dir}/{timestamp}_tsi_mask.png')
     network_masks = [imread(f'{dir}/{timestamp}_{e}_network_mask.png') for e in experiment_names]
-    n = len(network_masks)
+    n = len(network_masks) + 2
     rows = int(n ** 0.5)
     cols = math.ceil(n / rows)
     fig, ax = plt.subplots(rows, cols, figsize=(9, 9))
-    print(type(ax))
     fig.suptitle(timestamp)
     ax = ax.flatten()
     ax[0].imshow(photo)
@@ -57,28 +57,31 @@ def produce_comparison_figure(timestamp, experiment_names):
         ax[2 + i].imshow(network_masks[i])
         ax[2 + i].set_title(e)
     plt.savefig(f'{dir}/comparison.png')
+    plt.show()
     plt.close()
 
 
 timestamp = '20160713224900'
-experiments = ['su23_0001',
+experiments = [
+    # 'su23_0001',
 'su23_0002',
-'su23_0003',
-'su23_0004',
+# 'su23_0003',
+# 'su23_0004',
 'su23_0005',
 'su23_0006',
 'su23_0007',
-'su23_0008',
-'su23_0009',
+# 'su23_0008',
+# 'su23_0009',
 'su23_0010',
 'su23_0011',
 'su23_0012',
 'su23_0013',
 'su23_0014',
-'su23_0014_noglare',
-'su23_0015_noglare',
-'su23_0016_noglare',
-'su23_0017_noglare']
+# 'su23_0014_noglare',
+# 'su23_0015_noglare',
+# 'su23_0016_noglare',
+# 'su23_0017_noglare'
+               ]
 download_files(timestamp, experiments)
 produce_comparison_figure(timestamp, experiments)
 
