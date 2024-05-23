@@ -8,9 +8,7 @@ class FscAverager:
     Takes average FSCs over these windows.
     """
 
-    THIRTY_SECONDS = timedelta(minutes=0.5)
-
-    def __init__(self, data_dir, fsc_filename, half_width=7.5, min_stamps=25):
+    def __init__(self, data_dir, fsc_filename, half_width=7.5, min_stamps=25, interval=0.5):
         """
         It is assumed that the timestamps in the file are sorted!
         @param data_dir The directory where the fsc file lives and the resulting window-averaged file will live
@@ -24,6 +22,7 @@ class FscAverager:
         self.times = [datetime.strptime(s, '%Y%m%d%H%M%S') for s in self.stamps]
         self.half_width = half_width  # width of the window (in minutes)
         self.min_stamps = min_stamps  # minimum number of stamps in each window
+        self.interval = timedelta(minutes=interval)  # interval between images
         self.data = pd.read_csv(path, index_col=0)
 
     def years(self):
@@ -81,15 +80,15 @@ class FscAverager:
                 result[center_time.strftime('%Y%m%d%H%M%S')] = (first_index, last_index)
             if self.times[first_index] == first_time:
                 first_index += 1
-            first_time += FscAverager.THIRTY_SECONDS
-            last_time += FscAverager.THIRTY_SECONDS
-            # Normally we would increment last_index, because the next timestamp should be appended to
-            # the end of this window as the window advances. There are two exceptions:
-            # 1) last_index is already the very last index in the dataset
-            # 2) the next timestamp is NOT 30 seconds after the old last_time
+            first_time += self.interval
+            last_time += self.interval
+            # Increment last_index, so the next timestamp will be appended to the end of this window as the window
+            # advances. Do this only if:
+            # 1) last_index is not the very last index in the dataset
+            # 2) the next timestamp is one interval after the old last_time
             if (last_index < len(self.times) - 1) and (self.times[last_index + 1] == last_time):
                 last_index += 1
-            center_time += FscAverager.THIRTY_SECONDS
+            center_time += self.interval
         return result
 
     def compute_averages(self, year):
