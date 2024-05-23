@@ -73,16 +73,17 @@ On BLT, run (from the `blt_job_output` directory) each of the following, waiting
 next one.
 
 ```
-sbatch ../src/launch_calculate_tsi_fsc_no_glare.sh
+source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
+sbatch ../src/launch_calculate_tsi_fsc.sh _no_glare
 ```
 
 
 ```
-sbatch ../src/launch_average_tsi_fsc_no_glare.sh
+sbatch ../src/launch_average_tsi_fsc.sh _no_glare
 ```
 
 ```
-sbatch ../src/launch_collate_tsi_fsc_cf_no_glare.sh
+sbatch ../src/launch_collate_tsi_fsc.sh _no_glare
 ```
 
 ### What This Accomplishes
