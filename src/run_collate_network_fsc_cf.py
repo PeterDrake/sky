@@ -6,7 +6,7 @@ def collate_network_fsc_cf(category):
     :param category either 'typical' or 'dubious'
     '''
     # Read the network FSCs
-    network_fsc_df = pd.read_csv(RESULTS_DIR + '/' + EXPERIMENT_NAME + '/' + category + '_validation_network_fsc_15avg.csv')
+    network_fsc_df = pd.read_csv(RESULTS_DIR + '/' + EXPERIMENT_NAME + '/' + category + '_validation_network_fsc_20avg.csv')
     # Read the ceilometer CFs
     cf_df = pd.read_csv(RAW_CSV_DIR + '/shcu_' + category + '_data.csv', usecols=['timestamp_utc', 'cf_shcu'])
     cf_df = cf_df.drop_duplicates()
