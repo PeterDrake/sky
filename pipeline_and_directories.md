@@ -29,9 +29,9 @@ sbatch ../src/launch_calculate_tsi_fsc.sh
 sbatch ../src/launch_average_tsi_fsc.sh
 ```
 
-````
+```
 sbatch ../src/launch_collate_tsi_fsc_cf.sh
-````
+```
 
 On a machine other than BLT (from the `src` directory):
 
@@ -57,8 +57,42 @@ python3 -u run_collate_tsi_fsc_cf.py
    the nearest non-green pixel.
 4. Subdivide timestamps into training, validation, and test sets.
 5. Count opaque, thin, and clear pixels for each TSI mask.
-6. Compute 15-minute averages of fractional sky cover.
+6. Compute 20-minute averages of fractional sky cover.
 7. Collate these with ceilometer cloud fractions.
+
+## De-glaring (Optional)
+
+### What You Do
+
+TODO: Modify these scripts to run when not using BLT.
+
+From a local machine, repeatedly run `python3 ManualGlareRemover.py`. This is a manual process of identifying
+glare in photos.
+
+On BLT, run (from the `blt_job_output` directory) each of the following, waiting for each to finish before doing the
+next one.
+
+```
+sbatch ../src/launch_calculate_tsi_fsc_no_glare.sh
+```
+
+
+```
+sbatch ../src/launch_average_tsi_fsc_no_glare.sh
+```
+
+```
+sbatch ../src/launch_collate_tsi_fsc_cf_no_glare.sh
+```
+
+### What This Accomplishes
+
+1. Produce a set of TSI masks from which large areas of glare (identified by a human) have been removed. These are in
+   `data/tsi_masks_no_glare`.
+2. Count opaque, thin, and clear pixels for each de-glared TSI mask.
+3. Compute 20-minute averages of fractional sky cover. 
+4. Collate these with ceilometer cloud fractions.
+
 
 ## Train the Model
 
@@ -192,12 +226,21 @@ data (these are all generated and therefore *not* under version control)
     dubious_testing_timestamps
     dubious_validation_tsi_fsc.csv
     typical_validation_tsi_fsc.csv
+    dubious_validation_tsi_fsc_20avg.csv
+    typical_validation_tsi_fsc_20avg.csv
+    collate_tsi_fsc_cf_dubious.csv
+    collate_tsi_fsc_cf_typical.csv
     photos
         20120501 (and similar years/months/dates)
             20120501170430_photo.jpg (preprocessed)
     tsi_masks (structured like photos, but filenames end in _tsi_mask.png)
-    tsi_masks_no_glare (just like tsi_masks, but with clouds removed from masks likely to contain glare, as defined by
-      GlareRemove.py)
+    tsi_masks_no_glare (just like tsi_masks, but with glare manually removed)
+    dubious_validation_tsi_fsc_no_glare.csv
+    typical_validation_tsi_fsc_no_glare.csv
+    dubious_validation_tsi_fsc_20avg_no_glare.csv
+    typical_validation_tsi_fsc_20avg_no_glare.csv
+    collate_tsi_fsc_cf_dubious_no_glare.csv
+    collate_tsi_fsc_cf_typical_no_glare.csv  
 raw_csv
     readme_with_Jess_edits.pdf
     shcu_dubious_data.csv (raw version)
