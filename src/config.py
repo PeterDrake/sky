@@ -1,7 +1,7 @@
 # Directories used by various run_*.py programs
 RAW_DATA_DIR = '/home/users/jkleiss/TSI_C1'
 RAW_CSV_DIR = '../raw_csv'
-DATA_DIR = '/home/drake/sky/data'
+DATA_DIR = '/home/drake/sky/data_2024_05_22'
 RESULTS_DIR = '/home/drake/sky/results'
 
 # Parameters for dividing timestamps into training, validation, and testing
