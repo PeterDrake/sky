@@ -224,6 +224,7 @@ data (these are all generated and therefore *not* under version control)
     dubious_validation_timestamps
     typical_testing_timestamps
     dubious_testing_timestamps
+    typical_training_tsi_fsc.csv
     dubious_validation_tsi_fsc.csv
     typical_validation_tsi_fsc.csv
     dubious_validation_tsi_fsc_20avg.csv
@@ -235,6 +236,7 @@ data (these are all generated and therefore *not* under version control)
             20120501170430_photo.jpg (preprocessed)
     tsi_masks (structured like photos, but filenames end in _tsi_mask.png)
     tsi_masks_no_glare (just like tsi_masks, but with glare manually removed)
+    typical_training_tsi_fsc_no_glare.csv
     dubious_validation_tsi_fsc_no_glare.csv
     typical_validation_tsi_fsc_no_glare.csv
     dubious_validation_tsi_fsc_20avg_no_glare.csv
