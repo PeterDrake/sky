@@ -77,7 +77,6 @@ source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch ../src/launch_calculate_tsi_fsc.sh _no_glare
 ```
 
-
 ```
 sbatch ../src/launch_average_tsi_fsc.sh _no_glare
 ```
