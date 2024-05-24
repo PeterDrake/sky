@@ -45,6 +45,7 @@ class ManualGlareRemover:
         self.layout()
 
     def choose_timestamps(self):
+        # TODO Fail more gracefully when there are no images left to process at beginning of a run
         load_dotenv()
         user = os.environ.get('user')
         password = os.environ.get('password')
