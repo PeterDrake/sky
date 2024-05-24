@@ -9,4 +9,5 @@ calc = FscCalculator(DATA_DIR, DATA_DIR + f'/tsi_masks{suffix}', DATA_DIR)
 # TODO Should those be dictionaries with string keys instead of lists indexed by integers?
 calc.write_pixel_counts(TYPICAL_TIMESTAMP_FILENAMES[0], f'typical_training_tsi_fsc{suffix}.csv')
 calc.write_pixel_counts(TYPICAL_TIMESTAMP_FILENAMES[1], f'typical_validation_tsi_fsc{suffix}.csv')
-calc.write_pixel_counts(DUBIOUS_TIMESTAMP_FILENAMES[0], f'dubious_validation_tsi_fsc{suffix}.csv')
+if suffix == '':  # Temporary, because we haven't de-glared dubious data yet
+    calc.write_pixel_counts(DUBIOUS_TIMESTAMP_FILENAMES[0], f'dubious_validation_tsi_fsc{suffix}.csv')
