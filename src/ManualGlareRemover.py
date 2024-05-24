@@ -48,15 +48,15 @@ class ManualGlareRemover:
         load_dotenv()
         user = os.environ.get('user')
         password = os.environ.get('password')
-        all_stamps_path = self.data_dir + '/typical_validation_timestamps'
-        deglared_stamps_path = self.data_dir + '/typical_validation_deglared_timestamps'
+        all_stamps_path = self.data_dir + '/typical_testing_timestamps'
+        deglared_stamps_path = self.data_dir + '/typical_testing_deglared_timestamps'
         with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
             print('Pulling typical timestamps from BLT')
-            connection.get(DATA_DIR + '/typical_validation_timestamps',
+            connection.get(DATA_DIR + '/typical_testing_timestamps',
                            all_stamps_path)
             print('Pulling already deglared timestamps')
             try:
-                connection.get(DATA_DIR + '/typical_validation_deglared_timestamps', deglared_stamps_path)
+                connection.get(DATA_DIR + '/typical_testing_deglared_timestamps', deglared_stamps_path)
             except FileNotFoundError:
                 print("Deglared list doesn't exist yet -- creating it")
                 # connection.get has already created an empty file in this case
@@ -196,11 +196,11 @@ class ManualGlareRemover:
                 connection.makedirs(remote_path[:remote_path.rfind('/')])
                 connection.put(tsi_mask_path, remote_path)
             print("Uploading revised list of deglared timestamps")
-            with open(self.data_dir + '/typical_validation_deglared_timestamps', 'a') as f:
+            with open(self.data_dir + '/typical_testing_deglared_timestamps', 'a') as f:
                 for timestamp in self.timestamps_to_process:
                     f.write(timestamp + '\n')
-            connection.put(self.data_dir + '/typical_validation_deglared_timestamps',
-                           DATA_DIR + '/typical_validation_deglared_timestamps')
+            connection.put(self.data_dir + '/typical_testing_deglared_timestamps',
+                           DATA_DIR + '/typical_testing_deglared_timestamps')
 
 
 if __name__ == "__main__":
