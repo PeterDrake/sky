@@ -9,7 +9,7 @@ def collate_tsi_fsc_cf(category):
     :param category either 'typical' or 'dubious'
     '''
     # Read the TSI FSCs
-    tsi_fsc_df = pd.read_csv(DATA_DIR + '/' + category + '_validation_tsi_fsc_20avg{suffix}.csv')
+    tsi_fsc_df = pd.read_csv(DATA_DIR + '/' + category + f'_validation_tsi_fsc_20avg{suffix}.csv')
     # Read the ceilometer CFs
     cf_df = pd.read_csv(RAW_CSV_DIR + '/shcu_' + category + '_data.csv', usecols=['timestamp_utc', 'cf_shcu'])
     cf_df = cf_df.drop_duplicates()

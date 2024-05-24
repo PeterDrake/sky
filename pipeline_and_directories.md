@@ -82,7 +82,7 @@ sbatch ../src/launch_average_tsi_fsc.sh _no_glare
 ```
 
 ```
-sbatch ../src/launch_collate_tsi_fsc.sh _no_glare
+sbatch ../src/launch_collate_tsi_fsc_cf.sh _no_glare
 ```
 
 ### What This Accomplishes
