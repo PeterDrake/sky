@@ -16,7 +16,7 @@ def collate_tsi_fsc_cf(category):
     # Join the dataframes
     result = tsi_fsc_df.merge(cf_df, on='timestamp_utc', how='inner')
     # Export the result
-    result.to_csv(DATA_DIR + f'{DATA_DIR}/collate_tsi_fsc_cf_{category}{suffix}.csv')
+    result.to_csv(f'{DATA_DIR}/collate_tsi_fsc_cf_{category}{suffix}.csv')
 
 collate_tsi_fsc_cf('typical')
 if suffix == '':  # Temporary, because we haven't de-glared dubious data yet
