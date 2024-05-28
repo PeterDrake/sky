@@ -61,29 +61,7 @@ def produce_comparison_figure(timestamp, experiment_names):
     plt.close()
 
 
-timestamp = '20160713224900'
-experiments = [
-    # 'su23_0001',
-'su23_0002',
-# 'su23_0003',
-# 'su23_0004',
-'su23_0005',
-'su23_0006',
-'su23_0007',
-# 'su23_0008',
-# 'su23_0009',
-'su23_0010',
-'su23_0011',
-'su23_0012',
-'su23_0013',
-'su23_0014',
-# 'su23_0014_noglare',
-# 'su23_0015_noglare',
-# 'su23_0016_noglare',
-# 'su23_0017_noglare'
-               ]
+timestamp = '20150831190500'
+experiments = ['su24_001_no_glare', 'su24_002_no_glare', 'su24_003_no_glare']
 download_files(timestamp, experiments)
 produce_comparison_figure(timestamp, experiments)
-
-
-
