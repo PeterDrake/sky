@@ -17,7 +17,7 @@ prev = inputs
 for i in range(4):
     curr = layer(prev)
     prev = curr  # For next pass through loop
-outputs = layers.Conv2D(filters=4, kernel_size=3, activation='softmax', padding='same')(current)
+outputs = layers.Conv2D(filters=4, kernel_size=3, activation='softmax', padding='same')(curr)
 model = keras.Model(inputs, outputs)
 
 model.summary()
