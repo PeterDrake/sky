@@ -10,11 +10,11 @@ def layer(previous):
     d1 = DefaultConv2D(filters=32)(previous)
     d4 = DefaultConv2D(filters=32, dilation_rate=4)(previous)
     d16 = DefaultConv2D(filters=32, dilation_rate=16)(previous)
-    return layers.Concatenate()((d1, d4, d16))
+    return layers.Add()((d1, d4, d16))
 
 inputs = keras.Input(shape=RGB_PHOTO_SIZE)
 prev = inputs
-for i in range(4):
+for i in range(3):
     curr = layer(prev)
     prev = curr  # For next pass through loop
 outputs = layers.Conv2D(filters=4, kernel_size=3, activation='softmax', padding='same')(curr)
