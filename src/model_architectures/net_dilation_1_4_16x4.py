@@ -8,8 +8,8 @@ DefaultPool = partial(layers.MaxPooling2D, strides=(1, 1), padding='same')
 
 def layer(previous):
     d1 = DefaultConv2D(filters=32)(previous)
-    d4 = DefaultConv2D(filters=32, dilation_rage=4)(previous)
-    d16 = DefaultConv2D(filters=32, dilation_rage=16)(previous)
+    d4 = DefaultConv2D(filters=32, dilation_rate=4)(previous)
+    d16 = DefaultConv2D(filters=32, dilation_rate=16)(previous)
     return layers.Concatenate()((d1, d4, d16))
 
 inputs = keras.Input(shape=RGB_PHOTO_SIZE)
