@@ -62,6 +62,11 @@ def produce_comparison_figure(timestamp, experiment_names):
 
 
 timestamp = '20150831190500'
-experiments = ['su24_001_no_glare', 'su24_002_no_glare', 'su24_003_no_glare']
+experiments = ['su24_001_no_glare',
+               'su24_002_no_glare',
+               'su24_003_no_glare',
+               'su24_004_no_glare',
+               'su24_007_no_glare',
+               'su24_008_no_glare']
 download_files(timestamp, experiments)
 produce_comparison_figure(timestamp, experiments)
