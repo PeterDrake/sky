@@ -18,7 +18,7 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 100
+    IMAGES_PER_SESSION = 3
 
     def __init__(self, root, data_dir):
         self.root = root
@@ -187,21 +187,22 @@ class ManualGlareRemover:
             self.root.destroy()
 
     def upload_files(self):
-        user = os.environ.get('user')
-        password = os.environ.get('password')
-        with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
-            for timestamp in self.timestamps_to_process:
-                print("Uploading " + timestamp)
-                tsi_mask_path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp)
-                remote_path = timestamp_to_tsi_mask_no_glare_path(DATA_DIR, timestamp)
-                connection.makedirs(remote_path[:remote_path.rfind('/')])
-                connection.put(tsi_mask_path, remote_path)
-            print("Uploading revised list of deglared timestamps")
-            with open(self.data_dir + '/typical_training_deglared_timestamps', 'a') as f:
-                for timestamp in self.timestamps_to_process:
-                    f.write(timestamp + '\n')
-            connection.put(self.data_dir + '/typical_training_deglared_timestamps',
-                           DATA_DIR + '/typical_training_deglared_timestamps')
+        print('NOT UPLOADING ANY FILES WHILE TESTING NEW FEATURES')
+        # user = os.environ.get('user')
+        # password = os.environ.get('password')
+        # with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+        #     for timestamp in self.timestamps_to_process:
+        #         print("Uploading " + timestamp)
+        #         tsi_mask_path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp)
+        #         remote_path = timestamp_to_tsi_mask_no_glare_path(DATA_DIR, timestamp)
+        #         connection.makedirs(remote_path[:remote_path.rfind('/')])
+        #         connection.put(tsi_mask_path, remote_path)
+        #     print("Uploading revised list of deglared timestamps")
+        #     with open(self.data_dir + '/typical_training_deglared_timestamps', 'a') as f:
+        #         for timestamp in self.timestamps_to_process:
+        #             f.write(timestamp + '\n')
+        #     connection.put(self.data_dir + '/typical_training_deglared_timestamps',
+        #                    DATA_DIR + '/typical_training_deglared_timestamps')
 
 
 if __name__ == "__main__":
