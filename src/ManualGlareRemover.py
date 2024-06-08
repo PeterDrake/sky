@@ -197,6 +197,7 @@ class ManualGlareRemover:
         os.makedirs(path[:path.rfind('/')], exist_ok=True)
         imsave(path, self.mask, check_contrast=False)
         if self.timestamp_index < len(self.timestamps_to_process):  # If there are any left, move on to the next one
+            self.history = []
             self.load_images()
             self.layout()
         else:  # Done -- upload the results
