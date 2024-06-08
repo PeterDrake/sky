@@ -141,7 +141,9 @@ class ManualGlareRemover:
         self.mask_label.image = image
 
     def key_pressed(self, event):
-        if event.keysym == 'space':
+        if event.keysym == 'Tab':
+            self.remove_all_thin_clouds()
+        elif event.keysym == 'space':
             self.remove_all_clouds()
         elif event.keysym == 'Return':
             self.save()
