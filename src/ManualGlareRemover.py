@@ -123,7 +123,8 @@ class ManualGlareRemover:
         self.mask_label = Label(self.top_frame, image=mask_image)
         self.mask_label.image = mask_image
         self.mask_label.pack(side='right')
-        self.mask_label.bind("<Button>", self.click)
+        self.mask_label.bind("<Button-1>", self.click)
+        self.mask_label.bind("<Button-3>", self.right_click)
         self.root.bind("<Key>", self.key_pressed)
         # Labels
         remove_region = Label(self.bottom_frame, text="Remove\nthick+thin region\n(click)")
@@ -162,15 +163,27 @@ class ManualGlareRemover:
     def click(self, event):
         label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
         if label[event.y, event.x] in (1, 2, 3):  # If the point is blue, gray, or white
-            # Before the flood fill, set the point in question to white, so that a tolerance of 0.75 also catches gray.
+            self.history.append(self.mask)
+            # Before the flood fill, set the point in question to white, so that a tolerance of 1 also catches gray.
             # Otherwise, clicking on a gray pixel would put blue within the tolerance, making the flood fill far too
             # large.
-            self.history.append(self.mask)
             label[event.y, event.x] = 3  # The number 3 indicates white
             label = flood_fill(label,
                                (event.y, event.x),
                                1,  # Blue
                                tolerance=1,
+                               footprint=ManualGlareRemover.FOOTPRINT)
+            self.mask = label_to_rgb_mask(label)
+            self.update_mask()
+
+    def right_click(self, event):
+        label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
+        if label[event.y, event.x] in (1, 2):  # If the point is blue, gray, or white
+            self.history.append(self.mask)
+            label = flood_fill(label,
+                               (event.y, event.x),
+                               1,  # Blue
+                               tolerance=0.5,
                                footprint=ManualGlareRemover.FOOTPRINT)
             self.mask = label_to_rgb_mask(label)
             self.update_mask()
