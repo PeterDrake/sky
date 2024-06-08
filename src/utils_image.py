@@ -136,6 +136,16 @@ def remove_all_clouds(mask):
     mask[gray | white] = BLUE
     return mask
 
+
+def remove_all_thin_clouds(mask):
+    """
+    Modifies and returns mask, but with all gray pixels changed to blue.
+    """
+    gray = (mask == GRAY).all(axis=2)
+    mask[gray] = BLUE
+    return mask
+
+
 def rgb_mask_to_one_hot(mask):
     """
     Given a 480x480x3 mask in RGB form, returns a 480x480x4 mask with one channel for each of white, blue, gray, and

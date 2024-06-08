@@ -32,6 +32,7 @@ class ManualGlareRemover:
         self.mask = None
         self.photo_label = None
         self.mask_label = None
+        self.remove_all_thin_button = None
         self.remove_all_button = None
         self.undo_button = None
         self.save_next_button = None
@@ -125,12 +126,14 @@ class ManualGlareRemover:
         self.mask_label.bind("<Button>", self.click)
         self.root.bind("<Key>", self.key_pressed)
         # Buttons
+        self.remove_all_thin_button = Button(self.bottom_frame, text="Remove all thin clouds\n(tab)", command=self.remove_all_thin_clouds)
+        self.remove_all_thin_button.grid(row=0, column=0)
         self.remove_all_button = Button(self.bottom_frame, text="Remove all clouds\n(space)", command=self.remove_all_clouds)
-        self.remove_all_button.grid(row=0, column=0)
+        self.remove_all_button.grid(row=0, column=1)
         self.undo_button = Button(self.bottom_frame, text="Undo\n(backspace)", command=self.undo)
-        self.undo_button.grid(row=0, column=1)
+        self.undo_button.grid(row=0, column=2)
         self.save_next_button = Button(self.bottom_frame, text="Save/Next\n(enter)", command=self.save)
-        self.save_next_button.grid(row=0, column=2)
+        self.save_next_button.grid(row=0, column=3)
 
     def update_mask(self):
         image = ImageTk.PhotoImage(Image.fromarray(self.mask))
@@ -167,6 +170,12 @@ class ManualGlareRemover:
         self.history.append(self.mask)
         self.mask = self.mask.copy()
         remove_all_clouds(self.mask)  # This destructively modifies its arguments, hence the copy
+        self.update_mask()
+
+    def remove_all_thin_clouds(self):
+        self.history.append(self.mask)
+        self.mask = self.mask.copy()
+        remove_all_thin_clouds(self.mask)  # This destructively modifies its arguments, hence the copy
         self.update_mask()
 
     def undo(self):
