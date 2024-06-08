@@ -18,7 +18,7 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 3
+    IMAGES_PER_SESSION = 1
 
     def __init__(self, root, data_dir):
         self.root = root
@@ -30,12 +30,16 @@ class ManualGlareRemover:
         self.data_dir = data_dir
         self.photo = None
         self.mask = None
+        self.mask_image = None
         self.photo_label = None
         self.mask_label = None
+        # self.root.wm_attributes('-transparentcolor', 'magenta')  # This is used later to overlay a dragged circle
+        # self.mask_overlay_canvas = None
         self.remove_all_thin_button = None
         self.remove_all_button = None
         self.undo_button = None
         self.save_next_button = None
+        self.drag_ends = None
         self.history = []
         self.timestamps_to_process = []
         self.timestamp_index = 0  # Index into timestamps_to_process
@@ -119,13 +123,19 @@ class ManualGlareRemover:
         self.photo_label.image = self.photo  # This seems redundant with the named argument above, but both seem to be necessary
         self.photo_label.pack(side='left')
         # Mask
-        mask_image = ImageTk.PhotoImage(Image.fromarray(self.mask))
-        self.mask_label = Label(self.top_frame, image=mask_image)
-        self.mask_label.image = mask_image
+        self.mask_image = ImageTk.PhotoImage(Image.fromarray(self.mask))
+        self.mask_label = Canvas(self.top_frame, width=480, height=480)
+        self.mask_label.create_image(0, 0, anchor='nw', image=self.mask_image)
+        # self.mask_label = Label(self.top_frame, image=mask_image)
+        # self.mask_label.image = mask_image
         self.mask_label.pack(side='right')
-        self.mask_label.bind("<Button-1>", self.click)
-        self.mask_label.bind("<Button-3>", self.right_click)
-        self.root.bind("<Key>", self.key_pressed)
+        self.mask_label.bind('<Button-1>', self.click)
+        self.mask_label.bind('<Button-3>', self.right_click)
+        self.mask_label.bind('<Shift-ButtonPress-1>', self.start_drag)
+        self.mask_label.bind('<Shift-B1-Motion>', self.drag)
+        self.mask_label.bind('<Shift-ButtonRelease-1>', self.finish_drag)
+        self.root.bind('<Key>', self.key_pressed)
+        # Overlay (for dragging a circle)
         # Labels
         remove_region = Label(self.bottom_frame, text="Remove\nthick+thin region\n(click)")
         remove_region.grid(row=0, column=0, padx=10)
@@ -157,6 +167,8 @@ class ManualGlareRemover:
             self.save()
         elif event.keysym == 'BackSpace':
             self.undo()
+        elif event.keysym in ['Shift_L', 'Shift_R']:
+            pass  # Ignore these, are they are expected when shift-dragging
         else:
             print('Unknown key pressed: <' + event.keysym + '>')
 
@@ -187,6 +199,27 @@ class ManualGlareRemover:
                                footprint=ManualGlareRemover.FOOTPRINT)
             self.mask = label_to_rgb_mask(label)
             self.update_mask()
+
+    def start_drag(self, event):
+        self.drag_ends = [(event.x, event.y), None]
+
+    def drag(self, event):
+        self.drag_ends[1] = (event.x, event.y)
+        self.mask_label.delete('circle')
+        circle = self.mask_label.create_oval(
+                self.drag_ends[0][0],
+                self.drag_ends[0][1],
+                self.drag_ends[1][0],
+                self.drag_ends[1][1],
+                outline='red')
+        self.mask_label.itemconfig(circle, tags='circle')
+
+    def finish_drag(self, event):
+        self.drag_ends[1] = (event.x, event.y)
+        print(f'Completed drag: {self.drag_ends}')
+        # TODO Process the drag
+        self.mask_label.delete('circle')
+        self.drag_ends = None
 
     def remove_all_clouds(self):
         self.history.append(self.mask)
