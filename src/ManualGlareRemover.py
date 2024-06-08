@@ -18,7 +18,7 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 1
+    IMAGES_PER_SESSION = 10
 
     def __init__(self, root, data_dir):
         self.root = root
@@ -129,7 +129,9 @@ class ManualGlareRemover:
         self.mask_canvas.bind('<Button-3>', self.right_click)
         self.mask_canvas.bind('<Shift-ButtonPress-1>', self.start_drag)
         self.mask_canvas.bind('<Shift-B1-Motion>', self.drag)
+        self.mask_canvas.bind('<B1-Motion>', self.drag)
         self.mask_canvas.bind('<Shift-ButtonRelease-1>', self.finish_drag)
+        self.mask_canvas.bind('<ButtonRelease-1>', self.finish_drag)
         self.root.bind('<Key>', self.key_pressed)
         # Labels
         remove_region = Label(self.bottom_frame, text="Remove\nthick+thin region\n(click)")
@@ -198,6 +200,8 @@ class ManualGlareRemover:
         self.drag_ends = [(event.x, event.y), None]
 
     def drag(self, event):
+        if not self.drag_ends:
+            return  # User pressed shift after beginning drag; do nothing
         self.drag_ends[1] = (event.x, event.y)
         self.mask_canvas.delete('circle')
         [(x1, y1), (x2, y2)] = self.drag_ends
@@ -210,11 +214,18 @@ class ManualGlareRemover:
                 cy + r,
                 outline='red')
         self.mask_canvas.itemconfig(circle, tags='circle')
+        return (cx, cy), r
 
     def finish_drag(self, event):
-        self.drag(event)
-        print(f'Completed drag: {self.drag_ends}')
-        # TODO Process the drag
+        if not self.drag_ends:
+            return  # User pressed shift after beginning drag; do nothing
+        center, radius = self.drag(event)
+        # Process the drag
+        self.history.append(self.mask)
+        self.mask = self.mask.copy()
+        remove_all_clouds_within_circle(self.mask, center, radius)  # This destructively modifies its arguments, hence the copy
+        self.update_mask()
+        # Delete the circle
         self.mask_canvas.delete('circle')
         self.drag_ends = None
 
