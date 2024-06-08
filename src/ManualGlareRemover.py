@@ -32,9 +32,8 @@ class ManualGlareRemover:
         self.mask = None
         self.mask_image = None
         self.photo_label = None
-        self.mask_label = None
-        # self.root.wm_attributes('-transparentcolor', 'magenta')  # This is used later to overlay a dragged circle
-        # self.mask_overlay_canvas = None
+        self.mask_canvas = None
+        self.mask_canvas_image_id = None
         self.remove_all_thin_button = None
         self.remove_all_button = None
         self.undo_button = None
@@ -99,7 +98,6 @@ class ManualGlareRemover:
                 os.makedirs(tsi_mask_path[:tsi_mask_path.rfind('/')], exist_ok=True)
                 connection.get(timestamp_to_tsi_mask_path(DATA_DIR, timestamp), tsi_mask_path)
 
-
     def load_images(self):
         self.timestamp = self.timestamps_to_process[self.timestamp_index]
         self.timestamp_index += 1
@@ -108,9 +106,9 @@ class ManualGlareRemover:
 
     def layout(self):
         # Clear out existing elements
-        if self.mask_label:  # Either all or none of them should exist, so checking one suffices
+        if self.mask_canvas:  # Either all or none of them should exist, so checking one suffices
             self.photo_label.destroy()
-            self.mask_label.destroy()
+            self.mask_canvas.destroy()
             self.undo_button.destroy()
             self.save_next_button.destroy()
         # Title
@@ -124,18 +122,15 @@ class ManualGlareRemover:
         self.photo_label.pack(side='left')
         # Mask
         self.mask_image = ImageTk.PhotoImage(Image.fromarray(self.mask))
-        self.mask_label = Canvas(self.top_frame, width=480, height=480)
-        self.mask_label.create_image(0, 0, anchor='nw', image=self.mask_image)
-        # self.mask_label = Label(self.top_frame, image=mask_image)
-        # self.mask_label.image = mask_image
-        self.mask_label.pack(side='right')
-        self.mask_label.bind('<Button-1>', self.click)
-        self.mask_label.bind('<Button-3>', self.right_click)
-        self.mask_label.bind('<Shift-ButtonPress-1>', self.start_drag)
-        self.mask_label.bind('<Shift-B1-Motion>', self.drag)
-        self.mask_label.bind('<Shift-ButtonRelease-1>', self.finish_drag)
+        self.mask_canvas = Canvas(self.top_frame, width=480, height=480)
+        self.mask_canvas_image_id = self.mask_canvas.create_image(0, 0, anchor='nw', image=self.mask_image)
+        self.mask_canvas.pack(side='right')
+        self.mask_canvas.bind('<Button-1>', self.click)
+        self.mask_canvas.bind('<Button-3>', self.right_click)
+        self.mask_canvas.bind('<Shift-ButtonPress-1>', self.start_drag)
+        self.mask_canvas.bind('<Shift-B1-Motion>', self.drag)
+        self.mask_canvas.bind('<Shift-ButtonRelease-1>', self.finish_drag)
         self.root.bind('<Key>', self.key_pressed)
-        # Overlay (for dragging a circle)
         # Labels
         remove_region = Label(self.bottom_frame, text="Remove\nthick+thin region\n(click)")
         remove_region.grid(row=0, column=0, padx=10)
@@ -154,9 +149,8 @@ class ManualGlareRemover:
         self.save_next_button.grid(row=0, column=6)
 
     def update_mask(self):
-        image = ImageTk.PhotoImage(Image.fromarray(self.mask))
-        self.mask_label.configure(image=image)
-        self.mask_label.image = image
+        self.mask_image = ImageTk.PhotoImage(Image.fromarray(self.mask))
+        self.mask_canvas.itemconfig(self.mask_canvas_image_id, image=self.mask_image)
 
     def key_pressed(self, event):
         if event.keysym == 'Tab':
@@ -205,20 +199,20 @@ class ManualGlareRemover:
 
     def drag(self, event):
         self.drag_ends[1] = (event.x, event.y)
-        self.mask_label.delete('circle')
-        circle = self.mask_label.create_oval(
+        self.mask_canvas.delete('circle')
+        circle = self.mask_canvas.create_oval(
                 self.drag_ends[0][0],
                 self.drag_ends[0][1],
                 self.drag_ends[1][0],
                 self.drag_ends[1][1],
                 outline='red')
-        self.mask_label.itemconfig(circle, tags='circle')
+        self.mask_canvas.itemconfig(circle, tags='circle')
 
     def finish_drag(self, event):
         self.drag_ends[1] = (event.x, event.y)
         print(f'Completed drag: {self.drag_ends}')
         # TODO Process the drag
-        self.mask_label.delete('circle')
+        self.mask_canvas.delete('circle')
         self.drag_ends = None
 
     def remove_all_clouds(self):
