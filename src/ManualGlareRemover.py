@@ -200,16 +200,19 @@ class ManualGlareRemover:
     def drag(self, event):
         self.drag_ends[1] = (event.x, event.y)
         self.mask_canvas.delete('circle')
+        [(x1, y1), (x2, y2)] = self.drag_ends
+        cx, cy = ((x1 + x2)/2, (y1+y2)/2)
+        r = (((x1 - cx) ** 2) + ((y1 - cy) ** 2)) ** 0.5
         circle = self.mask_canvas.create_oval(
-                self.drag_ends[0][0],
-                self.drag_ends[0][1],
-                self.drag_ends[1][0],
-                self.drag_ends[1][1],
+                cx - r,
+                cy - r,
+                cx + r,
+                cy + r,
                 outline='red')
         self.mask_canvas.itemconfig(circle, tags='circle')
 
     def finish_drag(self, event):
-        self.drag_ends[1] = (event.x, event.y)
+        self.drag(event)
         print(f'Completed drag: {self.drag_ends}')
         # TODO Process the drag
         self.mask_canvas.delete('circle')
