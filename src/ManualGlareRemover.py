@@ -18,7 +18,7 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 10
+    IMAGES_PER_SESSION = 3
 
     def __init__(self, root, data_dir):
         self.root = root
@@ -126,6 +126,8 @@ class ManualGlareRemover:
         self.mask_canvas_image_id = self.mask_canvas.create_image(0, 0, anchor='nw', image=self.mask_image)
         self.mask_canvas.pack(side='right')
         self.mask_canvas.bind('<Button-1>', self.click)
+        # It seems like the right button is Button-2 on a Mac, but Button-3 on Ubuntu
+        self.mask_canvas.bind('<Button-2>', self.right_click)
         self.mask_canvas.bind('<Button-3>', self.right_click)
         self.mask_canvas.bind('<Shift-ButtonPress-1>', self.start_drag)
         self.mask_canvas.bind('<Shift-B1-Motion>', self.drag)
@@ -186,7 +188,7 @@ class ManualGlareRemover:
 
     def right_click(self, event):
         label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
-        if label[event.y, event.x] in (1, 2):  # If the point is blue, gray, or white
+        if label[event.y, event.x] == 2:  # If the point is gray
             self.history.append(self.mask)
             label = flood_fill(label,
                                (event.y, event.x),
