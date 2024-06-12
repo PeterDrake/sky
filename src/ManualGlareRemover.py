@@ -206,7 +206,6 @@ class ManualGlareRemover:
             print('Unknown key pressed: <' + event.keysym + '>')
 
     def click(self, event):
-        print(f'Click: {event.y}, {event.x}')
         label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
         if label[event.y, event.x] in (1, 2, 3):  # If the point is blue, gray, or white
             self.histories[self.timestamp_index - 1].append(self.mask)
