@@ -1,3 +1,4 @@
+import tkinter.messagebox
 from tkinter import *
 from PIL import ImageTk, Image
 import os
@@ -306,9 +307,10 @@ class ManualGlareRemover:
         path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, self.timestamp)
         os.makedirs(path[:path.rfind('/')], exist_ok=True)
         imsave(path, self.mask, check_contrast=False)
-        print('Done -- just need to upload')
-        self.upload_files()
-        self.root.destroy()
+        if tkinter.messagebox.askyesno('Upload', 'Upload all images and quit?'):
+            print('Done -- just need to upload')
+            self.upload_files()
+            self.root.destroy()
 
     def upload_files(self):
         print('NOT UPLOADING ANY FILES WHILE TESTING NEW FEATURES')
