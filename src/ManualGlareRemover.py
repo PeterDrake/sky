@@ -110,7 +110,8 @@ class ManualGlareRemover:
         self.timestamp_index += 1
         self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, self.timestamp)))
         if self.histories[self.timestamp_index - 1]:
-            self.mask = self.histories[self.timestamp_index - 1].pop()
+            path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, self.timestamp)
+            self.mask = imread(path)[:, :, :3]
         else:
             self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, self.timestamp))[:, :, :3]
 
@@ -287,16 +288,16 @@ class ManualGlareRemover:
             self.update_mask()
 
     def prev(self):
-        history = self.histories[self.timestamp_index - 1]
-        if (not history) or not (history[-1] == self.mask).all():
-            history.append(self.mask)
+        # history = self.histories[self.timestamp_index - 1]
+        # if (not history) or not (history[-1] == self.mask).all():
+        #     history.append(self.mask)
         self.timestamp_index -= 2
         self.next()
 
     def next(self):
-        history = self.histories[self.timestamp_index - 1]
-        if (not history) or not (history[-1] == self.mask).all():
-            history.append(self.mask)
+        # history = self.histories[self.timestamp_index - 1]
+        # if (not history) or not (history[-1] == self.mask).all():
+        #     history.append(self.mask)
         path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, self.timestamp)
         os.makedirs(path[:path.rfind('/')], exist_ok=True)
         imsave(path, self.mask, check_contrast=False)
