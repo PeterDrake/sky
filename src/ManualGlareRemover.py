@@ -19,7 +19,7 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 3
+    IMAGES_PER_SESSION = 10
 
     def __init__(self, root, data_dir):
         self.root = root
@@ -134,10 +134,6 @@ class ManualGlareRemover:
         # of the NEXT image to be edited. We display that anyway as it is also the 1-based index
         # of the image currently being edited.
         self.root.title(f'Glare Editor: {self.timestamp} ({self.timestamp_index}/{len(self.timestamps_to_process)})')
-        # # Frames
-        # upper_frame = Frame(self.root)
-        # upper_frame.grid(row=0, column=0)
-        # lower_frame = Frame(self.root)
         # Photo
         self.photo_canvas = Canvas(self.top_frame, width=480, height=480)
         self.photo_canvas.create_image(0, 0, anchor='nw', image=self.photo)
@@ -210,6 +206,7 @@ class ManualGlareRemover:
             print('Unknown key pressed: <' + event.keysym + '>')
 
     def click(self, event):
+        print(f'Click: {event.y}, {event.x}')
         label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
         if label[event.y, event.x] in (1, 2, 3):  # If the point is blue, gray, or white
             self.histories[self.timestamp_index - 1].append(self.mask)
@@ -288,16 +285,10 @@ class ManualGlareRemover:
             self.update_mask()
 
     def prev(self):
-        # history = self.histories[self.timestamp_index - 1]
-        # if (not history) or not (history[-1] == self.mask).all():
-        #     history.append(self.mask)
         self.timestamp_index -= 2
         self.next()
 
     def next(self):
-        # history = self.histories[self.timestamp_index - 1]
-        # if (not history) or not (history[-1] == self.mask).all():
-        #     history.append(self.mask)
         path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, self.timestamp)
         os.makedirs(path[:path.rfind('/')], exist_ok=True)
         imsave(path, self.mask, check_contrast=False)
