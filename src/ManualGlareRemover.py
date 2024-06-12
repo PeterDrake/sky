@@ -31,15 +31,20 @@ class ManualGlareRemover:
         self.photo = None
         self.mask = None
         self.mask_image = None
-        self.photo_label = None
+        self.photo_canvas = None
         self.mask_canvas = None
         self.mask_canvas_image_id = None
+        self.remove_region_label = None
+        self.remove_thin_region_label = None
+        self.remove_circular_region_label = None
         self.remove_all_thin_button = None
         self.remove_all_button = None
         self.undo_button = None
-        self.save_next_button = None
+        self.prev_button = None
+        self.next_button = None
+        self.save_button = None
         self.drag_ends = None
-        self.history = []
+        self.histories = None
         self.timestamps_to_process = []
         self.timestamp_index = 0  # Index into timestamps_to_process
         self.timestamp = None
@@ -84,6 +89,7 @@ class ManualGlareRemover:
             if (stamp.endswith('000') or stamp.endswith('500')) and stamp not in deglared_stamps:
                 self.timestamps_to_process.append(stamp)
                 i += 1
+        self.histories = [[] for _ in self.timestamps_to_process]
 
     def download_images(self):
         user = os.environ.get('user')
@@ -102,24 +108,38 @@ class ManualGlareRemover:
         self.timestamp = self.timestamps_to_process[self.timestamp_index]
         self.timestamp_index += 1
         self.photo = ImageTk.PhotoImage(Image.open(timestamp_to_photo_path(self.data_dir, self.timestamp)))
-        self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, self.timestamp))[:, :, :3]
+        if self.histories[self.timestamp_index - 1]:
+            self.mask = self.histories[self.timestamp_index - 1].pop()
+        else:
+            self.mask = imread(timestamp_to_tsi_mask_path(self.data_dir, self.timestamp))[:, :, :3]
 
     def layout(self):
         # Clear out existing elements
         if self.mask_canvas:  # Either all or none of them should exist, so checking one suffices
-            self.photo_label.destroy()
+            self.photo_canvas.destroy()
             self.mask_canvas.destroy()
+            self.remove_region_label.destroy()
+            self.remove_thin_region_label.destroy()
+            self.remove_circular_region_label.destroy()
             self.undo_button.destroy()
-            self.save_next_button.destroy()
+            self.remove_all_thin_button.destroy()
+            self.remove_all_button.destroy()
+            self.prev_button.destroy()
+            self.next_button.destroy()
+            self.save_button.destroy()
         # Title
         # Note that, since load_images has been called, self.timestamp_index holds the 0-based index
         # of the NEXT image to be edited. We display that anyway as it is also the 1-based index
         # of the image currently being edited.
         self.root.title(f'Glare Editor: {self.timestamp} ({self.timestamp_index}/{len(self.timestamps_to_process)})')
+        # # Frames
+        # upper_frame = Frame(self.root)
+        # upper_frame.grid(row=0, column=0)
+        # lower_frame = Frame(self.root)
         # Photo
-        self.photo_label = Label(self.top_frame, image=self.photo)
-        self.photo_label.image = self.photo  # This seems redundant with the named argument above, but both seem to be necessary
-        self.photo_label.pack(side='left')
+        self.photo_canvas = Canvas(self.top_frame, width=480, height=480)
+        self.photo_canvas.create_image(0, 0, anchor='nw', image=self.photo)
+        self.photo_canvas.pack(side='left')
         # Mask
         self.mask_image = ImageTk.PhotoImage(Image.fromarray(self.mask))
         self.mask_canvas = Canvas(self.top_frame, width=480, height=480)
@@ -136,12 +156,12 @@ class ManualGlareRemover:
         self.mask_canvas.bind('<ButtonRelease-1>', self.finish_drag)
         self.root.bind('<Key>', self.key_pressed)
         # Labels
-        remove_region = Label(self.bottom_frame, text="Remove\nthick+thin region\n(click)")
-        remove_region.grid(row=0, column=0, padx=10)
-        remove_region = Label(self.bottom_frame, text="Remove\nthin region\n(right click)")
-        remove_region.grid(row=0, column=1, padx=10)
-        remove_region = Label(self.bottom_frame, text="Remove\ncircular region\n(shift drag)")
-        remove_region.grid(row=0, column=2, padx=10)
+        self.remove_region_label = Label(self.bottom_frame, text="Remove\nthick+thin region\n(click)")
+        self.remove_region_label.grid(row=0, column=0, padx=10)
+        self.remove_thin_region_label = Label(self.bottom_frame, text="Remove\nthin region\n(right click)")
+        self.remove_thin_region_label.grid(row=0, column=1, padx=10)
+        self.remove_circular_region_label = Label(self.bottom_frame, text="Remove\ncircular region\n(shift drag)")
+        self.remove_circular_region_label.grid(row=0, column=2, padx=10)
         # Buttons
         self.remove_all_thin_button = Button(self.bottom_frame, text="Remove\nall thin clouds\n(tab)", command=self.remove_all_thin_clouds)
         self.remove_all_thin_button.grid(row=0, column=3)
@@ -149,8 +169,18 @@ class ManualGlareRemover:
         self.remove_all_button.grid(row=0, column=4)
         self.undo_button = Button(self.bottom_frame, text="Undo\n\n(backspace)", command=self.undo)
         self.undo_button.grid(row=0, column=5)
-        self.save_next_button = Button(self.bottom_frame, text="Save/Next\n\n(enter)", command=self.save)
-        self.save_next_button.grid(row=0, column=6)
+        self.prev_button = Button(self.bottom_frame, text="Prev\n\n(<)", command=self.prev)
+        self.prev_button.grid(row=0, column=6)
+        if self.timestamp_index == 1:
+            self.prev_button['state'] = DISABLED
+        self.next_button = Button(self.bottom_frame, text="Next\n\n(>)", command=self.next)
+        self.next_button.grid(row=0, column=7)
+        self.save_button = Button(self.bottom_frame, text="Save\nall\n(enter)", command=self.save)
+        self.save_button.grid(row=0, column=8)
+        if self.timestamp_index == len(self.timestamps_to_process):
+            self.next_button['state'] = DISABLED
+        else:
+            self.save_button['state'] = DISABLED
 
     def update_mask(self):
         self.mask_image = ImageTk.PhotoImage(Image.fromarray(self.mask))
@@ -161,8 +191,15 @@ class ManualGlareRemover:
             self.remove_all_thin_clouds()
         elif event.keysym == 'space':
             self.remove_all_clouds()
+        elif event.keysym == 'comma':
+            if self.prev_button['state'] == NORMAL:
+                self.prev()
+        elif event.keysym == 'period':
+            if self.next_button['state'] == NORMAL:
+                self.next()
         elif event.keysym == 'Return':
-            self.save()
+            if self.next_button['state'] == DISABLED:  # Because you're looking at the last image
+                self.save()
         elif event.keysym == 'BackSpace':
             self.undo()
         elif event.keysym in ['Shift_L', 'Shift_R']:
@@ -173,7 +210,7 @@ class ManualGlareRemover:
     def click(self, event):
         label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
         if label[event.y, event.x] in (1, 2, 3):  # If the point is blue, gray, or white
-            self.history.append(self.mask)
+            self.histories[self.timestamp_index - 1].append(self.mask)
             # Before the flood fill, set the point in question to white, so that a tolerance of 1 also catches gray.
             # Otherwise, clicking on a gray pixel would put blue within the tolerance, making the flood fill far too
             # large.
@@ -189,7 +226,7 @@ class ManualGlareRemover:
     def right_click(self, event):
         label = rgb_mask_to_label(self.mask)  # This is a label in the sense of utils_timestamp, not tkinter
         if label[event.y, event.x] == 2:  # If the point is gray
-            self.history.append(self.mask)
+            self.histories[self.timestamp_index - 1].append(self.mask)
             label = flood_fill(label,
                                (event.y, event.x),
                                1,  # Blue
@@ -223,7 +260,7 @@ class ManualGlareRemover:
             return  # User pressed shift after beginning drag; do nothing
         center, radius = self.drag(event)
         # Process the drag
-        self.history.append(self.mask)
+        self.histories[self.timestamp_index - 1].append(self.mask)
         self.mask = self.mask.copy()
         remove_all_clouds_within_circle(self.mask, center, radius)  # This destructively modifies its arguments, hence the copy
         self.update_mask()
@@ -232,34 +269,46 @@ class ManualGlareRemover:
         self.drag_ends = None
 
     def remove_all_clouds(self):
-        self.history.append(self.mask)
+        self.histories[self.timestamp_index - 1].append(self.mask)
         self.mask = self.mask.copy()
         remove_all_clouds(self.mask)  # This destructively modifies its arguments, hence the copy
         self.update_mask()
 
     def remove_all_thin_clouds(self):
-        self.history.append(self.mask)
+        self.histories[self.timestamp_index - 1].append(self.mask)
         self.mask = self.mask.copy()
         remove_all_thin_clouds(self.mask)  # This destructively modifies its arguments, hence the copy
         self.update_mask()
 
     def undo(self):
-        if self.history:
-            self.mask = self.history.pop()
+        if self.histories[self.timestamp_index - 1]:
+            self.mask = self.histories[self.timestamp_index - 1].pop()
             self.update_mask()
+
+    def prev(self):
+        history = self.histories[self.timestamp_index - 1]
+        if (not history) or not (history[-1] == self.mask).all():
+            history.append(self.mask)
+        self.timestamp_index -= 2
+        self.next()
+
+    def next(self):
+        history = self.histories[self.timestamp_index - 1]
+        if (not history) or not (history[-1] == self.mask).all():
+            history.append(self.mask)
+        path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, self.timestamp)
+        os.makedirs(path[:path.rfind('/')], exist_ok=True)
+        imsave(path, self.mask, check_contrast=False)
+        self.load_images()
+        self.layout()
 
     def save(self):
         path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, self.timestamp)
         os.makedirs(path[:path.rfind('/')], exist_ok=True)
         imsave(path, self.mask, check_contrast=False)
-        if self.timestamp_index < len(self.timestamps_to_process):  # If there are any left, move on to the next one
-            self.history = []
-            self.load_images()
-            self.layout()
-        else:  # Done -- upload the results
-            print('Done -- just need to upload')
-            self.upload_files()
-            self.root.destroy()
+        print('Done -- just need to upload')
+        self.upload_files()
+        self.root.destroy()
 
     def upload_files(self):
         print('NOT UPLOADING ANY FILES WHILE TESTING NEW FEATURES')
