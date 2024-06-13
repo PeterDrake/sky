@@ -8,6 +8,7 @@ from skimage.io import imsave, imread
 from skimage.morphology import flood_fill
 from dotenv import load_dotenv
 import pysftp
+import pandas as pd
 from config import *
 
 
@@ -55,27 +56,24 @@ class ManualGlareRemover:
         self.layout()
 
     def choose_timestamps(self):
-        # TODO Fail more gracefully when there are no images left to process at beginning of a run
         load_dotenv()
         user = os.environ.get('user')
         password = os.environ.get('password')
-        all_stamps_path = self.data_dir + '/typical_training_timestamps'
-        deglared_stamps_path = self.data_dir + '/typical_training_deglared_timestamps'
+        all_stamps_path = self.data_dir + '/shcu_typical_data.csv'
+        deglared_stamps_path = self.data_dir + '/typical_deglared_timestamps'
         with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
             print('Pulling typical timestamps from BLT')
-            connection.get(DATA_DIR + '/typical_training_timestamps',
+            connection.get(DATA_DIR + '/shcu_typical_data.csv',
                            all_stamps_path)
             print('Pulling already deglared timestamps')
             try:
-                connection.get(DATA_DIR + '/typical_training_deglared_timestamps', deglared_stamps_path)
+                connection.get(DATA_DIR + '/typical_deglared_timestamps', deglared_stamps_path)
             except FileNotFoundError:
                 print("Deglared list doesn't exist yet -- creating it")
                 # connection.get has already created an empty file in this case
-        all_stamps = []
+        data = pd.read_csv(all_stamps_path, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
+        all_stamps = data['timestamp_utc']
         deglared_stamps = set()
-        with open(all_stamps_path, 'r') as f:
-            for line in f.readlines():
-                all_stamps.append(line.strip())
         with open(deglared_stamps_path, 'r') as f:
             for line in f.readlines():
                 deglared_stamps.add(line.strip())
@@ -87,9 +85,12 @@ class ManualGlareRemover:
         for stamp in all_stamps:
             if i == self.IMAGES_PER_SESSION:
                 break
-            if (stamp.endswith('000') or stamp.endswith('500')) and stamp not in deglared_stamps:
+            if stamp not in deglared_stamps:
                 self.timestamps_to_process.append(stamp)
-                i += 1
+            i += 1
+        if i == 0:
+            print('No images left to process!')
+            quit()
         self.histories = [[] for _ in self.timestamps_to_process]
 
     def download_images(self):
@@ -304,22 +305,22 @@ class ManualGlareRemover:
             self.root.destroy()
 
     def upload_files(self):
-        print('NOT UPLOADING ANY FILES WHILE TESTING NEW FEATURES')
-        # user = os.environ.get('user')
-        # password = os.environ.get('password')
-        # with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
-        #     for timestamp in self.timestamps_to_process:
-        #         print("Uploading " + timestamp)
-        #         tsi_mask_path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp)
-        #         remote_path = timestamp_to_tsi_mask_no_glare_path(DATA_DIR, timestamp)
-        #         connection.makedirs(remote_path[:remote_path.rfind('/')])
-        #         connection.put(tsi_mask_path, remote_path)
-        #     print("Uploading revised list of deglared timestamps")
-        #     with open(self.data_dir + '/typical_training_deglared_timestamps', 'a') as f:
-        #         for timestamp in self.timestamps_to_process:
-        #             f.write(timestamp + '\n')
-        #     connection.put(self.data_dir + '/typical_training_deglared_timestamps',
-        #                    DATA_DIR + '/typical_training_deglared_timestamps')
+        # print('NOT UPLOADING ANY FILES WHILE TESTING NEW FEATURES')
+        user = os.environ.get('user')
+        password = os.environ.get('password')
+        with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+            for timestamp in self.timestamps_to_process:
+                print("Uploading " + timestamp)
+                tsi_mask_path = timestamp_to_tsi_mask_no_glare_path(self.data_dir, timestamp)
+                remote_path = timestamp_to_tsi_mask_no_glare_path(DATA_DIR, timestamp)
+                connection.makedirs(remote_path[:remote_path.rfind('/')])
+                connection.put(tsi_mask_path, remote_path)
+            print("Uploading revised list of deglared timestamps")
+            with open(self.data_dir + '/typical_deglared_timestamps', 'a') as f:
+                for timestamp in self.timestamps_to_process:
+                    f.write(timestamp + '\n')
+            connection.put(self.data_dir + '/typical_deglared_timestamps',
+                           DATA_DIR + '/typical_deglared_timestamps')
 
 
 if __name__ == "__main__":
