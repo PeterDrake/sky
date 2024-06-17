@@ -190,10 +190,10 @@ class ManualGlareRemover:
             self.remove_all_thin_clouds()
         elif event.keysym == 'space':
             self.remove_all_clouds()
-        elif event.keysym in ['comma', 'Left']:
+        elif event.keysym in ['comma', 'less', 'Left']:
             if self.prev_button['state'] == NORMAL:
                 self.prev()
-        elif event.keysym in ['period', 'Right']:
+        elif event.keysym in ['period', 'greater', 'Right']:
             if self.next_button['state'] == NORMAL:
                 self.next()
         elif event.keysym == 'Return':
@@ -229,7 +229,7 @@ class ManualGlareRemover:
             label = flood_fill(label,
                                (event.y, event.x),
                                1,  # Blue
-                               tolerance=0.5,
+                               tolerance=0,
                                footprint=ManualGlareRemover.FOOTPRINT)
             self.mask = label_to_rgb_mask(label)
             self.update_mask()
