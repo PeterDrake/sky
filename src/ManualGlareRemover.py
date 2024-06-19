@@ -83,8 +83,8 @@ class ManualGlareRemover:
         self.timestamps_to_process = []
         i = 0
         for stamp in all_stamps:
-            if i == self.IMAGES_PER_SESSION:
-                break
+            if len(self.timestamps_to_process) == self.IMAGES_PER_SESSION:
+                    break
             if stamp not in deglared_stamps:
                 self.timestamps_to_process.append(stamp)
             i += 1
