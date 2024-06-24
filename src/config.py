@@ -13,10 +13,10 @@ DUBIOUS_TIMESTAMP_FILENAMES = ['dubious_' + c + '_timestamps' for c in ['validat
 
 # Current experiment name (e.g., 'exp00001'), or 'sandbox'
 # EXPERIMENT_NAME = 'su23_0014'  # This is the last one we ran
-EXPERIMENT_NAME = 'su24_009_no_glare'
+EXPERIMENT_NAME = 'su24_010_no_glare'
 
 # Name (minus .py) of file containing network architecture
-NETWORK_ARCHITECTURE = 'net_dilation_1_4_16x4'
+NETWORK_ARCHITECTURE = 'trivial_network'
 
 # Number of epochs to train for
 TRAIN_EPOCHS = 40
