@@ -6,10 +6,10 @@ from skimage.io import imsave
 
 # Get timestamps for the data to use
 val_stamps = []
-with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[1], 'r') as f:  # Element 1 is the validation filename
+with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES['validation'], 'r') as f:
     for line in f.readlines():
         val_stamps.append(line.strip())
-with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[0], 'r') as f:  # Element 0 is the validation filename
+with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES['validation'], 'r') as f:
     for line in f.readlines():
         val_stamps.append(line.strip())
 

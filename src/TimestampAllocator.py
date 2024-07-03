@@ -62,6 +62,6 @@ class TimestampAllocator:
         :param typical_or_dubious: True to use typical data, False to use dubious data
         """
         if typical_or_dubious == 'typical':
-            self.allocate_timestamps_helper(csv_filename, self.typical_proportions, TYPICAL_TIMESTAMP_FILENAMES)
+            self.allocate_timestamps_helper(csv_filename, self.typical_proportions, TYPICAL_TIMESTAMP_FILENAMES.values())
         else:
-            self.allocate_timestamps_helper(csv_filename, self.dubious_proportions, DUBIOUS_TIMESTAMP_FILENAMES)
+            self.allocate_timestamps_helper(csv_filename, self.dubious_proportions, DUBIOUS_TIMESTAMP_FILENAMES.values())

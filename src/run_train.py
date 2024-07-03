@@ -14,9 +14,9 @@ module = importlib.import_module('model_architectures.' + NETWORK_ARCHITECTURE)
 model = module.model
 
 # Get timestamps for the data to use
-with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[0], 'r') as f:
+with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES['training'], 'r') as f:
     train_stamps = [line.strip() for line in f.readlines()]
-with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[1], 'r') as f:
+with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES['validation'], 'r') as f:
     val_stamps = [line.strip() for line in f.readlines()]
 
 # Create generators for training and validation data
