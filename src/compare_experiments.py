@@ -68,6 +68,8 @@ experiments = ['su24_001_no_glare',
                'su24_004_no_glare',
                'su24_007_no_glare',
                'su24_008_no_glare',
-               'su24_009_no_glare']
+               'su24_009_no_glare',
+               'su24_010_no_glare',
+               'su24_011_no_glare']
 download_files(timestamp, experiments)
 produce_comparison_figure(timestamp, experiments)
