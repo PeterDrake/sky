@@ -4,14 +4,14 @@ from ExperimentLogUpdater import ExperimentLogUpdater
 from config import *
 from skimage.io import imsave
 
-mode = 'testing'  # 'validation' or 'testing'
+category = 'testing'  # 'validation' or 'testing'
 
 # Get timestamps for the data to use
 stamps = []
-with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[mode], 'r') as f:
+with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[category], 'r') as f:
     for line in f.readlines():
         stamps.append(line.strip())
-with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[mode], 'r') as f:
+with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[category], 'r') as f:
     for line in f.readlines():
         stamps.append(line.strip())
 
