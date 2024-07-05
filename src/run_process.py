@@ -17,7 +17,7 @@ with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[category], 'r') as f:
 
 # Load the trained model
 log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
-model = keras.models.load_model(log_updater.experiment_dir + '/network.h5')
+model = keras.models.load_model(log_updater.experiment_dir + '/network.keras')
 
 print('Processing {} photos'.format(len(stamps)))
 for i in range(0, len(stamps), 320):
