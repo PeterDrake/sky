@@ -3,13 +3,18 @@
 We assume that all of the ARM data have been downloaded and untarred. We also assume we have the corresponding .csv
 files (listing shallow cumulus timestamps). All of these are in locations outside of this directory.
 
-Our pipeline involves the following steps.
+Our pipeline involves the following steps. These are specific to "BLT", our campus computing cluster, which uses the
+Slurm job management system. On another system, modify the .sh files for your own job management system. If not running
+on a cluster, examine the .sh files for which Python scripts to run directly.
+
+Each group of BLT instructions includes a reminder to start the virtual environment. This can be skipped if it is
+already active.
 
 ## Preprocess the Data
 
 ### What You Do
 
-On BLT (from the `blt_job_output` directory), wait for each of the following steps to finish before doing the next one.
+From the `blt_job_output` directory, wait for each of the following steps to finish before doing the next one.
 
 ```
 source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
@@ -33,18 +38,6 @@ sbatch ../src/launch_average_tsi_fsc.sh
 sbatch ../src/launch_collate_tsi_fsc_cf.sh
 ```
 
-On a machine other than BLT (from the `src` directory):
-
-```
-python3 -u run_preprocess.py shcu_dubious_data.csv
-python3 -u run_preprocess.py shcu_typical_data.csv
-python3 -u run_allocate_timestamps.py shcu_dubious_data.csv dubious
-python3 -u run_allocate_timestamps.py shcu_typical_data.csv typical
-python3 -u run_calculate_tsi_fsc.py
-python3 -u run_average_tsi_fsc.py
-python3 -u run_collate_tsi_fsc_cf.py
-```
-
 ### What This Accomplishes
 
 1. Clean the .csv files (one for dubious, one for typical) to verify that we have photos and TSI masks for all
@@ -63,8 +56,6 @@ python3 -u run_collate_tsi_fsc_cf.py
 ## De-glaring (Optional)
 
 ### What You Do
-
-TODO: Modify these scripts to run when not using BLT.
 
 From a local machine, repeatedly run `python3 ManualGlareRemover.py`. This is a manual process of identifying
 glare in photos.
@@ -86,24 +77,17 @@ glare in photos.
    definition of the network architecture.
 1. Build and train the network as described below.
 
-On BLT, (from the `blt_job_output` directory):
+From the `blt_job_output` directory:
 
 ```
 source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch --gres=gpu:4 ../src/launch_train.sh
 ```
 
-(You don't need the first line, which activates the virtual environment, if it is already active.)
-
-On a machine other than BLT (from the 'src' directory):
-
-```
-python3 -u run_train.py
-```
 
 ### What This Accomplishes
 
-1. Sets the experiment name and network architecture.
+1. Set the experiment name and network architecture.
 1. Build and train the network. The result is saved in a directory for the current experiment (also updating the
    experiment log).
 
@@ -111,20 +95,13 @@ python3 -u run_train.py
 
 ### What You Do
 
-On BLT, (from the `blt_job_output` directory):
+From the `blt_job_output` directory:
 
 ```
 source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
 sbatch --gres=gpu:4 ../src/launch_process.sh
 ```
 
-(You don't need the first line, which activates the virtual environment, if it is already active.)
-
-On a machine other than BLT (from the 'src' directory):
-
-```
-python3 -u run_process.py
-```
 
 ### What this Accomplishes
 
@@ -134,7 +111,7 @@ Run photos through our network to produce and save network masks.
 
 ### What You Do
 
-On BLT, (from the `blt_job_output` directory), wait for each of the following steps to finish before doing the next one:
+From the `blt_job_output` directory, wait for each of the following steps to finish before doing the next one:
 
 ```
 source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
@@ -149,15 +126,6 @@ sbatch ../src/launch_average_network_fsc.sh
 sbatch ../src/launch_collate_network_fsc_cf.sh
 ````
 
-(You don't need the first line, which activates the virtual environment, if it is already active.)
-
-On a machine other than BLT (from the 'src' directory):
-
-```
-python3 -u run_calculate_network_fsc.py
-python3 -u run_average_network_fsc.py
-python3 -u run_collate_network_fsc_cf.py
-```
 
 ### What This Accomplishes
 
@@ -168,7 +136,7 @@ Use network masks to create .csv files of network FSCs.
 ### What You Do
 
 1. Edit `src/config.py` to set EXPERIMENT_NAME to the experiment in which you're interested.
-1. Run `grab_and_display_results.py`.
+1. On a local machine, run `grab_and_display_results.py`.
 
 This is mainly for out internal use; it pulls down files from BLT
 and produces various plots and other files in a directory (named for the timestamp) within `data_for_plotting`.
