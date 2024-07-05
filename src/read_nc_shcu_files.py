@@ -6,7 +6,7 @@ import numpy as np
 # First just read through the netcdf files and extract the day, start_hour, end_hour, and two flags.
 def read_netcdf_files(directory = '../ShCu_times'):
     files = os.listdir(directory)
-
+    print(files)
     # initialize output. This will be a dataframe with 5 columns containing:
     # [day, start_hour, end_hour, shallowcumulus_event, shallowcumulus_event_tests]
     dfs = []
@@ -44,24 +44,19 @@ def read_netcdf_files(directory = '../ShCu_times'):
             ds.close()
 
     # Concatenate all DataFrames into a single DataFrame
-    output = pd.concat(output, ignore_index=True)
+    output = pd.concat(dfs, ignore_index=True)
     return output
 
-a="hi"
+def df_to_timestamp():
 
-# ncfile1 = netCDF4.Dataset('../ShCu_times/sgpshcusummaryC1.c1.20120501.000000.custom.nc','r')
-# # print(ncfile1.variables)
-#
-# print(ncfile1['shallowcumulus_event_tests'][:])
-# print('HI')
-# print(ncfile1['shallowcumulus_event'][:,:])
-#
-# plt.imshow(ncfile1['shallowcumulus_event'][:,:])
-# plt.colorbar()
-# plt.show()
-#
-# plt.imshow(ncfile1['shallowcumulus_event_tests'][:,:])
-# plt.colorbar()
-# plt.show()
-#
-# # ncfile2 = netcdf.NetCDFFile('../ShCu_times/sgpshcusummaryC1.c1.20120501.000000.custom.nc','r')
+
+
+# Create a Dataframe containing (day, start_hour, end_hour, event, event_test)
+output = read_netcdf_files()
+
+# Convert this into a list of times every 5 minutes.
+shcu_times = df_to_timestamp()
+
+# Get the times for our analysis
+
+a="hi"
