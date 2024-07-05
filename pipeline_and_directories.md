@@ -69,30 +69,10 @@ TODO: Modify these scripts to run when not using BLT.
 From a local machine, repeatedly run `python3 ManualGlareRemover.py`. This is a manual process of identifying
 glare in photos.
 
-On BLT, run (from the `blt_job_output` directory) each of the following, waiting for each to finish before doing the
-next one.
-
-```
-source /home/labs/drake/tensorflow_gpu_11.7/bin/activate
-sbatch ../src/launch_calculate_tsi_fsc.sh _no_glare
-```
-
-```
-sbatch ../src/launch_average_tsi_fsc.sh _no_glare
-```
-
-```
-sbatch ../src/launch_collate_tsi_fsc_cf.sh _no_glare
-```
-
 ### What This Accomplishes
 
 1. Produce a set of TSI masks from which large areas of glare (identified by a human) have been removed. These are in
    `data/tsi_masks_no_glare`.
-2. Count opaque, thin, and clear pixels for each de-glared TSI mask.
-3. Compute 20-minute averages of fractional sky cover. 
-4. Collate these with ceilometer cloud fractions.
-
 
 ## Train the Model
 
