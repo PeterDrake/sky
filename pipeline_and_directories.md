@@ -177,8 +177,10 @@ data (these are all generated and therefore *not* under version control)
     typical_validation_tsi_fsc.csv
     dubious_validation_tsi_fsc_20avg.csv
     typical_validation_tsi_fsc_20avg.csv
-    collate_tsi_fsc_cf_dubious.csv
-    collate_tsi_fsc_cf_typical.csv
+    collate_tsi_fsc_cf_dubious_validation.csv
+    collate_tsi_fsc_cf_typical_validation.csv
+    collate_tsi_fsc_cf_dubious_testing.csv
+    collate_tsi_fsc_cf_typical_testing.csv
     photos
         20120501 (and similar years/months/dates)
             20120501170430_photo.jpg (preprocessed)

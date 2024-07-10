@@ -2,22 +2,20 @@ import pandas as pd
 from config import *
 import sys
 
-suffix = sys.argv[1]
-
-def collate_tsi_fsc_cf(category):
+def collate_tsi_fsc_cf(quality, category):
     '''
     :param category either 'typical' or 'dubious'
     '''
     # Read the TSI FSCs
-    tsi_fsc_df = pd.read_csv(DATA_DIR + '/' + category + f'_validation_tsi_fsc_20avg{suffix}.csv')
+    tsi_fsc_df = pd.read_csv(DATA_DIR + '/' + quality + f'_{category}_tsi_fsc_20avg.csv')
     # Read the ceilometer CFs
-    cf_df = pd.read_csv(RAW_CSV_DIR + '/shcu_' + category + '_data.csv', usecols=['timestamp_utc', 'cf_shcu'])
+    cf_df = pd.read_csv(RAW_CSV_DIR + '/shcu_' + quality + '_data.csv', usecols=['timestamp_utc', 'cf_shcu'])
     cf_df = cf_df.drop_duplicates()
     # Join the dataframes
     result = tsi_fsc_df.merge(cf_df, on='timestamp_utc', how='inner')
     # Export the result
-    result.to_csv(f'{DATA_DIR}/collate_tsi_fsc_cf_{category}{suffix}.csv')
+    result.to_csv(f'{DATA_DIR}/collate_tsi_fsc_cf_{quality}_{category}.csv')
 
-collate_tsi_fsc_cf('typical')
-if suffix == '':  # Temporary, because we haven't de-glared dubious data yet
-    collate_tsi_fsc_cf('dubious')
+for quality in ['typical', 'dubious']:
+    for category in ['validation', 'testing']:
+        collate_tsi_fsc_cf(quality, category)
