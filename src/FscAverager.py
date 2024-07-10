@@ -92,7 +92,6 @@ class FscAverager:
         return result
 
     def compute_averages(self, year):
-        print(f'Computing averages for {year}')
         windows = self.find_windows(year)
         if not windows:  # There are no valid windows this yere
             return pd.DataFrame()
@@ -111,7 +110,6 @@ class FscAverager:
         """
         Write to a .csv file the average thin_100 and opaque_100 fscs for all windows across all years.
         """
-        print(f'Years: {self.years()}')
         year_dataframes = [self.compute_averages(y) for y in self.years()]
         year_dataframes = [y for y in year_dataframes if not y.empty]  # Exclude any year with no windows
         df = pd.concat(year_dataframes, axis=0)
