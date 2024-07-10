@@ -94,6 +94,7 @@ class FscAverager:
     def compute_averages(self, year):
         print(f'Computing averages for {year}')
         windows = self.find_windows(year)
+        print(f'Windows: {len(windows)}')
         data = []
         for stamp, (start, end) in windows.items():
             sums = self.data.iloc[start:end+1].sum()
