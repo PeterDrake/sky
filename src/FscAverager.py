@@ -99,6 +99,7 @@ class FscAverager:
             sums['timestamp_utc'] = stamp
             data.append(sums)
         result = pd.DataFrame(data)
+        print(result.head())
         result['total'] = result['clear_100'] + result['thin_100'] + result['opaque_100']
         result['fsc_thin_100'] = result['thin_100'] / result['total']
         result['fsc_opaque_100'] = result['opaque_100'] / result['total']
