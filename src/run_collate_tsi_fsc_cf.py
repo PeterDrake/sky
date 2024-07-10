@@ -7,7 +7,7 @@ def collate_tsi_fsc_cf(quality, category):
     :param category either 'typical' or 'dubious'
     '''
     # Read the TSI FSCs
-    print(f'Collating {quality} {categor}')
+    print(f'Collating {quality} {category}')
     tsi_fsc_df = pd.read_csv(DATA_DIR + '/' + quality + f'_{category}_tsi_fsc_20avg.csv')
     # Read the ceilometer CFs
     cf_df = pd.read_csv(RAW_CSV_DIR + '/shcu_' + quality + '_data.csv', usecols=['timestamp_utc', 'cf_shcu'])
