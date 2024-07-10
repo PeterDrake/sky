@@ -95,7 +95,7 @@ class FscAverager:
         print(f'Computing averages for {year}')
         windows = self.find_windows(year)
         if not windows:  # There are no valid windows this yere
-            return None
+            return pd.DataFrame()
         data = []
         for stamp, (start, end) in windows.items():
             sums = self.data.iloc[start:end+1].sum()
@@ -113,6 +113,6 @@ class FscAverager:
         """
         print(f'Years: {self.years()}')
         year_dataframes = [self.compute_averages(y) for y in self.years()]
-        year_dataframes = [y for y in year_dataframes if y != None]  # Exclude any year with no windows
+        year_dataframes = [y for y in year_dataframes if not y.empty]  # Exclude any year with no windows
         df = pd.concat(year_dataframes, axis=0)
         df.to_csv(self.data_dir + '/' + filename, index=False)

@@ -53,6 +53,12 @@ class TestFscAverager(unittest.TestCase):
         totals = 37 + 633 + 41866 + 13 + 1601 + 40922 + 37 + 6067 + 36340
         self.assertEqual(thins / totals, averages['fsc_thin_100'][0])
 
+    def test_computes_averages_empty_year(self):
+        # By setting min_stamps to 100, there will be no valid windows
+        averager = FscAverager('../test_raw_csv', 'tiny_tsi_fsc.csv', half_width=1, min_stamps=100)
+        averages = averager.compute_averages(2016)
+        self.assertTrue(averages.empty)
+
     def test_saves_averages(self):
         averager = FscAverager('../test_raw_csv', 'tiny_tsi_fsc.csv', half_width=1, min_stamps=3)
         averager.write_averages('tiny_tsi_fsc_2avg.csv')
