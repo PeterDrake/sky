@@ -92,6 +92,7 @@ class FscAverager:
         return result
 
     def compute_averages(self, year):
+        print(f'Computing averages for {year}')
         windows = self.find_windows(year)
         data = []
         for stamp, (start, end) in windows.items():
@@ -99,7 +100,6 @@ class FscAverager:
             sums['timestamp_utc'] = stamp
             data.append(sums)
         result = pd.DataFrame(data)
-        print(result.head())
         result['total'] = result['clear_100'] + result['thin_100'] + result['opaque_100']
         result['fsc_thin_100'] = result['thin_100'] / result['total']
         result['fsc_opaque_100'] = result['opaque_100'] / result['total']
@@ -109,6 +109,7 @@ class FscAverager:
         """
         Write to a .csv file the average thin_100 and opaque_100 fscs for all windows across all years.
         """
+        print(f'Years: {self.years()}')
         year_dataframes = [self.compute_averages(y) for y in self.years()]
         df = pd.concat(year_dataframes, axis=0)
         df.to_csv(self.data_dir + '/' + filename, index=False)
