@@ -19,3 +19,6 @@ NETWORK_ARCHITECTURE = 'net_c16x32'
 
 # Number of epochs to train for
 TRAIN_EPOCHS = 40
+
+# Whether to process network images for validation or testing
+NETWORK_IMAGE_CATEGORY = 'testing'
