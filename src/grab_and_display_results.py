@@ -34,8 +34,8 @@ def download_files():
     password = os.environ.get('password')
     with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
         for quality in ('typical', 'dubious'):
-            connection.get(f'{DATA_DIR}/collate_tsi_fsc_cf_{quality}.csv',
-                           f'{dir}/collate_tsi_fsc_cf_{quality}.csv')
+            connection.get(f'{DATA_DIR}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv',
+                           f'{dir}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
             connection.get(f'{RESULTS_DIR}/{EXPERIMENT_NAME}/collate_network_fsc_cf_{quality}.csv',
                            f'{dir}/collate_network_fsc_cf_{quality}.csv')
         connection.get(f'{RESULTS_DIR}/{EXPERIMENT_NAME}/training_history',
@@ -57,7 +57,7 @@ def rmse():
 def find_interesting_timestamps(quality):
     with open(f'{dir}/{quality}_stamps.txt', 'w') as file:
         net = pd.read_csv(f'{dir}/collate_network_fsc_cf_{quality}.csv', dtype={'timestamp_utc': str})
-        tsi = pd.read_csv(f'{dir}/collate_tsi_fsc_cf_{quality}.csv', dtype={'timestamp_utc': str})
+        tsi = pd.read_csv(f'{dir}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv', dtype={'timestamp_utc': str})
         df = net.merge(tsi, how='outer', on=('timestamp_utc', 'cf_shcu'), suffixes=('_net', '_tsi'))
         df.set_index('timestamp_utc', inplace=True)
         # Make new columns for differences
