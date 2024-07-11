@@ -20,7 +20,8 @@ class ManualGlareRemover:
 
     FOOTPRINT = np.ones((9, 9))  # Neighborhood for flood fill
 
-    IMAGES_PER_SESSION = 10
+    IMAGES_PER_SESSION = 100
+
 
     def __init__(self, root, data_dir):
         self.root = root

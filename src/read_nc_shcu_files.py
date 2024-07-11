@@ -47,15 +47,23 @@ def read_netcdf_files(directory = '../ShCu_times'):
     output = pd.concat(dfs, ignore_index=True)
     return output
 
-def df_to_timestamp():
+# def df_to_timestamp(shcu_data):
 
+# def generate_time_range(day, start_hour, end_hour)
+    start_time = pd.Timestamp.combine(pd.Timestamp)
 
 
 # Create a Dataframe containing (day, start_hour, end_hour, event, event_test)
 output = read_netcdf_files()
 
+#            day  start_hour  end_hour  event  event_test
+# 0   2012-05-01        18.0      23.0     32           0
+# 1   2012-05-02        15.0      22.0      1           0
+# 2   2012-05-09        20.0      24.0      1           0
+# 3   2012-05-11         1.0       2.0     16           0
+
 # Convert this into a list of times every 5 minutes.
-shcu_times = df_to_timestamp()
+# shcu_times = df_to_timestamp()
 
 # Get the times for our analysis
 
