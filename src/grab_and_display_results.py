@@ -47,8 +47,10 @@ def rmse():
         for source in ('tsi', 'network'):
             file.write(f'{source}: ')
             for quality in ('typical', 'dubious'):
+                print(f'{source}/{quality}: {dir}/collate_{source}_fsc_cf_{quality}.csv')
                 df = pd.read_csv(f'{dir}/collate_{source}_fsc_cf_{quality}.csv')
                 df.dropna(inplace=True)
+                print(df.shape)
                 rmse = mean_squared_error(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], squared=False)
                 file.write(f'{quality}: {rmse:.3f} ')
             file.write('\n')
