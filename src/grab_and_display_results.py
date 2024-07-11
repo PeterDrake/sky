@@ -47,10 +47,8 @@ def rmse():
         for source in ('tsi', 'network'):
             file.write(f'{source}: ')
             for quality in ('typical', 'dubious'):
-                print(f'{source}/{quality}: {dir}/collate_{source}_fsc_cf_{quality}.csv')
                 df = pd.read_csv(f'{dir}/collate_{source}_fsc_cf_{quality}.csv')
                 df.dropna(inplace=True)
-                print(df.shape)
                 rmse = mean_squared_error(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], squared=False)
                 file.write(f'{quality}: {rmse:.3f} ')
             file.write('\n')
@@ -103,7 +101,6 @@ def fetch_images_from_blt(timestamps):
             connection.get(timestamp_to_tsi_mask_path(DATA_DIR, s),
                            f'{dir}/{s}_tsi_mask.png')
             log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
-            # print('Looking in ' + timestamp_to_network_mask_path(log_updater.experiment_dir, s))
             connection.get(timestamp_to_network_mask_path(log_updater.experiment_dir, s),
                            f'{dir}/{s}_network_mask.png')
 
