@@ -14,7 +14,7 @@ def collate_network_fsc_cf(quality):
     # Join the dataframes
     result = network_fsc_df.merge(cf_df, on='timestamp_utc', how='inner')
     # Export the result
-    result.to_csv(RESULTS_DIR + '/' + EXPERIMENT_NAME + '/collate_network_fsc_cf_' + quality + '.csv')
+    result.to_csv(f'{RESULTS_DIR}/{EXPERIMENT_NAME}/collate_network_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
 
 collate_network_fsc_cf('typical')
 collate_network_fsc_cf('dubious')
