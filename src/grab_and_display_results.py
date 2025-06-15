@@ -56,7 +56,7 @@ def rmse():
 
 def find_interesting_timestamps(quality):
     with open(f'{dir}/{quality}_stamps.txt', 'w') as file:
-        net = pd.read_csv(f'{dir}/collate_network_fsc_cf_{quality}.csv', dtype={'timestamp_utc': str})
+        net = pd.read_csv(f'{dir}/collate_network_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv', dtype={'timestamp_utc': str})
         tsi = pd.read_csv(f'{dir}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv', dtype={'timestamp_utc': str})
         df = net.merge(tsi, how='outer', on=('timestamp_utc', 'cf_shcu'), suffixes=('_net', '_tsi'))
         df.set_index('timestamp_utc', inplace=True)
@@ -127,7 +127,7 @@ def create_triptych(timestamp):
 def create_scatter_plot():
     plt.figure(figsize=(9, 4))
     ax1 = plt.subplot(121)
-    df = pd.read_csv(f'{dir}/collate_network_fsc_cf_typical.csv')
+    df = pd.read_csv(f'{dir}/collate_network_fsc_cf_typical_{NETWORK_IMAGE_CATEGORY}.csv')
     ax1.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=0.5, alpha=0.5)
     ax1.plot([0, 1], [0, 1], color='red')
     ax1.set_xlabel('Cloud fraction')
@@ -136,7 +136,7 @@ def create_scatter_plot():
     ax1.grid()
 
     ax2 = plt.subplot(122)
-    df = pd.read_csv(f'{dir}/collate_network_fsc_cf_dubious.csv')
+    df = pd.read_csv(f'{dir}/collate_network_fsc_cf_dubious_{NETWORK_IMAGE_CATEGORY}.csv')
     ax2.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=0.5, alpha=0.5)
     ax2.plot([0, 1], [0, 1], color='red')
     ax2.set_xlabel('Cloud fraction')
