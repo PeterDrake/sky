@@ -124,6 +124,22 @@ def create_triptych(timestamp):
     plt.close()
 
 
+def create_triptych_stack(timestamps):
+    n = len(timestamps)
+    fig, ax = plt.subplots(n, 3, figsize=(9, 2*n))
+    for i, s in enumerate(stamps):
+        photo = imread(f'{dir}/{s}_photo.jpg')
+        tsi_mask = imread(f'{dir}/{s}_tsi_mask.png')
+        network_mask = imread(f'{dir}/{s}_network_mask.png')
+        ax[i, 0].imshow(photo)
+        ax[i, 0].set_title('Photo')
+        ax[i, 1].imshow(tsi_mask)
+        ax[i, 1].set_title('TSI Mask')
+        ax[i, 2].imshow(network_mask)
+        ax[i, 2].set_title('Network Mask')
+    plt.savefig(f'{dir}/triptych_stack.png')
+    plt.close()
+
 def create_scatter_plot():
     plt.figure(figsize=(9, 4))
     ax1 = plt.subplot(121)
@@ -160,13 +176,14 @@ def create_learning_curve():
 
 # Now, time to call those functions!
 dir = f'../data_for_plotting/{EXPERIMENT_NAME}'
-download_files()
+# download_files()
 rmse()
 for quality in ('typical', 'dubious'):
     stamps = find_interesting_timestamps(quality)
-    fetch_images_from_blt(stamps)
-    for i, s in enumerate(stamps):
-        print(i)
-        create_triptych(s)
+    # fetch_images_from_blt(stamps)
+    create_triptych_stack(stamps)
+    # for i, s in enumerate(stamps):
+    #     print(i)
+    #     create_triptych(s)
 create_scatter_plot()
 create_learning_curve()
