@@ -1,11 +1,14 @@
-from tensorflow import keras
+try:
+    from tf_keras.utils import Sequence
+except ImportError:
+    from tensorflow.keras.utils import Sequence
 from utils_timestamp import *
 from utils_image import *
 import numpy as np
 from skimage.io import imsave, imread
 
 
-class BatchGenerator(keras.utils.Sequence):
+class BatchGenerator(Sequence):
     """Loads batches of data (each batch as an Nx480x480x3 numpy array) for network training."""
 
     def __init__(self, timestamps, data_dir, batch_size=16, use_no_glare_masks=False):

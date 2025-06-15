@@ -9,6 +9,7 @@ from utils_timestamp import *
 from ExperimentLogUpdater import ExperimentLogUpdater
 from skimage.io import imread
 import matplotlib.pyplot as plt
+from math import sqrt
 
 
 """
@@ -25,8 +26,7 @@ Downloads (from BLT) various files for the current experiment and then saves int
 
 def download_files():
     """
-    Fetches the photo, TSI mask, and network mask for timestamp from BLT via sftp. The files are saved into
-    data_for_plotting.
+    Fetches the .csv files and the training history. The files are saved locally into data_for_plotting.
     """
     Path(dir).mkdir(exist_ok=True)
     load_dotenv()
@@ -36,8 +36,8 @@ def download_files():
         for quality in ('typical', 'dubious'):
             connection.get(f'{DATA_DIR}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv',
                            f'{dir}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
-            connection.get(f'{RESULTS_DIR}/{EXPERIMENT_NAME}/collate_network_fsc_cf_{quality}.csv',
-                           f'{dir}/collate_network_fsc_cf_{quality}.csv')
+            connection.get(f'{RESULTS_DIR}/{EXPERIMENT_NAME}/collate_network_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv',
+                           f'{dir}/collate_network_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
         connection.get(f'{RESULTS_DIR}/{EXPERIMENT_NAME}/training_history',
                        f'{dir}/training_history')
 
@@ -47,9 +47,9 @@ def rmse():
         for source in ('tsi', 'network'):
             file.write(f'{source}: ')
             for quality in ('typical', 'dubious'):
-                df = pd.read_csv(f'{dir}/collate_{source}_fsc_cf_{quality}.csv')
+                df = pd.read_csv(f'{dir}/collate_{source}_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
                 df.dropna(inplace=True)
-                rmse = mean_squared_error(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], squared=False)
+                rmse = sqrt(mean_squared_error(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100']))
                 file.write(f'{quality}: {rmse:.3f} ')
             file.write('\n')
 

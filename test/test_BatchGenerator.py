@@ -8,6 +8,7 @@ from skimage.io import imsave, imread
 class TestBatchGenerator(unittest.TestCase):
 
     def setUp(self):
+        print('Setting up')
         # Make up some timestamps
         timestamps = pd.read_csv('../test_data/tiny_data.csv', converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
         timestamps = timestamps['timestamp_utc'].tolist()
