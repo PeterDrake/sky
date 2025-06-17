@@ -152,24 +152,39 @@ def create_triptych_stack(timestamps):
     plt.close()
 
 def create_scatter_plot():
-    plt.figure(figsize=(9, 4))
-    ax1 = plt.subplot(121)
-    df = pd.read_csv(f'{dir}/collate_network_fsc_cf_typical_{NETWORK_IMAGE_CATEGORY}.csv')
-    ax1.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=0.5, alpha=0.5)
-    ax1.plot([0, 1], [0, 1], color='red')
-    ax1.set_xlabel('Cloud fraction')
-    ax1.set_ylabel('Network FSC (opaque + thin, 100)')
-    ax1.set_title('Typical data')
-    ax1.grid()
-
-    ax2 = plt.subplot(122)
-    df = pd.read_csv(f'{dir}/collate_network_fsc_cf_dubious_{NETWORK_IMAGE_CATEGORY}.csv')
-    ax2.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=0.5, alpha=0.5)
-    ax2.plot([0, 1], [0, 1], color='red')
-    ax2.set_xlabel('Cloud fraction')
-    # ax2.set_ylabel('Network FSC (opaque, 100)')
-    ax2.set_title('Dubious data')
-    ax2.grid()
+    fig, ax = plt.subplots(2, 2, figsize=(9, 9), layout='constrained', sharex='col', sharey='row')
+    # Words are capitalized in the next two rows for the row/column labels.
+    for c, category in enumerate(['Typical', 'Dubious']):
+        for s, source in enumerate(['TSI', 'Network']):
+            df = pd.read_csv(f'{dir}/collate_{source.lower()}_fsc_cf_{category.lower()}_{NETWORK_IMAGE_CATEGORY}.csv')
+            ax = plt.subplot(2, 2, (2 * c + s) + 1)
+            ax.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=2, alpha=0.5)
+            ax.plot([0, 1], [0, 1], color='red')
+            if s == 0:  # Y label on left column only
+                ax.set_ylabel(f'{category} data')
+            if c == 0:  # Title on top row only
+                ax.set_title(f'{source} FSC (opaque + thin, 100)')
+            else:  # X label on bottom row only
+                ax.set_xlabel('Cloud fraction')
+            ax.grid()
+    # plt.figure(figsize=(9, 4))
+    # ax1 = plt.subplot(121)
+    # df = pd.read_csv(f'{dir}/collate_network_fsc_cf_typical_{NETWORK_IMAGE_CATEGORY}.csv')
+    # ax1.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=0.5, alpha=0.5)
+    # ax1.plot([0, 1], [0, 1], color='red')
+    # ax1.set_xlabel('Cloud fraction')
+    # ax1.set_ylabel('Network FSC (opaque + thin, 100)')
+    # ax1.set_title('Typical data')
+    # ax1.grid()
+    #
+    # ax2 = plt.subplot(122)
+    # df = pd.read_csv(f'{dir}/collate_network_fsc_cf_dubious_{NETWORK_IMAGE_CATEGORY}.csv')
+    # ax2.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=0.5, alpha=0.5)
+    # ax2.plot([0, 1], [0, 1], color='red')
+    # ax2.set_xlabel('Cloud fraction')
+    # # ax2.set_ylabel('Network FSC (opaque, 100)')
+    # ax2.set_title('Dubious data')
+    # ax2.grid()
     plt.savefig(f'{dir}/scatter.png')
     plt.close()
 
@@ -189,13 +204,13 @@ def create_learning_curve():
 dir = f'../data_for_plotting/{EXPERIMENT_NAME}'
 # download_files()
 rmse()
-for quality in ('typical', 'dubious'):
-    stamps = find_interesting_timestamps(quality)
-    # fetch_images_from_blt(stamps)
-    create_triptych_stack(stamps)
-    # TODO We're overwriting the typical one in the second pass through this loop!
-    # for i, s in enumerate(stamps):
-    #     print(i)
-    #     create_triptych(s)
+# for quality in ('typical', 'dubious'):
+#     stamps = find_interesting_timestamps(quality)
+#     # fetch_images_from_blt(stamps)
+#     create_triptych_stack(stamps)
+#     # TODO We're overwriting the typical one in the second pass through this loop!
+#     # for i, s in enumerate(stamps):
+#     #     print(i)
+#     #     create_triptych(s)
 create_scatter_plot()
 create_learning_curve()
