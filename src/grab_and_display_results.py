@@ -126,17 +126,28 @@ def create_triptych(timestamp):
 
 def create_triptych_stack(timestamps):
     n = len(timestamps)
-    fig, ax = plt.subplots(n, 3, figsize=(9, 2*n))
-    for i, s in enumerate(stamps):
-        photo = imread(f'{dir}/{s}_photo.jpg')
-        tsi_mask = imread(f'{dir}/{s}_tsi_mask.png')
-        network_mask = imread(f'{dir}/{s}_network_mask.png')
+    n = 4
+    fig, ax = plt.subplots(n, 3, figsize=(6, 2*n), layout='constrained', sharey='row')
+    for i, stamp in enumerate(stamps[:n]):  # TODO The slice is unnecessary if n is len(timestamps)
+        photo = imread(f'{dir}/{stamp}_photo.jpg')
+        tsi_mask = imread(f'{dir}/{stamp}_tsi_mask.png')
+        network_mask = imread(f'{dir}/{stamp}_network_mask.png')
         ax[i, 0].imshow(photo)
-        ax[i, 0].set_title('Photo')
+        ax[i, 0].set_xlabel('CF goes here')
+        ax[i, 0].set_ylabel(stamp)
         ax[i, 1].imshow(tsi_mask)
-        ax[i, 1].set_title('TSI Mask')
+        ax[i, 1].set_xlabel('TSI FSC goes here')
         ax[i, 2].imshow(network_mask)
-        ax[i, 2].set_title('Network Mask')
+        ax[i, 2].set_xlabel('Network FSC goes here')
+        for j in range(3):
+            ax[i, j].tick_params(axis='both', left=False, right=False, top=False, bottom=False)
+            ax[i, j].set_xticklabels([])
+            ax[i, j].set_yticklabels([])
+            ax[i, j].set_xticks([])
+            ax[i, j].set_yticks([])
+    ax[0, 0].set_title('Photo')
+    ax[0, 1].set_title('TSI Mask')
+    ax[0, 2].set_title('Network Mask')
     plt.savefig(f'{dir}/triptych_stack.png')
     plt.close()
 
@@ -182,6 +193,7 @@ for quality in ('typical', 'dubious'):
     stamps = find_interesting_timestamps(quality)
     # fetch_images_from_blt(stamps)
     create_triptych_stack(stamps)
+    # TODO We're overwriting the typical one in the second pass through this loop!
     # for i, s in enumerate(stamps):
     #     print(i)
     #     create_triptych(s)
