@@ -128,18 +128,22 @@ def create_triptych_stack(timestamps, quality):
     n = len(timestamps)
     n = 8
     fig, ax = plt.subplots(3, n, figsize=(2*n, 6), layout='constrained', sharey='row')
+    tsi_df = pd.read_csv(f'{dir}/collate_tsi_fsc_cf_{quality}_testing.csv', index_col='timestamp_utc')
+    network_df = pd.read_csv(f'{dir}/collate_network_fsc_cf_{quality}_testing.csv', index_col='timestamp_utc')
     for i, stamp in enumerate(stamps[:n]):  # TODO The slice is unnecessary if n is len(timestamps)
         photo = imread(f'{dir}/{stamp}_photo.jpg')
         tsi_mask = imread(f'{dir}/{stamp}_tsi_mask.png')
         network_mask = imread(f'{dir}/{stamp}_network_mask.png')
         ax[0, i].imshow(photo)
         ax[0, i].set_title(stamp)
-        ax[0, i].set_xlabel('CF goes here')
+        ax[0, i].set_xlabel(f'CF = {tsi_df.loc[int(stamp), 'cf_shcu']:.3f}')
         # ax[0, i].set_ylabel(('Photo', 'TSI Mask', 'Network Mask')[i])
         ax[1, i].imshow(tsi_mask)
-        ax[1, i].set_xlabel('TSI FSC goes here')
+        tsi_fsc = tsi_df.loc[int(stamp), 'fsc_opaque_100'] + tsi_df.loc[int(stamp), 'fsc_thin_100']
+        ax[1, i].set_xlabel(f'TSI FSC = {tsi_fsc:.3f}')
         ax[2, i].imshow(network_mask)
-        ax[2, i].set_xlabel('Network FSC goes here')
+        network_fsc = network_df.loc[int(stamp), 'fsc_opaque_100'] + network_df.loc[int(stamp), 'fsc_thin_100']
+        ax[2, i].set_xlabel(f'Network FSC = {network_fsc:.3f}')
         for j in range(3):
             ax[j, i].tick_params(axis='both', left=False, right=False, top=False, bottom=False)
             ax[j, i].set_xticklabels([])
