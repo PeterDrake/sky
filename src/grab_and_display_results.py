@@ -124,7 +124,7 @@ def create_triptych(timestamp):
     plt.close()
 
 
-def create_triptych_stack(timestamps):
+def create_triptych_stack(timestamps, quality):
     n = len(timestamps)
     n = 4
     fig, ax = plt.subplots(n, 3, figsize=(6, 2*n), layout='constrained', sharey='row')
@@ -148,7 +148,7 @@ def create_triptych_stack(timestamps):
     ax[0, 0].set_title('Photo')
     ax[0, 1].set_title('TSI Mask')
     ax[0, 2].set_title('Network Mask')
-    plt.savefig(f'{dir}/triptych_stack.png')
+    plt.savefig(f'{dir}/triptych_stack_{quality}.png')
     plt.close()
 
 def create_scatter_plot():
@@ -204,10 +204,10 @@ def create_learning_curve():
 dir = f'../data_for_plotting/{EXPERIMENT_NAME}'
 # download_files()
 rmse()
-# for quality in ('typical', 'dubious'):
-#     stamps = find_interesting_timestamps(quality)
-#     # fetch_images_from_blt(stamps)
-#     create_triptych_stack(stamps)
+for quality in ('typical', 'dubious'):
+    stamps = find_interesting_timestamps(quality)
+    # fetch_images_from_blt(stamps)
+    create_triptych_stack(stamps, quality)
 #     # TODO We're overwriting the typical one in the second pass through this loop!
 #     # for i, s in enumerate(stamps):
 #     #     print(i)
