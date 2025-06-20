@@ -149,7 +149,7 @@ def create_triptych_stack(timestamps, quality):
     ax[0, 0].set_ylabel('Photo')
     ax[1, 0].set_ylabel('TSI Mask')
     ax[2, 0].set_ylabel('Network Mask')
-    plt.savefig(f'{dir}/triptych_stack_{quality}.png')
+    plt.savefig(f'{dir}/triptych_array_{quality}.png')
     plt.close()
 
 def create_scatter_plot():
