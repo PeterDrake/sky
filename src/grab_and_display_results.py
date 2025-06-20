@@ -135,7 +135,8 @@ def create_triptych_stack(timestamps, quality):
         tsi_mask = imread(f'{dir}/{stamp}_tsi_mask.png')
         network_mask = imread(f'{dir}/{stamp}_network_mask.png')
         ax[0, i].imshow(photo)
-        ax[0, i].set_title(stamp)
+        formatted_timestamp = f'{stamp[0:4]}-{stamp[4:6]}-{stamp[6:8]} {stamp[8:10]}:{stamp[10:12]}'
+        ax[0, i].set_title(formatted_timestamp)
         ax[0, i].set_xlabel(f'CF = {tsi_df.loc[int(stamp), 'cf_shcu']:.3f}')
         # ax[0, i].set_ylabel(('Photo', 'TSI Mask', 'Network Mask')[i])
         ax[1, i].imshow(tsi_mask)
