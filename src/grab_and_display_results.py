@@ -10,7 +10,7 @@ from ExperimentLogUpdater import ExperimentLogUpdater
 from skimage.io import imread
 import matplotlib.pyplot as plt
 from math import sqrt
-
+import numpy as np
 
 """
 Downloads (from BLT) various files for the current experiment and then saves into a subdirectory of data_for_plotting:
@@ -43,16 +43,23 @@ def download_files():
 
 
 def rmse():
+    result = {'tsi':{}, 'network':{}}
+    for source in ('tsi', 'network'):
+        for quality in ('typical', 'dubious'):
+            df = pd.read_csv(f'{dir}/collate_{source}_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
+            df.dropna(inplace=True)
+            rmse = sqrt(mean_squared_error(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100']))
+            result[source][quality] = rmse
+    return result
+
+def create_rmse_file():
+    rmse_ = rmse()
     with open(f'{dir}/rmse.txt', 'w') as file:
         for source in ('tsi', 'network'):
             file.write(f'{source}: ')
             for quality in ('typical', 'dubious'):
-                df = pd.read_csv(f'{dir}/collate_{source}_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
-                df.dropna(inplace=True)
-                rmse = sqrt(mean_squared_error(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100']))
-                file.write(f'{quality}: {rmse:.3f} ')
+                file.write(f'{quality}: {rmse_[source][quality]:.3f} ')
             file.write('\n')
-
 
 def find_interesting_timestamps(quality):
     with open(f'{dir}/{quality}_stamps.txt', 'w') as file:
@@ -96,11 +103,15 @@ def fetch_images_from_blt(timestamps):
     password = os.environ.get('password')
     with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
         for s in timestamps:
+            print(f'Fetching images for timestamp {s}')
+            print('photo...')
             connection.get(timestamp_to_photo_path(DATA_DIR, s),
                            f'{dir}/{s}_photo.jpg')
+            print('tsi mask...')
             connection.get(timestamp_to_tsi_mask_path(DATA_DIR, s),
                            f'{dir}/{s}_tsi_mask.png')
             log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
+            print('network mask...')
             connection.get(timestamp_to_network_mask_path(log_updater.experiment_dir, s),
                            f'{dir}/{s}_network_mask.png')
 
@@ -124,13 +135,14 @@ def create_triptych(timestamp):
     plt.close()
 
 
-def create_triptych_stack(timestamps, quality):
+def create_triptych_stack(timestamps):
     n = len(timestamps)
-    n = 8
     fig, ax = plt.subplots(3, n, figsize=(2*n, 6), layout='constrained', sharey='row')
-    tsi_df = pd.read_csv(f'{dir}/collate_tsi_fsc_cf_{quality}_testing.csv', index_col='timestamp_utc')
-    network_df = pd.read_csv(f'{dir}/collate_network_fsc_cf_{quality}_testing.csv', index_col='timestamp_utc')
-    for i, stamp in enumerate(stamps[:n]):  # TODO The slice is unnecessary if n is len(timestamps)
+    tsi_df = pd.concat([pd.read_csv(f'{dir}/collate_tsi_fsc_cf_{quality}_testing.csv', index_col='timestamp_utc')
+                        for quality in ['typical', 'dubious']])
+    network_df = pd.concat([pd.read_csv(f'{dir}/collate_network_fsc_cf_{quality}_testing.csv', index_col='timestamp_utc')
+                            for quality in ['typical', 'dubious']])
+    for i, stamp in enumerate(timestamps):
         photo = imread(f'{dir}/{stamp}_photo.jpg')
         tsi_mask = imread(f'{dir}/{stamp}_tsi_mask.png')
         network_mask = imread(f'{dir}/{stamp}_network_mask.png')
@@ -154,24 +166,37 @@ def create_triptych_stack(timestamps, quality):
     ax[0, 0].set_ylabel('Photo')
     ax[1, 0].set_ylabel('TSI Mask')
     ax[2, 0].set_ylabel('Network Mask')
-    plt.savefig(f'{dir}/triptych_array_{quality}.png')
+    plt.savefig(f'{dir}/triptych_array.png')
     plt.close()
 
 def create_scatter_plot():
     fig, ax = plt.subplots(2, 2, figsize=(9, 9), layout='constrained', sharex='col', sharey='row')
     # Words are capitalized in the next two rows for the row/column labels.
+    rmse_ = rmse()
+    i = 0  # Index into list of letters for labeling subplots
     for c, category in enumerate(['Typical', 'Dubious']):
         for s, source in enumerate(['TSI', 'Network']):
             df = pd.read_csv(f'{dir}/collate_{source.lower()}_fsc_cf_{category.lower()}_{NETWORK_IMAGE_CATEGORY}.csv')
             ax = plt.subplot(2, 2, (2 * c + s) + 1)
-            ax.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=2, alpha=0.5)
+            nn = df['cf_shcu'].notnull()
+            x = list(df['cf_shcu'][nn])
+            y = list((df['fsc_opaque_100'] + df['fsc_thin_100'])[nn])
+            # print(category)
+            # print(source)
+            # print(df[df['cf_shcu'].isnull()])
+            # print((df['fsc_opaque_100'] + df['fsc_thin_100']).isnull().sum())
+            ax.scatter(x, y, s=5, alpha=0.5)
             ax.plot([0, 1], [0, 1], color='red')
+            ax.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='black', linestyle='dashed')
+            ax.text(0.5, 0.95, f'({'abcd'[i]})', ha='center')
+            ax.text(0.7, 0.05, f'RMSE = {rmse_[source.lower()][category.lower()]:.3f}')
+            i += 1
             if s == 0:  # Y label on left column only
-                ax.set_ylabel(f'{category} data')
+                ax.set_ylabel(f'Fractional sky cover (opaque + thin, 100)\n{category} data')
             if c == 0:  # Title on top row only
-                ax.set_title(f'{source} FSC (opaque + thin, 100)')
+                ax.set_title(f'{source}')
             else:  # X label on bottom row only
-                ax.set_xlabel('Cloud fraction')
+                ax.set_xlabel('Active zenith cloud fraction')
             ax.grid()
     # plt.figure(figsize=(9, 4))
     # ax1 = plt.subplot(121)
@@ -209,14 +234,25 @@ def create_learning_curve():
 # Now, time to call those functions!
 dir = f'../data_for_plotting/{EXPERIMENT_NAME}'
 # download_files()
-rmse()
-for quality in ('typical', 'dubious'):
-    stamps = find_interesting_timestamps(quality)
-    # fetch_images_from_blt(stamps)
-    create_triptych_stack(stamps, quality)
-#     # TODO We're overwriting the typical one in the second pass through this loop!
-#     # for i, s in enumerate(stamps):
-#     #     print(i)
-#     #     create_triptych(s)
+create_rmse_file()
+stamps = [
+    # '20150703173000',
+          '20150703174000',
+          '20160525200000',
+          # '20160904194000',
+          # '20150823201500',
+          '20160904175000',
+          '20130602000500',
+          # '20120716194500',  # Had to edit because we only kept data at 5-min intervals
+          '20170524192000',
+          '20130726223000',
+          '20150925202000',
+          # '20130726202000',
+          '20160611193000',
+          ]
+# for quality in ('typical', 'dubious'):
+#     stamps = find_interesting_timestamps(quality)
+# fetch_images_from_blt(stamps)
+# create_triptych_stack(stamps)
 create_scatter_plot()
-create_learning_curve()
+# create_learning_curve()

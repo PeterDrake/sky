@@ -4,7 +4,8 @@ import sys
 
 def collate_tsi_fsc_cf(quality, category):
     '''
-    :param category either 'typical' or 'dubious'
+    :param quality either 'typical' or 'dubious'
+    :param category either 'validation' or 'testing'
     '''
     # Read the TSI FSCs
     tsi_fsc_df = pd.read_csv(DATA_DIR + '/' + quality + f'_{category}_tsi_fsc_20avg.csv')
