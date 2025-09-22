@@ -1,7 +1,4 @@
-try:
-    from tf_keras.utils import Sequence
-except ImportError:
-    from tensorflow.keras.utils import Sequence
+from tf_keras.utils import Sequence
 from utils_timestamp import *
 from utils_image import *
 import numpy as np

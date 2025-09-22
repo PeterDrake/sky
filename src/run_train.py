@@ -1,4 +1,4 @@
-# import tensorflow.keras.optimizers
+import tensorflow.keras.optimizers
 
 from BatchGenerator import *
 from ExperimentLogUpdater import *

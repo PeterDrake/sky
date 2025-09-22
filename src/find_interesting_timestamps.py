@@ -1,5 +1,4 @@
 import pandas as pd
-import random
 
 """
 Finds some representative timestamps for manual inspections.

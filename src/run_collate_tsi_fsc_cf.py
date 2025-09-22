@@ -1,6 +1,5 @@
 import pandas as pd
 from config import *
-import sys
 
 def collate_tsi_fsc_cf(quality, category):
     '''
