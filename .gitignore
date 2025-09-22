@@ -3,6 +3,7 @@
 .idea
 *~
 venv
+.venv
 data
 test_data
 test_results
