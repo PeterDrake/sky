@@ -66,7 +66,7 @@ class Preprocessor:
         """
         path = self.raw_csv_dir + '/' + csv_filename
         self.log('Validating ' + path)
-        data = pd.read_csv(path, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
+        data = pd.read_csv(path, converters={'timestamp_utc': str}, usecols=['timestamp_utc', 'cf_shcu'])
         self.log(f'Data size before removing duplicates: {len(data)}')
         data = data.drop_duplicates(subset='timestamp_utc')
         self.log(f'Data size after removing duplicates: {len(data)}')
@@ -76,7 +76,7 @@ class Preprocessor:
         for i, t in timestamps.items():
             if i % 10000 == 0:
                 self.log(f'Timestamps examined: {i}')
-            if self.photo_exists(t) and self.tsi_mask_exists(t):
+            if self.photo_exists(t) and self.tsi_mask_exists(t) and self.cf_exists(t, data):
                 self.valid_timestamp_count += 1
             else:
                 self.log(t + ' is invalid')
@@ -88,7 +88,7 @@ class Preprocessor:
         """
         Writes a cleaned-up version of csv_filename. The filename is read from this Preprocessor's raw_csv_dir and the
         clean version is written to this Preprocessor's data_dir. "Cleaning" means removing duplicate timestamps and
-        eliminating timestamps where either the photo or TSI mask is nonexistent or empty.
+        eliminating timestamps where either the photo or TSI mask is nonexistent or empty, or where cf_shcu is NaN.
 
         If five_minute is True, cleaning also removes all timestamps that don't end in 000 or 500.
 
@@ -97,12 +97,12 @@ class Preprocessor:
         """
         in_path = self.raw_csv_dir + '/' + csv_filename
         self.log('Reading ' + in_path)
-        data = pd.read_csv(in_path, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
+        data = pd.read_csv(in_path, converters={'timestamp_utc': str}, usecols=['timestamp_utc', 'cf_shcu'])
         data = data.drop_duplicates(subset='timestamp_utc')
         valid = []
         self.log('Validating ' + str(len(data)) + ' lines')
         for i, t in data['timestamp_utc'].items():
-            valid.append(self.photo_exists(t) and self.tsi_mask_exists(t)
+            valid.append(self.photo_exists(t) and self.tsi_mask_exists(t) and self.cf_exists(t, data)
                          and ((not five_minute) or t.endswith('000') or t.endswith('500')))
             if i % 1000 == 0:
                 self.log(str(i) + ' lines examined')
