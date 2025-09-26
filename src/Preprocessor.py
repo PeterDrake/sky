@@ -50,10 +50,18 @@ class Preprocessor:
         path = self.raw_tsi_mask_path(timestamp)
         return os.path.exists(path) and os.path.getsize(path) > 0
 
+    def cf_exists(self, timestamp, data):
+        """
+        Returns True iff the cf_shcu column in data is not NaN.
+
+        @param data A dataframe, read from the raw CSV file.
+        """
+        return not np.isnan(data[data['timestamp_utc'] == timestamp]['cf_shcu'].values[0])
+
     def validate_csv(self, csv_filename):
         """
         Looks at all of the timestamps in csv_filename and remembers how many were valid (i.e., have
-        non-empty photos and TSI masks. Also ignores duplicate timestamps. This method is not necessary during normal
+        non-empty photos and TSI masks). Also ignores duplicate timestamps. This method is not necessary during normal
         processing, but may be helpful for verifying that files exist, counting invalid timestamps, etc.
         """
         path = self.raw_csv_dir + '/' + csv_filename

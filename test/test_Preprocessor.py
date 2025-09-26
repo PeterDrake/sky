@@ -47,6 +47,11 @@ class TestPreprocessor(unittest.TestCase):
         # We added this zero-byte file to the test data
         self.assertFalse(self.preprocessor.tsi_mask_exists('20180418000245'))
 
+    def test_notices_missing_cf(self):
+        df = pd.read_csv('../test_raw_csv/tiny_data.csv', converters={'timestamp_utc': str}, usecols=['timestamp_utc', 'cf_shcu'])
+        self.assertFalse(self.preprocessor.cf_exists('20170524194500', df))
+        self.assertTrue(self.preprocessor.cf_exists('20170524194430', df))
+
     def test_finds_correct_numbers_of_valid_and_invalid_timestamps(self):
         self.preprocessor.validate_csv('tiny_data.csv')
         self.assertEqual(309, self.preprocessor.valid_timestamp_count)
