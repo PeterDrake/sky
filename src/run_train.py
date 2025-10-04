@@ -1,5 +1,5 @@
 import tensorflow.keras.optimizers
-import tensorflow.keras
+import tf_keras
 
 from BatchGenerator import *
 from ExperimentLogUpdater import *
@@ -30,7 +30,7 @@ model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 # Specify callbacks to use during training
 callbacks = [
     # Save the model regularly, keeping only the best one
-    tensorflow.keras.callbacks.ModelCheckpoint(log_updater.experiment_dir + '/network.h5', save_best_only=True)
+    tf_keras.callbacks.ModelCheckpoint(log_updater.experiment_dir + '/network.h5', save_best_only=True)
 ]
 
 # Train the model, doing validation at the end of each epoch
