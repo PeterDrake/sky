@@ -17,7 +17,6 @@ already active.
 From the `blt_job_output` directory, wait for each of the following steps to finish before doing the next one.
 
 ```
-source /home/drake/sky/.venv/bin/activate
 sbatch ../src/launch_preprocess.sh
 ```
 
@@ -80,7 +79,6 @@ glare in photos.
 From the `blt_job_output` directory:
 
 ```
-source /home/drake/sky/.venv/bin/activate
 sbatch --gres=gpu:4 ../src/launch_train.sh
 ```
 
@@ -98,7 +96,6 @@ sbatch --gres=gpu:4 ../src/launch_train.sh
 From the `blt_job_output` directory:
 
 ```
-source /home/drake/sky/.venv/bin/activate
 sbatch --gres=gpu:4 ../src/launch_process.sh
 ```
 
@@ -114,7 +111,6 @@ Run photos through our network to produce and save network masks.
 From the `blt_job_output` directory, wait for each of the following steps to finish before doing the next one:
 
 ```
-source /home/drake/sky/.venv/bin/activate
 sbatch ../src/launch_calculate_network_fsc.sh
 ```
 
