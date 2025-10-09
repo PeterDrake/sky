@@ -7,9 +7,6 @@ Our pipeline involves the following steps. These are specific to "BLT", our camp
 Slurm job management system. On another system, modify the .sh files for your own job management system. If not running
 on a cluster, examine the .sh files for which Python scripts to run directly.
 
-Each group of BLT instructions includes a reminder to start the virtual environment. This can be skipped if it is
-already active.
-
 ## Preprocess the Data
 
 ### What You Do
