@@ -39,7 +39,7 @@ val_gen = BatchGenerator(val_stamps, DATA_DIR)
 
 # Specify callbacks to use during training (unchanged)
 callbacks = [
-    tf_keras.callbacks.ModelCheckpoint(log_updater.experiment_dir + '/network.h5', save_best_only=True)
+    tf_keras.callbacks.ModelCheckpoint(log_updater.experiment_dir + '/network.keras', save_best_only=True)
 ]
 
 # Train the model (unchanged, but now executes across all 4 GPUs)
