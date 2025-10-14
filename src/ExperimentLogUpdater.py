@@ -15,6 +15,8 @@ class ExperimentLogUpdater:
         self.experiment_dir = self.results_dir + '/' + self.experiment_name
         self.log_filename = self.results_dir + '/experiment_log.csv'
         self.insist_on_clean_git_state = insist_on_clean_git_state
+        # TODO Remove
+        self.insist_on_clean_git_state = False
         self.log = 'Not yet defined'
 
     def update(self):
