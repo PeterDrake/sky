@@ -34,7 +34,8 @@ with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[NETWORK_IMAGE_CATEGORY], 
 
 # Load the trained model
 log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
-model = tf_keras.models.load_model(log_updater.experiment_dir + '/network.keras')
+with strategy.scope():
+    model = tf_keras.models.load_model(log_updater.experiment_dir + '/network.keras')
 
 print('Processing {} photos'.format(len(stamps)))
 for i in range(0, len(stamps), 320):
