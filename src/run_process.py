@@ -7,21 +7,10 @@ import tensorflow as tf
 import importlib
 import tf_keras
 
-# 1. Define the Multi-GPU Strategy
+# Define the Multi-GPU Strategy
 # This tells TensorFlow to use all visible devices (the 4 GPUs allocated by Slurm)
 strategy = tf.distribute.MirroredStrategy()
 print(f"Number of devices being used: {strategy.num_replicas_in_sync}") # Should print 4
-
-# # 2. Use the Strategy Scope
-# # Model creation and compilation MUST occur inside this context
-# with strategy.scope():
-#     # Create the network
-#     module = importlib.import_module('model_architectures.' + NETWORK_ARCHITECTURE)
-#     model = module.model
-#
-#     # Compile the model
-#     # Note: Compilation inside the scope automatically handles distributed components.
-#     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
 # Get timestamps for the data to use
 stamps = []

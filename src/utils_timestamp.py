@@ -26,7 +26,7 @@ def allocate_dates(date_counts, proportions):
     :return a list of lists of dates
     """
     # Shuffle the rows
-    date_counts = date_counts.sample(frac=1).reset_index(drop=True)
+    date_counts = date_counts.sample(frac=1, random_state=0).reset_index(drop=True)
     # Add a column showing cumulative sum of counts
     date_counts['cum_count'] = date_counts['count'].cumsum()
     # Determine cutoffs

@@ -12,7 +12,7 @@ DUBIOUS_TIMESTAMP_FILENAMES = {c:'dubious_' + c + '_timestamps' for c in ['valid
 
 # Current experiment name (e.g., 'exp00001'), or 'sandbox'
 # EXPERIMENT_NAME = 'su23_0014'  # This is the last one we ran
-EXPERIMENT_NAME = 'su24_014_no_glare'
+EXPERIMENT_NAME = 'su24_015_no_glare'
 
 # Name (minus .py) of file containing network architecture
 NETWORK_ARCHITECTURE = 'net_c16x32'

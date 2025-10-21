@@ -79,17 +79,18 @@ def find_interesting_timestamps(quality):
         for desired in desired_cfs:
             file.write(f'cf: {desired}\n')
             rows = df[(desired - tolerance < df['cf_shcu']) & (df['cf_shcu'] < desired + tolerance)]
-            file.write(f'images found: {len(rows)}\n')
-            stamps = (rows['tsi-net'].idxmax(axis=0),
-                      rows['tsi-net'].idxmin(axis=0),
-                      rows['tsi-cf'].idxmax(axis=0),
-                      rows['tsi-cf'].idxmin(axis=0),
-                      rows['net-cf'].idxmax(axis=0),
-                      rows['net-cf'].idxmin(axis=0),)
-            result += stamps
-            for stamp in stamps:
-                row = rows.loc[stamp]
-                file.write(f'{stamp}  tsi: {row["cloud_tsi"]:.3f}  net: {row["cloud_net"]:.3f}  cf: {row["cf_shcu"]:.3f}\n')
+            if len(rows):
+                file.write(f'images found: {len(rows)}\n')
+                stamps = (rows['tsi-net'].idxmax(axis=0),
+                          rows['tsi-net'].idxmin(axis=0),
+                          rows['tsi-cf'].idxmax(axis=0),
+                          rows['tsi-cf'].idxmin(axis=0),
+                          rows['net-cf'].idxmax(axis=0),
+                          rows['net-cf'].idxmin(axis=0),)
+                result += stamps
+                for stamp in stamps:
+                    row = rows.loc[stamp]
+                    file.write(f'{stamp}  tsi: {row["cloud_tsi"]:.3f}  net: {row["cloud_net"]:.3f}  cf: {row["cf_shcu"]:.3f}\n')
         return result
 
 
@@ -233,26 +234,29 @@ def create_learning_curve():
 
 # Now, time to call those functions!
 dir = f'../data_for_plotting/{EXPERIMENT_NAME}'
-# download_files()
+download_files()
 create_rmse_file()
-stamps = [
-    # '20150703173000',
-          '20150703174000',
-          '20160525200000',
-          # '20160904194000',
-          # '20150823201500',
-          '20160904175000',
-          '20130602000500',
-          # '20120716194500',  # Had to edit because we only kept data at 5-min intervals
-          '20170524192000',
-          '20130726223000',
-          '20150925202000',
-          # '20130726202000',
-          '20160611193000',
-          ]
-# for quality in ('typical', 'dubious'):
-#     stamps = find_interesting_timestamps(quality)
-# fetch_images_from_blt(stamps)
-# create_triptych_stack(stamps)
+# stamps = [
+#     # '20150703173000',
+#           '20150703174000',
+#           '20160525200000',
+#           # '20160904194000',
+#           # '20150823201500',
+#           #'20160904175000',
+#           '20160525205000',
+#           # '20130602000500',
+#           '20120906231000',
+#           # '20120716194500',  # Had to edit because we only kept data at 5-min intervals
+#           # '20170524192000',
+#           '20160728191500',
+#           # '20130726223000',
+#           '20130826212000',
+#           # '20150925202000',
+#           # '20160611193000',
+#           ]
+for quality in ('typical', 'dubious'):
+    stamps = find_interesting_timestamps(quality)
+fetch_images_from_blt(stamps)
+create_triptych_stack(stamps)
 create_scatter_plot()
-# create_learning_curve()
+create_learning_curve()
