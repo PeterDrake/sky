@@ -237,7 +237,7 @@ def create_learning_curve():
 
 # Now, time to call those functions!
 dir = f'../data_for_plotting/{EXPERIMENT_NAME}'
-# download_files()
+download_files()
 create_rmse_file()
 stamps = [
           '20150703174000',
@@ -251,7 +251,7 @@ stamps = [
           ]
 # quality = 'typical'  # 'dubious' is an alternative here
 # stamps = find_interesting_timestamps(quality)# for quality in ('typical', 'dubious'):
-# fetch_images_from_blt(stamps)
+fetch_images_from_blt(stamps)
 create_triptych_stack(stamps)
 create_scatter_plot()
 create_learning_curve()
