@@ -150,6 +150,7 @@ def create_triptych_stack(timestamps):
         tsi_mask = imread(f'{dir}/{stamp}_tsi_mask.png')
         network_mask = imread(f'{dir}/{stamp}_network_mask.png')
         ax[0, i].imshow(photo)
+        ax[0, i].text(10, 60, 'abcdefgh'[i] + ')', fontsize='x-large', color='white')
         formatted_timestamp = f'{stamp[0:4]}-{stamp[4:6]}-{stamp[6:8]} {stamp[8:10]}:{stamp[10:12]}'
         ax[0, i].set_title(formatted_timestamp)
         ax[0, i].set_xlabel(f'CF = {tsi_df.loc[int(stamp), 'cf_shcu']:.3f}')
@@ -236,7 +237,7 @@ def create_learning_curve():
 
 # Now, time to call those functions!
 dir = f'../data_for_plotting/{EXPERIMENT_NAME}'
-download_files()
+# download_files()
 create_rmse_file()
 stamps = [
           '20150703174000',
@@ -250,7 +251,7 @@ stamps = [
           ]
 # quality = 'typical'  # 'dubious' is an alternative here
 # stamps = find_interesting_timestamps(quality)# for quality in ('typical', 'dubious'):
-fetch_images_from_blt(stamps)
+# fetch_images_from_blt(stamps)
 create_triptych_stack(stamps)
 create_scatter_plot()
 create_learning_curve()
