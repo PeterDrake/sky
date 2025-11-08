@@ -1,0 +1,257 @@
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+from config import *
+from dotenv import load_dotenv
+import os
+import pysftp
+from pathlib import Path
+from utils_timestamp import *
+from ExperimentLogUpdater import ExperimentLogUpdater
+from skimage.io import imread
+import matplotlib.pyplot as plt
+from math import sqrt
+import numpy as np
+
+"""
+Downloads (from BLT) various files for the current experiment and then saves into a subdirectory of data_for_plotting:
+
+1. Those files
+2. rmse.txt, giving the RMSE values for fsc vs cf
+3. stamps.txt, giving some 'interesting' timestamps
+4. A triptych for each of these timestamps
+5. The scatter plots of fsc vs cf
+6. The learning curve
+"""
+
+
+def download_files():
+    """
+    Fetches the .csv files and the training history. The files are saved locally into data_for_plotting.
+    """
+    Path(dir).mkdir(exist_ok=True)
+    load_dotenv()
+    user = os.environ.get('user')
+    password = os.environ.get('password')
+    with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+        for quality in ('typical', 'dubious'):
+            connection.get(f'{DATA_DIR}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv',
+                           f'{dir}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
+            connection.get(f'{RESULTS_DIR}/{EXPERIMENT_NAME}/collate_network_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv',
+                           f'{dir}/collate_network_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
+        connection.get(f'{RESULTS_DIR}/{EXPERIMENT_NAME}/training_history',
+                       f'{dir}/training_history')
+
+
+def rmse():
+    result = {'tsi':{}, 'network':{}}
+    for source in ('tsi', 'network'):
+        for quality in ('typical', 'dubious'):
+            df = pd.read_csv(f'{dir}/collate_{source}_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv')
+            df.dropna(inplace=True)
+            rmse = sqrt(mean_squared_error(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100']))
+            result[source][quality] = rmse
+    return result
+
+def create_rmse_file():
+    rmse_ = rmse()
+    with open(f'{dir}/rmse.txt', 'w') as file:
+        for source in ('tsi', 'network'):
+            file.write(f'{source}: ')
+            for quality in ('typical', 'dubious'):
+                file.write(f'{quality}: {rmse_[source][quality]:.3f} ')
+            file.write('\n')
+
+def find_interesting_timestamps(quality):
+    print(quality)
+    with open(f'{dir}/{quality}_stamps.txt', 'w') as file:
+        net = pd.read_csv(f'{dir}/collate_network_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv', dtype={'timestamp_utc': str})
+        tsi = pd.read_csv(f'{dir}/collate_tsi_fsc_cf_{quality}_{NETWORK_IMAGE_CATEGORY}.csv', dtype={'timestamp_utc': str})
+        df = net.merge(tsi, how='outer', on=('timestamp_utc', 'cf_shcu'), suffixes=('_net', '_tsi'))
+        df.set_index('timestamp_utc', inplace=True)
+        # Make new columns for differences
+        df['cloud_net'] = df['fsc_thin_100_net'] + df['fsc_opaque_100_net']
+        df['cloud_tsi'] = df['fsc_thin_100_tsi'] + df['fsc_opaque_100_tsi']
+        df['tsi-net'] = df['cloud_tsi'] - df['cloud_net']
+        df['tsi-cf'] = df['cloud_tsi'] - df['cf_shcu']
+        df['net-cf'] = df['cloud_net'] - df['cf_shcu']
+        desired_cfs = (0.0, 0.25, 0.5, 0.75, 1.0)
+        tolerance = 0.01
+        result = []
+        for desired in desired_cfs:
+            file.write(f'cf: {desired}\n')
+            rows = df[(desired - tolerance < df['cf_shcu']) & (df['cf_shcu'] < desired + tolerance)]
+            if len(rows):
+                file.write(f'images found: {len(rows)}\n')
+                stamps = (rows['tsi-net'].idxmax(axis=0),
+                          rows['tsi-net'].idxmin(axis=0),
+                          rows['tsi-cf'].idxmax(axis=0),
+                          rows['tsi-cf'].idxmin(axis=0),
+                          rows['net-cf'].idxmax(axis=0),
+                          rows['net-cf'].idxmin(axis=0),)
+                result += stamps
+                for stamp in stamps:
+                    row = rows.loc[stamp]
+                    file.write(f'{stamp}  tsi: {row["cloud_tsi"]:.3f}  net: {row["cloud_net"]:.3f}  cf: {row["cf_shcu"]:.3f}\n')
+        print(result)
+        return result
+
+
+def fetch_images_from_blt(timestamps):
+    """
+    Fetches the photo, TSI mask, and network mask for timestamp from BLT via sftp. The files are saved into
+    data_for_plotting.
+    """
+    load_dotenv()
+    user = os.environ.get('user')
+    password = os.environ.get('password')
+    with pysftp.Connection(host='mayo.blt.lclark.edu', username=user, password=password) as connection:
+        for s in timestamps:
+            print(f'Fetching images for timestamp {s}')
+            print('photo...')
+            connection.get(timestamp_to_photo_path(DATA_DIR, s),
+                           f'{dir}/{s}_photo.jpg')
+            print('tsi mask...')
+            connection.get(timestamp_to_tsi_mask_path(DATA_DIR, s),
+                           f'{dir}/{s}_tsi_mask.png')
+            log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
+            print('network mask...')
+            connection.get(timestamp_to_network_mask_path(log_updater.experiment_dir, s),
+                           f'{dir}/{s}_network_mask.png')
+
+
+def create_triptych(timestamp):
+    """
+    Display one image: photo, tsi_mask, and network_mask.
+    """
+    photo = imread(f'{dir}/{timestamp}_photo.jpg')
+    tsi_mask = imread(f'{dir}/{timestamp}_tsi_mask.png')
+    network_mask = imread(f'{dir}/{timestamp}_network_mask.png')
+    fig, ax = plt.subplots(1, 3, figsize=(9, 3))
+    fig.suptitle(timestamp)
+    ax[0].imshow(photo)
+    ax[0].set_title('Photo')
+    ax[1].imshow(tsi_mask)
+    ax[1].set_title('TSI Mask')
+    ax[2].imshow(network_mask)
+    ax[2].set_title('Network Mask')
+    plt.savefig(f'{dir}/{timestamp}_triptych.png')
+    plt.close()
+
+
+def create_triptych_stack(timestamps):
+    n = len(timestamps)
+    fig, ax = plt.subplots(3, n, figsize=(2*n, 6), layout='constrained', sharey='row')
+    tsi_df = pd.concat([pd.read_csv(f'{dir}/collate_tsi_fsc_cf_{quality}_testing.csv', index_col='timestamp_utc')
+                        for quality in ['typical', 'dubious']])
+    network_df = pd.concat([pd.read_csv(f'{dir}/collate_network_fsc_cf_{quality}_testing.csv', index_col='timestamp_utc')
+                            for quality in ['typical', 'dubious']])
+    for i, stamp in enumerate(timestamps):
+        photo = imread(f'{dir}/{stamp}_photo.jpg')
+        tsi_mask = imread(f'{dir}/{stamp}_tsi_mask.png')
+        network_mask = imread(f'{dir}/{stamp}_network_mask.png')
+        ax[0, i].imshow(photo)
+        ax[0, i].text(10, 60, 'abcdefgh'[i] + ')', fontsize='x-large', color='white')
+        formatted_timestamp = f'{stamp[0:4]}-{stamp[4:6]}-{stamp[6:8]} {stamp[8:10]}:{stamp[10:12]}'
+        ax[0, i].set_title(formatted_timestamp)
+        ax[0, i].set_xlabel(f'CF = {tsi_df.loc[int(stamp), 'cf_shcu']:.3f}')
+        # ax[0, i].set_ylabel(('Photo', 'TSI Mask', 'Network Mask')[i])
+        ax[1, i].imshow(tsi_mask)
+        tsi_fsc = tsi_df.loc[int(stamp), 'fsc_opaque_100'] + tsi_df.loc[int(stamp), 'fsc_thin_100']
+        ax[1, i].set_xlabel(f'TSI FSC = {tsi_fsc:.3f}')
+        ax[2, i].imshow(network_mask)
+        network_fsc = network_df.loc[int(stamp), 'fsc_opaque_100'] + network_df.loc[int(stamp), 'fsc_thin_100']
+        ax[2, i].set_xlabel(f'Network FSC = {network_fsc:.3f}')
+        for j in range(3):
+            ax[j, i].tick_params(axis='both', left=False, right=False, top=False, bottom=False)
+            ax[j, i].set_xticklabels([])
+            ax[j, i].set_yticklabels([])
+            ax[j, i].set_xticks([])
+            ax[j, i].set_yticks([])
+    ax[0, 0].set_ylabel('Photo')
+    ax[1, 0].set_ylabel('TSI Mask')
+    ax[2, 0].set_ylabel('Network Mask')
+    plt.savefig(f'{dir}/triptych_array.png')
+    plt.close()
+
+def create_scatter_plot():
+    fig, ax = plt.subplots(2, 2, figsize=(9, 9), layout='constrained', sharex='col', sharey='row')
+    # Words are capitalized in the next two rows for the row/column labels.
+    rmse_ = rmse()
+    i = 0  # Index into list of letters for labeling subplots
+    for c, category in enumerate(['Typical', 'Dubious']):
+        for s, source in enumerate(['TSI', 'Network']):
+            df = pd.read_csv(f'{dir}/collate_{source.lower()}_fsc_cf_{category.lower()}_{NETWORK_IMAGE_CATEGORY}.csv')
+            ax = plt.subplot(2, 2, (2 * c + s) + 1)
+            nn = df['cf_shcu'].notnull()
+            x = list(df['cf_shcu'][nn])
+            y = list((df['fsc_opaque_100'] + df['fsc_thin_100'])[nn])
+            # print(category)
+            # print(source)
+            # print(df[df['cf_shcu'].isnull()])
+            # print((df['fsc_opaque_100'] + df['fsc_thin_100']).isnull().sum())
+            ax.scatter(x, y, s=5, alpha=0.5)
+            ax.plot([0, 1], [0, 1], color='red')
+            ax.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='black', linestyle='dashed')
+            ax.text(0.5, 0.95, f'({'abcd'[i]})', ha='center')
+            ax.text(0.7, 0.05, f'RMSE = {rmse_[source.lower()][category.lower()]:.3f}')
+            i += 1
+            if s == 0:  # Y label on left column only
+                ax.set_ylabel(f'Fractional sky cover (opaque + thin, 100)\n{category} data')
+            if c == 0:  # Title on top row only
+                ax.set_title(f'{source}')
+            else:  # X label on bottom row only
+                ax.set_xlabel('Active zenith cloud fraction')
+            ax.grid()
+    # plt.figure(figsize=(9, 4))
+    # ax1 = plt.subplot(121)
+    # df = pd.read_csv(f'{dir}/collate_network_fsc_cf_typical_{NETWORK_IMAGE_CATEGORY}.csv')
+    # ax1.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=0.5, alpha=0.5)
+    # ax1.plot([0, 1], [0, 1], color='red')
+    # ax1.set_xlabel('Cloud fraction')
+    # ax1.set_ylabel('Network FSC (opaque + thin, 100)')
+    # ax1.set_title('Typical data')
+    # ax1.grid()
+    #
+    # ax2 = plt.subplot(122)
+    # df = pd.read_csv(f'{dir}/collate_network_fsc_cf_dubious_{NETWORK_IMAGE_CATEGORY}.csv')
+    # ax2.scatter(df['cf_shcu'], df['fsc_opaque_100'] + df['fsc_thin_100'], s=0.5, alpha=0.5)
+    # ax2.plot([0, 1], [0, 1], color='red')
+    # ax2.set_xlabel('Cloud fraction')
+    # # ax2.set_ylabel('Network FSC (opaque, 100)')
+    # ax2.set_title('Dubious data')
+    # ax2.grid()
+    plt.savefig(f'{dir}/scatter.png')
+    plt.close()
+
+
+def create_learning_curve():
+    df = pd.read_csv(f'{dir}/training_history')
+    df.plot('Epoch', ['loss', 'val_loss'])
+    x = list(df['Epoch'])[-1]
+    y = list(df['val_loss'])[-1]
+    plt.text(x, y * 1.5, f'{y:.3f}', horizontalalignment='center')
+    plt.grid()
+    plt.savefig(f'{dir}/learning_curve.png')
+    plt.close()
+
+
+# Now, time to call those functions!
+dir = f'../data_for_plotting/{EXPERIMENT_NAME}'
+download_files()
+create_rmse_file()
+stamps = [
+          '20150703174000',
+          '20150703173000', #'20160525200000',
+          '20150831190500', #'20160904175000',
+          '20140601005000', #'20130602000500',
+          '20150928181500', #'20170524192000',
+          '20130809223000', #'20130726223000',
+          '20150925202000',
+          '20170811223500', #'20160611193000',
+          ]
+# quality = 'typical'  # 'dubious' is an alternative here
+# stamps = find_interesting_timestamps(quality)# for quality in ('typical', 'dubious'):
+fetch_images_from_blt(stamps)
+create_triptych_stack(stamps)
+create_scatter_plot()
+create_learning_curve()

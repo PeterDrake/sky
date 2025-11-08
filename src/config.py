@@ -6,16 +6,19 @@ RESULTS_DIR = '/home/drake/sky/results'
 
 # Parameters for dividing timestamps into training, validation, and testing
 TYPICAL_PROPORTIONS = [0.6, 0.2, 0.2]
-# TODO Do these really need to be lists?
-TYPICAL_TIMESTAMP_FILENAMES = ['typical_' + c + '_timestamps' for c in ['training', 'validation', 'testing']]
+TYPICAL_TIMESTAMP_FILENAMES = {c:'typical_' + c + '_timestamps' for c in ['training', 'validation', 'testing']}
 DUBIOUS_PROPORTIONS = [0.5, 0.5]
-DUBIOUS_TIMESTAMP_FILENAMES = ['dubious_' + c + '_timestamps' for c in ['validation', 'testing']]
+DUBIOUS_TIMESTAMP_FILENAMES = {c:'dubious_' + c + '_timestamps' for c in ['validation', 'testing']}
 
 # Current experiment name (e.g., 'exp00001'), or 'sandbox'
-EXPERIMENT_NAME = 'su23_0001'
+# EXPERIMENT_NAME = 'su23_0014'  # This is the last one we ran
+EXPERIMENT_NAME = 'su24_015_no_glare'
 
 # Name (minus .py) of file containing network architecture
-NETWORK_ARCHITECTURE = 'trivial_network'
+NETWORK_ARCHITECTURE = 'net_c16x32'
 
 # Number of epochs to train for
-TRAIN_EPOCHS = 10
+TRAIN_EPOCHS = 40
+
+# Whether to process network images for validation or testing
+NETWORK_IMAGE_CATEGORY = 'testing'

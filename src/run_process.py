@@ -3,34 +3,39 @@ from BatchGenerator import *
 from ExperimentLogUpdater import ExperimentLogUpdater
 from config import *
 from skimage.io import imsave
+import tensorflow as tf
+import importlib
+import tf_keras
+
+# Define the Multi-GPU Strategy
+# This tells TensorFlow to use all visible devices (the 4 GPUs allocated by Slurm)
+strategy = tf.distribute.MirroredStrategy()
+print(f"Number of devices being used: {strategy.num_replicas_in_sync}") # Should print 4
 
 # Get timestamps for the data to use
-val_stamps = []
-with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[1], 'r') as f:  # Element 1 is the validation filename
+stamps = []
+with open(DATA_DIR + '/' + TYPICAL_TIMESTAMP_FILENAMES[NETWORK_IMAGE_CATEGORY], 'r') as f:
     for line in f.readlines():
-        val_stamps.append(line.strip())
-with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[0], 'r') as f:  # Element 0 is the validation filename
+        stamps.append(line.strip())
+with open(DATA_DIR + '/' + DUBIOUS_TIMESTAMP_FILENAMES[NETWORK_IMAGE_CATEGORY], 'r') as f:
     for line in f.readlines():
-        val_stamps.append(line.strip())
+        stamps.append(line.strip())
 
 # Load the trained model
 log_updater = ExperimentLogUpdater(RESULTS_DIR, EXPERIMENT_NAME, True)
-model = keras.models.load_model(log_updater.experiment_dir + '/network.keras')
+model = tf.keras.models.load_model(log_updater.experiment_dir + '/network.keras')
 
-# Create generator for validation data
-# TODO Right before publication, we'll eventually want to put test data (as opposed to validation data) in here
-print('Processing {} photos'.format(len(val_stamps)))
-for i in range(0, len(val_stamps), 320):
+print('Processing {} photos'.format(len(stamps)))
+for i in range(0, len(stamps), 320):
     print('Starting chunk ' + str(i) + '-' + str(i+320))
-    chunk = val_stamps[i:i+320]
+    chunk = stamps[i:i + 320]
     print(str(len(chunk)) + ' images')
-    val_gen = BatchGenerator(chunk, DATA_DIR)
+    generator = BatchGenerator(chunk, DATA_DIR)
     # Produce network masks
-    val_preds = model.predict(val_gen)
+    predictions = model.predict(generator)
     # Save the files
-    # If, for debugging purposes, we want to run this on just a few images, change val_stamps to val_stamps[:4]
     for i, timestamp in enumerate(chunk):
-        network_mask = one_hot_to_rgb_mask(val_preds[i])
+        network_mask = one_hot_to_rgb_mask(predictions[i])
         dir = log_updater.experiment_dir + '/network_masks/' + yyyymmdd(timestamp) + '/'
         os.makedirs(dir, exist_ok=True)
         imsave(timestamp_to_network_mask_path(log_updater.experiment_dir, timestamp), network_mask)

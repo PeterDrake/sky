@@ -124,7 +124,36 @@ def remove_green_lines(mask):
     xx, yy = np.meshgrid(np.arange(480), np.arange(480))
     # Interpolate non-green pixels over the mesh
     interpolate = scipy.interpolate.NearestNDInterpolator(nongreen, z)
-    return interpolate(yy, xx)
+    return interpolate(yy, xx).astype('uint8')
+
+
+def remove_all_clouds(mask):
+    """
+    Modifies and returns mask, but with all gray and white pixels changed to blue.
+    """
+    gray = (mask == GRAY).all(axis=2)
+    white = (mask == WHITE).all(axis=2)
+    mask[gray | white] = BLUE
+    return mask
+
+
+def remove_all_clouds_within_circle(mask, center, radius):
+    gray = (mask == GRAY).all(axis=2)
+    white = (mask == WHITE).all(axis=2)
+    y, x = np.ogrid[:480, :480]  # Note the x/y swap for an image
+    cx, cy = center
+    distance = (((x - cx) ** 2) + ((y - cy) ** 2)) ** 0.5
+    mask[(gray | white) & (distance < radius)] = BLUE
+    return mask
+
+
+def remove_all_thin_clouds(mask):
+    """
+    Modifies and returns mask, but with all gray pixels changed to blue.
+    """
+    gray = (mask == GRAY).all(axis=2)
+    mask[gray] = BLUE
+    return mask
 
 
 def rgb_mask_to_one_hot(mask):

@@ -26,7 +26,7 @@ def allocate_dates(date_counts, proportions):
     :return a list of lists of dates
     """
     # Shuffle the rows
-    date_counts = date_counts.sample(frac=1).reset_index(drop=True)
+    date_counts = date_counts.sample(frac=1, random_state=0).reset_index(drop=True)
     # Add a column showing cumulative sum of counts
     date_counts['cum_count'] = date_counts['count'].cumsum()
     # Determine cutoffs
@@ -50,6 +50,13 @@ def timestamp_to_tsi_mask_path(dir, timestamp):
     Returns the full path for the TSI mask file for timestamp in dir.
     """
     return dir + '/tsi_masks/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png'
+
+
+def timestamp_to_tsi_mask_no_glare_path(dir, timestamp):
+    """
+    Returns the full path for the 'no glare' TSI mask file for timestamp in dir.
+    """
+    return dir + '/tsi_masks_no_glare/' + yyyymmdd(timestamp) + '/' + timestamp + '_tsi_mask.png'
 
 
 def timestamp_to_network_mask_path(dir, timestamp):

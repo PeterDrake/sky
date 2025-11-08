@@ -47,16 +47,28 @@ class TestPreprocessor(unittest.TestCase):
         # We added this zero-byte file to the test data
         self.assertFalse(self.preprocessor.tsi_mask_exists('20180418000245'))
 
+    def test_notices_missing_cf(self):
+        df = pd.read_csv('../test_raw_csv/tiny_data.csv', converters={'timestamp_utc': str}, usecols=['timestamp_utc', 'cf_shcu'])
+        self.assertFalse(self.preprocessor.cf_exists('20170524194500', df))
+        self.assertTrue(self.preprocessor.cf_exists('20170524194430', df))
+
     def test_finds_correct_numbers_of_valid_and_invalid_timestamps(self):
         self.preprocessor.validate_csv('tiny_data.csv')
-        self.assertEqual(304, self.preprocessor.valid_timestamp_count)
-        self.assertEqual(2, self.preprocessor.invalid_timestamp_count)
+        self.assertEqual(308, self.preprocessor.valid_timestamp_count)
+        self.assertEqual(3, self.preprocessor.invalid_timestamp_count)
 
     def test_writes_clean_csv(self):
         self.preprocessor.write_clean_csv('tiny_data.csv')
         data = pd.read_csv('../test_data/tiny_data.csv')
         # For this file, the clean version has 304 valid timestamps
-        self.assertEqual(304, len(data))
+        self.assertEqual(308, len(data))
+
+    # This test is commented out because it writes to the same file as test_writes_clean_csv.
+    # def test_filters_five_minute_images(self):
+    #     self.preprocessor.write_clean_csv('tiny_data.csv', True)
+    #     data = pd.read_csv('../test_data/tiny_data.csv')
+    #     # For this file, the clean version has 304 valid timestamps
+    #     self.assertEqual(33, len(data))
 
     def test_creates_image_directories(self):
         # Ensure that the clean CSV file exists

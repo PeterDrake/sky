@@ -2,7 +2,10 @@ from FscCalculator import FscCalculator
 from config import *
 
 calc = FscCalculator(DATA_DIR, RESULTS_DIR + '/' + EXPERIMENT_NAME + '/network_masks', RESULTS_DIR + '/' + EXPERIMENT_NAME)
-# TODO We're only doing validation now; eventually we'll need to do this for testing data
-# The indices 1 and 0 below indicate the validation set
-calc.write_pixel_counts(TYPICAL_TIMESTAMP_FILENAMES[1], 'typical_validation_network_fsc.csv')
-calc.write_pixel_counts(DUBIOUS_TIMESTAMP_FILENAMES[0], 'dubious_validation_network_fsc.csv')
+for quality in ['typical', 'dubious']:
+    if quality == 'typical':
+        stamps_filename = TYPICAL_TIMESTAMP_FILENAMES[NETWORK_IMAGE_CATEGORY]
+    else:
+        stamps_filename = DUBIOUS_TIMESTAMP_FILENAMES[NETWORK_IMAGE_CATEGORY]
+    calc.write_pixel_counts(stamps_filename,
+                            f'{quality}_{NETWORK_IMAGE_CATEGORY}_network_fsc.csv')

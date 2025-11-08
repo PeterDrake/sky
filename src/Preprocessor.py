@@ -50,25 +50,33 @@ class Preprocessor:
         path = self.raw_tsi_mask_path(timestamp)
         return os.path.exists(path) and os.path.getsize(path) > 0
 
+    def cf_exists(self, timestamp, data):
+        """
+        Returns True iff the cf_shcu column in data is not NaN.
+
+        @param data A dataframe, read from the raw CSV file.
+        """
+        return not np.isnan(data[data['timestamp_utc'] == timestamp]['cf_shcu'].values[0])
+
     def validate_csv(self, csv_filename):
         """
         Looks at all of the timestamps in csv_filename and remembers how many were valid (i.e., have
-        non-empty photos and TSI masks. Also ignores duplicate timestamps. This method is not necessary during normal
+        non-empty photos and TSI masks). Also ignores duplicate timestamps. This method is not necessary during normal
         processing, but may be helpful for verifying that files exist, counting invalid timestamps, etc.
         """
         path = self.raw_csv_dir + '/' + csv_filename
         self.log('Validating ' + path)
-        data = pd.read_csv(path, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
-        self.log('Data size before removing duplicates: {}'.format(len(data)))
+        data = pd.read_csv(path, converters={'timestamp_utc': str}, usecols=['timestamp_utc', 'cf_shcu'])
+        self.log(f'Data size before removing duplicates: {len(data)}')
         data = data.drop_duplicates(subset='timestamp_utc')
-        self.log('Data size after removing duplicates: {}'.format(len(data)))
+        self.log(f'Data size after removing duplicates: {len(data)}')
         timestamps = data['timestamp_utc']
         self.valid_timestamp_count = 0
         self.invalid_timestamp_count = 0
         for i, t in timestamps.items():
             if i % 10000 == 0:
-                self.log(i)
-            if self.photo_exists(t) and self.tsi_mask_exists(t):
+                self.log(f'Timestamps examined: {i}')
+            if self.photo_exists(t) and self.tsi_mask_exists(t) and self.cf_exists(t, data):
                 self.valid_timestamp_count += 1
             else:
                 self.log(t + ' is invalid')
@@ -76,23 +84,26 @@ class Preprocessor:
         self.log('Valid timestamps: ' + str(self.valid_timestamp_count))
         self.log('Invalid timestamps: ' + str(self.invalid_timestamp_count))
 
-    def write_clean_csv(self, csv_filename):
+    def write_clean_csv(self, csv_filename, five_minute=False):
         """
         Writes a cleaned-up version of csv_filename. The filename is read from this Preprocessor's raw_csv_dir and the
         clean version is written to this Preprocessor's data_dir. "Cleaning" means removing duplicate timestamps and
-        eliminating timestamps where either the photo or TSI mask is nonexistent or empty.
+        eliminating timestamps where either the photo or TSI mask is nonexistent or empty, or where cf_shcu is NaN.
+
+        If five_minute is True, cleaning also removes all timestamps that don't end in 000 or 500.
 
         This method gets the job done quietly. To instead self.log more information about what's valid, call
         validate_csv instead.
         """
         in_path = self.raw_csv_dir + '/' + csv_filename
         self.log('Reading ' + in_path)
-        data = pd.read_csv(in_path, converters={'timestamp_utc': str}, usecols=['timestamp_utc'])
+        data = pd.read_csv(in_path, converters={'timestamp_utc': str}, usecols=['timestamp_utc', 'cf_shcu'])
         data = data.drop_duplicates(subset='timestamp_utc')
         valid = []
         self.log('Validating ' + str(len(data)) + ' lines')
         for i, t in data['timestamp_utc'].items():
-            valid.append(self.photo_exists(t) and self.tsi_mask_exists(t))
+            valid.append(self.photo_exists(t) and self.tsi_mask_exists(t) and self.cf_exists(t, data)
+                         and ((not five_minute) or t.endswith('000') or t.endswith('500')))
             if i % 1000 == 0:
                 self.log(str(i) + ' lines examined')
         self.log(str(sum(valid)) + ' valid lines found')
@@ -132,7 +143,7 @@ class Preprocessor:
         photo = crop(photo, coords)
         photo = blacken_outer_ring(photo, coords)
         # Write revised versions
-        imsave(timestamp_to_tsi_mask_path(self.data_dir, timestamp), mask)
+        imsave(timestamp_to_tsi_mask_path(self.data_dir, timestamp), mask, check_contrast=False)
         imsave(timestamp_to_photo_path(self.data_dir, timestamp), photo)
 
     def preprocess_images(self, csv_filename):
